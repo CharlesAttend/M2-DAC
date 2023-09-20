@@ -1,0 +1,108 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[a4paper, margin=2.5cm]{geometry}
+\usepackage{graphicx}
+% \usepackage[french]{babel}
+
+\usepackage[default,scale=0.95]{opensans}
+\usepackage[T1]{fontenc}
+\usepackage{amssymb} %math
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{systeme}
+\usepackage{bbm}
+
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    pdftitle={Overleaf Example},
+    % pdfpagemode=FullScreen,
+    }
+\urlstyle{same} %\href{url}{Text}
+
+\theoremstyle{plain}% default
+\newtheorem{thm}{Théorème}[section]
+\newtheorem{lem}[thm]{Lemme}
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem*{cor}{Corollaire}
+%\newtheorem*{KL}{Klein’s Lemma}
+
+\theoremstyle{definition}
+\newtheorem{defn}{Définition}[section]
+\newtheorem{exmp}{Exemple}[section]
+% \newtheorem{xca}[exmp]{Exercise}
+
+\theoremstyle{remark}
+\newtheorem*{rem}{Remarque}
+\newtheorem*{note}{Note}
+%\newtheorem{case}{Case}
+
+
+
+\title{Apprentissage Statistique}
+\author{Exercice du diapo}
+\date{S1-2023}
+
+\begin{document}
+\maketitle
+
+\section{Supervised classification}
+\subsection{Excercice}
+Exercice 1 : 
+\begin{align*}
+    L* &= 1 - P(g*(X) = Y) \\
+        &= 1 - \mathbb{E} [ g*(X) = 1] P( Y = 1 | X) \\
+        &= 1 - \mathbb{E} [ \mathbbm{1}_{P(Y=1 | X)} + \mathbbm{1}_{g*(X) = 0} P(Y=0 | X)] \\
+        &= 1 - \mathbb{E} [ \mathbbm{1}_{\eta (X) > 1/2} \eta (X) + \mathbbm{1}_{\eta (X) \leq  1/2} (1 - \eta (X))]
+\end{align*}
+    
+Exercice 2
+\begin{align*}
+    L* &= 1 - P(g*(X) = Y) \\
+        &= 1 - \mathbb{E} [P(g*(X) = Y | X)] \\
+        &= 1 - \mathbb{E} [ \max ( 1 - \eta (X) , \eta (X))] \\
+        &= 1 + \mathbb{E} [ \min (\eta (X) - 1 , - \eta (X))] \\
+        &= \mathbb{E} [ \min  (\eta (X) , 1 - \eta (X))]
+\end{align*}
+
+Exercice 3:
+Si $ L*(X) = 0 $ ça veut dire que c'est un processus déterministe. Que $ Y $  a un lien déterministe avec $ X $ 
+\[
+    P(g*(X) \neq  Y) = 0 \Rightarrow  Y = g*(X) as. 
+.\]
+
+\[
+    Y = \phi (X) \Rightarrow P(Y \neq \phi (X) ) = 0 \Rightarrow L* = 0
+.\]
+
+\subsection{Statistical Learning}
+Exercice diapo 18 : $ consistency \Leftrightarrow L(g_n) \to ^{L^1} L* \Leftrightarrow L(g_n) \to ^{ \mathbb{P}} L* $ 
+
+\begin{itemize}
+    \item Pour la convergence L1 (je crois)
+    \begin{align*}
+        &P(g_n(X) \neq Y | \mathcal{D}_n) \to ^{L1} L* \\
+        &\mathbb{E}[ P(g_n (X) \neq  Y | \mathcal{D} _n) - L*] \\
+        &= \mathbb{E} [ P(g_n(X) \neq Y [ \mathcal{D}_n ) - L*])] \\
+        &= P(g_n(X) \neq Y ) - L* \\
+        & \to 0 (?)
+    \end{align*}
+    \item Pour la convergence en proba dans le sens non instinctif, on veut montrer que
+    \begin{align*}
+        &Z_n \to ^{\mathbb{P}} 0 \\
+        &\left| Z_n \right|  \leq 1 \text{ car proba} \\
+        &\text{ alors } Z_n \to ^{L1} 0
+    \end{align*}
+    Preuve : \begin{align*}
+        &\mathbb{E} [ \left| Z_n \right| ] = \mathbb{E} [ Z_n  | \mathbbm{1}_{\left| Z_n \right| > \epsilon  }] + \mathbb{E} [ Z_n | \mathbbm{1}_{\left| Z_n \right| \leq \epsilon }] \\
+        &\leq P(\left| Z_n \right| > \epsilon )
+    \end{align*}
+\end{itemize}
+
+
+
+
+\end{document}
