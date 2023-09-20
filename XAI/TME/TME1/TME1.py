@@ -25,6 +25,24 @@ from sklearn.ensemble import RandomForestClassifier
 
 from sklearn.inspection import DecisionBoundaryDisplay
 
+
+def plot_boundaries(X, y, ax, clf):
+    x_min, x_max = X[:, 0].min() - 0.5, X[:, 0].max() + 0.5
+    y_min, y_max = X[:, 1].min() - 0.5, X[:, 1].max() + 0.5
+    DecisionBoundaryDisplay.from_estimator(clf, X, ax=ax, eps=0.5)
+    # Plot the training points
+    ax.scatter(X[:, 0], X[:, 1], c=y, edgecolors="k")
+    ax.set_xlim(x_min, x_max)
+    ax.set_ylim(y_min, y_max)
+    ax.set_xticks(())
+    ax.set_yticks(())
+
+
+def plot_obs_n_enemie(obs, enemie, ax, colors=["red", "orange"]):
+    ax.scatter(*enemie, c=colors[0])
+    ax.scatter(*obs, c=colors[1])
+
+
 names = [
     "Nearest Neighbors",
     "Random Forest",
@@ -40,22 +58,11 @@ i = 1
 for ds_cnt, (X, y) in enumerate(datasets):
     i += 1
     for name, clf in zip(names, classifiers):
-        ax = plt.subplot(len(datasets), len(classifiers) + 1, i)
-        x_min, x_max = X[:, 0].min() - 0.5, X[:, 0].max() + 0.5
-        y_min, y_max = X[:, 1].min() - 0.5, X[:, 1].max() + 0.5
-        # clf = make_pipeline(StandardScaler(), clf)
         clf.fit(X, y)
-        DecisionBoundaryDisplay.from_estimator(clf, X, ax=ax, eps=0.5)
-
-        # Plot the training points
-        ax.scatter(X[:, 0], X[:, 1], c=y, edgecolors="k")
-
-        ax.set_xlim(x_min, x_max)
-        ax.set_ylim(y_min, y_max)
-        ax.set_xticks(())
-        ax.set_yticks(())
+        ax = plt.subplot(len(datasets), len(classifiers) + 1, i)
         if ds_cnt == 0:
             ax.set_title(name)
+        plot_boundaries(X, y, ax, clf)
         i += 1
 plt.show()
 
@@ -108,10 +115,11 @@ class GrowingSpheres:
         update self.enemies to keep enemies points
         """
         pred = self.clf.predict(spherical_layer)
-        self.enemies = pred[pred != self.obs_predict]
+        self.enemies = spherical_layer[pred != self.obs_predict]
         return (pred != self.obs_predict).any()
 
-    def sph.shapemaboucle(self, spherical_layer):
+    def maboucle(self):
+        spherical_layer = self.generate_spherical_layer(0, 1)
         while self.find_enemy(spherical_layer):
             self.eta /= 2
             spherical_layer = self.generate_spherical_layer(0, self.eta)
