@@ -103,6 +103,91 @@ Exercice diapo 18 : $ consistency \Leftrightarrow L(g_n) \to ^{L^1} L* \Leftrigh
 \end{itemize}
 
 
+\subsection{Exercice TD}
+\subsubsection{Exercice 1}
+$ (X,Y) \in \mathbb{R}\times [0,1], X \sim \mathcal{U}([-2, 2]), ect $ 
+\begin{align*}
+    Y &= \mathbbm{1}_{X< 0, U \leq 2} + \mathbbm{1}_{X > 0, U >1} \\
+    \eta &= P(Y=1 | X) \\
+        &= P(X < 0, u \leq 2 | X) + P(X > 0, U > 1 | X) \\
+        &= \mathbbm{1}_{X < 0} P(U \leq 2) + \mathbbm{1}_{X > 0} P(U > 1) \\
+        &= \mathbbm{1}_{X < 0} \frac{2}{10} + \mathbbm{1}_{X > 0} \frac{9}{10} \\
+        g*(X) = \mathbbm{1}_{\eta (X) >\frac{1}{2}} = \mathbbm{1}_{X > 0}
+\end{align*}
+Bayes error 
+\begin{align*}
+    L* &= P(g*(X) \neq Y) \\
+        &= \frac{1}{2} - \frac{1}{2} \mathbb{E}[\left| 2 \eta (X) - 1 \right| ] \\
+        &= \frac{1}{2} - \frac{1}{2} \mathbb{E}[\left| \frac{4}{10} \mathbbm{1}_{X < 0} + \frac{18}{10} \mathbbm{1}_{X > 0} - 1 \right| ] \\
+        &= \frac{1}{2} - \frac{1}{2} \mathbb{E}[\left| \frac{6}{10} \mathbbm{1}_{X < 0} + \frac{8}{10} \mathbbm{1}_{X > 0} \right| ] \\
+        &= \frac{1}{2} - \frac{1}{2}* \frac{6}{10} * \frac{1}{2} - \frac{1}{2}* \frac{8}{10} * \frac{1}{2} \\
+        &= \frac{3}{20}
+\end{align*}
+
+\subsubsection{Exercice 2}
+\begin{enumerate}
+    \item \begin{align*}
+        L* &= \mathbb{E}[\min(\eta (X) , 1 - \eta (X))] \\
+            &= \mathbb{E}[\min (\frac{x}{c+x} , \frac{c}{c+x})] \\ 
+            &= \mathbb{E}[ \frac{\min (x,c)}{ c+x}]
+    \end{align*}
+    \item $ f_x(x) = \frac{\mathbbm{1}_{x \in [0, \alpha c]}}{\alpha c} $ 
+    \begin{align*}
+        L* &= \int_{0}^{\alpha c} \frac{\min (x,c)}{x + c} \frac{dx}{\alpha c}\\
+            &= \int_{0}^{c} \frac{x}{x+c} \frac{dx}{\alpha c} \\ 
+            &= \frac{1}{\alpha } \log_{} ( \frac{(\alpha +1) e}{4})
+    \end{align*} 
+    \item exercice, étudier la fonction ou \begin{itemize}
+        \item $ f $ continue sur $ [1, +\infty ] $ 
+        \item $ \lim_{\alpha  \to \infty} f(\alpha ) = 0 $ 
+    \end{itemize}
+    Docn $ f $ admet un maximum 
+\end{enumerate}
+
+\subsubsection{Exerice 3}
+$ X \sim (T,B,E) \sim \mathcal{E}(1) $ \\
+densité d'une loi exp $ Z \sim \mathcal{E}(1) $ \begin{align*}
+    f_Z(z) &= e^{ -z \mathbbm{1}_{\mathbb{R}_+} (z)} \\
+    F_Z(t) &= (1 - e^{-t}) \mathbbm{1}_{\mathbb{R}_+}(t) \\
+    G_z(t) &= \mathbbm{1}_{\mathbb{R}_-}+e^{-t} \mathbbm{1}_{\mathbb{R}_+}(t)
+\end{align*}
+\begin{enumerate}
+    \item $ Y $ est une fonction de $ X $ donc $ L* = 0 $. C'est déterministe
+    \item \begin{align*}
+        P(Y=1 | T, B) &= P(T + B + E < 7 | T, B) \\
+            &= F_Z (7 - T - B) \text{ car } E \bot (T, B)
+            &= (1 - e^{- ( 7 - T - B)}) \mathbbm{1}_{7 - T - B > 0}
+    \end{align*} 
+    \item \begin{align*}
+        &g^*(T,B) = \mathbbm{1}_{\eta (T, B) > 1/2} \\
+        & \eta (T, B) > 1/2 \\
+        \Leftrightarrow& 1 - e^{T + B - 7} > \frac{1}{2} \\
+        \Leftrightarrow& - \ln 2 > T + B - 7 \\
+        \Leftrightarrow& T + B < 7 - \ln 2
+    \end{align*}
+    Donc $ g*(T,B) = \mathbbm{1}_{T + B < 7 - \ln 2} $ 
+    \item $ T, B \sim \mathcal{E}(1) $  et $ T \bot B $ donc $ T + B \sim \gamma (2,1) $, $ f_{T + B} (u) = ue^{-u} \mathbbm{1}_{\mathbb{R}_+ (u)} $ 
+    \item \begin{align*}
+        L^* = P(g^*(T,B) \neq  Y) &= P(g^*(T, B) = 1, Y = 0) + P(g^* (T,B) = 1, Y = 0) \\
+            &= P(T + B < 7 - \ln 2, T + B+ E \geq 7) + P(T+B \geq 7 - \ln 2, T+B+E < 7)\\
+            &= a + b \\
+        a &= \mathbb{E} [ P( T+B < 7 - \ln 2 , T+B+3 \geq 7 | T,B)]\\
+        &= \mathbb{E}[ \mathbbm{1}_{T+B < 7 - \ln 2} G(7 - T - B)] \\
+        &= \mathbb{E} [ \mathbbm{1}_{T +B < 7 - \ln 2} e^{T + B - 7}] \\ 
+        &= \int_{0}^{7 - \ln 2}e^{u - 7 } u e^{-u} du \\
+        &= e^{-7} [ \frac{u^2}{2}]^{7 - \ln 2}_{0} \\
+        &= e^{-7} \frac{(7 - \ln 2)^2}{2} \\
+        b &= \text{ same }\\
+        a + b &= e^{-7} ( \frac{(7 - \ln 2)^2}{2} + 2 ( 8 - \ln 2) - 8 - \frac{7^2}{2} + \frac{(7 - \ln 2)^2}{2})
+    \end{align*}
+    \item \begin{align*}
+        P(Y = 0) &= P(T+B+E \geq 7) \\
+            &= P(\gamma (3) \geq 7) \\
+            &= \int_{7}^{+\infty } \frac{1}{2} u^2 e^{-u}du \\
+            &= 0.029
+    \end{align*}
+\end{enumerate}
+
 
 
 \end{document}
