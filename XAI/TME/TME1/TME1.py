@@ -40,7 +40,7 @@ def plot_boundaries(X, y, ax, clf):
 
 def plot_obs_and_enemy(obs, enemy, ax, colors=["red", "orange"]):
     """
-    Plot the observation to interprete and the enemy returned by the growing sphare
+    Plot the observation to interprete and the enemy returned by the growing sphere
     generation algorithm.
     """
     ax.scatter(*enemy, c=colors[0])
@@ -75,10 +75,7 @@ plt.show()
     │ Growing Spheres                                                         │
     └────────────────────────────────────────────────────────────────────────┘
  """
-from numpy.random import uniform
 
-
-# enemy car dans ol'autre classe
 class GrowingSpheres:
     """
     obs_to_interprete : x, une observation à interpréter
@@ -87,18 +84,21 @@ class GrowingSpheres:
     n : nombre de points que l'on génère
     """
 
-    def __init__(self, obs_to_interprete, clf, eta, n):
-        self.obs_to_interprete = obs_to_interprete.reshape(1, -1)
-        self.obs_predict = clf.predict(self.obs_to_interprete)
+    def __init__(self, clf, eta, n):
         self.clf = clf
         self.eta = eta
         self.n = n
-        self.d = self.obs_to_interprete.shape[1]
 
     def generate_spherical_layer(self, a0, a1) -> np.ndarray:
         """
-        Génère une couche sphérique (Spherical Layer) de centre $x$ et de rayon
-        interne $a_0$ et de rayon externe $a_1$.
+        Generate a spherical layer with the specified parameters.
+
+        Parameters:
+            a0 (float): Inner radius of the spherical layer.
+            a1 (float): Outer radius of the spherical layer.
+
+        Returns:
+            np.ndarray: A numpy array representing the generated spherical layer.
         """
 
         def norm(v):
@@ -115,13 +115,26 @@ class GrowingSpheres:
 
     def find_enemy(self, spherical_layer):
         """
-        Return true if enemies are found
-        update self.enemies to keep enemies points
+        Find and update enemy information in a spherical layer.
+
+        Parameters:
+            spherical_layer (numpy.ndarray): A 2D numpy array representing the spherical layer data.
+
+        Returns:
+            bool: True if enemies are found in the spherical layer, False otherwise.
         """
         pred = self.clf.predict(spherical_layer)
         self.enemies = spherical_layer[pred != self.obs_predict]
         return (pred != self.obs_predict).any()
 
+    def predict(self, obs_to_interprete):
+        self.obs_to_interprete = obs_to_interprete.reshape(1, -1)
+        self.obs_predict = clf.predict(self.obs_to_interprete)
+        self.d = self.obs_to_interprete.shape[1]
+        
+        enemy = self.generation()
+        return enemy, self.feature_selection(enemy)
+    
     def generation(self):
         spherical_layer = self.generate_spherical_layer(0, 1)
         while self.find_enemy(spherical_layer):
@@ -137,44 +150,12 @@ class GrowingSpheres:
             np.linalg.norm(self.enemies - self.obs_to_interprete).argmin()
         ]
 
-    def predict(self, obs_to_interprete):
-        enemie = self.generation()
-        return self.feature_selection(enemie)
 
-    def feature_selection(self, enemie):
-        e_prime = enemie.copy()
+    def feature_selection(self, enemy):
+        e_prime = enemy.copy()
         while self.obs_predict != self.clf.predict(e_prime.reshape(1,-1)):
             e_star = e_prime.copy()
             i = np.abs(e_prime - self.obs_to_interprete[0])
             i = i[i != 0].argmin()
             e_prime[i] = self.obs_to_interprete[0][i]
         return e_star
-
-    def feature_selection2(self, counterfactual):
-        """
-        Projection step of the GS algorithm. Make projections to make (e* - obs_to_interprete) sparse. 
-        Heuristic: sort the coordinates of np.abs(e* - obs_to_interprete) in ascending 
-        order and project as long as it does not change the predicted class
-        
-        Inputs:
-        counterfactual: e*
-        """
-            
-        move_sorted = sorted(enumerate(abs(counterfactual - self.obs_to_interprete.flatten())), key=lambda x: x[1])
-        move_sorted = [x[0] for x in move_sorted if x[1] > 0.0]
-        out = counterfactual.copy()
-        
-        reduced = 0
-        
-        for k in move_sorted:
-        
-            new_enn = out.copy()
-            new_enn[k] = self.obs_to_interprete.flatten()[k]
-
-            condition_class = self.clf.predict(new_enn.reshape(1, -1)) != self.obs_predict
-                
-            if condition_class:
-                out[k] = new_enn[k]
-                reduced += 1
-                
-        return out
