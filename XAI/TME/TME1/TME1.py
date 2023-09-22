@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.animation as animation
 from sklearn.datasets import make_moons
 
 """ 
@@ -9,7 +10,6 @@ from sklearn.datasets import make_moons
  """
 
 datasets = []
-# datasets.append(make_moons(random_state=0))
 for noise in np.arange(0, 0.5, 0.1):
     datasets.append(make_moons(noise=noise, random_state=0))
 
@@ -22,11 +22,11 @@ for noise in np.arange(0, 0.5, 0.1):
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import LinearSVC, SVC
 from sklearn.ensemble import RandomForestClassifier
-
 from sklearn.inspection import DecisionBoundaryDisplay
 
 
 def plot_boundaries(X, y, ax, clf):
+    """"Plot the data and the decision boundary resulting from a classifier."""
     x_min, x_max = X[:, 0].min() - 0.5, X[:, 0].max() + 0.5
     y_min, y_max = X[:, 1].min() - 0.5, X[:, 1].max() + 0.5
     DecisionBoundaryDisplay.from_estimator(clf, X, ax=ax, eps=0.5)
@@ -38,8 +38,12 @@ def plot_boundaries(X, y, ax, clf):
     ax.set_yticks(())
 
 
-def plot_obs_n_enemie(obs, enemie, ax, colors=["red", "orange"]):
-    ax.scatter(*enemie, c=colors[0])
+def plot_obs_and_enemy(obs, enemy, ax, colors=["red", "orange"]):
+    """
+    Plot the observation to interprete and the enemy returned by the growing sphare
+    generation algorithm.
+    """
+    ax.scatter(*enemy, c=colors[0])
     ax.scatter(*obs, c=colors[1])
 
 
@@ -78,7 +82,8 @@ from numpy.random import uniform
 class GrowingSpheres:
     """
     obs_to_interprete : x, une observation à interpréter
-    classifier : classifieur binaire
+    clf : classifieur binaire
+    eta : hyperparamètre
     n : nombre de points que l'on génère
     """
 
@@ -102,8 +107,7 @@ class GrowingSpheres:
         z = np.random.normal(0, 1, (self.n, self.d))
         u = np.random.uniform(a0**self.d, a1**self.d, size=self.n)
         u = u ** (1 / self.d)
-        # z = z * u / norm(z)
-        z = np.array([a * b / c for a, b, c in zip(z, u, norm(z))])
+        z = np.array([a * b / c for a, b, c in zip(z, u, norm(z))]) # z = z * u / norm(z)
         return self.obs_to_interprete + z
 
     # ce qui serait bien c'est avoir une animation de l'algo qui fit au fur et à mesure
@@ -118,7 +122,7 @@ class GrowingSpheres:
         self.enemies = spherical_layer[pred != self.obs_predict]
         return (pred != self.obs_predict).any()
 
-    def maboucle(self):
+    def generation(self):
         spherical_layer = self.generate_spherical_layer(0, 1)
         while self.find_enemy(spherical_layer):
             self.eta /= 2
@@ -133,8 +137,44 @@ class GrowingSpheres:
             np.linalg.norm(self.enemies - self.obs_to_interprete).argmin()
         ]
 
-    def predict(obs_to_interprete):
-        pass
+    def predict(self, obs_to_interprete):
+        enemie = self.generation()
+        return self.feature_selection(enemie)
 
-    def feature_selection():
-        pass
+    def feature_selection(self, enemie):
+        e_prime = enemie.copy()
+        while self.obs_predict != self.clf.predict(e_prime.reshape(1,-1)):
+            e_star = e_prime.copy()
+            i = np.abs(e_prime - self.obs_to_interprete[0])
+            i = i[i != 0].argmin()
+            e_prime[i] = self.obs_to_interprete[0][i]
+        return e_star
+
+    def feature_selection2(self, counterfactual):
+        """
+        Projection step of the GS algorithm. Make projections to make (e* - obs_to_interprete) sparse. 
+        Heuristic: sort the coordinates of np.abs(e* - obs_to_interprete) in ascending 
+        order and project as long as it does not change the predicted class
+        
+        Inputs:
+        counterfactual: e*
+        """
+            
+        move_sorted = sorted(enumerate(abs(counterfactual - self.obs_to_interprete.flatten())), key=lambda x: x[1])
+        move_sorted = [x[0] for x in move_sorted if x[1] > 0.0]
+        out = counterfactual.copy()
+        
+        reduced = 0
+        
+        for k in move_sorted:
+        
+            new_enn = out.copy()
+            new_enn[k] = self.obs_to_interprete.flatten()[k]
+
+            condition_class = self.clf.predict(new_enn.reshape(1, -1)) != self.obs_predict
+                
+            if condition_class:
+                out[k] = new_enn[k]
+                reduced += 1
+                
+        return out
