@@ -12,7 +12,7 @@ from sklearn.inspection import DecisionBoundaryDisplay
 
 
 def plot_boundaries(X, y, ax, clf):
-    """"Plot the data and the decision boundary resulting from a classifier."""
+    """ "Plot the data and the decision boundary resulting from a classifier."""
     x_min, x_max = X[:, 0].min() - 0.5, X[:, 0].max() + 0.5
     y_min, y_max = X[:, 1].min() - 0.5, X[:, 1].max() + 0.5
     DecisionBoundaryDisplay.from_estimator(clf, X, ax=ax, eps=0.5)
@@ -33,12 +33,12 @@ def plot_obs_and_enemy(obs, enemy, ax, colors=["red", "orange"]):
     ax.scatter(*obs, c=colors[1])
 
 
-
 """ 
     ┌────────────────────────────────────────────────────────────────────────┐
     │ Growing Spheres                                                         │
     └────────────────────────────────────────────────────────────────────────┘
  """
+
 
 class GrowingSpheres:
     """
@@ -71,7 +71,9 @@ class GrowingSpheres:
         z = np.random.normal(0, 1, (self.n, self.d))
         u = np.random.uniform(a0**self.d, a1**self.d, size=self.n)
         u = u ** (1 / self.d)
-        z = np.array([a * b / c for a, b, c in zip(z, u, norm(z))]) # z = z * u / norm(z)
+        z = np.array(
+            [a * b / c for a, b, c in zip(z, u, norm(z))]
+        )  # z = z * u / norm(z)
         return self.obs_to_interprete + z
 
     def find_enemy(self, spherical_layer):
@@ -93,10 +95,10 @@ class GrowingSpheres:
         self.obs_to_interprete = obs_to_interprete.reshape(1, -1)
         self.obs_predict = self.clf.predict(self.obs_to_interprete)
         self.d = self.obs_to_interprete.shape[1]
-        
+
         enemy = self.generation()
         return enemy, self.feature_selection(enemy)
-    
+
     def generation(self):
         self.iter = 0
         spherical_layer = self.generate_spherical_layer(0, 1)
@@ -124,21 +126,25 @@ class GrowingSpheres:
     #         i = i[i != 0].argmin()
     #         e_prime[i] = self.obs_to_interprete[0][i]
     #     return e_star
-    
-    def feature_selection(self, counterfactual): #checker
-        """
-        """
-        move_sorted = sorted(enumerate(abs(counterfactual - self.obs_to_interprete.flatten())), key=lambda x: x[1])
+
+    def feature_selection(self, counterfactual):  # checker
+        """ """
+        move_sorted = sorted(
+            enumerate(abs(counterfactual - self.obs_to_interprete.flatten())),
+            key=lambda x: x[1],
+        )
         move_sorted = [x[0] for x in move_sorted if x[1] > 0.0]
         out = counterfactual.copy()
         reduced = 0
-        
+
         for k in move_sorted:
             new_enn = out.copy()
             new_enn[k] = self.obs_to_interprete.flatten()[k]
-            
-            if self.clf.predict(new_enn.reshape(1, -1)) == self.obs_predict: #il faut mettre argmax pour multiclasse
+
+            if (
+                self.clf.predict(new_enn.reshape(1, -1)) == self.obs_predict
+            ):  # il faut mettre argmax pour multiclasse
                 out[k] = new_enn[k]
                 reduced += 1
-                
+
         return out
