@@ -1,17 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
-from sklearn.datasets import make_moons
-
-""" 
-    ┌────────────────────────────────────────────────────────────────────────┐
-    │ Données                                                                │
-    └────────────────────────────────────────────────────────────────────────┘
- """
-
-datasets = []
-for noise in np.arange(0, 0.5, 0.1):
-    datasets.append(make_moons(noise=noise, random_state=0))
 
 """ 
     ┌────────────────────────────────────────────────────────────────────────┐
@@ -19,9 +8,6 @@ for noise in np.arange(0, 0.5, 0.1):
     └────────────────────────────────────────────────────────────────────────┘
 """
 
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.svm import LinearSVC, SVC
-from sklearn.ensemble import RandomForestClassifier
 from sklearn.inspection import DecisionBoundaryDisplay
 
 
@@ -47,28 +33,6 @@ def plot_obs_and_enemy(obs, enemy, ax, colors=["red", "orange"]):
     ax.scatter(*obs, c=colors[1])
 
 
-names = [
-    "Nearest Neighbors",
-    "Random Forest",
-    "Linear SVM",
-]
-classifiers = [
-    KNeighborsClassifier(),
-    RandomForestClassifier(max_depth=5, n_estimators=10, max_features=1),
-    SVC(),
-]
-figure = plt.figure(figsize=(27, 9))
-i = 1
-for ds_cnt, (X, y) in enumerate(datasets):
-    i += 1
-    for name, clf in zip(names, classifiers):
-        clf.fit(X, y)
-        ax = plt.subplot(len(datasets), len(classifiers) + 1, i)
-        if ds_cnt == 0:
-            ax.set_title(name)
-        plot_boundaries(X, y, ax, clf)
-        i += 1
-plt.show()
 
 """ 
     ┌────────────────────────────────────────────────────────────────────────┐
@@ -129,7 +93,7 @@ class GrowingSpheres:
 
     def predict(self, obs_to_interprete):
         self.obs_to_interprete = obs_to_interprete.reshape(1, -1)
-        self.obs_predict = clf.predict(self.obs_to_interprete)
+        self.obs_predict = self.clf.predict(self.obs_to_interprete)
         self.d = self.obs_to_interprete.shape[1]
         
         enemy = self.generation()
@@ -151,11 +115,30 @@ class GrowingSpheres:
         ]
 
 
-    def feature_selection(self, enemy):
-        e_prime = enemy.copy()
-        while self.obs_predict != self.clf.predict(e_prime.reshape(1,-1)):
-            e_star = e_prime.copy()
-            i = np.abs(e_prime - self.obs_to_interprete[0])
-            i = i[i != 0].argmin()
-            e_prime[i] = self.obs_to_interprete[0][i]
-        return e_star
+    # def feature_selection(self, enemy):
+    #     e_prime = enemy.copy()
+    #     while self.obs_predict != self.clf.predict(e_prime.reshape(1,-1)):
+    #         print('hey')
+    #         e_star = e_prime.copy()
+    #         i = np.abs(e_prime - self.obs_to_interprete[0])
+    #         i = i[i != 0].argmin()
+    #         e_prime[i] = self.obs_to_interprete[0][i]
+    #     return e_star
+    
+    def feature_selection(self, counterfactual): #checker
+        """
+        """
+        move_sorted = sorted(enumerate(abs(counterfactual - self.obs_to_interprete.flatten())), key=lambda x: x[1])
+        move_sorted = [x[0] for x in move_sorted if x[1] > 0.0]
+        out = counterfactual.copy()
+        reduced = 0
+        
+        for k in move_sorted:
+            new_enn = out.copy()
+            new_enn[k] = self.obs_to_interprete.flatten()[k]
+            
+            if self.clf.predict(new_enn.reshape(1, -1)) == self.obs_predict: #il faut mettre argmax pour multiclasse
+                out[k] = new_enn[k]
+                reduced += 1
+                
+        return out
