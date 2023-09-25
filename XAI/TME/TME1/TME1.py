@@ -74,15 +74,13 @@ class GrowingSpheres:
         z = np.array([a * b / c for a, b, c in zip(z, u, norm(z))]) # z = z * u / norm(z)
         return self.obs_to_interprete + z
 
-    # ce qui serait bien c'est avoir une animation de l'algo qui fit au fur et à mesure
-    # (les sphères)
-
     def find_enemy(self, spherical_layer):
         """
         Find and update enemy information in a spherical layer.
 
         Parameters:
-            spherical_layer (numpy.ndarray): A 2D numpy array representing the spherical layer data.
+            spherical_layer (numpy.ndarray): A 2D numpy array representing the spherical
+            layer data.
 
         Returns:
             bool: True if enemies are found in the spherical layer, False otherwise.
@@ -100,20 +98,22 @@ class GrowingSpheres:
         return enemy, self.feature_selection(enemy)
     
     def generation(self):
+        self.iter = 0
         spherical_layer = self.generate_spherical_layer(0, 1)
         while self.find_enemy(spherical_layer):
             self.eta /= 2
             spherical_layer = self.generate_spherical_layer(0, self.eta)
+            self.iter += 1
         a0 = self.eta
         a1 = 2 * self.eta
         while not self.find_enemy(spherical_layer):
             spherical_layer = self.generate_spherical_layer(a0, a1)
             a0 = a1
             a1 = a1 + self.eta
+            self.iter += 1
         return self.enemies[
             np.linalg.norm(self.enemies - self.obs_to_interprete).argmin()
         ]
-
 
     # def feature_selection(self, enemy):
     #     e_prime = enemy.copy()
