@@ -38,9 +38,6 @@ class MSE(Function):
         return d_yhat, d_y
 
 
-#  TODO:  Implémenter la classe Linear(X, W, b)sur le même modèle que MSE
-
-
 class Linear(Function):
     @staticmethod
     def forward(ctx, X, W, b):
@@ -51,11 +48,11 @@ class Linear(Function):
     @staticmethod
     def backward(ctx, grad_output):
         ## Calcul du gradient du module par rapport a chaque groupe d'entrées
-        W, b = ctx.saved_tensors
+        X, W, b = ctx.saved_tensors
         d_x = grad_output * W
         d_w = grad_output * X
         d_b = grad_output
-        return
+        return d_x, d_w, d_b
 
 
 ## Utile dans ce TP que pour le script tp1_gradcheck
