@@ -103,7 +103,7 @@ Exercice diapo 18 : $ consistency \Leftrightarrow L(g_n) \to ^{L^1} L* \Leftrigh
 \end{itemize}
 
 
-\subsection{Exercice TD}
+\subsection{Exercice TD1}
 \subsubsection{Exercice 1}
 $ (X,Y) \in \mathbb{R}\times [0,1], X \sim \mathcal{U}([-2, 2]), ect $ 
 \begin{align*}
@@ -188,6 +188,104 @@ densité d'une loi exp $ Z \sim \mathcal{E}(1) $ \begin{align*}
     \end{align*}
 \end{enumerate}
 
-
+\section{Exercice TD2}
+\subsection{Exercice 1}
+\begin{enumerate}
+    \item 
+    \[
+        g^* (x) = \begin{cases}
+            1 &\text{ si } \eta (x) > 1/2\\
+            0 &\text{ sinon }\\
+        \end{cases} 
+    .\]
+    En posant $ G^* = \{x \in \mathbb{R} ^d, \eta (x) > 1/2 \} $, on a bien $ g^*(x) = \mathbbm{1}_{x \in G^*} $ 
+    
+    \item \begin{align*}
+        P(g(x) \neq  Y | X) &= 1 - P(g(x) = Y | X) \\
+            &= 1 - P(g(X) = 1, Y = 1 | X) - P (g(X) = 0, Y = 0 | X) \\
+            &= 1 - \mathbbm{1}_{g(X) = 1} P (Y = 1 | X) - \mathbbm{1}_{g(X) = 0}P(Y = 0 | X) \\
+            &= 1 - \mathbbm{1}_{g(X) = 1} \eta (X) - \mathbbm{1}_{g(X) = 0} (1 - \eta (X)) \\
+        P( g^* (X) \neq  Y | X) &= 1 - \mathbbm{1}_{g^*(X) = 1} \eta (X) - \mathbbm{1}_{g^* (X) = 0 } (1 - \eta (X)) \\
+    \end{align*}
+    Assemblons les deux termes 
+    \begin{align*}
+        & P(g(x) \neq  Y | X) - P( g^* (X) \neq  Y | X) \\ 
+            &= \mathbbm{1}_{g(X) = 1} \eta (X) - \mathbbm{1}_{g(X) = 0} (1 - \eta (X)) - \mathbbm{1}_{g^*(X) = 1} \eta (X) - \mathbbm{1}_{g^* (X) = 0 } (1 - \eta (X)) \\
+            &= \mathbbm{1}_{g^*(X) = 1} \eta (X) + (1 - \mathbbm{1}_{g^* (X) =1})(1 - \eta (X)) - \mathbbm{1}_{g(X) = 1} \eta (X) - (1  \mathbbm{1}_{g(X) = 1} )(1 - \eta (X)) \\
+            &= \eta (X) (\mathbbm{1}_{g^* (X)} - \mathbbm{1}_{g(X) =1}) + (1 - \eta (X) ) [ 1 - \mathbbm{1}_{g^* (X) = 1} - 1 + \mathbbm{1}_{g(X) = 1}] \\
+            &= [\mathbbm{1}_{g^* = 1} - \mathbbm{1}_{g(X) = 1}] [ \eta (X) - 1 + \eta (X)] \\
+            &= (2 \eta (X) - 1) (\mathbbm{1}_{g^*(X) = 1} - \mathbbm{1}_{g(X) = 1}) \\
+            &= \left| 2 \eta (X) - 1 \right|  \mathbbm{1}_{g(X) \neq  g^*(X)} \text{ par définition de } g^*
+    \end{align*}
+    CCL : $ P(g(X \neq  Y) - P(g^* (X) \neq Y) = \mathbb{E} [ \left| 2 \eta (X) - 1 \right| \mathbbm{1}_{g(x) \neq  g^*(X)}]$ 
+    
+    \item On pose $ G = [ g = 1], G^* = [n \geq 1/2] = [g^* = 1] $ ; $ G \Delta G^* = ([g = Z] \cap  [ g^* = °]) \cup ([g = 0] \cap  [ g^* = 1]) = [g \neq g^*]$   
+    \begin{align*}
+        d(G, G^*) &= P(g(X) \neq Y)- L^* \\
+            &= \int_{G \Delta G^* }^{} \left| 2 \eta (X) - 1 \right| d \mu (x)
+    \end{align*}
+    
+    \item Comme $ 0 \leq \eta (X) \leq 1 $ on obtient que $ 0 \leq  \left| 2 \eta (x) - 1  \right| \leq 1 $, donc 
+    \[
+        d(G, G^*) = \int_{G \Delta G^*}^{} \left| 2 \eta (x) - 1 \right| d \mu (x) \leq  \mu (G \Delta  G^*) = d_{\delta } (G , G^*) \leq 1
+    .\]
+    
+    \item $ \forall t \in (0, t^*], (0 < t^* \leq 1/2) $ 
+    \[
+        P(\left| \eta (X) - \frac{1}{2} \right| \leq t) \leq C_\eta  t ^\alpha, C_\eta > 0, \alpha > 0
+    .\]
+    When $ \alpha \to \infty, P(\left| \eta (X) - \frac{1}{2} \right| \leq t) \to 0  $ 
+    
+    \item $ P( \left| \eta (X) - \frac{1}{2} \right| \leq t ) \leq C_\eta t^\alpha  $ pour tout $ t \in ]0, t^*] $ et $ 0 < t^* < \frac{1}{2} $.
+    \[
+        \forall x \in V, \eta (x) = \begin{cases}
+            \frac{1}{2} + x^{1 / \alpha } &\text{ si } x > 0\\
+            \frac{1}{2} - x^{1 / \alpha }&\text{}\\
+        \end{cases} 
+    .\]
+    $ X $  a une densité 
+    \begin{align*}
+    P ( \left| \eta (X) - \frac{1}{2} \right| \leq t) &= P(\left| X \right| ^{1/\alpha } \leq t) \\
+        &= \int_{[-t^\alpha , t^\alpha ]}^{} f_x(dx) \\
+        & \leq M 2 t^\alpha 
+    \end{align*}
+    $ t $ dans le voisinage, suffisament petit.
+    
+    \item Montrer que $ (1) \Rightarrow d(G, G^*) \geq  2 t [ d_\Delta (G, G^*) - C_\eta t^\alpha ] $ 
+    \begin{align*}
+        d(G, G^*) &= \int_{G \Delta g^*}^{}\left| 2 \eta (x) - 1 \right| \mu (dx) \\
+        &\geq 2 \int_{G \Delta G^*}^{}\left| \eta (x) - \frac{1}{2} \right| \mathbbm{1}_{\left| \eta (x) - 1/2 \right| > t} \mu (dx) \\
+        &\geq 2 t \mu (G \Delta G^* \cap \{\left| \eta (x) - \frac{1}{2} \right| > t \}) \\
+        & \geq 2 t [ \mu (G \Delta G^*) - \mu (\left| \eta (x) - \frac{1}{2} \right| \leq t)] \\
+        &\geq 2 t [ d_\Delta (G, G^*) - C_\eta t^\alpha ]
+    \end{align*}
+    On note : $ \mu (A \cap B) \geq \mu (A) - \mu (B) $ 
+    
+    \item On cherche $ kappa, c_0, \epsilon _0 $ tel que $ d_\Delta (G, G^*) \leq \epsilon _0 \Rightarrow d(G, G^*) \geq c_0 d_\Delta ^\kappa  (G, G^*) $ \\
+    Notons $ \phi : 2t d_\Delta - 2 C_\eta t^{\alpha +1} $ 
+    \begin{align*}
+        \phi (t) &= 2 d_\delta - 2 C_\eta (\alpha + 1)t^\alpha \\
+            &= 0 \\
+            &\Rightarrow t = \frac{d_\Delta }{C_\eta (\alpha +1)} \\
+            &\Rightarrow t = (\frac{d_\Delta }{C_\eta (\alpha +1)})^{1/\alpha } \\
+    \end{align*}
+    \begin{align*}
+        2 (\frac{d_\Delta }{C_\eta (\alpha +1)})^{1/\alpha } [ d_\Delta - C_\eta \frac{d_\Delta }{C_\eta (\alpha +1)}] &= 2 (\frac{d_\Delta }{C_\eta (\alpha +1)})^{1/\alpha } ( 1 - \frac{1}{\alpha + 1} ) d_\Delta \\
+        &= 2 \frac{\alpha }{\alpha + 1 } \frac{1 }{(C_\eta (\alpha  + 1))^{1/\alpha }} d_\Delta ^{\alpha + 1 / \alpha } \\
+        &= \frac{2 \alpha }{(\alpha + 1) ^{\alpha + 1 / \alpha } C_\eta ^{ 1 / \alpha }}
+    \end{align*}
+    donc \begin{align*}
+        \epsilon _0 &= t^*\alpha C_\eta (\alpha + 1) \\
+        \kappa &= \frac{\alpha + 1 }{\alpha } \\
+        C_0 &= \frac{\alpha}{(\alpha +1)^{\alpha +1 / \alpha }} \frac{2}{C_\eta ^{1/\alpha }}
+    \end{align*}
+    
+    \item \begin{align*}
+        d(G, G^*) &= \int_{G \Delta G^*}^{}\left| 2 \eta (x) - 1 \right| \mu (dx) \\
+            &= \int_{G \Delta G^*}^{} \left| 2 \eta (x) - 1 \right| ( \mathbbm{1}_{\left| \eta (x) - 1/2 \right| \leq t } + \mathbbm{1}_{\left| \eta (x) - 1/2 \right| > }) \mu (dx) \\
+            &\leq 2t P(\left| \eta (X) - 1/2 \right| \leq t) + \mathbb{E}[ \left| 2 \eta (X) - 1 \right|  \mathbbm{1}_{g(X) \neq g^*(X)} \mathbbm{1}_{\left| \eta (X) - 1/2 \right| > t}] \\
+            &\leq 2 C_\eta t^{\alpha + 1} + \mathbb{E}[ \left| 2 \eta (X) - 1 \right|  \mathbbm{1}_{g(X) \neq g^*(X)} \mathbbm{1}_{\left| \eta (X) - 1/2 \right| > t}]
+    \end{align*}
+\end{enumerate}
 
 \end{document}
