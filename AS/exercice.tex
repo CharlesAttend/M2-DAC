@@ -53,16 +53,16 @@
 \subsection{Excercice}
 Exercice 1 : 
 \begin{align*}
-    L* &= 1 - P(g*(X) = Y) \\
-        &= 1 - \mathbb{E} [ g*(X) = 1] P( Y = 1 | X) \\
-        &= 1 - \mathbb{E} [ \mathbbm{1}_{P(Y=1 | X)} + \mathbbm{1}_{g*(X) = 0} P(Y=0 | X)] \\
+    L^* &= 1 - P(g^*(X) = Y) \\
+        &= 1 - \mathbb{E} [ g^*(X) = 1] P( Y = 1 | X) \\
+        &= 1 - \mathbb{E} [ \mathbbm{1}_{P(Y=1 | X)} + \mathbbm{1}_{g^*(X) = 0} P(Y=0 | X)] \\
         &= 1 - \mathbb{E} [ \mathbbm{1}_{\eta (X) > 1/2} \eta (X) + \mathbbm{1}_{\eta (X) \leq  1/2} (1 - \eta (X))]
 \end{align*}
     
 Exercice 2
 \begin{align*}
-    L* &= 1 - P(g*(X) = Y) \\
-        &= 1 - \mathbb{E} [P(g*(X) = Y | X)] \\
+    L^ * &= 1 - P(g^*(X) = Y) \\
+        &= 1 - \mathbb{E} [P(g^*(X) = Y | X)] \\
         &= 1 - \mathbb{E} [ \max ( 1 - \eta (X) , \eta (X))] \\
         &= 1 + \mathbb{E} [ \min (\eta (X) - 1 , - \eta (X))] \\
         &= \mathbb{E} [ \min  (\eta (X) , 1 - \eta (X))]
@@ -71,7 +71,7 @@ Exercice 2
 Exercice 3:
 Si $ L*(X) = 0 $ ça veut dire que c'est un processus déterministe. Que $ Y $  a un lien déterministe avec $ X $ 
 \[
-    P(g*(X) \neq  Y) = 0 \Rightarrow  Y = g*(X) as. 
+    P(g^*(X) \neq  Y) = 0 \Rightarrow  Y = g^*(X) as. 
 .\]
 
 \[
@@ -133,7 +133,7 @@ Bayes error
     \end{align*}
     \item $ f_x(x) = \frac{\mathbbm{1}_{x \in [0, \alpha c]}}{\alpha c} $ 
     \begin{align*}
-        L* &= \int_{0}^{\alpha c} \frac{\min (x,c)}{x + c} \frac{dx}{\alpha c}\\
+        L* &= \int_{0}^{\alpha c} \frac{\min (x,c)}{x + c} \frac{dx}{\alpha c} \\
             &= \int_{0}^{c} \frac{x}{x+c} \frac{dx}{\alpha c} \\ 
             &= \frac{1}{\alpha } \log_{} ( \frac{(\alpha +1) e}{4})
     \end{align*} 
