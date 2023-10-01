@@ -1,6 +1,7 @@
 import torch
 from torch.autograd import Function
 from torch.autograd import gradcheck
+from icecream import ic
 
 
 class Context:
@@ -33,8 +34,8 @@ class MSE(Function):
     def backward(ctx, grad_output):
         ## Calcul du gradient du module par rapport a chaque groupe d'entrées
         yhat, y = ctx.saved_tensors
-        d_yhat = grad_output * -2 * (yhat - y)
-        d_y = grad_output * 2 * (yhat - y)
+        d_yhat = grad_output * 2 * (yhat - y)
+        d_y = grad_output * -2 * (yhat - y)
         return d_yhat, d_y
 
 
@@ -42,16 +43,21 @@ class Linear(Function):
     @staticmethod
     def forward(ctx, X, W, b):
         ## Garde les valeurs nécessaires pour le backwards
-        ctx.save_for_backward(W, b)
-        return X * W + b
+        ctx.save_for_backward(X, W, b)
+        return X @ W + b
 
     @staticmethod
     def backward(ctx, grad_output):
         ## Calcul du gradient du module par rapport a chaque groupe d'entrées
-        X, W, b = ctx.saved_tensors
-        d_x = grad_output * W
-        d_w = grad_output * X
-        d_b = grad_output
+        X, W, _ = ctx.saved_tensors
+        # grad_output :            (n, p) # Mais p du module précédent ?
+        d_x = grad_output @ W.T  # (n, d)
+        d_w = X.T @ grad_output  # (d, p)
+        d_b = grad_output  # (n, p)
+        # ic(grad_output.shape)
+        # ic(d_x.shape)
+        # ic(d_w.shape)
+        # ic(d_b.shape)
         return d_x, d_w, d_b
 
 

@@ -15,18 +15,27 @@ epsilon = 0.05
 
 writer = SummaryWriter()
 for n_iter in range(100):
-    ##  TODO:  Calcul du forward (loss)
+    ctx_MSE = Context()
+    ctx_linear = Context()
+    ## Calcul du forward (loss)
+    yhat = Linear.forward(ctx_linear, x, w, b)
+    loss = MSE.forward(ctx_MSE, yhat, y) / 50
 
     # `loss` doit correspondre au coût MSE calculé à cette itération
     # on peut visualiser avec
     # tensorboard --logdir runs/
-    writer.add_scalar('Loss/train', loss, n_iter)
+    writer.add_scalar("Loss/train", loss.mean(), n_iter)
 
     # Sortie directe
-    print(f"Itérations {n_iter}: loss {loss}")
+    print(f"Itérations {n_iter}: loss {loss.mean()}")
 
-    ##  TODO:  Calcul du backward (grad_w, grad_b)
+    ##  Calcul du backward (grad_w, grad_b)
+    d_yhat, d_y = MSE.backward(ctx_MSE, torch.zeros(50, 3) + 0.067) # WTF pourquoi ça marche
+    # d_yhat, d_y = MSE.backward(ctx_MSE, loss)
+    _, grad_w, grad_b = Linear.backward(ctx_linear, d_yhat)
 
-    ##  TODO:  Mise à jour des paramètres du modèle
-
+    ##  Mise à jour des paramètres du modèle
+    with torch.no_grad():
+        w = w - epsilon * grad_w
+        b = b - epsilon * grad_b
 
