@@ -86,10 +86,47 @@ Let note $ W_i, b_i $ the parameter for the $ i $ layer, $ f_i(x) = W_i x + b_i$
 \end{align*}
 
 \subsection{Loss function}
-\paragraph{During training, we try to minimize the loss function. For cross entropy and squared error, how must the $ \hat{y}_i $  vary to decrease the global loss function $ \mathcal{L} $ ?}
+\paragraph{8. During training, we try to minimize the loss function. For cross entropy and squared error, how must the $ \hat{y}_i $  vary to decrease the global loss function $ \mathcal{L} $ ?}
 ?
 
-\paragraph{How are these functions better suited to classification or regression tasks?}
+\paragraph{9. How are these functions better suited to classification or regression tasks?}
+Cross-entropy is better suited classification task for numerus reason : 
+\begin{itemize}
+    \item Cross-entropy is based on the negative logarithm of the predicted probability of the true class. Due to this logarithmic nature, it magnifies the loss when the predicted probability deviates from 1 (for the correct class) and from 0 (for incorrect classes) as you can see in figure \ref{CELoss}. It would absolutly not work for $ \hat{y} $ outside $ [0,1] $. This amplification of errors is beneficial for training the model effectively. 
+    \item Cross-entropy loss is often used in conjunction with the softmax activation function in the output layer of neural networks for multi-class classification. The softmax function ensures that the predicted probabilities sum to 1, a perfect output for the CE-Loss
+\end{itemize} 
+\begin{figure}[!htbp]
+    \centering
+    \includegraphics*[width=0.6\textwidth]{figs/cross_entropy.png}
+    \label{CELoss}
+\end{figure}
+
+In the other hand, MSE play the opposite role. It would not work at all with $ \hat{y} \in [0,1] $ but is really good with $ y, \hat{y} \in \mathbb{R} $. It also cool because of it convexity. However, it's essential to note that MSE is not always the best choice for every regression task. For example, ot can be pretty sensitive to outliers.
+
+\subsection{Optimization algorithm}
+
+\paragraph{10. What seem to be the advantages and disadvantages of the various variants of gradient descent between the classic, mini-batch stochastic and online stochastic versions? Which one seems the most reasonable to use in the general case?}
+
+\paragraph{11. What is the influence of the learning rate $ \eta  $  on learning?}
+\paragraph{12. Compare the complexity (depending on the number of layers in the network) of calculating the gradients of the loss with respect to the parameters, using the naive approach and the backprop algorithm.}
+\paragraph{13. What criteria must the network architecture meet to allow such an optimization procedure ?}
+\paragraph{14. The function SoftMax and the loss of cross-entropy are often used together and their gradient is very simple. Show that the loss can be simpliﬁed by:}
+\[
+    l = - \sum_{i}^{} y_i \tilde{y}_i + \log_{} (\sum_{i}^{} e^{\tilde{y}_i}) 
+.\]
+
+\paragraph{15. Write the gradient of the loss (cross-entropy ) relative to the intermediate output $ \tilde{y} $ }
+\[
+    \frac{\partial l}{\partial \tilde{y}_i}
+.\]
+
+\[
+    \nabla _{\tilde{y}}l = 
+.\]
+
+\paragraph{16. Using the backpropagation, write the gradient of the loss with respect to the weights of the output layer $ \nabla _{W_y}l $ . Note that writing this gradient uses $ \nabla _{\tilde{y}}l $ . Do the same for $ \nabla _{b_y}l $ .}
+
+\paragraph{17. Compute other gradients : $ \nabla _{\tilde{h}} l, \nabla _{W_h} l, \nabla_{b_h}l $ }
 
 
 
