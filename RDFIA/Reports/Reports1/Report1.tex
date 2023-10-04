@@ -106,25 +106,87 @@ In the other hand, MSE play the opposite role. It would not work at all with $ \
 \subsection{Optimization algorithm}
 
 \paragraph{10. What seem to be the advantages and disadvantages of the various variants of gradient descent between the classic, mini-batch stochastic and online stochastic versions? Which one seems the most reasonable to use in the general case?}
+I one hand, computing a gradient is computationaly expensive proportionately to the number of example we choose to include in it. In the other hand, the more we include examples in it, the more we exploring the gradient with precision and stability. It's a bit like the exploration-action compromise in RL. 
+
+The classic gradient descent is pretty stable exspecialy for convex loss function. Her update are deterministic and reproductible as there are nothing stocastic in the algorythm. But when the loss function is not convex, her stability can prone it to get stuck in local minima. Futhermore this method is computationally expensive, especially for large datasets, as it requires evaluating the gradient using the entire dataset in each iteration.
+
+The Mini-Batch Stochastic Gradient Descent (SGD) has the advantages to have a faster convergence compared to classic gradient descent, as it updates the model parameters using small random subsets of the data (mini-batches). This randomness helps to escape local minima and explore the loss surface more effectively than classic gradient descen but can lead to noises and oscillations.
+
+Finaly the Online Stochastic Gradient Descent have extremely fast updates, as it processes one training example at a time and is well-suited for streaming or large-scale online learning scenarios where data arrives sequentially. But her highly noisy update can lead to erratic convergence or divergence and require careful tuning of learning rates.
+
+In the general case for training deep neural networks, mini-batch stochastic gradient descent is the most reasonable choice. It strikes a good balance between the computational efficiency of classic gradient descent and the noise resilience and convergence speed of online SGD.
 
 \paragraph{11. What is the influence of the learning rate $ \eta  $  on learning?}
+The choice of learning rate can significantly influence the learning process, including convergence speed, stability, and the quality of the final model. 
+
+A higher learning rate generally leads to faster convergence, as it results in larger updates to the model parameters in each iteration. However, if the learning rate is too high, it can cause overshooting, where the optimization process diverges or oscillates around the minimum, preventing convergence.
+
+A smaller learning rate can help the optimization algorithm explore local minima more thoroughly, as it takes smaller steps, allowing it to escape shallow local minima. However, too small of a learning rate can cause the algorithm to get stuck in local minima or take an excessively long time to converge.
+
+Techniques like learning rate schedules (e.g., reducing the learning rate over time) or adaptive learning rate methods (Adam) can help mitigate the need for manual tuning. The choice of learning rate may also depend on the batch size used in mini-batch SGD. Smaller batch sizes may require smaller learning rates to maintain stability.
+
+In practice, selecting an appropriate learning rate often involves experimentation and can be problem-dependent. Techniques like grid search or random search, along with cross-validation, can help identify a suitable learning rate for a given task.
+
 \paragraph{12. Compare the complexity (depending on the number of layers in the network) of calculating the gradients of the loss with respect to the parameters, using the naive approach and the backprop algorithm.}
+GPT est vraiment pas clair ici, il faut creuser \href{https://medium.com/spidernitt/breaking-down-neural-networks-an-intuitive-approach-to-backpropagation-3b2ff958794c}{ce post medium} à partir de "Why backpropagation?". 
+
+
 \paragraph{13. What criteria must the network architecture meet to allow such an optimization procedure ?}
+To use backpropagation, each layer function, activation function and loss must be differentiable with respect to their parameters. The network must have kind of a linear structure, without loops or recurrent connections. 
+
 \paragraph{14. The function SoftMax and the loss of cross-entropy are often used together and their gradient is very simple. Show that the loss can be simpliﬁed by:}
 \[
     l = - \sum_{i}^{} y_i \tilde{y}_i + \log_{} (\sum_{i}^{} e^{\tilde{y}_i}) 
 .\]
+Let denote the cross entropy loss $ l(y, \hat{y}) = - \sum_{i=1}^{N} y_i \log_{} \hat{y}_i $ with $ N $ the total number of example. The Soft Max function $x \in R^D, SoftMax(\tilde{y})_i = \frac{e^{\tilde{y}_i}}{\sum_{j=1}^{D} e^{\tilde{y}_j} } $. The output of the SoftMax function is the input of the cross entropy loss (i.e. $ \hat{y}_i = SoftMax(\tilde{y})_i $ ), let's replace it. 
+\begin{align*}
+    l(y, \hat{y}) &= - \sum_{i=1}^{N} y_i \log_{} \hat{y}_i \\
+        &= - \sum_{i=1}^{N} y_i \log_{} SoftMax(\tilde{_y}) \\
+        &= - \sum_{i=1}^{N} y_i \log_{} \frac{e^{\tilde{y}_i}}{\sum_{j=1}^{D} e^{\tilde{y}_j} } \\
+        &= \sum_{i=1}^{N} y_i [ \log_{} e^{\tilde{y}_i} - \log_{} \sum_{j=1}^{D} e^{\tilde{y}_j}  ] \\
+        &= \sum_{i=1}^{N} y_i \tilde{y}_i - 
+\end{align*}
+AHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
 
 \paragraph{15. Write the gradient of the loss (cross-entropy ) relative to the intermediate output $ \tilde{y} $ }
+\begin{align*}
+    \frac{\partial l}{\partial \tilde{y}_i} &= -y_i + \frac{\frac{\partial }{\partial \tilde{y}_i } (\sum_{j=1}^{N} e^{ \tilde{y}_j })}{\sum_{j=1}^{N} e^{ \tilde{y}_j }} \\
+        &= - y_i + \frac{e^{\tilde{y}_i}}{\sum_{j=1}^{N} e^{ \tilde{y}_j}} \\
+        &= - y_i + SoftMax(\tilde{y})_i
+\end{align*}
 \[
-    \frac{\partial l}{\partial \tilde{y}_i}
+    \nabla _{\tilde{y}}l = \begin{pmatrix}
+        \frac{\partial l}{\partial \tilde{y}_1} \\
+        \vdots \\
+        \frac{\partial l}{\partial \tilde{y}_N}
+    \end{pmatrix} = \begin{pmatrix}
+        y_1 + SoftMax(\tilde{y})_1 \\
+        \vdots \\
+        y_N + SoftMax(\tilde{y})_N
+    \end{pmatrix}
 .\]
 
-\[
-    \nabla _{\tilde{y}}l = 
-.\]
 
 \paragraph{16. Using the backpropagation, write the gradient of the loss with respect to the weights of the output layer $ \nabla _{W_y}l $ . Note that writing this gradient uses $ \nabla _{\tilde{y}}l $ . Do the same for $ \nabla _{b_y}l $ .}
+\begin{align*}
+    \frac{\partial l}{\partial W_{y,ij}} &= \sum_{k}^{} \frac{\partial l}{\partial \tilde{y}_k} \frac{\partial \tilde{y}_k}{\partial W_{y,ij}} \\
+\end{align*}
+
+First, let's compute 
+\begin{align*}
+    \tilde{y}_k &= h_k W_y = \begin{pmatrix}
+        h_{k,1} & \dots & h_{k,n_h}
+    \end{pmatrix} * W \\
+        &= \begin{pmatrix}
+            h_{k,1} W_{1,1} + h_{k, 2} W_{2, 1} + \dots \\
+            \vdots 
+        \end{pmatrix} \\
+    
+    \frac{\partial \tilde{y}_k}{\partial W_{y,ij}} &= h_{k}
+        
+    
+    
+\end{align*}
 
 \paragraph{17. Compute other gradients : $ \nabla _{\tilde{h}} l, \nabla _{W_h} l, \nabla_{b_h}l $ }
 
