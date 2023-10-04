@@ -160,35 +160,59 @@ AHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
         \vdots \\
         \frac{\partial l}{\partial \tilde{y}_N}
     \end{pmatrix} = \begin{pmatrix}
-        y_1 + SoftMax(\tilde{y})_1 \\
+        SoftMax(\tilde{y})_1 - y_1 \\
         \vdots \\
-        y_N + SoftMax(\tilde{y})_N
-    \end{pmatrix}
+        SoftMax(\tilde{y})_N - y_N
+    \end{pmatrix} \\
+    = \hat{y} - y
 .\]
 
 
 \paragraph{16. Using the backpropagation, write the gradient of the loss with respect to the weights of the output layer $ \nabla _{W_y}l $ . Note that writing this gradient uses $ \nabla _{\tilde{y}}l $ . Do the same for $ \nabla _{b_y}l $ .}
 \begin{align*}
     \frac{\partial l}{\partial W_{y,ij}} &= \sum_{k}^{} \frac{\partial l}{\partial \tilde{y}_k} \frac{\partial \tilde{y}_k}{\partial W_{y,ij}} \\
+    \Rightarrow & \nabla_{W_y} l = \begin{pmatrix}
+        \frac{\partial l}{\partial W_{y, 1,1}} & \dots & \frac{\partial l}{\partial W_{y, 1,n_h}}\\
+        \vdots & \ddots & \vdots \\
+        \frac{\partial l}{\partial W_{y, n_y,1}} & \dots & \frac{\partial l}{\partial W_{y, n_y, n_h}}
+    \end{pmatrix}
 \end{align*}
 
-First, let's compute 
+First, let's compute $ \tilde{y}_k $ 
 \begin{align*}
-    \tilde{y}_k &= h_k W_y = \begin{pmatrix}
+    \tilde{y}_k &= h_k W_y \\
+    &= \begin{pmatrix}
         h_{k,1} & \dots & h_{k,n_h}
-    \end{pmatrix} * W \\
-        &= \begin{pmatrix}
-            h_{k,1} W_{1,1} + h_{k, 2} W_{2, 1} + \dots \\
-            \vdots 
-        \end{pmatrix} \\
-    
-    \frac{\partial \tilde{y}_k}{\partial W_{y,ij}} &= h_{k}
-        
-    
-    
+    \end{pmatrix} * \begin{pmatrix}
+        W_{1, 1} & \dots  & W_{1, b} \\
+        \vdots   & \ddots  & \vdots \\
+        W_{a, 1}  & \dots  & W_{a, b} \\
+    \end{pmatrix} \\
+    &= \begin{pmatrix}
+        h_{k,1} W_{y, 1,1} + \dots + h_{k,n_h} W_{a,1}  & \dots & h_{k,1}W_{1,b} + \dots + h_{k, n_k} W_{a,b}\\
+    \end{pmatrix} 
 \end{align*}
+Now its partial derivative
+\[
+    \frac{\partial \tilde{y}_k }{\partial W_{y,ij}} = h_{k, j} 
+.\]
+Then from the previous question
+\[
+    \frac{\partial l}{\partial \tilde{y}_k} = -y_i + SoftMax(\tilde{y})_i
+.\]
+Combine both : 
+\begin{align*}
+    \frac{\partial l}{\partial W_{y,ij}} &= \sum_{k}^{} \frac{\partial l}{\partial \tilde{y}_k} \frac{\partial \tilde{y}_k}{\partial W_{y,ij}} \\
+        &= \sum_{k}^{} - y_i h_{k,i} + h_{k,i} SoftMax(\tilde{y})_i \\
+        % &= \nabla _\tilde{y} 
+        &= (\nabla _{W_y} l)_{i,j}
+\end{align*}
+
+Finaly : 
+
 
 \paragraph{17. Compute other gradients : $ \nabla _{\tilde{h}} l, \nabla _{W_h} l, \nabla_{b_h}l $ }
+
 
 
 
