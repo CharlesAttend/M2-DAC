@@ -143,32 +143,33 @@ Let denote the cross entropy loss $ l(y, \hat{y}) = - \sum_{i=1}^{N} y_i \log_{}
     l(y, \hat{y}) &= - \sum_{i=1}^{N} y_i \log_{} \hat{y}_i \\
         &= - \sum_{i=1}^{N} y_i \log_{} SoftMax(\tilde{_y}) \\
         &= - \sum_{i=1}^{N} y_i \log_{} \frac{e^{\tilde{y}_i}}{\sum_{j=1}^{D} e^{\tilde{y}_j} } \\
-        &= \sum_{i=1}^{N} y_i [ \log_{} e^{\tilde{y}_i} - \log_{} \sum_{j=1}^{D} e^{\tilde{y}_j}  ] \\
-        &= \sum_{i=1}^{N} y_i \tilde{y}_i - 
+        &= - \sum_{i=1}^{N} y_i [ \log_{} e^{\tilde{y}_i} - \log_{} \sum_{j=1}^{n_y} e^{\tilde{y}_j}  ] \\
+        &= - \sum_{i=1}^{N} y_i \tilde{y}_i - y_i \log_{} \sum_{j=1}^{n_y}e^{\tilde{y}_j} 
 \end{align*}
 AHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
 
 \paragraph{15. Write the gradient of the loss (cross-entropy ) relative to the intermediate output $ \tilde{y} $ }
 \begin{align*}
     \frac{\partial l}{\partial \tilde{y}_i} &= -y_i + \frac{\frac{\partial }{\partial \tilde{y}_i } (\sum_{j=1}^{N} e^{ \tilde{y}_j })}{\sum_{j=1}^{N} e^{ \tilde{y}_j }} \\
-        &= - y_i + \frac{e^{\tilde{y}_i}}{\sum_{j=1}^{N} e^{ \tilde{y}_j}} \\
+        &= - y_i + \frac{e^{\tilde{y}_i}}{\sum_{j=1}^{n_y} e^{ \tilde{y}_j}} \\
         &= - y_i + SoftMax(\tilde{y})_i
 \end{align*}
 \[
     \nabla _{\tilde{y}}l = \begin{pmatrix}
         \frac{\partial l}{\partial \tilde{y}_1} \\
         \vdots \\
-        \frac{\partial l}{\partial \tilde{y}_N}
+        \frac{\partial l}{\partial \tilde{y}_{n_y}}
     \end{pmatrix} = \begin{pmatrix}
         SoftMax(\tilde{y})_1 - y_1 \\
         \vdots \\
-        SoftMax(\tilde{y})_N - y_N
+        SoftMax(\tilde{y})_{n_y} - y_{n_y}
     \end{pmatrix} \\
     = \hat{y} - y
 .\]
 
 
 \paragraph{16. Using the backpropagation, write the gradient of the loss with respect to the weights of the output layer $ \nabla _{W_y}l $ . Note that writing this gradient uses $ \nabla _{\tilde{y}}l $ . Do the same for $ \nabla _{b_y}l $ .}
+
 \begin{align*}
     \frac{\partial l}{\partial W_{y,ij}} &= \sum_{k}^{} \frac{\partial l}{\partial \tilde{y}_k} \frac{\partial \tilde{y}_k}{\partial W_{y,ij}} \\
     \Rightarrow & \nabla_{W_y} l = \begin{pmatrix}
@@ -180,35 +181,68 @@ AHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
 
 First, let's compute $ \tilde{y}_k $ 
 \begin{align*}
-    \tilde{y}_k &= h_k W_y \\
+    \tilde{y} &= h W_y^T + b^y\\
     &= \begin{pmatrix}
-        h_{k,1} & \dots & h_{k,n_h}
+        h_{1} & \dots & h_{n_h}
     \end{pmatrix} * \begin{pmatrix}
-        W_{1, 1} & \dots  & W_{1, b} \\
+        W_{1, 1} & \dots  & W_{1, n_y} \\
         \vdots   & \ddots  & \vdots \\
-        W_{a, 1}  & \dots  & W_{a, b} \\
+        W_{n_h, 1}  & \dots  & W_{n_h, n_y} \\
+    \end{pmatrix} + \begin{pmatrix}
+        b^y_1 & \dots & b^y_{n_y}
     \end{pmatrix} \\
     &= \begin{pmatrix}
-        h_{k,1} W_{y, 1,1} + \dots + h_{k,n_h} W_{a,1}  & \dots & h_{k,1}W_{1,b} + \dots + h_{k, n_k} W_{a,b}\\
-    \end{pmatrix} 
+        \sum_{j=1}^{n_h} W^y_{1,j} h_{j} + b^y_1 & \sum_{j=1}^{n_h} W^y_{2,j} h_{j} + b^y_2 & \dots & \sum_{j=1}^{n_h} W^y_{n_h,j} h_{k,j} + b^y_{n_h}
+    \end{pmatrix} \\
+    &\in \mathbb{R}^{1 \times n_h} \\
+    \tilde{y}_k &= \sum_{j=1}^{n_h} W^y_{k,j} h_{j} + b_k^y, k \in [1, n_h]
 \end{align*}
 Now its partial derivative
 \[
-    \frac{\partial \tilde{y}_k }{\partial W_{y,ij}} = h_{k, j} 
+    \frac{\partial \tilde{y}_k }{\partial W^y_{ij}} = \begin{cases}
+        h_j &\text{ if } i=k \\
+        0 &\text{ elsewhere}\\
+    \end{cases} 
 .\]
 Then from the previous question
-\[
-    \frac{\partial l}{\partial \tilde{y}_k} = -y_i + SoftMax(\tilde{y})_i
-.\]
+\begin{align*}
+    \frac{\partial l}{\partial \tilde{y}_k} &= -y_k + SoftMax(\tilde{y})_k \\
+    &= \hat{y}_k - y_k
+\end{align*}
 Combine both : 
 \begin{align*}
-    \frac{\partial l}{\partial W_{y,ij}} &= \sum_{k}^{} \frac{\partial l}{\partial \tilde{y}_k} \frac{\partial \tilde{y}_k}{\partial W_{y,ij}} \\
-        &= \sum_{k}^{} - y_i h_{k,i} + h_{k,i} SoftMax(\tilde{y})_i \\
-        % &= \nabla _\tilde{y} 
-        &= (\nabla _{W_y} l)_{i,j}
+    % \frac{\partial l}{\partial W_{y,ij}} &= \sum_{k}^{} \frac{\partial l}{\partial \tilde{y}_k} \frac{\partial \tilde{y}_k}{\partial W_{y,ij}} \\
+    %     &= \sum_{k}^{} (\hat{y}_k - y_k) h_{k,j} \\
+    %     % &= \nabla _\tilde{y} 
+    %     &= (\nabla _{W_y} l)_{i,j}
+    \frac{\partial l}{\partial W_{i,j}^y} &= \sum_{k=1}^{n_h} \frac{\partial l}{\partial \tilde{y}_k} \frac{\partial \tilde{y}_k}{\partial W_{i,j}^y} \\
+    &= \frac{\partial l}{\partial \tilde{y}_i} \frac{\partial \tilde{y}_i}{\partial W_{i,j}^y} \\
+    &= (\hat{y}_i - y_i) h_{j} \\
+    &= (\nabla _{W_y} l)_{i,j}
 \end{align*}
 
 Finaly : 
+\begin{align*}
+    \nabla_{W_y} l &= \begin{pmatrix}
+        \frac{\partial l}{\partial W^y_{1,1}} & \dots & \frac{\partial l}{\partial W^y_{1,n_h}}\\
+        \vdots & \ddots & \vdots \\
+        \frac{\partial l}{\partial W^y_{n_y,1}} & \dots & \frac{\partial l}{\partial W^y_{n_y, n_h}}
+    \end{pmatrix} \\
+    &= \begin{pmatrix}
+        (\hat{y}_1 - y_1) h_{1} & \dots & (\hat{y}_1 - y_1) h_{n_h} \\
+        \vdots & \ddots & \vdots \\
+        (\hat{y}_{n_y} - y_{n_y}) h_{1} & \dots & (\hat{y}_{n_y} - y_{n_y}) h_{n_h}
+    \end{pmatrix} \in \mathbb{R}^{}\\
+    &= \begin{pmatrix}
+        \hat{y}_1 - y_1 \\
+        \vdots \\
+        \hat{y}_{n_y} - y_{n_y}
+    \end{pmatrix} \begin{pmatrix}
+        h_1 & h_2 & \dots & h_{n_h}
+    \end{pmatrix} \\
+    &= \nabla _{\tilde{y}} ^T h
+\end{align*}
+
 
 
 \paragraph{17. Compute other gradients : $ \nabla _{\tilde{h}} l, \nabla _{W_h} l, \nabla_{b_h}l $ }
