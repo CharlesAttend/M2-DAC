@@ -3,3 +3,14 @@
 __pycache__
 runs
 *.tfevents.*
+
+# TeX
+_minted-report
+*.aux
+*.dvi
+*.fdb*
+*.fls
+*.log
+*.out
+*.synctex.gz
+*.toc

@@ -4,12 +4,13 @@
 \usepackage{graphicx}
 % \usepackage[french]{babel}
 
-\usepackage[default,scale=0.95]{opensans}
+%\usepackage[default,scale=0.95]{opensans}
 \usepackage[T1]{fontenc}
 \usepackage{amssymb} %math
 \usepackage{amsmath}
 \usepackage{amsthm}
 \usepackage{systeme}
+\usepackage{fancyhdr}
 
 \usepackage{hyperref}
 \hypersetup{
@@ -39,11 +40,18 @@
 \newtheorem*{note}{Note}
 %\newtheorem{case}{Case}
 
+\title{
+    Deep Learning Practical Work 1-a and 1-b \\
+    \Large \textbf{Introduction to neural networks}
+}
 
+\author{Aymeric \textsc{Delefosse} \& Charles \textsc{Vin}}
+\date{2023 -- 2024}
 
-\title{Basics on deep learning for vision}
-\author{Charles \textsc{Vin}, Aymeric \textsc{Delefosse}}
-\date{S1-2023}
+\fancyhead{}
+\fancyhead[L]{RDFIA}\fancyhead[R]{\textsc{DAC 2023 -- 2024}}
+\pagestyle{fancy}
+\thispagestyle{plain}
 
 \begin{document}
 \maketitle
@@ -51,198 +59,224 @@
 \section{Introduction to neural networks}
 \subsection{Theorical Foundation}
 \subsubsection{Supervised dataset}
-\paragraph{1. What are the train, val and test sets used for ?}
-The train dataset is used to train the model. The test dataset is used to test the model on data it has nether seen before. Finaly the validation set is a separate portion of the dataset used to fine-tune and optimize the model's hyperparameters.
+\paragraph{1. What are the train, val and test sets used for?}
+The training dataset is utilized to train the model, while the test dataset is employed to assess the model's performance on previously unseen data. Lastly, the validation set constitutes a distinct subset of the dataset employed for the purpose of refining and optimizing the model's hyperparameters.
 
-\paragraph{2. What is the influence of the number of exemples $N$ ?}
-A large the number of example can help the model to generalize more and be more robust to noise or outlier. A small number of example can prone to overfitting. Increasing N can also increase the computational complexity of training the model.
+\paragraph{2. What is the influence of the number of exemples $N$?}
+A larger number of examples can enhance the model's capacity to generalize and improve its robustness against noise or outliers. Conversely, a smaller number of examples can make the model susceptible to overfitting. It is important to note that increasing the dataset size, denoted as 'N,' can also lead to an escalation in the computational complexity of the model training process.
 
 \subsubsection{Network architecture}
 \paragraph{3. Why is it important to add activation functions between linear transformations?}
-Otherwise we just sum linear functions so it stays linear. So activation functions introduce non-linearity to the network which permit the model to capture and learn more complex patern than linear. 
+Otherwise, we would simply be aggregating linear functions, resulting in a linear output. Activation functions, on the other hand, introduce non-linearity to the network, enabling the model to capture and learn more intricate patterns than those achievable through linear transformations alone.
 
 \paragraph{4. What are the sizes $n_x$, $n_h$, $n_y$ in the figure 1? In practice, how are these sizes chosen?}
 \begin{itemize}
-    \item $ n_x = 2 $ is the size of the input, the dimension of our data. 
-    \item $ n_h = 4 $ is the size of the hidden layer. It chosen proportionaly to the conplexity of the feature we want to develop in the hiden layer. A large size can lead to overfitting
-    \item $ n_y = 2 $  is the size of the output, it's choosen in function of the number of class of $ y $
+    \item $n_x = 2$ represents the input size (data dimension).
+    \item $n_h = 4$ represents the hidden layer size, selected based on the desired complexity of features to be learned in the hidden layer. An excessively large size can result in overfitting.
+    \item $n_y = 2$ represents the output size, determined according to the number of classes in $y$.
 \end{itemize}
-    
+
 \paragraph{5. What do the vectors $\hat{y}$ and $y$ represent? What is the difference between these two quantities?}
-$y \in \{0,1\} $ is the ground truth while $ \hat{y} \in [0,1] $ is like a probabilty for each class. $ \hat{y} $ express the model's confidence in each class prediction. 
+$y \in {0,1}$ represents the ground truth, where the values are binary (0 or 1).
+$\hat{y} \in [0,1]$ represents a probability-like score assigned to each class by the model. $\hat{y}$ reflects the model's level of confidence in its predictions for each class.
 
-\paragraph{6. Why use a $SoftMax$ function as the output activation function?}
-$ \tilde{y} \in \mathbb{R} $ so we have to transform it into a probability distribution. There is many way to do that but the $SoftMax$ is commonly used in multi-class classification problems.
+\paragraph{6. Why use a $\text{SoftMax}$ function as the output activation function?}
+The reason for employing the SoftMax function is to transform $\tilde{y} \in \mathbb{R}$ into a probability distribution. While there are several methods to achieve this transformation, $\text{SoftMax}$ is a commonly utilized choice, especially in multi-class classification problems.
 
+\paragraph{7. Write the mathematical equations allowing to perform the \textit{forward} pass of the neural network, i.e. allowing to successively produce $\hat{h}$, $ h $, $ \tilde{y} $, $ \hat{y} $, starting at $x$.}
+Let $W_i$ and $b_i$ denote the parameters for layer $i$, $f_i(x) = W_i x + b_i$ represent the linear transformation, and $g_i(x)$ be the activation function for layer $i$.
 
-
-\paragraph{7. Write the mathematical equations allowing to perform the \textit{forward} pass of the neural network, i.e. allowing to successively produce $\hat{h}$, $ h $, $ \tilde{y} $, $ \hat{y} $  ,  starting at x.}
-Let note $ W_i, b_i $ the parameter for the $ i $ layer, $ f_i(x) = W_i x + b_i$ and $ g_i(x) $ the activation function of the layer $ i $.
+Calculate the weighted sum and activation for the first hidden layer:
 \begin{align*}
-    \tilde{h} &= f_0(x) \\
-    h &= g_0(\tilde{h}) \\
-    \tilde{y} &= f_1(h) \\
-    \hat{y} &= g_1(\tilde{y})
+    \tilde{h} & = f_0(x)         \\
+    h         & = g_0(\tilde{h})
 \end{align*}
 
+Proceed to the output layer by computing the weighted sum and activation for the output layer:
+\begin{align*}
+    \tilde{y} & = f_1(h)         \\
+    \hat{y}   & = g_1(\tilde{y})
+\end{align*}
+
+These equations describe the sequential steps involved in the forward pass of the neural network, ultimately producing the output $\hat{y}$ based on the input $x$.
+
 \subsection{Loss function}
-\paragraph{8. During training, we try to minimize the loss function. For cross entropy and squared error, how must the $ \hat{y}_i $  vary to decrease the global loss function $ \mathcal{L} $ ?}
-?
+\paragraph{8. During training, we try to minimize the loss function. For cross entropy and squared error, how must the $ \hat{y}_i $  vary to decrease the global loss function $ \mathcal{L} $?}
+Our aim is to minimize the loss function $\mathcal{L}$ to train a model effectively. To decrease cross-entropy loss, make $\hat{y}_i$ closer to 1 when $y_i$ is 1 and closer to 0 when $y_i$ is 0.
+
+For the cross-entropy loss, $\hat{y}_i$ should vary in a way that makes it closer to the true target value $y_i$ for each data point. Specifically, when $y_i = 1$, $\hat{y}_i$ should be pushed towards 1. The closer $\hat{y}_i$ is to 1, the lower the loss. Conversely, when $y_i = 0$, $\hat{y}_i$ should be pushed towards 0. The closer $\hat{y}_i$ is to 0, the lower the loss.
+
+For squared error loss, $\hat{y}_i$ should vary in a way that makes it closer to the true target value $y_i$ for each data point. The goal is to minimize the squared difference between $\hat{y}_i$ and $y_i$. This means that if $\hat{y}_i$ is greater than $y_i$, it should decrease, and if $\hat{y}_i$ is smaller than $y_i$, it should increase.
 
 \paragraph{9. How are these functions better suited to classification or regression tasks?}
-Cross-entropy is better suited classification task for numerus reason : 
+Cross-entropy loss is better suited for classification tasks for several reasons:
+
 \begin{itemize}
-    \item Cross-entropy is based on the negative logarithm of the predicted probability of the true class. Due to this logarithmic nature, it magnifies the loss when the predicted probability deviates from 1 (for the correct class) and from 0 (for incorrect classes) as you can see in figure \ref{CELoss}. It would absolutly not work for $ \hat{y} $ outside $ [0,1] $. This amplification of errors is beneficial for training the model effectively. 
-    \item Cross-entropy loss is often used in conjunction with the softmax activation function in the output layer of neural networks for multi-class classification. The softmax function ensures that the predicted probabilities sum to 1, a perfect output for the CE-Loss
-\end{itemize} 
+    \item Cross-entropy loss is based on the negative logarithm of the predicted probability of the true class. This logarithmic nature amplifies errors when the predicted probability deviates from 1 (for the correct class) and from 0 (for incorrect classes), depicted in Figure~\ref{CELoss}. Consequently, it effectively penalizes misclassifications, making it particularly suitable for classification tasks. However, it is imperative that $\hat{y}$ remains within the range $[0, 1]$ for this loss to be effective.
+    \item Cross-entropy loss is often used in conjunction with the SoftMax activation function in the output layer of neural networks for multi-class classification. The SoftMax function ensures that the predicted probabilities sum to 1, aligning perfectly with the requirements of the cross-entropy loss.
+\end{itemize}
+
 \begin{figure}[!htbp]
     \centering
     \includegraphics*[width=0.6\textwidth]{figs/cross_entropy.png}
     \label{CELoss}
 \end{figure}
 
-In the other hand, MSE play the opposite role. It would not work at all with $ \hat{y} \in [0,1] $ but is really good with $ y, \hat{y} \in \mathbb{R} $. It also cool because of it convexity. However, it's essential to note that MSE is not always the best choice for every regression task. For example, ot can be pretty sensitive to outliers.
+On the other hand, Mean Squared Error serves a different role and is better suited for regression tasks:
 
+\begin{itemize}
+    \item MSE is ideal when dealing with $y, \hat{y} \in \mathbb{R}$ (as opposed to the bounded interval $[0, 1]$).
+    \item MSE is advantageous due to its convexity, which simplifies optimization. However, it's important to note that it may not always be the best choice for every regression task, especially when dealing with outliers, as it can be sensitive to extreme values.
+\end{itemize}
+
+\newpage
 \subsection{Optimization algorithm}
-
 \paragraph{10. What seem to be the advantages and disadvantages of the various variants of gradient descent between the classic, mini-batch stochastic and online stochastic versions? Which one seems the most reasonable to use in the general case?}
-I one hand, computing a gradient is computationaly expensive proportionately to the number of example we choose to include in it. In the other hand, the more we include examples in it, the more we exploring the gradient with precision and stability. It's a bit like the exploration-action compromise in RL. 
+Gradient computation becomes computationally expensive as it scales with the number of examples included. However, including more examples enhances gradient exploration with precision and stability, analogous to the exploration-exploitation trade-off in reinforcement learning.
 
-The classic gradient descent is pretty stable exspecialy for convex loss function. Her update are deterministic and reproductible as there are nothing stocastic in the algorythm. But when the loss function is not convex, her stability can prone it to get stuck in local minima. Futhermore this method is computationally expensive, especially for large datasets, as it requires evaluating the gradient using the entire dataset in each iteration.
+Classic gradient descent offers stability, particularly with convex loss functions, featuring deterministic and reproducible updates. Nonetheless, its stability may lead to getting trapped in local minima when dealing with non-convex loss functions. Additionally, it is computationally intensive, especially for large datasets, as it demands evaluating the gradient with the entire dataset in each iteration.
 
-The Mini-Batch Stochastic Gradient Descent (SGD) has the advantages to have a faster convergence compared to classic gradient descent, as it updates the model parameters using small random subsets of the data (mini-batches). This randomness helps to escape local minima and explore the loss surface more effectively than classic gradient descen but can lead to noises and oscillations.
+Mini-Batch Stochastic Gradient Descent (SGD) converges faster compared to classic gradient descent by updating model parameters with small, random data subsets (mini-batches). This stochasticity aids in escaping local minima and exploring the loss landscape more efficiently. However, it may introduce noise and oscillations.
 
-Finaly the Online Stochastic Gradient Descent have extremely fast updates, as it processes one training example at a time and is well-suited for streaming or large-scale online learning scenarios where data arrives sequentially. But her highly noisy update can lead to erratic convergence or divergence and require careful tuning of learning rates.
+On the other hand, Online Stochastic Gradient Descent offers extremely rapid updates, processing one training example at a time, making it suitable for streaming or large-scale online learning scenarios. However, its highly noisy updates can result in erratic convergence or divergence, necessitating careful learning rate tuning.
 
-In the general case for training deep neural networks, mini-batch stochastic gradient descent is the most reasonable choice. It strikes a good balance between the computational efficiency of classic gradient descent and the noise resilience and convergence speed of online SGD.
+For training deep neural networks in the general case, mini-batch stochastic gradient descent is the most reasonable choice. It strikes a balance between the computational efficiency of classic gradient descent and the noise resilience and convergence speed of online SGD.
 
-\paragraph{11. What is the influence of the learning rate $ \eta  $  on learning?}
-The choice of learning rate can significantly influence the learning process, including convergence speed, stability, and the quality of the final model. 
+\paragraph{11. What is the influence of the \textit{learning rate} $\eta$  on learning?}
+The learning rate plays a crucial role in influencing various aspects of the learning process, including convergence speed, stability, and the quality of the final model.
 
-A higher learning rate generally leads to faster convergence, as it results in larger updates to the model parameters in each iteration. However, if the learning rate is too high, it can cause overshooting, where the optimization process diverges or oscillates around the minimum, preventing convergence.
+A higher learning rate typically results in faster convergence because it leads to larger updates in model parameters during each iteration. However, an excessively high learning rate can cause issues such as overshooting, where the optimization process diverges or oscillates around the minimum, preventing successful convergence.
 
-A smaller learning rate can help the optimization algorithm explore local minima more thoroughly, as it takes smaller steps, allowing it to escape shallow local minima. However, too small of a learning rate can cause the algorithm to get stuck in local minima or take an excessively long time to converge.
+Conversely, a smaller learning rate allows the optimization algorithm to take smaller steps, which can be advantageous for exploring local minima more thoroughly and escaping shallow local minima. Nonetheless, if the learning rate is too small, it may lead to slow convergence or getting stuck in local minima.
 
-Techniques like learning rate schedules (e.g., reducing the learning rate over time) or adaptive learning rate methods (Adam) can help mitigate the need for manual tuning. The choice of learning rate may also depend on the batch size used in mini-batch SGD. Smaller batch sizes may require smaller learning rates to maintain stability.
+To address these challenges, various techniques like learning rate schedules (gradually reducing the learning rate over time) or adaptive learning rate methods (e.g., Adam) have been developed to automate learning rate adjustments during training. The choice of learning rate may also be influenced by the batch size used in mini-batch stochastic gradient descent, as smaller batch sizes may require smaller learning rates to maintain stability.
 
-In practice, selecting an appropriate learning rate often involves experimentation and can be problem-dependent. Techniques like grid search or random search, along with cross-validation, can help identify a suitable learning rate for a given task.
+In practice, selecting an appropriate learning rate often involves experimentation and can be problem-specific. Techniques such as grid search or random search, in combination with cross-validation, can aid in determining an optimal learning rate for a particular task.
 
-\paragraph{12. Compare the complexity (depending on the number of layers in the network) of calculating the gradients of the loss with respect to the parameters, using the naive approach and the backprop algorithm.}
-GPT est vraiment pas clair ici, il faut creuser \href{https://medium.com/spidernitt/breaking-down-neural-networks-an-intuitive-approach-to-backpropagation-3b2ff958794c}{ce post medium} à partir de "Why backpropagation?". 
+\paragraph{12. Compare the complexity (depending on the number of layers in the network) of calculating the gradients of the \textit{loss} with respect to the parameters, using the naive approach and the \textit{backprop} algorithm.}
+GPT est vraiment pas clair ici, il faut creuser \href{https://medium.com/spidernitt/breaking-down-neural-networks-an-intuitive-approach-to-backpropagation-3b2ff958794c}{ce post medium} à partir de "Why backpropagation?".
 
+\paragraph{13. What criteria must the network architecture meet to allow such an optimization procedure?}
+For the backpropagation algorithm to be applicable, several criteria must be met. First of all, each layer function, including the activation functions and the loss function, must be differentiable with respect to their parameters. This is crucial for calculating gradients during the training process. Furthermore, as backpropagation relies on the sequential flow of information from the input layer to the output layer, the network architecture should possess a feedforward, sequential structure without loops or recurrent connections. Loops or recurrent connections can introduce complications in gradient calculations.
 
-\paragraph{13. What criteria must the network architecture meet to allow such an optimization procedure ?}
-To use backpropagation, each layer function, activation function and loss must be differentiable with respect to their parameters. The network must have kind of a linear structure, without loops or recurrent connections. 
+\paragraph{14. The function SoftMax and the \textit{loss} of \textit{cross-entropy} are often used together and their gradient is very simple. Show that the \textit{loss} can be simpliﬁed by:
+    \[l = - \sum_{i}^{} y_i \tilde{y}_i + \log_{} (\sum_{i}^{} e^{\tilde{y}_i}).\]}
+Let us define the cross-entropy loss as \( l(y, \hat{y}) = - \sum_{i=1}^{N} y_i \log \hat{y}_i \), where \( N \) represents the total number of examples. The SoftMax function for a vector \( \tilde{y} \) in \( \mathbb{R}^D \) is defined as \( \text{SoftMax}(\tilde{y_i}) = \frac{e^{\tilde{y_i}}}{\sum_{j=1}^{D} e^{\tilde{y_j}}} \). Notably, the output of the SoftMax function serves as the input for the cross-entropy loss, denoted as \( \hat{y}_i = \text{SoftMax}(\tilde{y_i}) \). Let us substitute this value into the expression.
 
-\paragraph{14. The function SoftMax and the loss of cross-entropy are often used together and their gradient is very simple. Show that the loss can be simpliﬁed by:}
-\[
-    l = - \sum_{i}^{} y_i \tilde{y}_i + \log_{} (\sum_{i}^{} e^{\tilde{y}_i}) 
-.\]
-Let denote the cross entropy loss $ l(y, \hat{y}) = - \sum_{i=1}^{N} y_i \log_{} \hat{y}_i $ with $ N $ the total number of example. The Soft Max function $x \in R^D, SoftMax(\tilde{y})_i = \frac{e^{\tilde{y}_i}}{\sum_{j=1}^{D} e^{\tilde{y}_j} } $. The output of the SoftMax function is the input of the cross entropy loss (i.e. $ \hat{y}_i = SoftMax(\tilde{y})_i $ ), let's replace it. 
 \begin{align*}
-    l(y, \hat{y}) &= - \sum_{i=1}^{N} y_i \log_{} \hat{y}_i \\
-        &= - \sum_{i=1}^{N} y_i \log_{} SoftMax(\tilde{_y}) \\
-        &= - \sum_{i=1}^{N} y_i \log_{} \frac{e^{\tilde{y}_i}}{\sum_{j=1}^{D} e^{\tilde{y}_j} } \\
-        &= - \sum_{i=1}^{N} y_i [ \log_{} e^{\tilde{y}_i} - \log_{} \sum_{j=1}^{n_y} e^{\tilde{y}_j}  ] \\
-        &= - \sum_{i=1}^{N} y_i \tilde{y}_i - y_i \log_{} \sum_{j=1}^{n_y}e^{\tilde{y}_j} 
+    l(y, \hat{y}) & = - \sum_{i=1}^{N} y_i \log_{} \hat{y}_i                                                                \\
+                  & = - \sum_{i=1}^{N} y_i \log_{} \text{SoftMax}(\tilde{y_i})                                              \\
+                  & = - \sum_{i=1}^{N} y_i \log_{} \frac{e^{\tilde{y_i}}}{\sum_{j=1}^{D} e^{\tilde{y_j}} }                  \\
+                  & = - \sum_{i=1}^{N} y_i \left[ \log_{} e^{\tilde{y}_i} - \log_{} \sum_{j=1}^{D} e^{\tilde{y}_j}  \right] \\
+                  & = - \sum_{i=1}^{N} y_i \tilde{y}_i - y_i \log_{} \sum_{j=1}^{D}e^{\tilde{y}_j}                          \\
+                  & = - \sum_{i=1}^{N} y_i \tilde{y}_i + \sum_{i=1}^{N} y_i \log_{} \sum_{j}^{D}e^{\tilde{y}_j}
 \end{align*}
-AHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
 
-\paragraph{15. Write the gradient of the loss (cross-entropy ) relative to the intermediate output $ \tilde{y} $ }
+Since $y_i$ represents a probability distribution, we know that $\sum_i y_i = 1$. Thus, we have the final expression for the cross-entropy loss:
+
+$$ l(y, \hat{y}) = - \sum_{i}^{} y_i \tilde{y}_i + \log_{} \left(\sum_{i}^{} e^{\tilde{y}_i}\right) $$
+
+\paragraph{15. Write the gradient of the \textit{loss} (\textit{cross-entropy}) relative to the intermediate output $ \tilde{y} $ }
 \begin{align*}
-    \frac{\partial l}{\partial \tilde{y}_i} &= -y_i + \frac{\frac{\partial }{\partial \tilde{y}_i } (\sum_{j=1}^{N} e^{ \tilde{y}_j })}{\sum_{j=1}^{N} e^{ \tilde{y}_j }} \\
-        &= - y_i + \frac{e^{\tilde{y}_i}}{\sum_{j=1}^{n_y} e^{ \tilde{y}_j}} \\
-        &= - y_i + SoftMax(\tilde{y})_i
+    \frac{\partial l}{\partial \tilde{y}_i} & = -y_i + \frac{\frac{\partial }{\partial \tilde{y}_i } (\sum_{j=1}^{N} e^{ \tilde{y}_j })}{\sum_{j=1}^{N} e^{ \tilde{y}_j }} \\
+                                            & = - y_i + \frac{e^{\tilde{y}_i}}{\sum_{j=1}^{n_y} e^{ \tilde{y}_j}}                                                          \\
+                                            & = - y_i + \text{SoftMax}(\tilde{y})_i
 \end{align*}
 \[
     \nabla _{\tilde{y}}l = \begin{pmatrix}
         \frac{\partial l}{\partial \tilde{y}_1} \\
-        \vdots \\
+        \vdots                                  \\
         \frac{\partial l}{\partial \tilde{y}_{n_y}}
     \end{pmatrix} = \begin{pmatrix}
-        SoftMax(\tilde{y})_1 - y_1 \\
-        \vdots \\
-        SoftMax(\tilde{y})_{n_y} - y_{n_y}
+        \text{SoftMax}(\tilde{y})_1 - y_1 \\
+        \vdots                            \\
+        \text{SoftMax}(\tilde{y})_{n_y} - y_{n_y}
     \end{pmatrix} \\
     = \hat{y} - y
-.\]
+    .\]
 
+\paragraph{16. Using the \textit{backpropagation}, write the gradient of the \textit{loss} with respect to the weights of the output layer $ \nabla _{W_y}l $ . Note that writing this gradient uses $ \nabla _{\tilde{y}}l $ . Do the same for $ \nabla _{b_y}l $.}
 
-\paragraph{16. Using the backpropagation, write the gradient of the loss with respect to the weights of the output layer $ \nabla _{W_y}l $ . Note that writing this gradient uses $ \nabla _{\tilde{y}}l $ . Do the same for $ \nabla _{b_y}l $ .}
+Starting with \( \nabla _{W_y} l \), we have:
 
-\begin{align*}
-    \frac{\partial l}{\partial W_{y,ij}} &= \sum_{k}^{} \frac{\partial l}{\partial \tilde{y}_k} \frac{\partial \tilde{y}_k}{\partial W_{y,ij}} \\
-    \Rightarrow & \nabla_{W_y} l = \begin{pmatrix}
-        \frac{\partial l}{\partial W_{y, 1,1}} & \dots & \frac{\partial l}{\partial W_{y, 1,n_h}}\\
-        \vdots & \ddots & \vdots \\
-        \frac{\partial l}{\partial W_{y, n_y,1}} & \dots & \frac{\partial l}{\partial W_{y, n_y, n_h}}
+\[
+    \frac{\partial l}{\partial W_{y,ij}} = \sum_{k}^{} \frac{\partial l}{\partial \tilde{y}_k} \frac{\partial \tilde{y}_k}{\partial W_{y,ij}}
+\]
+
+This can be expressed as a matrix:
+
+\[
+    \nabla_{W_y} l = \begin{pmatrix}
+        \frac{\partial l}{\partial W_{y, 1,1}}   & \dots  & \frac{\partial l}{\partial W_{y, 1,n_h}}    \\
+        \vdots                                   & \ddots & \vdots                                      \\
+        \frac{\partial l}{\partial W_{y, n_y,1}} & \dots  & \frac{\partial l}{\partial W_{y, n_y, n_h}}
     \end{pmatrix}
+\]
+
+First, let's compute $ \tilde{y}_k $
+\begin{align*}
+    \tilde{y}   & = h W_y^T + b^y                                                                                                                                  \\
+                & = \begin{pmatrix}
+                        h_{1} & \dots & h_{n_h}
+                    \end{pmatrix} * \begin{pmatrix}
+                                        W_{1, 1}   & \dots  & W_{1, n_y}   \\
+                                        \vdots     & \ddots & \vdots       \\
+                                        W_{n_h, 1} & \dots  & W_{n_h, n_y} \\
+                                    \end{pmatrix} + \begin{pmatrix}
+                                                        b^y_1 & \dots & b^y_{n_y}
+                                                    \end{pmatrix}                                                                                      \\
+                & = \begin{pmatrix}
+                        \sum_{j=1}^{n_h} W^y_{1,j} h_{j} + b^y_1 & \sum_{j=1}^{n_h} W^y_{2,j} h_{j} + b^y_2 & \dots & \sum_{j=1}^{n_h} W^y_{n_h,j} h_{k,j} + b^y_{n_h}
+                    \end{pmatrix} & \in \mathbb{R}^{1 \times n_h} \\
+    \tilde{y}_k & = \sum_{j=1}^{n_h} W^y_{k,j} h_{j} + b_k^y, k \in [1, n_h]
 \end{align*}
 
-First, let's compute $ \tilde{y}_k $ 
-\begin{align*}
-    \tilde{y} &= h W_y^T + b^y\\
-    &= \begin{pmatrix}
-        h_{1} & \dots & h_{n_h}
-    \end{pmatrix} * \begin{pmatrix}
-        W_{1, 1} & \dots  & W_{1, n_y} \\
-        \vdots   & \ddots  & \vdots \\
-        W_{n_h, 1}  & \dots  & W_{n_h, n_y} \\
-    \end{pmatrix} + \begin{pmatrix}
-        b^y_1 & \dots & b^y_{n_y}
-    \end{pmatrix} \\
-    &= \begin{pmatrix}
-        \sum_{j=1}^{n_h} W^y_{1,j} h_{j} + b^y_1 & \sum_{j=1}^{n_h} W^y_{2,j} h_{j} + b^y_2 & \dots & \sum_{j=1}^{n_h} W^y_{n_h,j} h_{k,j} + b^y_{n_h}
-    \end{pmatrix} \\
-    &\in \mathbb{R}^{1 \times n_h} \\
-    \tilde{y}_k &= \sum_{j=1}^{n_h} W^y_{k,j} h_{j} + b_k^y, k \in [1, n_h]
-\end{align*}
-Now its partial derivative
+With this expression, we can now proceed with the calculation of the partial derivative of \( \tilde{y}_k \) with respect to \( W^y_{ij} \):
+
 \[
     \frac{\partial \tilde{y}_k }{\partial W^y_{ij}} = \begin{cases}
-        h_j &\text{ if } i=k \\
-        0 &\text{ elsewhere}\\
-    \end{cases} 
-.\]
-Then from the previous question
+        h_j & \text{ if } i=k   \\
+        0   & \text{ elsewhere}
+    \end{cases}
+\]
+
+Now, we need to find \( \frac{\partial l}{\partial \tilde{y}_k} \). Since we are dealing with the cross-entropy loss and \( \hat{y}_k = \text{SoftMax}(\tilde{y})_k \), we have:
+
+\[
+    \frac{\partial l}{\partial \tilde{y}_k} = -y_k + \text{SoftMax}(\tilde{y})_k = \hat{y}_k - y_k
+\]
+
+Now, combining these results:
+
+\[
+    \frac{\partial l}{\partial W_{i,j}^y} = \sum_{k=1}^{n_h} \frac{\partial l}{\partial \tilde{y}_k} \frac{\partial \tilde{y}_k}{\partial W_{i,j}^y} =  \frac{\partial l}{\partial \tilde{y}_i} \frac{\partial \tilde{y}_i}{\partial W_{i,j}^y} = (\hat{y}_i - y_i) h_j = (\nabla _{W_y} l)_{i,j}
+\]
+
+So, the gradient of the loss with respect to the weights of the output layer \( \nabla_{W_y} l \) is given by \( \nabla _{\tilde{y}} ^T h \).
+
 \begin{align*}
-    \frac{\partial l}{\partial \tilde{y}_k} &= -y_k + SoftMax(\tilde{y})_k \\
-    &= \hat{y}_k - y_k
-\end{align*}
-Combine both : 
-\begin{align*}
-    % \frac{\partial l}{\partial W_{y,ij}} &= \sum_{k}^{} \frac{\partial l}{\partial \tilde{y}_k} \frac{\partial \tilde{y}_k}{\partial W_{y,ij}} \\
-    %     &= \sum_{k}^{} (\hat{y}_k - y_k) h_{k,j} \\
-    %     % &= \nabla _\tilde{y} 
-    %     &= (\nabla _{W_y} l)_{i,j}
-    \frac{\partial l}{\partial W_{i,j}^y} &= \sum_{k=1}^{n_h} \frac{\partial l}{\partial \tilde{y}_k} \frac{\partial \tilde{y}_k}{\partial W_{i,j}^y} \\
-    &= \frac{\partial l}{\partial \tilde{y}_i} \frac{\partial \tilde{y}_i}{\partial W_{i,j}^y} \\
-    &= (\hat{y}_i - y_i) h_{j} \\
-    &= (\nabla _{W_y} l)_{i,j}
+    \nabla_{W_y} l & = \begin{pmatrix}
+                           \frac{\partial l}{\partial W^y_{1,1}}   & \dots  & \frac{\partial l}{\partial W^y_{1,n_h}}    \\
+                           \vdots                                  & \ddots & \vdots                                     \\
+                           \frac{\partial l}{\partial W^y_{n_y,1}} & \dots  & \frac{\partial l}{\partial W^y_{n_y, n_h}}
+                       \end{pmatrix} \\
+                   & = \begin{pmatrix}
+                           (\hat{y}_1 - y_1) h_{1}         & \dots  & (\hat{y}_1 - y_1) h_{n_h}         \\
+                           \vdots                          & \ddots & \vdots                            \\
+                           (\hat{y}_{n_y} - y_{n_y}) h_{1} & \dots  & (\hat{y}_{n_y} - y_{n_y}) h_{n_h}
+                       \end{pmatrix} \in \mathbb{R}^{}                  \\
+                   & = \begin{pmatrix}
+                           \hat{y}_1 - y_1 \\
+                           \vdots          \\
+                           \hat{y}_{n_y} - y_{n_y}
+                       \end{pmatrix} \begin{pmatrix}
+                                         h_1 & h_2 & \dots & h_{n_h}
+                                     \end{pmatrix}                                                     \\
+                   & = \nabla _{\tilde{y}} ^T h
 \end{align*}
 
-Finaly : 
-\begin{align*}
-    \nabla_{W_y} l &= \begin{pmatrix}
-        \frac{\partial l}{\partial W^y_{1,1}} & \dots & \frac{\partial l}{\partial W^y_{1,n_h}}\\
-        \vdots & \ddots & \vdots \\
-        \frac{\partial l}{\partial W^y_{n_y,1}} & \dots & \frac{\partial l}{\partial W^y_{n_y, n_h}}
-    \end{pmatrix} \\
-    &= \begin{pmatrix}
-        (\hat{y}_1 - y_1) h_{1} & \dots & (\hat{y}_1 - y_1) h_{n_h} \\
-        \vdots & \ddots & \vdots \\
-        (\hat{y}_{n_y} - y_{n_y}) h_{1} & \dots & (\hat{y}_{n_y} - y_{n_y}) h_{n_h}
-    \end{pmatrix} \in \mathbb{R}^{}\\
-    &= \begin{pmatrix}
-        \hat{y}_1 - y_1 \\
-        \vdots \\
-        \hat{y}_{n_y} - y_{n_y}
-    \end{pmatrix} \begin{pmatrix}
-        h_1 & h_2 & \dots & h_{n_h}
-    \end{pmatrix} \\
-    &= \nabla _{\tilde{y}} ^T h
-\end{align*}
 
+For the gradient with respect to the biases of the output layer \( \nabla_{b_y} l \), the calculation would be similar but would involve the derivative of \( \tilde{y}_k \) with respect to \( b_k^y \), which would be 1, and the gradient \( \frac{\partial l}{\partial \tilde{y}_k} \) remains the same.
 
 
 \paragraph{17. Compute other gradients : $ \nabla _{\tilde{h}} l, \nabla _{W_h} l, \nabla_{b_h}l $ }
