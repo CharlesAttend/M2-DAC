@@ -276,12 +276,77 @@ So, the gradient of the loss with respect to the weights of the output layer \( 
 \end{align*}
 
 
-For the gradient with respect to the biases of the output layer \( \nabla_{b_y} l \), the calculation would be similar but would involve the derivative of \( \tilde{y}_k \) with respect to \( b_k^y \), which would be 1, and the gradient \( \frac{\partial l}{\partial \tilde{y}_k} \) remains the same.
+For the gradient with respect to the biases of the output layer \( \nabla_{b_y} l \), the calculation would be similar but would involve the derivative of \( \tilde{y}_k \) with respect to \( b_k^y \), which would be 1, and the gradient \( \frac{\partial l}{\partial \tilde{y}_k} \) remains the same. Putting it all together:
 
+\[
+\frac{\partial l}{\partial b_k^y} = \sum_{k=1}^{n_h} \frac{\partial l}{\partial \tilde{y}_k} \frac{\partial \tilde{y}_k}{\partial b_k^y} = (\hat{y}_k - y_k) \cdot 1 = \hat{y}_k - y_k
+\]
 
 \paragraph{17. Compute other gradients : $ \nabla _{\tilde{h}} l, \nabla _{W_h} l, \nabla_{b_h}l $ }
 
+% To compute the gradients \( \nabla _{\tilde{h}} l \), \( \nabla _{W_h} l \), and \( \nabla_{b_h} l \), let's go step by step:
 
+% 1. Calculate \( \nabla _{\tilde{h}} l \):
+
+% The gradient of the loss with respect to \( \tilde{h} \) can be computed using the chain rule:
+
+% \[
+% \frac{\partial l}{\partial \tilde{h}_k} = \sum_{i=1}^{n_y} \frac{\partial l}{\partial \hat{y}_i} \frac{\partial \hat{y}_i}{\partial \tilde{h}_k}
+% \]
+
+% Since \( \hat{y}_i = \text{SoftMax}(\tilde{y})_i \), we have:
+
+% \[
+% \frac{\partial \hat{y}_i}{\partial \tilde{h}_k} = \hat{y}_i(\delta_{ik} - \hat{y}_k)
+% \]
+
+% where \( \delta_{ik} \) is the Kronecker delta, which equals 1 when \( i = k \) and 0 otherwise.
+
+% So, the gradient \( \nabla _{\tilde{h}} l \) is a vector with elements:
+
+% \[
+% \frac{\partial l}{\partial \tilde{h}_k} = \sum_{i=1}^{n_y} \left(\hat{y}_i - y_i\right)\hat{y}_i(\delta_{ik} - \hat{y}_k), \quad \text{for } k \in [1, n_h]
+% \]
+
+% 2. Calculate \( \nabla _{W_h} l \):
+
+% The gradient of the loss with respect to \( W_h \) can be computed as:
+
+% \[
+% \frac{\partial l}{\partial W_{h,ij}} = \sum_{k=1}^{n_h} \frac{\partial l}{\partial \tilde{h}_k} \frac{\partial \tilde{h}_k}{\partial W_{h,ij}}
+% \]
+
+% Using the expression for \( \tilde{h}_k \) and the derivative of \( \tilde{h}_k \) with respect to \( W_{h,ij} \):
+
+% \[
+% \frac{\partial \tilde{h}_k}{\partial W_{h,ij}} = h_j(\delta_{ik})
+% \]
+
+% where \( \delta_{ik} \) is the Kronecker delta.
+
+% So, the gradient \( \nabla _{W_h} l \) is a matrix with elements:
+
+% \[
+% \frac{\partial l}{\partial W_{h,ij}} = \sum_{k=1}^{n_h} \left(\sum_{i=1}^{n_y} \left(\hat{y}_i - y_i\right)\hat{y}_i(\delta_{ik} - \hat{y}_k)\right)h_j(\delta_{ik})
+% \]
+
+% 3. Calculate \( \nabla_{b_h} l \):
+
+% The gradient of the loss with respect to \( b_h \) can be computed as:
+
+% \[
+% \frac{\partial l}{\partial b_{h,i}} = \sum_{k=1}^{n_h} \frac{\partial l}{\partial \tilde{h}_k} \frac{\partial \tilde{h}_k}{\partial b_{h,i}}
+% \]
+
+% The derivative of \( \tilde{h}_k \) with respect to \( b_{h,i} \) is simply 1 if \( i = k \) and 0 otherwise.
+
+% So, the gradient \( \nabla_{b_h} l \) is a vector with elements:
+
+% \[
+% \frac{\partial l}{\partial b_{h,i}} = \sum_{k=1}^{n_h} \left(\sum_{i=1}^{n_y} \left(\hat{y}_i - y_i\right)\hat{y}_i(\delta_{ik} - \hat{y}_k)\right)(\delta_{ik})
+% \]
+
+% These equations provide the gradients \( \nabla _{\tilde{h}} l \), \( \nabla _{W_h} l \), and \( \nabla_{b_h} l \) with respect to \( \tilde{h} \), \( W_h \), and \( b_h \), respectively.
 
 
 \end{document}
