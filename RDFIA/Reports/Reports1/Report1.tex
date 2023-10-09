@@ -59,17 +59,17 @@
 \section{Introduction to neural networks}
 \subsection{Theorical Foundation}
 \subsubsection{Supervised dataset}
-\paragraph{1. What are the train, val and test sets used for?}
+\paragraph{1. $\bigstar$ What are the train, val and test sets used for?}
 The training dataset is utilized to train the model, while the test dataset is employed to assess the model's performance on previously unseen data. Lastly, the validation set constitutes a distinct subset of the dataset employed for the purpose of refining and optimizing the model's hyperparameters.
 
 \paragraph{2. What is the influence of the number of exemples $N$?}
-A larger number of examples can enhance the model's capacity to generalize and improve its robustness against noise or outliers. Conversely, a smaller number of examples can make the model susceptible to overfitting. It is important to note that increasing the dataset size, denoted as 'N,' can also lead to an escalation in the computational complexity of the model training process.
+A larger number of examples can enhance the model's capacity to generalize and improve its robustness against noise or outliers. Conversely, a smaller number of examples can make the model susceptible to overfitting. It is important to note that increasing the dataset size can also lead to an escalation in the computational complexity of the model training process.
 
 \subsubsection{Network architecture}
 \paragraph{3. Why is it important to add activation functions between linear transformations?}
-Otherwise, we would simply be aggregating linear functions, resulting in a linear output. Activation functions, on the other hand, introduce non-linearity to the network, enabling the model to capture and learn more intricate patterns than those achievable through linear transformations alone.
+Otherwise, we would simply be aggregating linear functions, resulting in a linear output. Activation functions introduce non-linearity to the network, enabling the model to capture and learn more intricate patterns than those achievable through linear transformations alone.
 
-\paragraph{4. What are the sizes $n_x$, $n_h$, $n_y$ in the figure 1? In practice, how are these sizes chosen?}
+\paragraph{4. $\bigstar$ What are the sizes $n_x$, $n_h$, $n_y$ in the figure 1? In practice, how are these sizes chosen?}
 \begin{itemize}
     \item $n_x = 2$ represents the input size (data dimension).
     \item $n_h = 4$ represents the hidden layer size, selected based on the desired complexity of features to be learned in the hidden layer. An excessively large size can result in overfitting.
@@ -77,14 +77,14 @@ Otherwise, we would simply be aggregating linear functions, resulting in a linea
 \end{itemize}
 
 \paragraph{5. What do the vectors $\hat{y}$ and $y$ represent? What is the difference between these two quantities?}
-$y \in {0,1}$ represents the ground truth, where the values are binary (0 or 1).
+$y \in \{0,1\}$ represents the ground truth, where the values are binary (0 or 1).
 $\hat{y} \in [0,1]$ represents a probability-like score assigned to each class by the model. $\hat{y}$ reflects the model's level of confidence in its predictions for each class.
 
 \paragraph{6. Why use a $\text{SoftMax}$ function as the output activation function?}
 The reason for employing the SoftMax function is to transform $\tilde{y} \in \mathbb{R}$ into a probability distribution. While there are several methods to achieve this transformation, $\text{SoftMax}$ is a commonly utilized choice, especially in multi-class classification problems.
 
 \paragraph{7. Write the mathematical equations allowing to perform the \textit{forward} pass of the neural network, i.e. allowing to successively produce $\hat{h}$, $ h $, $ \tilde{y} $, $ \hat{y} $, starting at $x$.}
-Let $W_i$ and $b_i$ denote the parameters for layer $i$, $f_i(x) = W_i x + b_i$ represent the linear transformation, and $g_i(x)$ be the activation function for layer $i$.
+Let $W_i$ and $b_i$ denote the parameters for layer $i$, $f_i(x) = x W_i ^T + b_i$ represent the linear transformation, and $g_i(x)$ be the activation function for layer $i$.
 
 Calculate the weighted sum and activation for the first hidden layer:
 \begin{align*}
@@ -125,7 +125,7 @@ Cross-entropy loss is better suited for classification tasks for several reasons
 On the other hand, Mean Squared Error serves a different role and is better suited for regression tasks:
 
 \begin{itemize}
-    \item MSE is ideal when dealing with $y, \hat{y} \in \mathbb{R}$ (as opposed to the bounded interval $[0, 1]$).
+    \item MSE is ideal when dealing with $(y, \hat{y}) \in \mathbb{R}^2$ (as opposed to the bounded interval $[0, 1]$).
     \item MSE is advantageous due to its convexity, which simplifies optimization. However, it's important to note that it may not always be the best choice for every regression task, especially when dealing with outliers, as it can be sensitive to extreme values.
 \end{itemize}
 
@@ -142,7 +142,7 @@ On the other hand, Online Stochastic Gradient Descent offers extremely rapid upd
 
 For training deep neural networks in the general case, mini-batch stochastic gradient descent is the most reasonable choice. It strikes a balance between the computational efficiency of classic gradient descent and the noise resilience and convergence speed of online SGD.
 
-\paragraph{11. What is the influence of the \textit{learning rate} $\eta$  on learning?}
+\paragraph{11. $\bigstar$ What is the influence of the \textit{learning rate} $\eta$  on learning?}
 The learning rate plays a crucial role in influencing various aspects of the learning process, including convergence speed, stability, and the quality of the final model.
 
 A higher learning rate typically results in faster convergence because it leads to larger updates in model parameters during each iteration. However, an excessively high learning rate can cause issues such as overshooting, where the optimization process diverges or oscillates around the minimum, preventing successful convergence.
@@ -153,7 +153,7 @@ To address these challenges, various techniques like learning rate schedules (gr
 
 In practice, selecting an appropriate learning rate often involves experimentation and can be problem-specific. Techniques such as grid search or random search, in combination with cross-validation, can aid in determining an optimal learning rate for a particular task.
 
-\paragraph{12. Compare the complexity (depending on the number of layers in the network) of calculating the gradients of the \textit{loss} with respect to the parameters, using the naive approach and the \textit{backprop} algorithm.}
+\paragraph{12. $\bigstar$ Compare the complexity (depending on the number of layers in the network) of calculating the gradients of the \textit{loss} with respect to the parameters, using the naive approach and the \textit{backprop} algorithm.}
 GPT est vraiment pas clair ici, il faut creuser \href{https://medium.com/spidernitt/breaking-down-neural-networks-an-intuitive-approach-to-backpropagation-3b2ff958794c}{ce post medium} à partir de "Why backpropagation?".
 
 \paragraph{13. What criteria must the network architecture meet to allow such an optimization procedure?}
@@ -161,7 +161,7 @@ For the backpropagation algorithm to be applicable, several criteria must be met
 
 \paragraph{14. The function SoftMax and the \textit{loss} of \textit{cross-entropy} are often used together and their gradient is very simple. Show that the \textit{loss} can be simpliﬁed by:
     \[l = - \sum_{i}^{} y_i \tilde{y}_i + \log_{} (\sum_{i}^{} e^{\tilde{y}_i}).\]}
-Let us define the cross-entropy loss as \( l(y, \hat{y}) = - \sum_{i=1}^{N} y_i \log \hat{y}_i \), where \( N \) represents the total number of examples. The SoftMax function for a vector \( \tilde{y} \) in \( \mathbb{R}^D \) is defined as \( \text{SoftMax}(\tilde{y_i}) = \frac{e^{\tilde{y_i}}}{\sum_{j=1}^{D} e^{\tilde{y_j}}} \). Notably, the output of the SoftMax function serves as the input for the cross-entropy loss, denoted as \( \hat{y}_i = \text{SoftMax}(\tilde{y_i}) \). Let us substitute this value into the expression.
+Let us define the cross-entropy loss as \( l(y, \hat{y}) = - \sum_{i=1}^{N} y_i \log \hat{y}_i \), where \( N \) represents the total number of examples. The SoftMax function for a vector \( \tilde{y} \in \mathbb{R}^D \) is defined as \( \text{SoftMax}(\tilde{y_i}) = \frac{e^{\tilde{y_i}}}{\sum_{j=1}^{D} e^{\tilde{y_j}}} \). Notably, the output of the SoftMax function serves as the input for the cross-entropy loss, denoted as \( \hat{y}_i = \text{SoftMax}(\tilde{y_i}) \). Let us substitute this value into the expression.
 
 \begin{align*}
     l(y, \hat{y}) & = - \sum_{i=1}^{N} y_i \log_{} \hat{y}_i                                                                \\
@@ -169,7 +169,8 @@ Let us define the cross-entropy loss as \( l(y, \hat{y}) = - \sum_{i=1}^{N} y_i 
                   & = - \sum_{i=1}^{N} y_i \log_{} \frac{e^{\tilde{y_i}}}{\sum_{j=1}^{D} e^{\tilde{y_j}} }                  \\
                   & = - \sum_{i=1}^{N} y_i \left[ \log_{} e^{\tilde{y}_i} - \log_{} \sum_{j=1}^{D} e^{\tilde{y}_j}  \right] \\
                   & = - \sum_{i=1}^{N} y_i \tilde{y}_i - y_i \log_{} \sum_{j=1}^{D}e^{\tilde{y}_j}                          \\
-                  & = - \sum_{i=1}^{N} y_i \tilde{y}_i + \sum_{i=1}^{N} y_i \log_{} \sum_{j}^{D}e^{\tilde{y}_j}
+                  & = - \sum_{i=1}^{N} y_i \tilde{y}_i + \sum_{i=1}^{N} y_i \log_{} (\sum_{j}^{D}e^{\tilde{y}_j}) \\
+                  & = - \sum_{i=1}^{N} y_i \tilde{y}_i + \log_{} (\sum_{j}^{D}e^{\tilde{y}_j}) \sum_{i=1}^{N} y_i 
 \end{align*}
 
 Since $y_i$ represents a probability distribution, we know that $\sum_i y_i = 1$. Thus, we have the final expression for the cross-entropy loss:
@@ -236,11 +237,11 @@ With this expression, we can now proceed with the calculation of the partial der
 \[
     \frac{\partial \tilde{y}_k }{\partial W^y_{ij}} = \begin{cases}
         h_j & \text{ if } i=k   \\
-        0   & \text{ elsewhere}
+        0   & \text{ otherwise}
     \end{cases}
 \]
 
-Now, we need to find \( \frac{\partial l}{\partial \tilde{y}_k} \). Since we are dealing with the cross-entropy loss and \( \hat{y}_k = \text{SoftMax}(\tilde{y})_k \), we have:
+Now, we need to find \( \frac{\partial l}{\partial \tilde{y}_k} \). From the previous question, we have:
 
 \[
     \frac{\partial l}{\partial \tilde{y}_k} = -y_k + \text{SoftMax}(\tilde{y})_k = \hat{y}_k - y_k
@@ -264,7 +265,7 @@ So, the gradient of the loss with respect to the weights of the output layer \( 
                            (\hat{y}_1 - y_1) h_{1}         & \dots  & (\hat{y}_1 - y_1) h_{n_h}         \\
                            \vdots                          & \ddots & \vdots                            \\
                            (\hat{y}_{n_y} - y_{n_y}) h_{1} & \dots  & (\hat{y}_{n_y} - y_{n_y}) h_{n_h}
-                       \end{pmatrix} \in \mathbb{R}^{}                  \\
+                       \end{pmatrix}                  \\
                    & = \begin{pmatrix}
                            \hat{y}_1 - y_1 \\
                            \vdots          \\
@@ -276,77 +277,86 @@ So, the gradient of the loss with respect to the weights of the output layer \( 
 \end{align*}
 
 
-For the gradient with respect to the biases of the output layer \( \nabla_{b_y} l \), the calculation would be similar but would involve the derivative of \( \tilde{y}_k \) with respect to \( b_k^y \), which would be 1, and the gradient \( \frac{\partial l}{\partial \tilde{y}_k} \) remains the same. Putting it all together:
-
-\[
-\frac{\partial l}{\partial b_k^y} = \sum_{k=1}^{n_h} \frac{\partial l}{\partial \tilde{y}_k} \frac{\partial \tilde{y}_k}{\partial b_k^y} = (\hat{y}_k - y_k) \cdot 1 = \hat{y}_k - y_k
-\]
-
-\paragraph{17. Compute other gradients : $ \nabla _{\tilde{h}} l, \nabla _{W_h} l, \nabla_{b_h}l $ }
-
-% To compute the gradients \( \nabla _{\tilde{h}} l \), \( \nabla _{W_h} l \), and \( \nabla_{b_h} l \), let's go step by step:
-
-% 1. Calculate \( \nabla _{\tilde{h}} l \):
-
-% The gradient of the loss with respect to \( \tilde{h} \) can be computed using the chain rule:
+% For the gradient with respect to the biases of the output layer \( \nabla_{b_y} l \), the calculation would be similar but would involve the derivative of \( \tilde{y}_k \) with respect to \( b_k^y \), which would be 1, and the gradient \( \frac{\partial l}{\partial \tilde{y}_k} \) remains the same. Putting it all together:
 
 % \[
-% \frac{\partial l}{\partial \tilde{h}_k} = \sum_{i=1}^{n_y} \frac{\partial l}{\partial \hat{y}_i} \frac{\partial \hat{y}_i}{\partial \tilde{h}_k}
+% \frac{\partial l}{\partial b_k^y} = \sum_{k=1}^{n_h} \frac{\partial l}{\partial \tilde{y}_k} \frac{\partial \tilde{y}_k}{\partial b_k^y} = (\hat{y}_k - y_k) \cdot 1 = \hat{y}_k - y_k
 % \]
 
-% Since \( \hat{y}_i = \text{SoftMax}(\tilde{y})_i \), we have:
+\paragraph{17. $\bigstar$ Compute other gradients : $ \nabla _{\tilde{h}} l, \nabla _{W_h} l, \nabla_{b_h}l $ }
 
-% \[
-% \frac{\partial \hat{y}_i}{\partial \tilde{h}_k} = \hat{y}_i(\delta_{ik} - \hat{y}_k)
-% \]
+\begin{enumerate}
+    \item The gradient of the loss with respect to \( \tilde{h} \) can be computed using the chain rule:
+    \[
+        \frac{\partial l}{\partial \tilde{h}_i} = \sum_{k}^{} \frac{\partial l}{\partial h_k} \frac{\partial h_k}{\partial \tilde{h}_i} 
+    .\]
+    Let's compute those two terms
+    \begin{itemize}
+        \item 
+        \[
+            \frac{\partial h_k}{\partial \tilde{h}_i} = \frac{\partial \tanh (\tilde{h_k})}{\partial \tilde{h_i}} = \begin{cases}
+            1 - \tanh^2 (\tilde{h_i}) = 1 - h_i^2 &\text{ if } k = i\\
+            0 &\text{ otherwise}\\
+        \end{cases} 
+    .\]
+    
+    \item Having $ \tilde{y}_i = \sum_{j=1}^{n_h} W_{i,j}^y h_j +b_i^y$ in mind and recovering $ \frac{\partial l}{\partial \tilde{y}_i} = \hat{y}_i - y_i = \delta ^y_i $ from past question.
+    \[
+        \frac{\partial l}{\partial h_k} = \sum_{j=1}^{} \frac{\partial l}{\partial \tilde{y_j}} \frac{\partial \tilde{y}_j}{\partial h_k} = \sum_{j=1}^{} \delta ^y_j W^y_{j,k}
+    .\]
+    \end{itemize}
+    Finaly we have 
+    \begin{align*}
+        \frac{\partial l}{\partial \tilde{h}_i} &= \sum_{k}^{} \frac{\partial l}{\partial h_k} \frac{\partial h_k}{\partial \tilde{h}_i}  \\ 
+        &= \sum_{k}^{} (\sum_{j}^{} \delta ^y_j W^y_{j,k}) \times \begin{cases}
+            1 - h_i^2 &\text{ if } k = i\\
+            0 &\text{ otherwise}\\
+        \end{cases} \\
+        &= (1 - h_i^2) (\sum_{j}^{} \delta ^y_j W^y_{j,i}) \\
+        &= \delta ^h _i     
+    \end{align*}
+    So, the gradient \( \nabla _{\tilde{h}} l \) is a vector with elements $ \delta ^h _i $ 
 
-% where \( \delta_{ik} \) is the Kronecker delta, which equals 1 when \( i = k \) and 0 otherwise.
+    \[
+        \nabla _{\tilde{h}} l = (1 - h^2) \odot (\nabla _{\tilde{y}} l * W^y)
+    .\]
 
-% So, the gradient \( \nabla _{\tilde{h}} l \) is a vector with elements:
 
-% \[
-% \frac{\partial l}{\partial \tilde{h}_k} = \sum_{i=1}^{n_y} \left(\hat{y}_i - y_i\right)\hat{y}_i(\delta_{ik} - \hat{y}_k), \quad \text{for } k \in [1, n_h]
-% \]
+    \item $ \nabla _{W^h} l $ is a matrix composed of elements 
+    \[
+        \frac{\partial l}{\partial W^h _{i,j}} = \sum_{k}^{} \frac{\partial l}{\partial \tilde{h}_k} \frac{\partial \tilde{h}_k}{\partial W^h_{i,j}} 
+    .\]
+    From the previous question we already have $ \frac{\partial l}{\partial h_k} = (1 - h_k^2) (\sum_{j}^{} \delta ^y_j W^y_{j,k}) = \delta_k^h$. So let's compute the other term $ \frac{\partial \tilde{h}_k}{\partial W^h_{i,j}}  $ from $ \tilde{h}_k = \sum_{j=1}^{n_x} W^h_{k,j} x_j + b_k^h $ 
+    
+    \[
+        \frac{\partial \tilde{h}_k}{\partial W^h_{i,j}} = \begin{cases}
+            x_j &\text{ if } k = i\\
+            0 &\text{ otherwise }\\
+        \end{cases} 
+    .\]
+    So \begin{align*}
+        \frac{\partial l}{\partial W^h _{i,j}} &= \sum_{k}^{} \frac{\partial l}{\partial \tilde{h}_k} \frac{\partial \tilde{h}_k}{\partial W^h_{i,j}} \\
+            &= \sum_{k}^{}\delta ^h_k \times \begin{cases}
+                x_j &\text{ if } k = i\\
+                0 &\text{ otherwise }\\
+            \end{cases} \\
+            &= \delta _i^h x_j \\
+        \nabla _W^h &= \nabla _{\tilde{h}} ^T l * x
+    \end{align*}
 
-% 2. Calculate \( \nabla _{W_h} l \):
 
-% The gradient of the loss with respect to \( W_h \) can be computed as:
-
-% \[
-% \frac{\partial l}{\partial W_{h,ij}} = \sum_{k=1}^{n_h} \frac{\partial l}{\partial \tilde{h}_k} \frac{\partial \tilde{h}_k}{\partial W_{h,ij}}
-% \]
-
-% Using the expression for \( \tilde{h}_k \) and the derivative of \( \tilde{h}_k \) with respect to \( W_{h,ij} \):
-
-% \[
-% \frac{\partial \tilde{h}_k}{\partial W_{h,ij}} = h_j(\delta_{ik})
-% \]
-
-% where \( \delta_{ik} \) is the Kronecker delta.
-
-% So, the gradient \( \nabla _{W_h} l \) is a matrix with elements:
-
-% \[
-% \frac{\partial l}{\partial W_{h,ij}} = \sum_{k=1}^{n_h} \left(\sum_{i=1}^{n_y} \left(\hat{y}_i - y_i\right)\hat{y}_i(\delta_{ik} - \hat{y}_k)\right)h_j(\delta_{ik})
-% \]
-
-% 3. Calculate \( \nabla_{b_h} l \):
-
-% The gradient of the loss with respect to \( b_h \) can be computed as:
-
-% \[
-% \frac{\partial l}{\partial b_{h,i}} = \sum_{k=1}^{n_h} \frac{\partial l}{\partial \tilde{h}_k} \frac{\partial \tilde{h}_k}{\partial b_{h,i}}
-% \]
-
-% The derivative of \( \tilde{h}_k \) with respect to \( b_{h,i} \) is simply 1 if \( i = k \) and 0 otherwise.
-
-% So, the gradient \( \nabla_{b_h} l \) is a vector with elements:
-
-% \[
-% \frac{\partial l}{\partial b_{h,i}} = \sum_{k=1}^{n_h} \left(\sum_{i=1}^{n_y} \left(\hat{y}_i - y_i\right)\hat{y}_i(\delta_{ik} - \hat{y}_k)\right)(\delta_{ik})
-% \]
-
-% These equations provide the gradients \( \nabla _{\tilde{h}} l \), \( \nabla _{W_h} l \), and \( \nabla_{b_h} l \) with respect to \( \tilde{h} \), \( W_h \), and \( b_h \), respectively.
-
+    \item Last but not least 
+    \[
+        \frac{\partial l}{\partial b_i^j} = \sum_{k}^{} \frac{\partial l}{\partial \tilde{h}_k} \frac{\partial \tilde{h}_k}{\partial b_i^h} = \sum_{k}^{}\delta _k^h * \begin{cases}
+            1 &\text{ if } k = i\\
+            0 &\text{ else}\\
+        \end{cases} = \delta ^h_i
+    .\]
+    
+    \[
+        \nabla _{b^h} = \nabla _{\tilde{h}} l
+    .\]
+    
+\end{enumerate}
 
 \end{document}
