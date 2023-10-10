@@ -21,32 +21,18 @@ train_images, train_labels = ds.train.images.data(), ds.train.labels.data()
 test_images, test_labels = ds.test.images.data(), ds.test.labels.data()
 
 # Tensorboard : rappel, lancer dans une console tensorboard --logdir runs
-writer = SummaryWriter(
-    "TME/TME3/runs/runs" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-)
-
-# Pour visualiser
-# Les images doivent etre en format Channel (3) x Hauteur x Largeur
-images = (
-    torch.tensor(train_images[0:8]).unsqueeze(1).repeat(1, 3, 1, 1).double() / 255.0
-)
-# Permet de fabriquer une grille d'images
-images = make_grid(images)
-# Affichage avec tensorboard
-writer.add_image(f"samples/original", images, 0)
-
-
+writer = SummaryWriter("runs/runs" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S"))
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
 class MyDataset(Dataset):
     def __init__(self, data, label) -> None:
         super().__init__()
-        self.data = data / 252
+        self.data = data.reshape((len(data), len(data[0]) ** 2)) / 255
         self.label = label
 
     def __getitem__(self, index):
-        return self.data[index].flatten(), self.label[index]
+        return self.data[index], self.label[index]
 
     def __len__(self):
         return len(self.data)
@@ -96,17 +82,24 @@ class State:
     │ Parameter init                                                         │
     └────────────────────────────────────────────────────────────────────────┘
  """
+device = "cpu"
+print(f"running on {device}")
 savepath = Path("model.pch")
 lr = 0.01
 criterion = nn.MSELoss()
-n_hidden = 14
+n_hidden = 20
 batch_size = 32
+epoch = 15
 
 train_dataset = MyDataset(train_images, train_labels)
 test_dataset = MyDataset(test_images, test_labels)
-train_loader = DataLoader(train_dataset, shuffle=True, batch_size=batch_size)
-sample_loader = DataLoader(train_dataset, shuffle=True, batch_size=8)
-test_loader = DataLoader(test_dataset, shuffle=True, batch_size=batch_size)
+train_loader = DataLoader(
+    train_dataset, shuffle=True, batch_size=batch_size, pin_memory=True
+)
+sample_loader = DataLoader(train_dataset, batch_size=8, pin_memory=True)
+test_loader = DataLoader(
+    test_dataset, shuffle=True, batch_size=batch_size, pin_memory=True
+)
 
 # State management
 if savepath.is_file():
@@ -137,16 +130,16 @@ else:
 #         state.epoch += 1
 #         torch.save(state, fp)
 
-for epoch in tqdm(range(50)):
-    loss_list = []
-    loss_list_test = []
+for epoch in tqdm(range(epoch)):
+    epoch_loss = 0
+    epoch_loss_test = 0
     for x, _ in train_loader:
-        optimizer.zero_grad()
         x = x.to(device)
+        optimizer.zero_grad()
 
         outputs = model(x)
         loss = criterion(outputs, x)
-        loss_list.append(loss.mean().detach())
+        epoch_loss += loss.sum()
 
         loss.backward()
         optimizer.step()
@@ -157,14 +150,17 @@ for epoch in tqdm(range(50)):
             x = x.to(device)
             outputs = model(x)
             loss = criterion(outputs, x)
-            loss_list_test.append(loss.mean().detach())
+            epoch_loss_test += loss.sum()
+    writer.add_scalar("Loss/train", epoch_loss / len(train_loader), epoch)
+    writer.add_scalar("Loss/test", epoch_loss_test / len(test_loader), epoch)
 
-        for x, _ in sample_loader:
-            x = x.to(device)
-            outputs = model(x)
-            break
-        images = outputs.reshape((8, 28, 28)).unsqueeze(1).repeat(1, 3, 1, 1)
-        images = make_grid(images)
-    writer.add_scalar("Loss/train", np.mean(loss_list), epoch)
-    writer.add_scalar("Loss/test", np.mean(loss_list_test), epoch)
-    writer.add_image(f"samples/Reconstruction at epoch {epoch}", images, 0)
+for x, _ in sample_loader:
+    images = x.reshape(8, 28, 28).unsqueeze(1).repeat(1, 3, 1, 1).double()
+    images = make_grid(images)
+    writer.add_image(f"samples/original", images, 0)
+    x = x.to(device)
+    outputs = model(x)
+    break
+images = outputs.reshape((8, 28, 28)).unsqueeze(1).repeat(1, 3, 1, 1)
+images = make_grid(images)
+writer.add_image(f"samples/Reconstruction last epoch", images, 0)
