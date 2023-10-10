@@ -22,3 +22,4 @@ _minted-report
 # IPython
 profile_default/
 ipython_config.py
+.datamaestro/
