@@ -41,8 +41,8 @@
 %\newtheorem{case}{Case}
 
 \title{
-    Deep Learning Practical Work 1-a and 1-b \\
-    \Large \textbf{Introduction to neural networks}
+    Deep Learning Practical Work \\
+    \Large \textbf{Basics on deep learning for vision}
 }
 
 \author{Aymeric \textsc{Delefosse} \& Charles \textsc{Vin}}
@@ -358,5 +358,100 @@ So, the gradient of the loss with respect to the weights of the output layer \( 
     .\]
     
 \end{enumerate}
+
+\section{Introduction to convolutional networks}
+\subsection{Questions}
+\paragraph{1. Considering a single convolution filter of padding $p$, stride $s$ and kernel size $k$, for an input of size $x \times y \times z$ what will be the output size?
+How much weight is there to learn?
+How much weight would it have taken to learn if a fully-connected layer were to produce an output of the same size?} 
+Let's note $x_{\text{out}}, y_{\text{out}}, z_{\text{out}}$ our output size. Then, given a convolution filter of padding $p$, stride $s$ and kernel size $k$:
+
+\begin{align}
+    \label{eq:1} x_{\text{out}} = \frac{x + 2 \times p - k}{s} + 1 \\
+    \label{eq:2} y_{\text{out}} = \frac{y + 2 \times p - k}{s} + 1 \\
+    \label{eq:3} z_{\text{out}} = \frac{z + 2 \times p - k}{s} + 1 
+\end{align}
+
+We have a single convolution filter. Given our kernel of size $ k \times k $, we thus have $ 1 \times k \times k = k^2 $ weights to learn. In a fully-connected layer, we would have $(x \times y \times z \times k^2)$ weights to learn.
+
+\paragraph{2. $ \bigstar $ What are the advantages of convolution over fully-connected layers? What is its main limit?}
+Using fully-connnected layers with image involved \textit{a lot} of parameters, each for one pixel of the image. Fully-connected layer are also sensitive to variance in image even a simple translation.
+
+From the other side, convolutionnal layer solve those problems. Using convolution with a shared set of weight (for the filter/kernels) accross the entire input permit to learn and detect \textit{local} spacial patterns/features at different locations. Convolutionnal layer also have the ability to hierachicly combine features. The lower layers capture low-level features like edges and textures, while the higher layers capture more complex features and object representations.
+
+The limit is that convolutional layers lack of global context and focus primaly on local patterns. It's hard for them to understand relationships between distant parts of the input, which can be important in some applications.
+
+\paragraph{3. $ \bigstar $ Why do we use spatial pooling?}
+Spatial pooling permit to gain in invariance, especialy translation. By summarizing a local region with a pooled value, the precise location of the feature becomes less important. It's a form of regularization by selecting the most relevant information.
+
+Polling also permit a dimensionality reduction by reducing spatial dimensions of the outputing feature map. This dimensionality reduction significantly decreases the computational cost of subsequent layers.
+
+Max and average polling layer are the most used polling layers. Max pooling helps in achieving translation invariance and reducing spatial dimensions. It is effective in preserving the most important features in the input data. Average pooling also reduces spatial dimensions and helps in achieving translation invariance. It can be less sensitive to outliers in the input data compared to max pooling.
+
+\paragraph{4. $ \bigstar $ Suppose we try to compute the output of a classical convolutional network for an input image larger than the initially planned size. Can we (without modifying the image) use all or part of the layers of the network on this image?}
+
+\paragraph{5. Show that we can analyze fully-connected layers as particular convolutions.}
+
+\paragraph{6. Suppose that we therefore replace fully-connected by their equivalent in convolutions, answer again the question 4. If we can calculate the output, what is its shape and interest?}
+
+\paragraph{7. We call the receptive field of a neuron the set of pixels of the image on which the output of this neuron depends. What are the sizes of the receptive fields of the neurons of the first and second convolutional layers? Can you imagine what happens to the deeper layers? How to interpret it?}
+
+\subsection{Training \textit{from scratch} of the model}
+\subsubsection{Network architecture}
+\paragraph{8. For convolutions, we want to keep the same spatial dimensions at the output as at the input. What padding and stride values are needed?}
+Images are of size $32 \times 32 \times 1$. $ x = y $, we then just use our equations \ref{eq:1}, \ref{eq:2}, \ref{eq:3} to find the values of $p$ and $s$, knowing $k = 5$. We find $s = 1$, $p = 2$.
+
+\paragraph{9. For max poolings, we want to reduce the spatial dimensions by a factor of 2. What padding and stride values are needed?} 
+
+\paragraph{10. $ \bigstar $ For each layer, indicate the output size and the number of weights to learn. Comment on this repartition.}
+
+\paragraph{11. What is the total number of weights to learn? Compare that to the number of examples.}
+
+\paragraph{12. Compare the number of parameters to learn with that of the BoW and SVM approach.}
+
+\subsubsection{Network learning}
+\paragraph{14. $ \bigstar $ In the provided code, what is the major difference between the way to calculate loss and accuracy in train and in test (other than the the difference in data)?}
+
+\paragraph{16. $ \bigstar $ What are the effects of the learning rate and of the batch-size?}
+
+\paragraph{17. What is the error at the start of the first epoch, in train and test? How can you interpret this?}
+
+\paragraph{18. $ \bigstar $ Interpret the results. What's wrong? What is this phenomenon?}
+
+\subsection{Results improvements}
+\subsubsection{Standardization of examples}
+\paragraph{19. Describe your experimental results.}
+
+\paragraph{20. Why only calculate the average image on the training examples and normalize the validation examples with the same image?}
+
+\paragraph{21. Bonus : There are other normalization schemes that can be more efficient like ZCA normalization. Try other methods, explain the differences and compare them to the one requested.}
+
+\subsubsection{Increase in the number of training examples by \textit{data increase}}
+\paragraph{22. Describe your experimental results and compare them to previouscrease results.}
+
+\paragraph{23. Does this horizontal symmetry approach seems usable on all types of images? In what cases can it be or not be?}
+
+\paragraph{24. What limits do you see in this type of data increase by transformation of the dataset?}
+
+\subsubsection{Variants of the optimization algorithm}
+\paragraph{26. Describe your experimental results and compare them to previous results, including learning stability.}
+
+\paragraph{27. Why does this method improve learning?}
+
+
+\subsubsection*{Regularization of the network by \textit{dropout}}
+\paragraph{29. Describe your experimental results and compare them to previous results.}
+
+\paragraph{30. What is regularization in general?}
+
+\paragraph{31. Research and "discuss" possible interpretations of the effect of dropout on the behavior of a network using it?}
+
+\paragraph{32. What is the influence of the hyperparameter of this layer?}
+
+\paragraph{33. What is the difference in behavior of the dropout layer between training and test?}
+
+\subsubsection{Use of \textit{batch normalization}}
+
+\paragraph{34. Describe your experimental results and compare them to previous results.}
 
 \end{document}
