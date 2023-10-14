@@ -17,7 +17,7 @@ TAGS: Svelte, GraphQL, Docker, Authentification workflow, Saleor
 * Configuration of a mail server and a newsletter manager.
 * Effective communication with non-technical individuals to explain constraints and possibilities.
 * Project management within specific deadlines.
-****
+
 ---------------------------------
 
 23-S2
