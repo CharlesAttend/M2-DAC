@@ -173,7 +173,7 @@ Let us define the cross-entropy loss as \( l(y, \hat{y}) = - \sum_{i=1}^{N} y_i 
                   & = - \sum_{i=1}^{N} y_i \tilde{y}_i + \log_{} (\sum_{j}^{D}e^{\tilde{y}_j}) \sum_{i=1}^{N} y_i 
 \end{align*}
 
-Since $y_i$ represents a probability distribution, we know that $\sum_i y_i = 1$. Thus, we have the final expression for the cross-entropy loss:
+Since $y_i$ is One Hot encoded we know that $\sum_i y_i = 1$. Thus, we have the final expression for the cross-entropy loss:
 
 $$ l(y, \hat{y}) = - \sum_{i}^{} y_i \tilde{y}_i + \log_{} \left(\sum_{i}^{} e^{\tilde{y}_i}\right) $$
 
