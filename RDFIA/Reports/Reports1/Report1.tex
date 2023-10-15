@@ -389,25 +389,81 @@ Polling also permit a dimensionality reduction by reducing spatial dimensions of
 Max and average polling layer are the most used polling layers. Max pooling helps in achieving translation invariance and reducing spatial dimensions. It is effective in preserving the most important features in the input data. Average pooling also reduces spatial dimensions and helps in achieving translation invariance. It can be less sensitive to outliers in the input data compared to max pooling.
 
 \paragraph{4. $ \bigstar $ Suppose we try to compute the output of a classical convolutional network for an input image larger than the initially planned size. Can we (without modifying the image) use all or part of the layers of the network on this image?}
+% By definition, a convolution layer does not dependent of the size of the input, it will take the image, do convolution on it till the end of the image, and output another image. So when staking convolution and pooling layer (which do a convolution too), the output size is only dependent from the input size. In some other words, the input size of the image is not a hyperparameter of the convolution layer.
+
+% In a classical convolutional network, this output from the stacking of convolutionnal and pooling layers is flattened to become the input of a fully-connected layer. The size of the flattened vector is dependent of the size of the outputed image from the convolution layers.
+
+% But this time, we need to know the size of the input of our fully-connected layer in advance to set it up (like to initialse the parameters, ...).
+
+% So when using an input image larger than the initially planned size, everything will run until the use of a fully connected layer because it expect a fixed size input. 
+Inherent in its design, a convolution layer in a convolutional network is size-agnostic regarding its input; it simply performs convolutions across the entire span of the input image and outputs a correspondingly altered image. Sequentially, when convolution and pooling layers are stacked together, the resulting output size is purely a function of the input size. To rephrase, the input size of the image is not a critical hyperparameter for the convolution layer.
+
+Within the conventional architecture of a convolutional network, the output derived from successive convolutional and pooling layers is typically 'flattened' to form the input for a subsequent fully-connected layer. Crucially, the size of this flattened vector is contingent on the size of the image output from the preceding convolution layers.
+
+The challenge arises when we involve fully connected layers, as their initialization requires a priori knowledge of their input size to properly set up parameters such as weights. Consequently, when an input image is larger than initially planned, the network can operate normally up to the point of the fully connected layer(s), which anticipate input of a predetermined, fixed size.
+
 
 \paragraph{5. Show that we can analyze fully-connected layers as particular convolutions.}
+In a fully-connected layer, we associate one pixel of the flattened image too on weight. Both the weight and the flattened image are vector. But if we take the weights rearrange them into a matrix of the shape of the image, we can direclty do a term by term multiplication between this matrix and the image. Which is kind of a one slide convolution ! 
+
+This 1x1 convolution use a stride equal to the width of the input image so that the filter doesn't slide to other positions. And has the filter size is exactly the same size as the image. The number of filter is equivalent to the number of neurons in the fully-connected layer.
 
 \paragraph{6. Suppose that we therefore replace fully-connected by their equivalent in convolutions, answer again the question 4. If we can calculate the output, what is its shape and interest?}
+\textbf{Not sure : }
+%%%%%%%%%%%%%%%%%%%%%
+For me, as with the fully connected layer,  we still have to know the input size to fix the filter size and the stride ahead. So it will still not work.
+%%%%%%%%%%%%%%%%%%%%% A VERIFIER 
 
 \paragraph{7. We call the receptive field of a neuron the set of pixels of the image on which the output of this neuron depends. What are the sizes of the receptive fields of the neurons of the first and second convolutional layers? Can you imagine what happens to the deeper layers? How to interpret it?}
 
 \subsection{Training \textit{from scratch} of the model}
 \subsubsection{Network architecture}
 \paragraph{8. For convolutions, we want to keep the same spatial dimensions at the output as at the input. What padding and stride values are needed?}
-Images are of size $32 \times 32 \times 1$. $ x = y $, we then just use our equations \ref{eq:1}, \ref{eq:2}, \ref{eq:3} to find the values of $p$ and $s$, knowing $k = 5$. We find $s = 1$, $p = 2$.
+We want $ x = x_{out}, y = y_{out} $, let's use our equations \ref{eq:1}, \ref{eq:2}, \ref{eq:3} to find the values of $p$ and $s$.
+\[
+    p = \frac{(s-1)x + k - s}{2}
+.\]
+Knowing $k = 5$ and that our images are of size $32 \times 32 $. We can pick any $p = \frac{32s - s - 27}{2}$, we generally want to use every pixel (and not padding pixels) so we pick $ s = 1 $ so $ p = 2 $ to minimise them both.
+
 
 \paragraph{9. For max poolings, we want to reduce the spatial dimensions by a factor of 2. What padding and stride values are needed?} 
+As a pooling layer is like a convolution, we the same equations as used in question 8. This time we want $ x_{out} = \frac{1}{2}x, y_{out} = \frac{1}{2}y, $, let's use our equations \ref{eq:1}, \ref{eq:2}, \ref{eq:3} to find the values of $p$ and $s$.
+\[
+    p = \frac{(\frac{1}{2}s - 1) x + k - s}{2}
+.\]
+Knowing $k = 2$ and that our images are stil of size $32 \times 32 $. We can pick any $p = \frac{16s - s - 30}{2}$, we generally want to use every pixel (and not padding pixels) so we pick $ s = 2 $ so $ p = 0 $ to minimise them both.
 
 \paragraph{10. $ \bigstar $ For each layer, indicate the output size and the number of weights to learn. Comment on this repartition.}
+To make things easier, we made a plot of the CNN in figure \ref{AlexNetstylelog}. As you can see we'are starting from an 3 channel image of 32 per 32 pixels. As question 8 and 9 suggest, convolution layers keep the same spatial dimension at the outpus as the input and pooling layers reduce the spatial dimensions by two. 
+% \begin{figure}[!htbp]
+%     \centering
+%     \includegraphics*[width=\textwidth]{figs/AlexNet_style.png}
+%     \caption{}
+%     \label{AlexNetstyle}
+% \end{figure}
+\begin{figure}[!htbp]
+    \centering
+    \includegraphics*[width=\textwidth]{figs/AlexNet_style_log.png}
+    \caption{}
+    \label{AlexNetstylelog}
+\end{figure}
+
 
 \paragraph{11. What is the total number of weights to learn? Compare that to the number of examples.}
+\begin{itemize}
+    \item conv1: 32 filters of 5 by 5 $\rightarrow 32*5*5 = 800$ parameters
+    \item conv1: 64 filters of 5 by 5 $\rightarrow 64*5*5 = 1600$ parameters
+    \item conv1: 64 filters of 5 by 5 $\rightarrow 64*5*5 = 1600$ parameters
+    \item 1000 neurons with a 1024 values as input $\rightarrow 1000*1024=1,024,000$ parameters
+    \item 10 neurons with a 1000 values as input $\rightarrow 10*1000=10,000$ parameters
+\end{itemize}
+It makes a total of $ 116,400 $ parameters to train with 60,000 (6000 images per class). Tt should be ok.
+%%%%%%%%%%%%%%%%
+% IS IT OK ?????
+%%%%%%%%%%%%%%%%
 
 \paragraph{12. Compare the number of parameters to learn with that of the BoW and SVM approach.}
+De quoi il parles ???
 
 \subsubsection{Network learning}
 \paragraph{14. $ \bigstar $ In the provided code, what is the major difference between the way to calculate loss and accuracy in train and in test (other than the the difference in data)?}
