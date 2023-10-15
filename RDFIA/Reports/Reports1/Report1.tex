@@ -435,6 +435,18 @@ Knowing $k = 2$ and that our images are stil of size $32 \times 32 $. We can pic
 
 \paragraph{10. $ \bigstar $ For each layer, indicate the output size and the number of weights to learn. Comment on this repartition.}
 To make things easier, we made a plot of the CNN in figure \ref{AlexNetstylelog}. As you can see we'are starting from an 3 channel image of 32 per 32 pixels. As question 8 and 9 suggest, convolution layers keep the same spatial dimension at the outpus as the input and pooling layers reduce the spatial dimensions by two. 
+Here is the number of parameters : 
+\begin{itemize}
+    \item conv1: 32 filters of 5 by 5 for 3 channels $\rightarrow 32*5*5*3 = 2400$ parameters
+    \item conv1: 64 filters of 5 by 5 for 32 channels $\rightarrow 64*5*5*32 = 51200$ parameters
+    \item conv1: 64 filters of 5 by 5 for 64 channels $\rightarrow 64*5*5*64 = 102400$ parameters
+    \item 1000 neurons with a 1024 values as input $\rightarrow (1000 + 1)*1024=1,025,024$ parameters. The "$+1$" is for biases.
+    \item 10 neurons with a 1000 values as input $\rightarrow 11*1000=11,000$ parameters
+\end{itemize}
+%%%%%%%%%%%%%%%%
+% IL Y A DES BIAIS AUSSI DANS LES CONV A INCLURE DANS LES CALCULS
+% https://stackoverflow.com/questions/42786717/how-to-calculate-the-number-of-parameters-for-convolutional-neural-network
+%%%%%%%%%%%%%%%
 % \begin{figure}[!htbp]
 %     \centering
 %     \includegraphics*[width=\textwidth]{figs/AlexNet_style.png}
@@ -450,13 +462,6 @@ To make things easier, we made a plot of the CNN in figure \ref{AlexNetstylelog}
 
 
 \paragraph{11. What is the total number of weights to learn? Compare that to the number of examples.}
-\begin{itemize}
-    \item conv1: 32 filters of 5 by 5 for 3 channels $\rightarrow 32*5*5*3 = 2400$ parameters
-    \item conv1: 64 filters of 5 by 5 for 32 channels $\rightarrow 64*5*5*32 = 51200$ parameters
-    \item conv1: 64 filters of 5 by 5 for 64 channels $\rightarrow 64*5*5*64 = 102400$ parameters
-    \item 1000 neurons with a 1024 values as input $\rightarrow (1000 + 1)*1024=1,025,024$ parameters. The "$+1$" is for biases.
-    \item 10 neurons with a 1000 values as input $\rightarrow 11*1000=11,000$ parameters
-\end{itemize}
 It makes a total of $ 1,192,024 $ parameters to train with 60,000 (6000 images per class). It should be ok.
 %%%%%%%%%%%%%%%%
 % IS IT OK ?????
@@ -467,7 +472,7 @@ De quoi il parles ???
 
 \subsubsection{Network learning}
 \paragraph{14. $ \bigstar $ In the provided code, what is the major difference between the way to calculate loss and accuracy in train and in test (other than the the difference in data)?}
-The difference here in the code is that we don't give an optimizer to \textit{epoch()} and so we do not train the network on 
+The difference here in the code is that we don't give an optimizer to \textit{epoch()} and so we do not train the network on test examples. There is no backward of the loss.
 
 \paragraph{16. $ \bigstar $ What are the effects of the learning rate and of the batch-size?}
 

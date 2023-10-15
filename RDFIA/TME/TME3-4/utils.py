@@ -1,12 +1,14 @@
 import matplotlib.pyplot as plt
+
 plt.ion()
 import numpy as np
+
 
 def accuracy(output, target, topk=(1,)):
     """Computes the precision@k for the specified values of k"""
     maxk = max(topk)
     batch_size = target.size(0)
-    
+
     _, pred = output.topk(maxk, 1, True, True)
     pred = pred.t()
     correct = pred.eq(target.view(1, -1).expand_as(pred))
@@ -17,8 +19,10 @@ def accuracy(output, target, topk=(1,)):
         res.append(correct_k.mul_(100.0 / batch_size))
     return res
 
+
 class AverageMeter(object):
     """Computes and stores the average and current value"""
+
     def __init__(self, keep_all=False):
         self.reset()
         self.data = None
@@ -39,6 +43,7 @@ class AverageMeter(object):
         self.count += n
         self.avg = self.sum / self.count
 
+
 class TrainLossPlot(object):
     def __init__(self):
         self.loss_train = []
@@ -58,6 +63,7 @@ class TrainLossPlot(object):
         plt.draw_all()
         plt.pause(1e-3)
 
+
 class AccLossPlot(object):
     def __init__(self):
         self.loss_train = []
@@ -71,16 +77,18 @@ class AccLossPlot(object):
         self.loss_test.append(loss_test)
         self.acc_train.append(acc_train)
         self.acc_test.append(acc_test)
+
+    def plot(self, save_name=None):
         plt.figure(self.fig.number)
         plt.clf()
-        plt.subplot(1,2,1)
+        plt.subplot(1, 2, 1)
         plt.plot(np.array(self.acc_train), label="acc. train")
         plt.plot(np.array(self.acc_test), label="acc. test")
         plt.title("Accuracy / epoch")
         plt.xlabel("Epoch")
         plt.ylabel("Accuracy")
         plt.legend()
-        plt.subplot(1,2,2)
+        plt.subplot(1, 2, 2)
         plt.plot(np.array(self.loss_train), label="loss train")
         plt.plot(np.array(self.loss_test), label="loss test")
         plt.title("Loss / epoch")
@@ -90,3 +98,5 @@ class AccLossPlot(object):
         plt.show()
         plt.draw_all()
         plt.pause(1e-3)
+        if save_name:
+            plt.savefig(f"{save_name}.pdf")
