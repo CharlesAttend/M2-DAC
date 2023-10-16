@@ -19,7 +19,7 @@ for n_iter in range(100):
     ctx_linear = Context()
     ## Calcul du forward (loss)
     yhat = Linear.forward(ctx_linear, x, w, b)
-    loss = MSE.forward(ctx_MSE, yhat, y) / 50
+    loss = MSE.forward(ctx_MSE, yhat, y)
 
     # `loss` doit correspondre au coût MSE calculé à cette itération
     # on peut visualiser avec
@@ -30,7 +30,10 @@ for n_iter in range(100):
     print(f"Itérations {n_iter}: loss {loss.mean()}")
 
     ##  Calcul du backward (grad_w, grad_b)
-    d_yhat, d_y = MSE.backward(ctx_MSE, torch.zeros(50, 3) + 0.067) # WTF pourquoi ça marche
+    d_yhat, d_y = MSE.backward(
+        ctx_MSE, torch.zeros(50, 3) + 0.067
+    )  # WTF pourquoi ça marche
+    # d_yhat, d_y = MSE.backward(ctx_MSE, loss.mean())  # WTF pourquoi ça marche
     # d_yhat, d_y = MSE.backward(ctx_MSE, loss)
     _, grad_w, grad_b = Linear.backward(ctx_linear, d_yhat)
 
@@ -38,4 +41,3 @@ for n_iter in range(100):
     with torch.no_grad():
         w = w - epsilon * grad_w
         b = b - epsilon * grad_b
-

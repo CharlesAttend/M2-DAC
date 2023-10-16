@@ -81,7 +81,7 @@ class State:
     ┌────────────────────────────────────────────────────────────────────────┐
     │ Parameter init                                                         │
     └────────────────────────────────────────────────────────────────────────┘
- """
+"""
 device = "cpu"
 print(f"running on {device}")
 savepath = Path("model.pch")
@@ -89,7 +89,7 @@ lr = 0.01
 criterion = nn.MSELoss()
 n_hidden = 20
 batch_size = 32
-epoch = 15
+total_epoch = 15
 
 train_dataset = MyDataset(train_images, train_labels)
 test_dataset = MyDataset(test_images, test_labels)
@@ -101,36 +101,65 @@ test_loader = DataLoader(
     test_dataset, shuffle=True, batch_size=batch_size, pin_memory=True
 )
 
+
+
+""" 
+    ┌────────────────────────────────────────────────────────────────────────┐
+    │ Training loop with state management                                    │
+    └────────────────────────────────────────────────────────────────────────┘
+"""
 # State management
-if savepath.is_file():
-    with savepath.open("rb") as fp:
-        state = torch.load(fp)
-else:
-    model = AutoEncoderUSPS(n_hidden=n_hidden)
-    model.to(device)
-    optimizer = torch.optim.Adam(model.parameters(), lr=lr)
-    state = State(model, optimizer)
+# if savepath.is_file():
+#     with savepath.open("rb") as fp:
+#         state = torch.load(fp)
+# else:
+#     model = AutoEncoderUSPS(n_hidden=n_hidden)
+#     model.to(device)
+#     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
+#     state = State(model, optimizer)
 
-
-# Training loop
-# for epoch in range(state.epoch):
+# for epoch in range(state.epoch, total_epoch):
+#     epoch_loss = 0
+#     epoch_loss_test = 0
 #     for index in range(state.iteration, len(train_loader)):
 #         x, labels = train_loader[index]
 #         state.optim.zero_grad()
 #         x = x.to(device)
 
 #         outputs = state.model(x)
-#         loss = criterion(outputs, labels)
+#         # loss = criterion(outputs, labels)
+#         loss = criterion(outputs, x) # x because autoencodeur
+#         epoch_loss += loss.sum()
 
 #         loss.backward()
 #         state.optimizer.step()
 #         state.iteration += 1
-#         print("het")
+        
+#         # Eval
+#         with torch.no_grad():
+#             for x, _ in test_loader:
+#                 x = x.to(device)
+#                 outputs = model(x)
+#                 loss = criterion(outputs, x)
+#                 epoch_loss_test += loss.sum()
+#         writer.add_scalar("Loss/train", epoch_loss / len(train_loader), epoch)
+#         writer.add_scalar("Loss/test", epoch_loss_test / len(test_loader), epoch)
+        
 #     with savepath.open("wb") as fp:
 #         state.epoch += 1
 #         torch.save(state, fp)
+    
 
-for epoch in tqdm(range(epoch)):
+""" 
+    ┌────────────────────────────────────────────────────────────────────────┐
+    │ Clasic training loop                                                   │
+    └────────────────────────────────────────────────────────────────────────┘
+"""
+model = AutoEncoderUSPS(n_hidden=n_hidden)
+model.to(device)
+optimizer = torch.optim.Adam(model.parameters(), lr=lr)
+state = State(model, optimizer)
+for epoch in tqdm(range(total_epoch)):
     epoch_loss = 0
     epoch_loss_test = 0
     for x, _ in train_loader:
