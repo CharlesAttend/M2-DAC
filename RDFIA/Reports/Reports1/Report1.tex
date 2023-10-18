@@ -11,6 +11,7 @@
 \usepackage{amsthm}
 \usepackage{systeme}
 \usepackage{fancyhdr}
+\usepackage{subcaption}
 
 \usepackage{hyperref}
 \hypersetup{
@@ -475,12 +476,56 @@ De quoi il parle ??? feur
 \subsubsection{Network learning}
 \paragraph{14. $ \bigstar $ In the provided code, what is the major difference between the way to calculate loss and accuracy in train and in test (other than the the difference in data)?}
 The difference here in the code is that we don't give an optimizer to \textit{epoch()} and so we do not train the network on test examples. There is no backward of the loss.
+% Le code de base compute la loss à chaque batch, alors qu'on change les paramètres à chaque batch, donc ça rend les comparaisons plus difficile. En général (et c'est ce que j'ai changé dans le code), on compure la los
 
 \paragraph{16. $ \bigstar $ What are the effects of the learning rate and of the batch-size?}
+\begin{figure*}
+    \centering
+    \begin{subfigure}[b]{0.475\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figs/batch32_lr0.1.pdf}
+        \caption[Network2]%
+        {{\small Network 1}}    
+        \label{fig:mean and std of net14}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.475\textwidth}  
+        \centering 
+        \includegraphics[width=\textwidth]{figs/batch32_lr0.1.pdf}
+        \caption[]%
+        {{\small Network 2}}    
+        \label{fig:mean and std of net24}
+    \end{subfigure}
+    \vskip\baselineskip
+    \begin{subfigure}[b]{0.475\textwidth}   
+        \centering 
+        \includegraphics[width=\textwidth]{figs/batch32_lr0.1.pdf}
+        \caption[]%
+        {{\small Network 3}}    
+        \label{fig:mean and std of net34}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.475\textwidth}   
+        \centering 
+        \includegraphics[width=\textwidth]{figs/batch32_lr0.1.pdf}
+        \caption[]%
+        {{\small Network 4}}    
+        \label{fig:mean and std of net44}
+    \end{subfigure}
+    \caption[ The average and standard deviation of critical parameters ]
+    {\small The average and standard deviation of critical parameters: Region R4} 
+    \label{fig:mean and std of nets}
+\end{figure*}
 
 \paragraph{17. What is the error at the start of the first epoch, in train and test? How can you interpret this?}
+The accuracy on the test set is better that the accuracy on train. It's because. 
+We must be aware that the training loss and accuracy is calculated \textbf{at every batch} so before the end of the first epoch, parameters and so result (loss and accuracy) are variating a lot. It mean that at the first batch of the first epoch we take into account the loss calculated only with \textit{batch\_size} examples.
+
+Contrary to the test loss and accuracy that are computed at the end of the first epoch, after the model have seen all training example. Those value are more true that those from train at the first epoch % pire phrase
 
 \paragraph{18. $ \bigstar $ Interpret the results. What's wrong? What is this phenomenon?}
+We observe overfitting. We can see that starting from epoch three or four that our accuracy on test cross the curve of the accuracy of train. It mean that we are becoming better on train sample but worse on the test sample. The model can't generalize on new image.
+
 
 \subsection{Results improvements}
 \subsubsection{Standardization of examples}
