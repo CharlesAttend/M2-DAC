@@ -100,3 +100,4 @@ class AccLossPlot(object):
         plt.pause(1e-3)
         if save_name:
             plt.savefig(f"{save_name}.pdf")
+        return plt.gca()
