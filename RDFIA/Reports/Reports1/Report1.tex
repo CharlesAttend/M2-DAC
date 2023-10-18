@@ -154,7 +154,9 @@ To address these challenges, various techniques like learning rate schedules (gr
 In practice, selecting an appropriate learning rate often involves experimentation and can be problem-specific. Techniques such as grid search or random search, in combination with cross-validation, can aid in determining an optimal learning rate for a particular task.
 
 \paragraph{12. $\bigstar$ Compare the complexity (depending on the number of layers in the network) of calculating the gradients of the \textit{loss} with respect to the parameters, using the naive approach and the \textit{backprop} algorithm.}
-GPT est vraiment pas clair ici, il faut creuser \href{https://medium.com/spidernitt/breaking-down-neural-networks-an-intuitive-approach-to-backpropagation-3b2ff958794c}{ce post medium} à partir de "Why backpropagation?".
+The naive method involves calculating the gradient of the loss function with respect to each parameter independently, without leveraging the computational advantages of knowing the derivatives' interdependencies across layers. For a network with a large number of parameters, this is computationally expensive and inefficient, essentially repeating a substantial amount of calculation needlessly. The complexity becomes substantial as the number of layers (and, as a result, the number of parameters) increases. It becomes a combinatorial problem.
+
+Backpropagation is a far more efficient strategy due to its intrinsic use of the chain rule from calculus to 'remember' past calculations. This technique essentially breaks down the full problem of calculating a derivative on a complex, multi-stage function into smaller, more manageable pieces. Then, it smartly recombines these pieces, significantly reducing computational redundancy. This methodology dramatically reduces the number of computations, particularly for networks with a large number of interconnected layers and parameters.
 
 \paragraph{13. What criteria must the network architecture meet to allow such an optimization procedure?}
 For the backpropagation algorithm to be applicable, several criteria must be met. First of all, each layer function, including the activation functions and the loss function, must be differentiable with respect to their parameters. This is crucial for calculating gradients during the training process. Furthermore, as backpropagation relies on the sequential flow of information from the input layer to the output layer, the network architecture should possess a feedforward, sequential structure without loops or recurrent connections. Loops or recurrent connections can introduce complications in gradient calculations.
@@ -359,6 +361,7 @@ So, the gradient of the loss with respect to the weights of the output layer \( 
     
 \end{enumerate}
 
+\newpage
 \section{Introduction to convolutional networks}
 \subsection{Questions}
 \paragraph{1. Considering a single convolution filter of padding $p$, stride $s$ and kernel size $k$, for an input of size $x \times y \times z$ what will be the output size?
@@ -402,11 +405,10 @@ Within the conventional architecture of a convolutional network, the output deri
 
 The challenge arises when we involve fully connected layers, as their initialization requires a priori knowledge of their input size to properly set up parameters such as weights. Consequently, when an input image is larger than initially planned, the network can operate normally up to the point of the fully connected layer(s), which anticipate input of a predetermined, fixed size.
 
-
 \paragraph{5. Show that we can analyze fully-connected layers as particular convolutions.}
 In a fully-connected layer, we associate one pixel of the flattened image too on weight. Both the weight and the flattened image are vector. But if we take the weights rearrange them into a matrix of the shape of the image, we can direclty do a term by term multiplication between this matrix and the image. Which is kind of a one slide convolution ! 
 
-This 1x1 convolution use a stride equal to the width of the input image so that the filter doesn't slide to other positions. And has the filter size is exactly the same size as the image. The number of filter is equivalent to the number of neurons in the fully-connected layer.
+This $1 \times 1$ convolution use a stride equal to the width of the input image so that the filter doesn't slide to other positions. And has the filter size is exactly the same size as the image. The number of filter is equivalent to the number of neurons in the fully-connected layer.
 
 \paragraph{6. Suppose that we therefore replace fully-connected by their equivalent in convolutions, answer again the question 4. If we can calculate the output, what is its shape and interest?}
 \textbf{Not sure : }
@@ -419,29 +421,29 @@ For me, as with the fully connected layer,  we still have to know the input size
 \subsection{Training \textit{from scratch} of the model}
 \subsubsection{Network architecture}
 \paragraph{8. For convolutions, we want to keep the same spatial dimensions at the output as at the input. What padding and stride values are needed?}
-We want $ x = x_{out}, y = y_{out} $, let's use our equations \ref{eq:1}, \ref{eq:2}, \ref{eq:3} to find the values of $p$ and $s$.
+We want $ x = x_{out}, y = y_{out} $: let's use our equations \ref{eq:1}, \ref{eq:2}, \ref{eq:3} to find the values of $p$ and $s$.
 \[
     p = \frac{(s-1)x + k - s}{2}
 .\]
-Knowing $k = 5$ and that our images are of size $32 \times 32 $. We can pick any $p = \frac{32s - s - 27}{2}$, we generally want to use every pixel (and not padding pixels) so we pick $ s = 1 $ so $ p = 2 $ to minimise them both.
+Knowing $k = 5$ and that our images are of size $32 \times 32 $, we can pick any $p = \frac{31s - 27}{2}$. Because we generally want to use every pixel (and not padding pixels) so we pick $ s = 1 $ so $ p = 2 $ to minimise them both.
 
 
 \paragraph{9. For max poolings, we want to reduce the spatial dimensions by a factor of 2. What padding and stride values are needed?} 
-As a pooling layer is like a convolution, we the same equations as used in question 8. This time we want $ x_{out} = \frac{1}{2}x, y_{out} = \frac{1}{2}y, $, let's use our equations \ref{eq:1}, \ref{eq:2}, \ref{eq:3} to find the values of $p$ and $s$.
+A pooling layer acts like a convolution: let's proceed as in question 8. This time we want $ x_{out} = \frac{1}{2}x, y_{out} = \frac{1}{2}y$.
 \[
     p = \frac{(\frac{1}{2}s - 1) x + k - s}{2}
 .\]
-Knowing $k = 2$ and that our images are stil of size $32 \times 32 $. We can pick any $p = \frac{16s - s - 30}{2}$, we generally want to use every pixel (and not padding pixels) so we pick $ s = 2 $ so $ p = 0 $ to minimise them both.
+Knowing $k = 2$ and that our images are of size $32 \times 32 $, we can pick any $p = \frac{15s - 30}{2}$. We generally want to use every pixel (and not padding pixels) so we pick $ s = 2 $ so $ p = 0 $ to minimise them both.
 
 \paragraph{10. $ \bigstar $ For each layer, indicate the output size and the number of weights to learn. Comment on this repartition.}
-To make things easier, we made a plot of the CNN in figure \ref{AlexNetstylelog}. As you can see we'are starting from an 3 channel image of 32 per 32 pixels. As question 8 and 9 suggest, convolution layers keep the same spatial dimension at the outpus as the input and pooling layers reduce the spatial dimensions by two. 
+To make things easier, we made a plot of the CNN in figure \ref{AlexNetstylelog}. As you can see we are starting from a 3 channel image of 32 per 32 pixels. As question 8 and 9 suggest, convolution layers keep the same spatial dimension at the outpus as the input and pooling layers reduce the spatial dimensions by two. 
 Here is the number of parameters : 
 \begin{itemize}
-    \item conv1: 32 filters of 5 by 5 for 3 channels $\rightarrow 32*5*5*3 = 2400$ parameters
-    \item conv1: 64 filters of 5 by 5 for 32 channels $\rightarrow 64*5*5*32 = 51200$ parameters
-    \item conv1: 64 filters of 5 by 5 for 64 channels $\rightarrow 64*5*5*64 = 102400$ parameters
-    \item 1000 neurons with a 1024 values as input $\rightarrow (1000 + 1)*1024=1,025,024$ parameters. The "$+1$" is for biases.
-    \item 10 neurons with a 1000 values as input $\rightarrow 11*1000=11,000$ parameters
+    \item conv1: 32 filters of 5 by 5 for 3 channels $\rightarrow 32\times 5\times 5\times 3 = 2,400$ parameters
+    \item conv2: 64 filters of 5 by 5 for 32 channels $\rightarrow 64\times 5\times 5\times 32 = 51,200$ parameters
+    \item conv3: 64 filters of 5 by 5 for 64 channels $\rightarrow 64\times 5\times 5\times 64 = 102,400$ parameters
+    \item 1000 neurons with a 1024 values as input $\rightarrow (1000 + 1)\times 1024=1,025,024$ parameters. The "$+1$" is for biases.
+    \item 10 neurons with a 1000 values as input $\rightarrow 11\times 1000=11,000$ parameters
 \end{itemize}
 %%%%%%%%%%%%%%%%
 % IL Y A DES BIAIS AUSSI DANS LES CONV A INCLURE DANS LES CALCULS
@@ -456,19 +458,19 @@ Here is the number of parameters :
 \begin{figure}[!htbp]
     \centering
     \includegraphics*[width=\textwidth]{figs/AlexNet_style_log.png}
-    \caption{}
+    \caption{Network architecture}
     \label{AlexNetstylelog}
 \end{figure}
 
 
 \paragraph{11. What is the total number of weights to learn? Compare that to the number of examples.}
-It makes a total of $ 1,192,024 $ parameters to train with 60,000 (6000 images per class). It should be ok.
+It makes a total of $ 1,192,024 $ parameters to train with 60,000 (6,000 images per class). It should be ok.
 %%%%%%%%%%%%%%%%
 % IS IT OK ?????
 %%%%%%%%%%%%%%%%
 
 \paragraph{12. Compare the number of parameters to learn with that of the BoW and SVM approach.}
-De quoi il parles ???
+De quoi il parle ??? feur
 
 \subsubsection{Network learning}
 \paragraph{14. $ \bigstar $ In the provided code, what is the major difference between the way to calculate loss and accuracy in train and in test (other than the the difference in data)?}
@@ -501,7 +503,7 @@ The difference here in the code is that we don't give an optimizer to \textit{ep
 \paragraph{27. Why does this method improve learning?}
 
 
-\subsubsection*{Regularization of the network by \textit{dropout}}
+\subsubsection{Regularization of the network by \textit{dropout}}
 \paragraph{29. Describe your experimental results and compare them to previous results.}
 
 \paragraph{30. What is regularization in general?}
