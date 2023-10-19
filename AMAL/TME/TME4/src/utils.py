@@ -7,21 +7,31 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 class RNN(nn.Module):
     def __init__(
-        self, input_size, hidden_size, output_size, nonlinearity="tanh", *args, **kwargs
+        self,
+        input_size,
+        hidden_size,
+        output_size,
+        nonlinearity="tanh",
+        batch_first=False,
+        *args,
+        **kwargs
     ) -> None:
         super().__init__(*args, **kwargs)
+        self.input_size = input_size
+        self.hidden_size = hidden_size
+        self.output_size = output_size
         # self.W_i = nn.Parameter(torch.randn(input_size))  # (input_size)
         # self.W_h = nn.Parameter(torch.randn(hidden_size))  # (hidden_size)
         # self.b_h = nn.Parameter(torch.randn(hidden_size))
-
+        self.batch_first = batch_first
         self.f_x = nn.Linear(input_size, hidden_size, bias=False)
         self.f_h = nn.Linear(hidden_size, hidden_size)
         self.f_d = nn.Linear(hidden_size, output_size)
 
         if nonlinearity == "tanh":
-            self.nonlinearity = nn.Tanh
+            self.nonlinearity = nn.Tanh()
         elif nonlinearity == "relu":
-            self.nonlinearity = nn.ReLU
+            self.nonlinearity = nn.ReLU()
 
     def forward(self, x, h):
         """_summary_
@@ -35,10 +45,17 @@ class RNN(nn.Module):
         -------
         h_final : (length, batch, hidden_size)
         """
-        h_final = torch.zeros_like(x)
-        for i in range(x.size(0)):
-            h = self.one_step(x[i, :, :], h)
-            h_final[i, :, :] = h
+        h_final = torch.zeros((h.size(0), x.size(1), h.size(1)))
+        # ic(h_final.size())
+        if self.batch_first:
+            for i in range(x.size(1)):
+                h = self.one_step(x[:, i, :], h)
+                # ic(h.size())
+                h_final[:, i, :] = h
+        else:
+            for i in range(x.size(0)):
+                h = self.one_step(x[i, :, :], h)
+                h_final[i, :, :] = h
         return h_final
 
     def one_step(self, x, h):
@@ -55,6 +72,10 @@ class RNN(nn.Module):
         -------
         h_t+1 : (batch,hidden_size)
         """
+        # ic(x.size())
+        # ic(h.size())
+        # ic(self.f_x(x).size())
+        # ic(self.f_h(h).size())
         return self.nonlinearity(self.f_x(x) + self.f_h(h))
 
     def decode(self, h):
