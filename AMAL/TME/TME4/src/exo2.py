@@ -3,6 +3,7 @@ from icecream import ic, install
 install()
 from utils import RNN, device, SampleMetroDataset
 import torch
+import torchmetrics
 from tqdm import tqdm
 from torch import nn
 from torch.utils.data import DataLoader
@@ -14,7 +15,7 @@ CLASSES = 2
 # Longueur des séquences
 LENGTH = 20
 # Dimension de l'entrée (1 (in) ou 2 (in/out))
-DIM_INPUT = 1
+DIM_INPUT = 2
 # Taille du batch
 BATCH_SIZE = 32
 HIDDEN_SIZE = 10
@@ -28,18 +29,22 @@ ds_test = SampleMetroDataset(
     length=LENGTH,
     stations_max=ds_train.stations_max,
 )
+
+# raise KeyError()
 data_train = DataLoader(ds_train, batch_size=BATCH_SIZE, shuffle=True)
 data_test = DataLoader(ds_test, batch_size=BATCH_SIZE, shuffle=False)
 
-lr = 0.01
+lr = 0.001
 criterion = nn.CrossEntropyLoss()
-total_epoch = 15
+total_epoch = 25
 model = RNN(DIM_INPUT, HIDDEN_SIZE, CLASSES, batch_first=True)
 
 #  TODO:  Question 2 : prédiction de la ville correspondant à une séquence
 model.to(device)
 loss_train_per_epoch = []
 loss_test_per_epoch = []
+accuracy_train = torchmetrics.classification.Accuracy(task="multiclass", num_classes=5)
+accuracy_test = torchmetrics.classification.Accuracy(task="multiclass", num_classes=5)
 optimizer = torch.optim.Adam(model.parameters(), lr=lr)
 for epoch in tqdm(range(total_epoch)):
     epoch_loss = 0
@@ -57,11 +62,12 @@ for epoch in tqdm(range(total_epoch)):
         y_hat = model.decode(h[:, -1])  # décone uniquement le dernier h
         # ic(y_hat.size())
         # ic(y.size())
+        # ic(y_hat.size())
         loss = criterion(y_hat, y)
-        epoch_loss += loss.sum()
-
         loss.backward()
         optimizer.step()
+        epoch_loss += loss.sum()
+        accuracy_train(y_hat.argmax(1), y)
 
     # Eval
     with torch.no_grad():
@@ -74,10 +80,14 @@ for epoch in tqdm(range(total_epoch)):
             y_hat = model.decode(h[:, -1])
 
             loss = criterion(y_hat, y)
+            accuracy_test(y_hat.argmax(1), y)
             epoch_loss_test += loss.sum()
     loss_train_per_epoch.append(epoch_loss / len(data_train))
     loss_test_per_epoch.append(epoch_loss_test / len(data_test))
     print("step:", epoch)
     print("Loss_train:", float(loss_train_per_epoch[-1]))
     print("Loss_test:", float(loss_test_per_epoch[-1]))
-    print('acc:', "")
+    print("acc_train:", accuracy_train.compute())
+    accuracy_train.reset()
+    print("acc_test:", accuracy_test.compute())
+    accuracy_test.reset()

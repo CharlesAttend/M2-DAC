@@ -20,10 +20,8 @@ class RNN(nn.Module):
         self.input_size = input_size
         self.hidden_size = hidden_size
         self.output_size = output_size
-        # self.W_i = nn.Parameter(torch.randn(input_size))  # (input_size)
-        # self.W_h = nn.Parameter(torch.randn(hidden_size))  # (hidden_size)
-        # self.b_h = nn.Parameter(torch.randn(hidden_size))
         self.batch_first = batch_first
+        
         self.f_x = nn.Linear(input_size, hidden_size, bias=False)
         self.f_h = nn.Linear(hidden_size, hidden_size)
         self.f_d = nn.Linear(hidden_size, output_size)
