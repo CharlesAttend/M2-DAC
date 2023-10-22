@@ -68,7 +68,7 @@ class AccLossPlot(object):
         self.loss_test = []
         self.acc_train = []
         self.acc_test = []
-        self.fig = plt.figure()
+        # self.fig = plt.figure()
 
     def update(self, loss_train, loss_test, acc_train, acc_test):
         self.loss_train.append(loss_train)
@@ -77,8 +77,8 @@ class AccLossPlot(object):
         self.acc_test.append(acc_test)
 
     def plot(self, save_name=None):
-        plt.figure(self.fig.number)
-        plt.clf()
+        plt.figure(figsize=(15, 5))
+        # plt.clf()
         plt.subplot(1, 2, 1)
         plt.plot(np.array(self.acc_train), label="acc. train")
         plt.plot(np.array(self.acc_test), label="acc. test")
@@ -93,9 +93,6 @@ class AccLossPlot(object):
         plt.xlabel("Epoch")
         plt.ylabel("Loss")
         plt.legend()
-        plt.show()
-        plt.draw_all()
-        plt.pause(1e-3)
         if save_name:
-            plt.savefig(f"{save_name}.pdf")
-        return plt.gca()
+            plt.savefig(f"{save_name}.pdf", dpi=100, bbox_inches="tight")
+        plt.show()
