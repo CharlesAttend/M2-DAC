@@ -5,6 +5,7 @@
 % \usepackage[french]{babel}
 
 %\usepackage[default,scale=0.95]{opensans}
+\usepackage{lmodern}
 \usepackage[T1]{fontenc}
 \usepackage{amssymb} %math
 \usepackage{amsmath}
@@ -12,8 +13,10 @@
 \usepackage{systeme}
 \usepackage{fancyhdr}
 \usepackage{subcaption}
-
 \usepackage{hyperref}
+\usepackage{float}
+
+\renewcommand*\familydefault{\sfdefault} %% Only if the base font of the document is to be sans serif
 \hypersetup{
     colorlinks=true,
     linkcolor=blue,
@@ -22,9 +25,9 @@
     pdftitle={Overleaf Example},
     % pdfpagemode=FullScreen,
     }
-\urlstyle{same} %\href{url}{Text}
-
-\theoremstyle{plain}% default
+    \urlstyle{same} %\href{url}{Text}
+    
+    \theoremstyle{plain}% default
 \newtheorem{thm}{Théorème}[section]
 \newtheorem{lem}[thm]{Lemme}
 \newtheorem{prop}[thm]{Proposition}
@@ -54,8 +57,11 @@
 \pagestyle{fancy}
 \thispagestyle{plain}
 
+
 \begin{document}
 \maketitle
+\tableofcontents
+\newpage
 
 \section{Introduction to neural networks}
 \subsection{Theorical Foundation}
@@ -113,14 +119,15 @@ For squared error loss, $\hat{y}_i$ should vary in a way that makes it closer to
 Cross-entropy loss is better suited for classification tasks for several reasons:
 
 \begin{itemize}
-    \item Cross-entropy loss is based on the negative logarithm of the predicted probability of the true class. This logarithmic nature amplifies errors when the predicted probability deviates from 1 (for the correct class) and from 0 (for incorrect classes), depicted in Figure~\ref{CELoss}. Consequently, it effectively penalizes misclassifications, making it particularly suitable for classification tasks. However, it is imperative that $\hat{y}$ remains within the range $[0, 1]$ for this loss to be effective.
+    \item Cross-entropy loss is based on the negative logarithm of the predicted probability of the true class. This logarithmic nature amplifies errors when the predicted probability deviates from 1 (for the correct class) and from 0 (for incorrect classes), depicted in Figure~\ref{fig:CELoss}. Consequently, it effectively penalizes misclassifications, making it particularly suitable for classification tasks. However, it is imperative that $\hat{y}$ remains within the range $[0, 1]$ for this loss to be effective.
     \item Cross-entropy loss is often used in conjunction with the SoftMax activation function in the output layer of neural networks for multi-class classification. The SoftMax function ensures that the predicted probabilities sum to 1, aligning perfectly with the requirements of the cross-entropy loss.
 \end{itemize}
 
-\begin{figure}[!htbp]
+\begin{figure}[H]
     \centering
     \includegraphics*[width=0.6\textwidth]{figs/cross_entropy.png}
-    \label{CELoss}
+    \caption{}
+    \label{fig:CELoss}
 \end{figure}
 
 On the other hand, Mean Squared Error serves a different role and is better suited for regression tasks:
@@ -157,13 +164,13 @@ In practice, selecting an appropriate learning rate often involves experimentati
 \paragraph{12. $\bigstar$ Compare the complexity (depending on the number of layers in the network) of calculating the gradients of the \textit{loss} with respect to the parameters, using the naive approach and the \textit{backprop} algorithm.}
 The naive method involves calculating the gradient of the loss function with respect to each parameter independently, without leveraging the computational advantages of knowing the derivatives' interdependencies across layers. For a network with a large number of parameters, this is computationally expensive and inefficient, essentially repeating a substantial amount of calculation needlessly. The complexity becomes substantial as the number of layers (and, as a result, the number of parameters) increases. It becomes a combinatorial problem.
 
-Backpropagation is a far more efficient strategy due to its intrinsic use of the chain rule from calculus to 'remember' past calculations. This technique essentially breaks down the full problem of calculating a derivative on a complex, multi-stage function into smaller, more manageable pieces. Then, it smartly recombines these pieces, significantly reducing computational redundancy. This methodology dramatically reduces the number of computations, particularly for networks with a large number of interconnected layers and parameters.
+Backpropagation is a far more efficient strategy due to its intrinsic use of the chain rule from calculus to ''remember'' past calculations. This technique essentially breaks down the full problem of calculating a derivative on a complex, multi-stage function into smaller, more manageable pieces. Then, it smartly recombines these pieces, significantly reducing computational redundancy. This methodology dramatically reduces the number of computations, particularly for networks with a large number of interconnected layers and parameters.
 
 \paragraph{13. What criteria must the network architecture meet to allow such an optimization procedure?}
 For the backpropagation algorithm to be applicable, several criteria must be met. First of all, each layer function, including the activation functions and the loss function, must be differentiable with respect to their parameters. This is crucial for calculating gradients during the training process. Furthermore, as backpropagation relies on the sequential flow of information from the input layer to the output layer, the network architecture should possess a feedforward, sequential structure without loops or recurrent connections. Loops or recurrent connections can introduce complications in gradient calculations.
 
 \paragraph{14. The function SoftMax and the \textit{loss} of \textit{cross-entropy} are often used together and their gradient is very simple. Show that the \textit{loss} can be simpliﬁed by:
-    \[l = - \sum_{i}^{} y_i \tilde{y}_i + \log_{} (\sum_{i}^{} e^{\tilde{y}_i}).\]}
+    \[l = - \sum_{i}^{} y_i \tilde{y}_i + \log_{} (\sum_{i}^{} e^{\tilde{y}_i})\]}
 Let us define the cross-entropy loss as \( l(y, \hat{y}) = - \sum_{i=1}^{N} y_i \log \hat{y}_i \), where \( N \) represents the total number of examples. The SoftMax function for a vector \( \tilde{y} \in \mathbb{R}^D \) is defined as \( \text{SoftMax}(\tilde{y_i}) = \frac{e^{\tilde{y_i}}}{\sum_{j=1}^{D} e^{\tilde{y_j}}} \). Notably, the output of the SoftMax function serves as the input for the cross-entropy loss, denoted as \( \hat{y}_i = \text{SoftMax}(\tilde{y_i}) \). Let us substitute this value into the expression.
 
 \begin{align*}
@@ -172,8 +179,8 @@ Let us define the cross-entropy loss as \( l(y, \hat{y}) = - \sum_{i=1}^{N} y_i 
                   & = - \sum_{i=1}^{N} y_i \log_{} \frac{e^{\tilde{y_i}}}{\sum_{j=1}^{D} e^{\tilde{y_j}} }                  \\
                   & = - \sum_{i=1}^{N} y_i \left[ \log_{} e^{\tilde{y}_i} - \log_{} \sum_{j=1}^{D} e^{\tilde{y}_j}  \right] \\
                   & = - \sum_{i=1}^{N} y_i \tilde{y}_i - y_i \log_{} \sum_{j=1}^{D}e^{\tilde{y}_j}                          \\
-                  & = - \sum_{i=1}^{N} y_i \tilde{y}_i + \sum_{i=1}^{N} y_i \log_{} (\sum_{j}^{D}e^{\tilde{y}_j}) \\
-                  & = - \sum_{i=1}^{N} y_i \tilde{y}_i + \log_{} (\sum_{j}^{D}e^{\tilde{y}_j}) \sum_{i=1}^{N} y_i 
+                  & = - \sum_{i=1}^{N} y_i \tilde{y}_i + \sum_{i=1}^{N} y_i \log_{} (\sum_{j}^{D}e^{\tilde{y}_j})           \\
+                  & = - \sum_{i=1}^{N} y_i \tilde{y}_i + \log_{} (\sum_{j}^{D}e^{\tilde{y}_j}) \sum_{i=1}^{N} y_i
 \end{align*}
 
 Since $y_i$ is One Hot encoded we know that $\sum_i y_i = 1$. Thus, we have the final expression for the cross-entropy loss:
@@ -197,7 +204,7 @@ $$ l(y, \hat{y}) = - \sum_{i}^{} y_i \tilde{y}_i + \log_{} \left(\sum_{i}^{} e^{
         \text{SoftMax}(\tilde{y})_{n_y} - y_{n_y}
     \end{pmatrix} \\
     = \hat{y} - y
-    .\]
+\]
 
 \paragraph{16. Using the \textit{backpropagation}, write the gradient of the \textit{loss} with respect to the weights of the output layer $ \nabla _{W_y}l $ . Note that writing this gradient uses $ \nabla _{\tilde{y}}l $ . Do the same for $ \nabla _{b_y}l $.}
 
@@ -219,19 +226,19 @@ This can be expressed as a matrix:
 
 First, let's compute $ \tilde{y}_k $
 \begin{align*}
-    \tilde{y}   & = h W_y^T + b^y                                                                                                                                  \\
+    \tilde{y}   & = h W_y^T + b^y                                                                                                        \\
                 & = \begin{pmatrix}
-                        h_{1} & \dots & h_{n_h}
-                    \end{pmatrix} * \begin{pmatrix}
-                                        W_{1, 1}   & \dots  & W_{1, n_y}   \\
-                                        \vdots     & \ddots & \vdots       \\
-                                        W_{n_h, 1} & \dots  & W_{n_h, n_y} \\
-                                    \end{pmatrix} + \begin{pmatrix}
-                                                        b^y_1 & \dots & b^y_{n_y}
-                                                    \end{pmatrix}                                                                                      \\
+        h_{1} & \dots & h_{n_h}
+    \end{pmatrix} * \begin{pmatrix}
+        W_{1, 1}   & \dots  & W_{1, n_y}   \\
+        \vdots     & \ddots & \vdots       \\
+        W_{n_h, 1} & \dots  & W_{n_h, n_y} \\
+    \end{pmatrix} + \begin{pmatrix}
+        b^y_1 & \dots & b^y_{n_y}
+    \end{pmatrix}                                 \\
                 & = \begin{pmatrix}
-                        \sum_{j=1}^{n_h} W^y_{1,j} h_{j} + b^y_1 & \sum_{j=1}^{n_h} W^y_{2,j} h_{j} + b^y_2 & \dots & \sum_{j=1}^{n_h} W^y_{n_h,j} h_{k,j} + b^y_{n_h}
-                    \end{pmatrix} & \in \mathbb{R}^{1 \times n_h} \\
+        \sum_{j=1}^{n_h} W^y_{1,j} h_{j} + b^y_1 & \sum_{j=1}^{n_h} W^y_{2,j} h_{j} + b^y_2 & \dots & \sum_{j=1}^{n_h} W^y_{n_h,j} h_{k,j} + b^y_{n_h}
+    \end{pmatrix}                                                           & \in \mathbb{R}^{1 \times n_h} \\
     \tilde{y}_k & = \sum_{j=1}^{n_h} W^y_{k,j} h_{j} + b_k^y, k \in [1, n_h]
 \end{align*}
 
@@ -260,22 +267,22 @@ So, the gradient of the loss with respect to the weights of the output layer \( 
 
 \begin{align*}
     \nabla_{W_y} l & = \begin{pmatrix}
-                           \frac{\partial l}{\partial W^y_{1,1}}   & \dots  & \frac{\partial l}{\partial W^y_{1,n_h}}    \\
-                           \vdots                                  & \ddots & \vdots                                     \\
-                           \frac{\partial l}{\partial W^y_{n_y,1}} & \dots  & \frac{\partial l}{\partial W^y_{n_y, n_h}}
-                       \end{pmatrix} \\
+        \frac{\partial l}{\partial W^y_{1,1}}   & \dots  & \frac{\partial l}{\partial W^y_{1,n_h}}    \\
+        \vdots                                  & \ddots & \vdots                                     \\
+        \frac{\partial l}{\partial W^y_{n_y,1}} & \dots  & \frac{\partial l}{\partial W^y_{n_y, n_h}}
+    \end{pmatrix}                            \\
                    & = \begin{pmatrix}
-                           (\hat{y}_1 - y_1) h_{1}         & \dots  & (\hat{y}_1 - y_1) h_{n_h}         \\
-                           \vdots                          & \ddots & \vdots                            \\
-                           (\hat{y}_{n_y} - y_{n_y}) h_{1} & \dots  & (\hat{y}_{n_y} - y_{n_y}) h_{n_h}
-                       \end{pmatrix}                  \\
+        (\hat{y}_1 - y_1) h_{1}         & \dots  & (\hat{y}_1 - y_1) h_{n_h}         \\
+        \vdots                          & \ddots & \vdots                            \\
+        (\hat{y}_{n_y} - y_{n_y}) h_{1} & \dots  & (\hat{y}_{n_y} - y_{n_y}) h_{n_h}
+    \end{pmatrix}                            \\
                    & = \begin{pmatrix}
-                           \hat{y}_1 - y_1 \\
-                           \vdots          \\
-                           \hat{y}_{n_y} - y_{n_y}
-                       \end{pmatrix} \begin{pmatrix}
-                                         h_1 & h_2 & \dots & h_{n_h}
-                                     \end{pmatrix}                                                     \\
+        \hat{y}_1 - y_1 \\
+        \vdots          \\
+        \hat{y}_{n_y} - y_{n_y}
+    \end{pmatrix} \begin{pmatrix}
+        h_1 & h_2 & \dots & h_{n_h}
+    \end{pmatrix} \\
                    & = \nabla _{\tilde{y}} ^T h
 \end{align*}
 
@@ -290,107 +297,106 @@ So, the gradient of the loss with respect to the weights of the output layer \( 
 
 \begin{enumerate}
     \item The gradient of the loss with respect to \( \tilde{h} \) can be computed using the chain rule:
-    \[
-        \frac{\partial l}{\partial \tilde{h}_i} = \sum_{k}^{} \frac{\partial l}{\partial h_k} \frac{\partial h_k}{\partial \tilde{h}_i} 
-    .\]
-    Let's compute those two terms
-    \begin{itemize}
-        \item 
-        \[
-            \frac{\partial h_k}{\partial \tilde{h}_i} = \frac{\partial \tanh (\tilde{h_k})}{\partial \tilde{h_i}} = \begin{cases}
-            1 - \tanh^2 (\tilde{h_i}) = 1 - h_i^2 &\text{ if } k = i\\
-            0 &\text{ otherwise}\\
-        \end{cases} 
-    .\]
-    
-    \item Having $ \tilde{y}_i = \sum_{j=1}^{n_h} W_{i,j}^y h_j +b_i^y$ in mind and recovering $ \frac{\partial l}{\partial \tilde{y}_i} = \hat{y}_i - y_i = \delta ^y_i $ from past question.
-    \[
-        \frac{\partial l}{\partial h_k} = \sum_{j=1}^{} \frac{\partial l}{\partial \tilde{y_j}} \frac{\partial \tilde{y}_j}{\partial h_k} = \sum_{j=1}^{} \delta ^y_j W^y_{j,k}
-    .\]
-    \end{itemize}
-    Finaly we have 
-    \begin{align*}
-        \frac{\partial l}{\partial \tilde{h}_i} &= \sum_{k}^{} \frac{\partial l}{\partial h_k} \frac{\partial h_k}{\partial \tilde{h}_i}  \\ 
-        &= \sum_{k}^{} (\sum_{j}^{} \delta ^y_j W^y_{j,k}) \times \begin{cases}
-            1 - h_i^2 &\text{ if } k = i\\
-            0 &\text{ otherwise}\\
-        \end{cases} \\
-        &= (1 - h_i^2) (\sum_{j}^{} \delta ^y_j W^y_{j,i}) \\
-        &= \delta ^h _i     
-    \end{align*}
-    So, the gradient \( \nabla _{\tilde{h}} l \) is a vector with elements $ \delta ^h _i $ 
+          \[
+              \frac{\partial l}{\partial \tilde{h}_i} = \sum_{k}^{} \frac{\partial l}{\partial h_k} \frac{\partial h_k}{\partial \tilde{h}_i}
+          \]
+          Let's compute those two terms:
+          \[
+              \frac{\partial h_k}{\partial \tilde{h}_i} = \frac{\partial \tanh (\tilde{h_k})}{\partial \tilde{h_i}} = \begin{cases}
+                  1 - \tanh^2 (\tilde{h_i}) = 1 - h_i^2 & \text{ if } k = i \\
+                  0                                     & \text{ otherwise} \\
+              \end{cases}
+          \]
 
-    \[
-        \nabla _{\tilde{h}} l = (1 - h^2) \odot (\nabla _{\tilde{y}} l * W^y)
-    .\]
+          Having $ \tilde{y}_i = \sum_{j=1}^{n_h} W_{i,j}^y h_j +b_i^y$ in mind and recovering $ \frac{\partial l}{\partial \tilde{y}_i} = \hat{y}_i - y_i = \delta ^y_i $ from past question:
+          \[
+              \frac{\partial l}{\partial h_k} = \sum_{j=1}^{} \frac{\partial l}{\partial \tilde{y_j}} \frac{\partial \tilde{y}_j}{\partial h_k} = \sum_{j=1}^{} \delta ^y_j W^y_{j,k}
+          \]
+
+          Finally,
+          \begin{align*}
+              \frac{\partial l}{\partial \tilde{h}_i} & = \sum_{k}^{} \frac{\partial l}{\partial h_k} \frac{\partial h_k}{\partial \tilde{h}_i} \\
+                                                      & = \sum_{k}^{} (\sum_{j}^{} \delta ^y_j W^y_{j,k}) \times \begin{cases}
+                  1 - h_i^2 & \text{ if } k = i \\
+                  0         & \text{ otherwise} \\
+              \end{cases}     \\
+                                                      & = (1 - h_i^2) (\sum_{j}^{} \delta ^y_j W^y_{j,i})                                       \\
+                                                      & = \delta ^h _i
+          \end{align*}
+          So, the gradient \( \nabla _{\tilde{h}} l \) is a vector with elements $ \delta ^h _i $:
+
+          \[
+              \nabla _{\tilde{h}} l = (1 - h^2) \odot (\nabla _{\tilde{y}} l * W^y)
+          \]
 
 
-    \item $ \nabla _{W^h} l $ is a matrix composed of elements 
-    \[
-        \frac{\partial l}{\partial W^h _{i,j}} = \sum_{k}^{} \frac{\partial l}{\partial \tilde{h}_k} \frac{\partial \tilde{h}_k}{\partial W^h_{i,j}} 
-    .\]
-    From the previous question we already have $ \frac{\partial l}{\partial h_k} = (1 - h_k^2) (\sum_{j}^{} \delta ^y_j W^y_{j,k}) = \delta_k^h$. So let's compute the other term $ \frac{\partial \tilde{h}_k}{\partial W^h_{i,j}}  $ from $ \tilde{h}_k = \sum_{j=1}^{n_x} W^h_{k,j} x_j + b_k^h $ 
-    
-    \[
-        \frac{\partial \tilde{h}_k}{\partial W^h_{i,j}} = \begin{cases}
-            x_j &\text{ if } k = i\\
-            0 &\text{ otherwise }\\
-        \end{cases} 
-    .\]
-    So \begin{align*}
-        \frac{\partial l}{\partial W^h _{i,j}} &= \sum_{k}^{} \frac{\partial l}{\partial \tilde{h}_k} \frac{\partial \tilde{h}_k}{\partial W^h_{i,j}} \\
-            &= \sum_{k}^{}\delta ^h_k \times \begin{cases}
-                x_j &\text{ if } k = i\\
-                0 &\text{ otherwise }\\
-            \end{cases} \\
-            &= \delta _i^h x_j \\
-        \nabla _W^h &= \nabla _{\tilde{h}} ^T l * x
-    \end{align*}
+    \item $ \nabla _{W^h} l $ is a matrix composed of elements
+          \[
+              \frac{\partial l}{\partial W^h _{i,j}} = \sum_{k}^{} \frac{\partial l}{\partial \tilde{h}_k} \frac{\partial \tilde{h}_k}{\partial W^h_{i,j}}
+          \]
+          From the previous question, we already have $ \frac{\partial l}{\partial h_k} = (1 - h_k^2) (\sum_{j}^{} \delta ^y_j W^y_{j,k}) = \delta_k^h$. So let's compute the other term $ \frac{\partial \tilde{h}_k}{\partial W^h_{i,j}}  $ from $ \tilde{h}_k = \sum_{j=1}^{n_x} W^h_{k,j} x_j + b_k^h $
+
+          \[
+              \frac{\partial \tilde{h}_k}{\partial W^h_{i,j}} = \begin{cases}
+                  x_j & \text{ if } k = i  \\
+                  0   & \text{ otherwise } \\
+              \end{cases}
+          \]
+          So:
+          \begin{align*}
+              \frac{\partial l}{\partial W^h _{i,j}} & = \sum_{k}^{} \frac{\partial l}{\partial \tilde{h}_k} \frac{\partial \tilde{h}_k}{\partial W^h_{i,j}} \\
+                                                     & = \sum_{k}^{}\delta ^h_k \times \begin{cases}
+                  x_j & \text{ if } k = i  \\
+                  0   & \text{ otherwise } \\
+              \end{cases}                                            \\
+                                                     & = \delta _i^h x_j                                                                                     \\
+              \nabla _W^h                            & = \nabla _{\tilde{h}} ^T l * x
+          \end{align*}
 
 
-    \item Last but not least 
-    \[
-        \frac{\partial l}{\partial b_i^j} = \sum_{k}^{} \frac{\partial l}{\partial \tilde{h}_k} \frac{\partial \tilde{h}_k}{\partial b_i^h} = \sum_{k}^{}\delta _k^h * \begin{cases}
-            1 &\text{ if } k = i\\
-            0 &\text{ else}\\
-        \end{cases} = \delta ^h_i
-    .\]
-    
-    \[
-        \nabla _{b^h} = \nabla _{\tilde{h}} l
-    .\]
-    
+    \item Last but not least:
+          \[
+              \frac{\partial l}{\partial b_i^j} = \sum_{k}^{} \frac{\partial l}{\partial \tilde{h}_k} \frac{\partial \tilde{h}_k}{\partial b_i^h} = \sum_{k}^{}\delta _k^h * \begin{cases}
+                  1 & \text{ if } k = i \\
+                  0 & \text{ else}      \\
+              \end{cases} = \delta ^h_i
+          \]
+
+          \[
+              \nabla _{b^h} = \nabla _{\tilde{h}} l
+          \]
+
 \end{enumerate}
 
 \newpage
 \section{Introduction to convolutional networks}
 \subsection{Questions}
 \paragraph{1. Considering a single convolution filter of padding $p$, stride $s$ and kernel size $k$, for an input of size $x \times y \times z$ what will be the output size?
-How much weight is there to learn?
-How much weight would it have taken to learn if a fully-connected layer were to produce an output of the same size?} 
+    How much weight is there to learn?
+    How much weight would it have taken to learn if a fully-connected layer were to produce an output of the same size?}
 Let's note $x_{\text{out}}, y_{\text{out}}, z_{\text{out}}$ our output size. Then, given a convolution filter of padding $p$, stride $s$ and kernel size $k$:
 
 \begin{align}
     \label{eq:1} x_{\text{out}} = \frac{x + 2 \times p - k}{s} + 1 \\
     \label{eq:2} y_{\text{out}} = \frac{y + 2 \times p - k}{s} + 1 \\
-    \label{eq:3} z_{\text{out}} = \frac{z + 2 \times p - k}{s} + 1 
+    \label{eq:3} z_{\text{out}} = \frac{z + 2 \times p - k}{s} + 1
 \end{align}
 
 We have a single convolution filter. Given our kernel of size $ k \times k $, we thus have $ 1 \times k \times k = k^2 $ weights to learn. In a fully-connected layer, we would have $(x \times y \times z \times k^2)$ weights to learn.
 
 \paragraph{2. $ \bigstar $ What are the advantages of convolution over fully-connected layers? What is its main limit?}
-Using fully-connnected layers with image involved \textit{a lot} of parameters, each for one pixel of the image. Fully-connected layer are also sensitive to variance in image even a simple translation.
+Using fully-connected layers with images involves a substantial number of parameters, one for each pixel of the image. Fully-connected layers are also sensitive to variations in images, including simple translations.
 
-From the other side, convolutionnal layer solve those problems. Using convolution with a shared set of weight (for the filter/kernels) accross the entire input permit to learn and detect \textit{local} spacial patterns/features at different locations. Convolutionnal layer also have the ability to hierachicly combine features. The lower layers capture low-level features like edges and textures, while the higher layers capture more complex features and object representations.
+On the other hand, convolutional layers address these issues. By utilizing convolution with a shared set of weights (for filters/kernels) across the entire input, they enable the learning and detection of local spatial patterns and features at various locations. Convolutional layers also possess the ability to hierarchically combine features. Lower layers capture low-level features such as edges and textures, while higher layers capture more intricate features and representations of objects.
 
-The limit is that convolutional layers lack of global context and focus primaly on local patterns. It's hard for them to understand relationships between distant parts of the input, which can be important in some applications.
+However, convolutional layers have limitations in terms of global context. They primarily focus on local patterns and may struggle to comprehend relationships between distant parts of the input, which can be crucial in certain applications (medical imaging, autonomous vehicles...).
 
 \paragraph{3. $ \bigstar $ Why do we use spatial pooling?}
-Spatial pooling permit to gain in invariance, especialy translation. By summarizing a local region with a pooled value, the precise location of the feature becomes less important. It's a form of regularization by selecting the most relevant information.
+Spatial pooling allows for increased invariance, particularly in the context of translation. By summarizing a local region with a pooled value, the precise feature location becomes less critical. This constitutes a form of regularization that prioritizes the most pertinent information.
 
-Polling also permit a dimensionality reduction by reducing spatial dimensions of the outputing feature map. This dimensionality reduction significantly decreases the computational cost of subsequent layers.
+Pooling also facilitates dimensionality reduction by decreasing the spatial dimensions of the resulting feature map. This reduction in dimensionality significantly lowers the computational cost of subsequent layers.
 
-Max and average polling layer are the most used polling layers. Max pooling helps in achieving translation invariance and reducing spatial dimensions. It is effective in preserving the most important features in the input data. Average pooling also reduces spatial dimensions and helps in achieving translation invariance. It can be less sensitive to outliers in the input data compared to max pooling.
+Max and average pooling layers are the most commonly employed pooling techniques. Max pooling aids in achieving translation invariance and reducing spatial dimensions. It effectively preserves the most essential features in the input data. On the other hand, average pooling also reduces spatial dimensions and contributes to achieving translation invariance. It can exhibit greater robustness to outliers in the input data when compared to max pooling.
 
 \paragraph{4. $ \bigstar $ Suppose we try to compute the output of a classical convolutional network for an input image larger than the initially planned size. Can we (without modifying the image) use all or part of the layers of the network on this image?}
 % By definition, a convolution layer does not dependent of the size of the input, it will take the image, do convolution on it till the end of the image, and output another image. So when staking convolution and pooling layer (which do a convolution too), the output size is only dependent from the input size. In some other words, the input size of the image is not a hyperparameter of the convolution layer.
@@ -400,16 +406,16 @@ Max and average polling layer are the most used polling layers. Max pooling help
 % But this time, we need to know the size of the input of our fully-connected layer in advance to set it up (like to initialse the parameters, ...).
 
 % So when using an input image larger than the initially planned size, everything will run until the use of a fully connected layer because it expect a fixed size input. 
-Inherent in its design, a convolution layer in a convolutional network is size-agnostic regarding its input; it simply performs convolutions across the entire span of the input image and outputs a correspondingly altered image. Sequentially, when convolution and pooling layers are stacked together, the resulting output size is purely a function of the input size. To rephrase, the input size of the image is not a critical hyperparameter for the convolution layer.
+A convolution layer in a convolutional network is size-agnostic regarding its input: it simply performs convolutions across the entire span of the input image and outputs a correspondingly altered image. Sequentially, when convolution and pooling layers are stacked together, the resulting output size is purely a function of the input size. To rephrase, the input size of the image is not a critical hyperparameter for the convolution layer.
 
-Within the conventional architecture of a convolutional network, the output derived from successive convolutional and pooling layers is typically 'flattened' to form the input for a subsequent fully-connected layer. Crucially, the size of this flattened vector is contingent on the size of the image output from the preceding convolution layers.
+Within the conventional architecture of a convolutional network, the output derived from successive convolutional and pooling layers is typically ''flattened'' to form the input for a subsequent fully-connected layer. The size of this flattened vector is contingent on the size of the image output from the preceding convolution layers.
 
-The challenge arises when we involve fully connected layers, as their initialization requires a priori knowledge of their input size to properly set up parameters such as weights. Consequently, when an input image is larger than initially planned, the network can operate normally up to the point of the fully connected layer(s), which anticipate input of a predetermined, fixed size.
+The challenge arises when we involve fully connected layers, as their initialization requires a priori knowledge of their input size to properly set up parameters such as weights. Consequently, when an input image is larger than initially planned, the network can operate normally up to the point of the fully connected layers, which anticipate input of a predetermined, fixed size.
 
 \paragraph{5. Show that we can analyze fully-connected layers as particular convolutions.}
-In a fully-connected layer, we associate one pixel of the flattened image too on weight. Both the weight and the flattened image are vector. But if we take the weights rearrange them into a matrix of the shape of the image, we can direclty do a term by term multiplication between this matrix and the image. Which is kind of a one slide convolution ! 
+In a fully-connected layer, each pixel of the flattened image is associated with one weight. Both the weights and the flattened image are vectors. However, if we rearrange the weights into a matrix that matches the shape of the image, we can perform element-wise multiplication between this matrix and the image, which is akin to a one slide convolution!
 
-This $1 \times 1$ convolution use a stride equal to the width of the input image so that the filter doesn't slide to other positions. And has the filter size is exactly the same size as the image. The number of filter is equivalent to the number of neurons in the fully-connected layer.
+This $1 \times 1$ convolution employs a stride equal to the width of the input image, ensuring that the filter remains fixed and does not slide to different positions. Furthermore, the filter size is exactly the same as the image. The number of filters used in this convolution is equivalent to the number of neurons in the fully-connected layer.
 
 \paragraph{6. Suppose that we therefore replace fully-connected by their equivalent in convolutions, answer again the question 4. If we can calculate the output, what is its shape and interest?}
 \textbf{Not sure : }
@@ -425,20 +431,19 @@ For me, as with the fully connected layer,  we still have to know the input size
 We want $ x = x_{out}, y = y_{out} $: let's use our equations \ref{eq:1}, \ref{eq:2}, \ref{eq:3} to find the values of $p$ and $s$.
 \[
     p = \frac{(s-1)x + k - s}{2}
-.\]
+\]
 Knowing $k = 5$ and that our images are of size $32 \times 32 $, we can pick any $p = \frac{31s - 27}{2}$. Because we generally want to use every pixel (and not padding pixels) so we pick $ s = 1 $ so $ p = 2 $ to minimise them both.
 
 
-\paragraph{9. For max poolings, we want to reduce the spatial dimensions by a factor of 2. What padding and stride values are needed?} 
+\paragraph{9. For max poolings, we want to reduce the spatial dimensions by a factor of 2. What padding and stride values are needed?}
 A pooling layer acts like a convolution: let's proceed as in question 8. This time we want $ x_{out} = \frac{1}{2}x, y_{out} = \frac{1}{2}y$.
 \[
     p = \frac{(\frac{1}{2}s - 1) x + k - s}{2}
-.\]
+\]
 Knowing $k = 2$ and that our images are of size $32 \times 32 $, we can pick any $p = \frac{15s - 30}{2}$. We generally want to use every pixel (and not padding pixels) so we pick $ s = 2 $ so $ p = 0 $ to minimise them both.
 
 \paragraph{10. $ \bigstar $ For each layer, indicate the output size and the number of weights to learn. Comment on this repartition.}
-To make things easier, we made a plot of the CNN in figure \ref{AlexNetstylelog}. As you can see we are starting from a 3 channel image of 32 per 32 pixels. As question 8 and 9 suggest, convolution layers keep the same spatial dimension at the outpus as the input and pooling layers reduce the spatial dimensions by two. 
-Here is the number of parameters : 
+To simplify the presentation, we have provided a plot of the CNN architecture in Figure~\ref{fig:AlexNetstylelog}. In this architecture, we begin with a 3-channel image measuring 32 by 32 pixels. As mentioned in questions 8 and 9, convolutional layers maintain the same spatial dimensions in the outputs as in the inputs, while pooling layers reduce the spatial dimensions by a factor of two. The following is a breakdown of the number of parameters:
 \begin{itemize}
     \item conv1: 32 filters of 5 by 5 for 3 channels $\rightarrow 32\times 5\times 5\times 3 = 2,400$ parameters
     \item conv2: 64 filters of 5 by 5 for 32 channels $\rightarrow 64\times 5\times 5\times 32 = 51,200$ parameters
@@ -456,16 +461,16 @@ Here is the number of parameters :
 %     \caption{}
 %     \label{AlexNetstyle}
 % \end{figure}
-\begin{figure}[!htbp]
+\begin{figure}[H]
     \centering
     \includegraphics*[width=\textwidth]{figs/AlexNet_style_log.png}
     \caption{Network architecture}
-    \label{AlexNetstylelog}
+    \label{fig:AlexNetstylelog}
 \end{figure}
 
 
 \paragraph{11. What is the total number of weights to learn? Compare that to the number of examples.}
-It makes a total of $ 1,192,024 $ parameters to train with 60,000 (6,000 images per class). It should be ok.
+It makes a total of $ 1,192,024 $ parameters to train with 60,000 (6,000 images per class), which is reasonable.
 %%%%%%%%%%%%%%%%
 % IS IT OK ?????
 %%%%%%%%%%%%%%%%
@@ -475,50 +480,57 @@ De quoi il parle ??? feur
 
 \subsubsection{Network learning}
 \paragraph{14. $ \bigstar $ In the provided code, what is the major difference between the way to calculate loss and accuracy in train and in test (other than the the difference in data)?}
-The difference here in the code is that we don't give an optimizer to \textit{epoch()} and so we do not train the network on test examples. There is no backward of the loss.
-% Le code de base compute la loss à chaque batch, alors qu'on change les paramètres à chaque batch, donc ça rend les comparaisons plus difficile. En général (et c'est ce que j'ai changé dans le code), on compure la los
+The difference in the code lies in the fact that we do not provide an optimizer to the \texttt{epoch()} function. Consequently, we do not train the network using test examples, and there is no backward pass to calculate and update the loss.
+% Le code de base compute la loss à chaque batch, alors qu'on change les paramètres à chaque batch, donc ça rend les comparaisons plus difficile. En général (et c'est ce que j'ai changé dans le code), on compute la loss
 
 \paragraph{16. $ \bigstar $ What are the effects of the learning rate and of the batch-size?}
-\begin{figure*}
+The learning rate and batch size are critical hyperparameters that significantly impact training performance, speed, and stability:
+
+\begin{itemize}
+    \item A high learning rate can cause the model to overshoot the minimum, causing divergent behavior and an inability for the model to learn effectively. On the other hand, having a low learning rate can slow down the training process significantly, possibly leading to a premature convergence to suboptimal solutions. In some cases, a lower learning rate results in a more precise convergence by allowing the model to explore the parameter space thoroughly. Figure~\ref{fig:learning_rate_influence} illustrates the effects of different learning rates with a fixed batch size.
+    \item Larger batch size provides a more accurate estimate of the gradient, potentially leading to more stable and consistent training steps. However, this comes with increased memory usage. Conversely, smaller batch sizes can introduce noise, making the path to convergence less direct and possibly longer in terms of epochs. Smaller batches reduce memory requirements, making them suitable for resource-constrained systems. Figure~\ref{fig:batch_size_influence} illustrates the impact of various batch sizes with a fixed learning rate.
+
+\end{itemize}
+
+It's important to note that learning rate and batch size are often interrelated. Changes in batch size may require adjusting the learning rate to maintain training quality. This relationship arises from the need to balance the aggressiveness of updates when averaging gradients across more samples. Typically, a linear scaling rule is applied: multiplying the batch size by a factor $k$ also multiplies the learning rate by $k$, while keeping other hyperparameters constant. This relationship is shown in Figure~\ref{fig:linear_scaling}.
+
+\begin{figure}[H]
     \centering
-    \begin{subfigure}[b]{0.475\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{figs/batch32_lr0.1.pdf}
-        \caption[Network2]%
-        {{\small Network 1}}    
-        \label{fig:mean and std of net14}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.475\textwidth}  
-        \centering 
-        \includegraphics[width=\textwidth]{figs/batch32_lr0.1.pdf}
-        \caption[]%
-        {{\small Network 2}}    
-        \label{fig:mean and std of net24}
-    \end{subfigure}
-    \vskip\baselineskip
-    \begin{subfigure}[b]{0.475\textwidth}   
-        \centering 
-        \includegraphics[width=\textwidth]{figs/batch32_lr0.1.pdf}
-        \caption[]%
-        {{\small Network 3}}    
-        \label{fig:mean and std of net34}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.475\textwidth}   
-        \centering 
-        \includegraphics[width=\textwidth]{figs/batch32_lr0.1.pdf}
-        \caption[]%
-        {{\small Network 4}}    
-        \label{fig:mean and std of net44}
-    \end{subfigure}
-    \caption[ The average and standard deviation of critical parameters ]
-    {\small The average and standard deviation of critical parameters: Region R4} 
-    \label{fig:mean and std of nets}
-\end{figure*}
+    \includegraphics*[width=\textwidth]{figs/CNN/learning_rate_influence.pdf}
+    \caption{Influence of learning rate with a batch size fixed at 32}
+    \label{fig:learning_rate_influence}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=\textwidth]{figs/CNN/batch_size_influence.pdf}
+    \caption{Influence of batch size rate with a learnig rate fixed at 0.01}
+    \label{fig:batch_size_influence}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=\textwidth]{figs/CNN/linear_scaling.pdf}
+    \caption{Relationship between batch size and learning rate}
+    \label{fig:linear_scaling}
+\end{figure}
+
+
 
 \paragraph{17. What is the error at the start of the first epoch, in train and test? How can you interpret this?}
-The accuracy on the test set is better that the accuracy on train. It's because. 
+
+For the following experiments, we will compare our results with those presented in Figure~\ref{fig:base_result}, where a batch size of 128 and a learning rate of 0.01 were employed.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=\textwidth]{figs/CNN/base_result.pdf}
+    \caption{Accuracy and losses in train and test}
+    \label{fig:base_result}
+\end{figure}
+
+At the first epoch, we have respectively in train and test an accuracy of 0.0101 and of 0.0989 for a loss of 2.3007 and 2.2976. 
+
+The accuracy on the test set is better that the accuracy on train. It's because.
 We must be aware that the training loss and accuracy is calculated \textbf{at every batch} so before the end of the first epoch, parameters and so result (loss and accuracy) are variating a lot. It mean that at the first batch of the first epoch we take into account the loss calculated only with \textit{batch\_size} examples.
 
 Contrary to the test loss and accuracy that are computed at the end of the first epoch, after the model have seen all training example. Those value are more true that those from train at the first epoch % pire phrase
@@ -531,6 +543,13 @@ We observe overfitting. We can see that starting from epoch three or four that o
 \subsubsection{Standardization of examples}
 \paragraph{19. Describe your experimental results.}
 
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=\textwidth]{figs/CNN/standardization.pdf}
+    \caption{Accuracy and losses in train and test}
+    \label{fig:standardization}
+\end{figure}
+
 \paragraph{20. Why only calculate the average image on the training examples and normalize the validation examples with the same image?}
 
 \paragraph{21. Bonus : There are other normalization schemes that can be more efficient like ZCA normalization. Try other methods, explain the differences and compare them to the one requested.}
@@ -538,18 +557,73 @@ We observe overfitting. We can see that starting from epoch three or four that o
 \subsubsection{Increase in the number of training examples by \textit{data increase}}
 \paragraph{22. Describe your experimental results and compare them to previouscrease results.}
 
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=\textwidth]{figs/CNN/dataincrease.pdf}
+    \caption{Accuracy and losses in train and test}
+    \label{fig:dataincrease}
+\end{figure}
+
 \paragraph{23. Does this horizontal symmetry approach seems usable on all types of images? In what cases can it be or not be?}
 
 \paragraph{24. What limits do you see in this type of data increase by transformation of the dataset?}
 
+\paragraph{24. What limits do you see in this type of data increase by transformation of the dataset?}
+
+\paragraph{25. Bonus : Other data augmentation methods are possible. Find out which ones and test some.}
+rotation, flips, zoom in/out, change perspective, affine transformation, change color/brightness/contrast/saturation/hue/sharpness, gaussian blur, polarize, solarize, erase pixels,  permute channels, grayscale, 
+
 \subsubsection{Variants of the optimization algorithm}
 \paragraph{26. Describe your experimental results and compare them to previous results, including learning stability.}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=\textwidth]{figs/CNN/optim_variants.pdf}
+    \caption{Using a scheduler with SGD}
+    \label{fig:optim_variants}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=\textwidth]{figs/CNN/schedulers_comparison.pdf}
+    \caption{Comparison of schedulers on SGD}
+    \label{fig:schedulers_comparison}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=\textwidth]{figs/CNN/schedulers_influence.pdf}
+    \caption{Learning rates curves}
+    \label{fig:schedulers_influence}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=\textwidth]{figs/CNN/optimizers_influence.pdf}
+    \caption{Influence of different optimizers}
+    \label{fig:optimizers_influence}
+\end{figure}
 
 \paragraph{27. Why does this method improve learning?}
 
 
 \subsubsection{Regularization of the network by \textit{dropout}}
 \paragraph{29. Describe your experimental results and compare them to previous results.}
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=\textwidth]{figs/CNN/dropout.pdf}
+    \caption{Accuracy and losses in train and test, using a dropout on \texttt{fc4}}
+    \label{fig:dropout}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=\textwidth]{figs/CNN/dropout_with_scheduler.pdf}
+    \caption{Accuracy and losses in train and test, using a dropout on \texttt{fc4} and a scheduler}
+    \label{fig:dropout_with_scheduler}
+\end{figure}
 
 \paragraph{30. What is regularization in general?}
 
@@ -562,5 +636,29 @@ We observe overfitting. We can see that starting from epoch three or four that o
 \subsubsection{Use of \textit{batch normalization}}
 
 \paragraph{34. Describe your experimental results and compare them to previous results.}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=\textwidth]{figs/CNN/batchnorm.pdf}
+    \caption{Accuracy and losses in train and test}
+    \label{fig:batchnorm}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=\textwidth]{figs/CNN/batchnorm_with_dropout.pdf}
+    \caption{Accuracy and losses in train and test, with dropout layer}
+    \label{fig:batchnorm_with_dropout}
+\end{figure}
+
+\subsubsection{Combination of all methods}
+Now that we have individually explored various methods to enhance our results within a relatively straightforward convolutional network architecture, one might wonder what happens when we combine all these techniques, much like the Power Rangers assembling with their mechs. Our expectation is that this comprehensive approach will yield significantly improved results characterized by minimal overfitting, strong generalization, and enhanced robustness. Results confirm our expectation and are displayed in Figure~\ref{fig:combined}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=\textwidth]{figs/CNN/combined.pdf}
+    \caption{Accuracy and losses in train and test}
+    \label{fig:combined}
+\end{figure}
 
 \end{document}

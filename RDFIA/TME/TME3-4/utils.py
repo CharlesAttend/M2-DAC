@@ -93,6 +93,6 @@ class AccLossPlot(object):
         plt.xlabel("Epoch")
         plt.ylabel("Loss")
         plt.legend()
-        if save_name:
+        if save_name is not None:
             plt.savefig(f"{save_name}.pdf", dpi=100, bbox_inches="tight")
         plt.show()
