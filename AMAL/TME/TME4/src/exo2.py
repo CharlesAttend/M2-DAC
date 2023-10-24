@@ -18,7 +18,7 @@ LENGTH = 20
 DIM_INPUT = 2
 # Taille du batch
 BATCH_SIZE = 32
-HIDDEN_SIZE = 10
+HIDDEN_SIZE = 20
 PATH = "TME/TME4/data/"
 
 
@@ -43,8 +43,12 @@ model = RNN(DIM_INPUT, HIDDEN_SIZE, CLASSES, batch_first=True)
 model.to(device)
 loss_train_per_epoch = []
 loss_test_per_epoch = []
-accuracy_train = torchmetrics.classification.Accuracy(task="multiclass", num_classes=5)
-accuracy_test = torchmetrics.classification.Accuracy(task="multiclass", num_classes=5)
+accuracy_train = torchmetrics.classification.Accuracy(
+    task="multiclass", num_classes=CLASSES
+)
+accuracy_test = torchmetrics.classification.Accuracy(
+    task="multiclass", num_classes=CLASSES
+)
 optimizer = torch.optim.Adam(model.parameters(), lr=lr)
 for epoch in tqdm(range(total_epoch)):
     epoch_loss = 0
