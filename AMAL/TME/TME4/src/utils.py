@@ -153,5 +153,5 @@ class ForecastMetroDataset(Dataset):
         day = i % self.nb_days
         return (
             self.data[day, timeslot : (timeslot + self.length - 1)],
-            self.data[day, (timeslot + 1) : (timeslot + self.length)],
+            self.data[day, (timeslot + 1) : (timeslot + self.length)]
         )
