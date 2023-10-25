@@ -515,8 +515,6 @@ It's important to note that learning rate and batch size are often interrelated.
     \label{fig:linear_scaling}
 \end{figure}
 
-
-
 \paragraph{17. What is the error at the start of the first epoch, in train and test? How can you interpret this?}
 
 For the following experiments, we will compare our results with those presented in Figure~\ref{fig:base_result}, where a batch size of 128 and a learning rate of 0.01 were employed.
@@ -543,6 +541,10 @@ We observe overfitting. We can see that starting from epoch three or four that o
 \subsubsection{Standardization of examples}
 \paragraph{19. Describe your experimental results.}
 
+Standardization helps mitigate the issues caused by the varying scales and ranges in raw data. By doing this, we can expect improved model training, consistent data distribution and reduced numerical instability.
+
+In our experimental results, we do find that standardizing accelerates model training, as we need 20 less epochs to reach convergence in train. Furthermore, we observe increased stability, both in loss and accuracy.
+
 \begin{figure}[H]
     \centering
     \includegraphics*[width=\textwidth]{figs/CNN/standardization.pdf}
@@ -552,10 +554,16 @@ We observe overfitting. We can see that starting from epoch three or four that o
 
 \paragraph{20. Why only calculate the average image on the training examples and normalize the validation examples with the same image?}
 
+The primary purpose of this practice is to replicate a real-world scenario where the model must make predictions on unfamiliar data. During training, the model learns the statistical properties of the training data, such as mean and standard deviation. Calculating these statistics using the validation set would inadvertently expose the model to information about the validation data, violating the principle that the validation set should remain unseen. This could result in overly optimistic performance estimates, such as inflated accuracy, and would not accurately reflect how the model would perform on entirely new data.
+
+To maintain the integrity of the training process, we compute the mean and standard deviation exclusively from the training examples. These same statistics are then applied to normalize the validation examples. This ensures that the model assesses its performance on data that has been processed similarly to the training data, without prior knowledge of the validation set's specific characteristics. This practice is crucial for an unbiased evaluation of the model's performance and its capacity to generalize to new, unseen data.
+
 \paragraph{21. Bonus : There are other normalization schemes that can be more efficient like ZCA normalization. Try other methods, explain the differences and compare them to the one requested.}
 
 \subsubsection{Increase in the number of training examples by \textit{data increase}}
-\paragraph{22. Describe your experimental results and compare them to previouscrease results.}
+\paragraph{22. Describe your experimental results and compare them to previous results.}
+
+By artificially increasing our dataset, we expect to have a model that generalize better, as it becomes less sensitive to the specifities of the training images, due to the introduction of variability. Moreover, random crops and flips introduce a level of perturbation to the data, helping the model to become more robust to variations it might encounter in real-world scenarios.
 
 \begin{figure}[H]
     \centering
@@ -564,17 +572,21 @@ We observe overfitting. We can see that starting from epoch three or four that o
     \label{fig:dataincrease}
 \end{figure}
 
+Our experimental results show that our model generalizes much better and we observe less overfitting, which is good.
+
 \paragraph{23. Does this horizontal symmetry approach seems usable on all types of images? In what cases can it be or not be?}
+For many general tasks, especially those involving natural scenes or objects, horizontal flipping does not change the essence of the subject. For instance, a car is still recognizable as a car, whether flipped or not. This technique is effective in such contexts, contributing to model robustness without misleading the training process. However, in tasks where orientation is crucial to the object's identity or the scene's context, flipping may not be suitable. For example, in handwritten text recognition, letter and number orientation is fundamental, and flipping changes the characters' semantics. Similarly, in scenarios like medical imaging, where a left-right flip might alter the diagnosis (consider organs' positions), this method is not applicable.
 
 \paragraph{24. What limits do you see in this type of data increase by transformation of the dataset?}
-
-\paragraph{24. What limits do you see in this type of data increase by transformation of the dataset?}
+Augmentation can sometimes exacerbate class imbalances, particularly if transformations are applied uniformly across classes without considering their initial distribution. Augmenting already overrepresented classes can intensify the imbalance. Some transformations might introduce features that are unnatural, potentially leading the model to learn false patterns. For instance, excessive rotation or scaling might create unnatural shapes or perspectives that the model might wrongly interpret as relevant features. Data augmentation, especially sophisticated methods, increases the computational burden. It requires additional processing for each image and can slow down the training process, demanding more efficient hardware solutions. While augmentation expands the dataset, it doesn't contribute new information beyond the initial data's constraints. The transformations create variability but within the context of existing data, possibly limiting the model's ability to generalize in radically new scenarios.
 
 \paragraph{25. Bonus : Other data augmentation methods are possible. Find out which ones and test some.}
-rotation, flips, zoom in/out, change perspective, affine transformation, change color/brightness/contrast/saturation/hue/sharpness, gaussian blur, polarize, solarize, erase pixels,  permute channels, grayscale, 
+A wide array of augmentation methods is available, including but not limited to rotation, flips, zooming, perspective alteration, affine transformations, color adjustments (brightness, contrast, saturation, hue), sharpness modification, Gaussian blur, polarization, solarization, pixel erasure, channel permutation, grayscale conversion, and more.
 
 \subsubsection{Variants of the optimization algorithm}
 \paragraph{26. Describe your experimental results and compare them to previous results, including learning stability.}
+
+Incorporating a learning rate scheduler controls how quickly or slowly a model adapts to the problem at hand. Thus, we expect a controlled model convergence, as the model's training process benefits from a more cautious approach to reaching the global minimum of the loss function by gradually decreasing the learning rate. It should also permits to avoid plateaus, i.e. regions where the model's accuracy does not improve significantly due to slow learning. Last, we expect an enhanced training stability.
 
 \begin{figure}[H]
     \centering
@@ -583,17 +595,28 @@ rotation, flips, zoom in/out, change perspective, affine transformation, change 
     \label{fig:optim_variants}
 \end{figure}
 
+\paragraph{27. Why does this method improve learning?}
+The fundamental reason exponential decay learning rate scheduling improves learning lies in its dynamic adaptation to the training process's needs. In the early phases of training, where the initial parameters are likely far from optimal, a larger learning rate helps cover more ground. However, as training progresses, it becomes more about refinement, requiring smaller updates to fine-tune the model, something achieved by reducing the learning rate.
+
+Moreover, this method acknowledges that the landscape of the loss function is not uniformly shaped. Some areas might be steep (necessitating larger steps for efficiency), while others might be flat or have a complex curvature (where smaller steps are necessary for finding the precise minimum). An exponential decay schedule for the learning rate adapts to these needs inherently, allowing for a more nuanced and, consequently, more effective approach to model training.
+
+However, it's essential to approach the setting of the initial learning rate and decay factor with care, as these hyperparameters can significantly affect the training's effectiveness and efficiency. Too rapid a decay might mean the learning rate reduces too quickly, curtailing the model's capacity to learn, while too slow a decay might keep the learning rate too high, leading to the aforementioned issues of overshooting or oscillating around the minimum.
+
+\paragraph{28. \textbf{Bonus}: Many other variants of SGD exist and many learning rate planning strategies exist. Which ones? Test some of them.}
+
+Here, we used different variations of optimizers and learning rate schedulers.
+
 \begin{figure}[H]
     \centering
     \includegraphics*[width=\textwidth]{figs/CNN/schedulers_comparison.pdf}
-    \caption{Comparison of schedulers on SGD}
+    \caption{Learning rates curves}
     \label{fig:schedulers_comparison}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics*[width=\textwidth]{figs/CNN/schedulers_influence.pdf}
-    \caption{Learning rates curves}
+    \caption{Influence of different schedulers on SGD}
     \label{fig:schedulers_influence}
 \end{figure}
 
@@ -604,12 +627,10 @@ rotation, flips, zoom in/out, change perspective, affine transformation, change 
     \label{fig:optimizers_influence}
 \end{figure}
 
-\paragraph{27. Why does this method improve learning?}
-
-
 \subsubsection{Regularization of the network by \textit{dropout}}
 \paragraph{29. Describe your experimental results and compare them to previous results.}
 
+Integrating a dropout layer in a neural network is a strategic move to combat the risk of overfitting, especially before a fully connected layer that has a substantial number of weights. Thus, we expect reduced overfitting and enhanced network performance.
 
 \begin{figure}[H]
     \centering
