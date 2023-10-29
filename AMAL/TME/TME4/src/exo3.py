@@ -41,10 +41,10 @@ for epoch in tqdm(range(total_epoch)):
     epoch_loss = 0
     epoch_loss_test = 0
     for x, y in data_train:
-        x.to(device)
+        x = x.to(device)
+        y = y.to(device)
         for i in range(CLASSES):
             x_station_i, y_station_i = x[:, :, i, :], y[:, :, i, :]
-            x_station_i = x_station_i.to(device)
             # ic(x_station_i.size())
             # ic(y.size())
             optimizer.zero_grad()
@@ -53,7 +53,7 @@ for epoch in tqdm(range(total_epoch)):
                 (x_station_i.size(0), HIDDEN_SIZE), device=device
             )  # (batch_size, hidden_size)
             h = model(x_station_i, h)
-            y_hat = model.decode(h)  # décone uniquement le dernier h
+            y_hat = model.decode(h) 
             # ic(y_station_i.size())
             # ic(y_hat.size())
             loss = criterion(y_hat, y_station_i)
@@ -64,10 +64,10 @@ for epoch in tqdm(range(total_epoch)):
     # Eval
     with torch.no_grad():
         for x, y in data_test:
-            x.to(device)
+            x = x.to(device)
+            y = y.to(device)
             for i in range(CLASSES):
                 x_station_i, y_station_i = x[:, :, i, :], y[:, :, i, :]
-                x_station_i = x_station_i.to(device)
 
                 h = torch.zeros(
                     (x_station_i.size(0), HIDDEN_SIZE), device=device

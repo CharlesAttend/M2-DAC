@@ -43,7 +43,7 @@ class RNN(nn.Module):
         -------
         h_final : (length, batch, hidden_size)
         """
-        h_final = torch.zeros((h.size(0), x.size(1), h.size(1)))
+        h_final = torch.zeros((h.size(0), x.size(1), h.size(1)), device=device)
         # ic(h_final.size())
         if self.batch_first:
             for i in range(x.size(1)):
