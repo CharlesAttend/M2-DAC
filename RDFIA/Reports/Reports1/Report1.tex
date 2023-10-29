@@ -425,9 +425,17 @@ Fully connected layers usually expect inputs of a specific size. However, if we 
 %%%%%%%%%%%%%%%%%%%%% A VERIFIER 
 
 \paragraph{7. We call the receptive field of a neuron the set of pixels of the image on which the output of this neuron depends. What are the sizes of the receptive fields of the neurons of the first and second convolutional layers? Can you imagine what happens to the deeper layers? How to interpret it?}
-Calculating the receptive field's size is done based on the kernel size, stride, and padding of the convolutional layers, and it grows progressively larger in deeper layers due to successive convolutions.
+% Calculating the receptive field's size is done based on the kernel size, stride, and padding of the convolutional layers, and it grows progressively larger in deeper layers due to successive convolutions.
 
-% https://distill.pub/2019/computing-receptive-fields/#solving-receptive-field-region 
+The receptive field (RF) $l_k$ of layer $k$ is:
+
+$$ l_k = l_{k-1} + ((f_k - 1) * \prod_{i=1}^{k-1}s_i) $$
+
+where $l_{k-1}$ is the receptive field of layer $k-1$, $f_k$ is the filter size (height or width, but assuming they are the same here), and $s_i$ is the stride of layer $i$.
+
+The formula above calculates receptive field from bottom up (from layer 1). Intuitively, RF in layer $k$ covers $(f_k - 1) * s_{k-1}$ more pixels relative with layer $k-1$. However, the increment needs to be translated to the first layer, so the increments is a factorial --- a stride in layer $k-1$ is exponentially more strides in the lower layers.
+
+% TODO https://distill.pub/2019/computing-receptive-fields/#solving-receptive-field-region 
 
 \subsection{Training \textit{from scratch} of the model}
 \subsubsection{Network architecture}
@@ -543,7 +551,7 @@ In contrast, test loss and accuracy are determined at the end of the first epoch
 % Contrary to the test loss and accuracy that are computed at the end of the first epoch, after the model have seen all training example. Those value are more true that those from train at the first epoch % pire phrase
 
 \paragraph{18. $ \bigstar $ Interpret the results. What's wrong? What is this phenomenon?}
-We observe overfitting. This phenomenon becomes evident around the thirtieth epoch when our test accuracy plateaus at approximately 60~\%, while the training accuracy continues to improve. This signifies that while the model is improving its performance on the training dataset, it is struggling to generalize effectively to new, unseen test images.
+We observe overfitting, as our caution led us to anticipate. This phenomenon becomes evident around the thirtieth epoch when our test accuracy plateaus at approximately 60~\%, while the training accuracy continues to improve. This signifies that while the model is improving its performance on the training dataset, it is struggling to generalize effectively to new, unseen test images.
 
 \subsection{Results improvements}
 \subsubsection{Standardization of examples}
@@ -603,6 +611,15 @@ Augmentation can sometimes exacerbate class imbalances, particularly if transfor
 
 \paragraph{25. Bonus : Other data augmentation methods are possible. Find out which ones and test some.}
 A wide array of augmentation methods is available, including but not limited to rotation, flips, zooming, perspective alteration, affine transformations, color adjustments (brightness, contrast, saturation, hue), sharpness modification, Gaussian blur, polarization, solarization, pixel erasure, channel permutation, grayscale conversion, and more.
+
+We tried random erasing and random rotation on train dataset and gaussian blur on test dataset, results are displayed on figure~\ref{fig:dataincrease_bis}. 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=\textwidth]{figs/CNN/dataincrease_bis.pdf}
+    \caption{Accuracy and losses in train and test using data augmentation}
+    \label{fig:dataincrease_bis}
+\end{figure}
 
 \subsubsection{Variants of the optimization algorithm}
 \paragraph{26. Describe your experimental results and compare them to previous results, including learning stability.}
