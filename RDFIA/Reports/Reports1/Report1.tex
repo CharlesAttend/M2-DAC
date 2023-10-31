@@ -743,4 +743,127 @@ Now that we have individually explored various methods to enhance our results wi
     \label{fig:combined}
 \end{figure}
 
+
+
+
+\section{Introduction to transformers}
+\subsection{Self Attention}
+\paragraph{What is the main feature of self-attention, especially compared to its convolutional counterpart? What is its main challenge in terms of computation/memory?}
+Unlike convolutional layers that consider a local neighborhood around each input position, self-attention can weigh all positions across the entire sequence, providing a form of global receptive field. This is beneficial for tasks where the relevant context can be far from the current position. Convolutional layers have a fixed receptive field, which limits their ability to capture long-range dependencies unless many layers are stacked or dilated convolutions are used. 
+
+The primary challenge of self-attention is its computational and memory complexity, particularly the quadratic complexity with respect to the sequence length. In self-attention, every element in the input sequence interacts with every other element, leading to a time and space complexity of something like $ O(n^2) $, where $n$ is the length of the input sequence. This makes self-attention computationally expensive and memory-intensive for long sequences.
+
+\paragraph{At first, we are going to only consider the simple case of one head. Write the equations and complete the following code. And don't forget a final linear projection at the end!}
+
+First we need to compute three different linear projection of the input $ X $ : the Query $ Q $, the Key $ K $, and the Value $ V $.
+\begin{align*}
+    Q &= X W_q, \\
+    K &= X W_k, \\
+    V &= X W_v  \\
+\end{align*}
+
+
+The main part of attention is the dot product between the Query and the Key. Those are a set of vector that we learn. The goal is to learn representation of Key that answer the Query to orient the attention. The dot product is high where the model need attention. 
+
+But we must be aware that when the dimensions of the key and query vectors are large, the dot products can become very large. This can result in large values in the softmax function, leading to vanishing gradients during backpropagation. Scaling down the dot products by $ \sqrt[]{d_k} $ (where $ d_k $  is the dimensionality of the query and key vectors) helps in keeping the gradients in a manageable range, which in turn stabilizes the training. As the variance of the dot product grows with the dimensionality, it also keep it constant.
+
+\begin{align*}
+    \text{Attention}(Q, K, V) &= \text{Softmax}\left(\frac{QK^t}{\sqrt{d_k}}\right)V \\
+\end{align*}
+
+The Value matrix represents the actual content of the input tokens. Once the attention scores are computed, they are used to weight the value vectors $ V $.
+
+\subsection{Multi-head self-attention}
+
+\paragraph{Write the equations of Multi-Heads Self-Attention.}
+\[
+    \text{MultiHead}(Q, K, V) = \text{Concat}(\text{head}_1, ..., \text{head}_h)W^O
+.\]
+where $\text{head}_i = \text{Attention}(QW_i^Q, KW_i^K, VW_i^V)$. The Attention function is the same as described in the single-head attention, and $W^O$ is a final linear layer's weights.
+
+\subsection{Transfomer block}
+
+\paragraph{Write the equations of the transformer block.}
+$y = MLP(LayerNorm)$
+
+\subsection{Full ViT model}
+
+\paragraph{Explain what is a Class token and why we use it?}
+The class token is positionned as the first token. It is represented as a learnable vector which gets updated during the forward pass. It accumulate information from different parts of the image as it gets updated through the Transformer layers. As it sum-up all the image, we use it to classify the image.
+
+\paragraph{Explain what is the positional embedding (PE) and why it is important?}
+The PE are used to provide the spacial information to the model. Here we use sinusoidal encoding, it provide a fixed, unique and easy to generate encodding for the position. 
+
+It look something like \href{https://miro.medium.com/v2/resize:fit:640/format:webp/1*erwsFgn3I-FGzUKOIeQSAw.png}{that}.
+
+Another approach is to learn this positional embedding. This method allows the model to learn the most useful positional representations.
+
+This positionnal embedding is then sum to the image embedding.
+
+\subsection{Experiment on MNIST!}
+The overall performance of our small transformer is really good on MNIST. The convergence is quick and the accuracy really high for every experiments.
+
+\subsubsection{Hyperparameters influences}
+As we did in previus experiments, we'll analyse the influence of hyperparmeter by ploting loss and accuracy on the train and test dataset.
+
+\paragraph{Embed dimension}
+First let's have a look on the embeded dimension performance in figure~\ref*{fig:embed_dim_influence}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=\textwidth]{figs/Transformers/embed_dim_influence.pdf}
+    \caption{Influence of the size of the embed dimension}
+    \label{fig:embed_dim_influence}
+\end{figure}
+
+In this figure we can see that, even if it achieve to converge, an embeding dimension of 16 take more time than the other size. On the other side, the size of 128 see it test loss rizing back around the 11th epoch.
+
+As we could expect, having a bigger embed dimension can help but is prone to overfitting as we can see with the size 12. This should be also take more time (in term of minute) to train as there is more parameter. 
+
+On the other hand, the embeding size of 16 achive the same performance as the other size but with less parameters and so less energy and time. In Occam's mind, simplicity could be a great option to keed in mind.
+
+\paragraph{Patch size}
+Figure~\ref*{fig:patch_size_influence} denote the influence of the patch size on learning. As in the previous paragraph, we can see that all conditions end to converge to nearly the same accuracy. But the test loss, for its part, is more expressive and allow some conclusion.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=\textwidth]{figs/Transformers/patch_size_influence.pdf}
+    \caption{Influence of the patch size}
+    \label{fig:patch_size_influence}
+\end{figure}
+
+As expected, patch size of 2 by 2 pixel had more difficulty to learn because of it's realy small size. Patch of 28 by 28 pixel is equivalent to the size of MNIST image so no patch was made. This modality, with patch of 14 pixel, has the lowest starting loss and keep this property during nearly all the epoch. 
+
+\paragraph{Number of transformers blocks}
+We can see the influence of the number of transformers block in figure~\ref*{fig:nb_block_influence}. This experiment look a lot like the one with the embeding size. All modality converge to a high accurac. The more we add transformers block, the less we need epoch to converge. But a high number of block can lead to overfit as we can see with test loss curve when using height blocks behing higher than the other curve.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=\textwidth]{figs/Transformers/nb_block_influence.pdf}
+    \caption{Influence of the number of transformers blocks}
+    \label{fig:nb_block_influence}
+\end{figure}
+
+\paragraph{Number of heads in a block}
+Again, the test lost is the most valuable part of the figure~\ref*{fig:num_heads_influence} as other part converged to the same point. In this plot, it look like the more self attention there are, the best are the result. Furthermore we can see that test loss curve do not overlap, giving more confidence in those results.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=\textwidth]{figs/Transformers/num_heads_influence.pdf}
+    \caption{Influence of the number of self attention head in one transformer block }
+    \label{fig:num_heads_influence}
+\end{figure}
+
+\paragraph{MLP hidden layer size}
+
+\begin{figure}[H]
+    \centering
+    % \includegraphics*[width=\textwidth]{figs/Transformers/mlp_ratio_influence.pdf}
+    \caption{Influence of the hidden layer size in the MLP part of a transformer block}
+    \label{fig:mlp_ratio_influence}
+\end{figure}
+
+
+\subsection{Larger transformers}
+
 \end{document}
