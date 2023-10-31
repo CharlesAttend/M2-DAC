@@ -1,0 +1,13 @@
+digraph Tree {
+node [shape=box, style="filled", color="black", fontname="helvetica"] ;
+edge [fontname="helvetica"] ;
+0 [label="Nationalite_Suisse <= 0.5\nentropy = 0.971\nsamples = 5\nvalue = [3, 2]\nclass = 1", fillcolor="#f6d5bd"] ;
+1 [label="Majeur?_non <= 0.5\nentropy = 0.918\nsamples = 3\nvalue = [1, 2]\nclass = -1", fillcolor="#9ccef2"] ;
+0 -> 1 [labeldistance=2.5, labelangle=45, headlabel="True"] ;
+2 [label="entropy = 0.0\nsamples = 2\nvalue = [0, 2]\nclass = -1", fillcolor="#399de5"] ;
+1 -> 2 ;
+3 [label="entropy = 0.0\nsamples = 1\nvalue = [1, 0]\nclass = 1", fillcolor="#e58139"] ;
+1 -> 3 ;
+4 [label="entropy = 0.0\nsamples = 2\nvalue = [2, 0]\nclass = 1", fillcolor="#e58139"] ;
+0 -> 4 [labeldistance=2.5, labelangle=-45, headlabel="False"] ;
+}
