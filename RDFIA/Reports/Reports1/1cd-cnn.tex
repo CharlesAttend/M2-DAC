@@ -1,0 +1,383 @@
+\chapter{Introduction to convolutional networks}
+\section{Questions}
+\paragraph{1. Considering a single convolution filter of padding $p$, stride $s$ and kernel size $k$, for an input of size $x \times y \times z$ what will be the output size? How much weight is there to learn? How much weight would it have taken to learn if a fully-connected layer were to produce an output of the same size?}
+Let's note $x_{\text{out}}, y_{\text{out}}, z_{\text{out}}$ our output size. Then, given a convolution filter of padding $p$, stride $s$ and kernel size $k$:
+
+\begin{align}
+    \label{eq:1} x_{\text{out}} = \left\lfloor\frac{x - k + 2p}{s} + 1 \right\rfloor \\
+    \label{eq:2} y_{\text{out}} = \left\lfloor\frac{y - k + 2p}{s} + 1 \right\rfloor \\
+    \label{eq:3} z_{\text{out}} = \text{number of filters} = 1
+\end{align}
+
+Given our single convolution filter and our kernel of size $ k \times k $, we thus have $ ((z \times k \times k) + 1) \times z_{\text{out}} = ((z \times k \times k) + 1) $ weights to learn (where "$+1$" represents the bias).
+
+If a fully connected layer were to produce an output with dimensions equivalent to the output of the convolutional layer, it would need to connect every input neuron to every output neuron. For the input layer, every input pixel is a neuron, so there are \(x \times y \times z\) neurons. The total number of neurons in the output layer is \( x_{\text{out}} \times y_{\text{out}} \times z_{\text{out}} \). Thus, considering a bias, there is \((x \times y \times z + 1) \times (x_{\text{out}} \times y_{\text{out}} \times z_{\text{out}}) = (x \times y \times z + 1) \times (x_{\text{out}} \times y_{\text{out}}) \) parameters to learn.
+
+\paragraph{2. $ \bigstar $ What are the advantages of convolution over fully-connected layers? What is its main limit?}
+Using fully-connected layers with images involves a substantial number of parameters, one for each pixel of the image. Fully-connected layers are also sensitive to variations in images, including simple translations.
+
+On the other hand, convolutional layers address these issues. By utilizing convolution with a shared set of weights (for filters/kernels) across the entire input, they enable the learning and detection of local spatial patterns and features at various locations. Convolutional layers also possess the ability to hierarchically combine features. Lower layers capture low-level features such as edges and textures, while higher layers capture more intricate features and representations of objects.
+
+However, convolutional layers have limitations in terms of global context. They primarily focus on local patterns and may struggle to comprehend relationships between distant parts of the input, which can be crucial in certain applications (medical imaging, autonomous vehicles...).
+
+\paragraph{3. $ \bigstar $ Why do we use spatial pooling?}
+Spatial pooling allows for increased invariance, particularly in the context of translation. By summarizing a local region with a pooled value, the precise feature location becomes less critical. This constitutes a form of regularization that prioritizes the most pertinent information.
+
+Pooling also facilitates dimensionality reduction by decreasing the spatial dimensions of the resulting feature map. This reduction in dimensionality significantly lowers the computational cost of subsequent layers.
+
+Max and average pooling layers are the most commonly employed pooling techniques. Max pooling aids in achieving translation invariance and reducing spatial dimensions. It effectively preserves the most essential features in the input data. On the other hand, average pooling also reduces spatial dimensions and contributes to achieving translation invariance. It can exhibit greater robustness to outliers in the input data when compared to max pooling.
+
+\paragraph{4. $ \bigstar $ Suppose we try to compute the output of a classical convolutional network for an input image larger than the initially planned size. Can we (without modifying the image) use all or part of the layers of the network on this image?}
+% By definition, a convolution layer does not dependent of the size of the input, it will take the image, do convolution on it till the end of the image, and output another image. So when staking convolution and pooling layer (which do a convolution too), the output size is only dependent from the input size. In some other words, the input size of the image is not a hyperparameter of the convolution layer.
+
+% In a classical convolutional network, this output from the stacking of convolutionnal and pooling layers is flattened to become the input of a fully-connected layer. The size of the flattened vector is dependent of the size of the outputed image from the convolution layers.
+
+% But this time, we need to know the size of the input of our fully-connected layer in advance to set it up (like to initialse the parameters, ...).
+
+% So when using an input image larger than the initially planned size, everything will run until the use of a fully connected layer because it expect a fixed size input. 
+A convolution layer in a convolutional network is size-agnostic regarding its input: it simply performs convolutions across the entire span of the input image and outputs a correspondingly altered image. Sequentially, when convolution and pooling layers are stacked together, the resulting output size is purely a function of the input size. To rephrase, the input size of the image is not a critical hyperparameter for the convolution layer.
+
+Within the conventional architecture of a convolutional network, the output derived from successive convolutional and pooling layers is typically ''flattened'' to form the input for a subsequent fully-connected layer. The size of this flattened vector is contingent on the size of the image output from the preceding convolution layers.
+
+The challenge arises when we involve fully connected layers, as their initialization requires a priori knowledge of their input size to properly set up parameters such as weights. Consequently, when an input image is larger than initially planned, the network can operate normally up to the point of the fully connected layers, which anticipate input of a predetermined, fixed size.
+
+\paragraph{5. Show that we can analyze fully-connected layers as particular convolutions.}
+In a fully-connected layer, each pixel of the flattened image is associated with one weight. Both the weights and the flattened image are vectors. However, if we rearrange the weights into a matrix that matches the shape of the image, we can perform element-wise multiplication between this matrix and the image, which is akin to a one slide convolution!
+
+This $1 \times 1$ convolution employs a stride equal to the width of the input image, ensuring that the filter remains fixed and does not slide to different positions. Furthermore, the filter size is exactly the same as the image. The number of filters used in this convolution is equivalent to the number of neurons in the fully-connected layer.
+
+\paragraph{6. Suppose that we therefore replace fully-connected by their equivalent in convolutions, answer again the question 4. If we can calculate the output, what is its shape and interest?}
+Fully connected layers usually expect inputs of a specific size. However, if we replace the fully connected layers in a neural network with their convolutional equivalents, we can indeed process images of sizes different from what the network was initially trained on. If an input image larger than the expected size is used, the convolution operations will produce larger feature maps in the intermediate layers, and these will propagate through the network. The final convolutional layers, which replace the fully connected layers, will apply their filters to the full spatial extent of the incoming feature maps. The output shape, in this case, won't be the typical single row of class scores. Instead, it will be a spatial map of scores, with dimensions depending on the input size, the characteristics of the convolutional layers, and the operations applied during the forward pass.
+
+%%%%%%%%%%%%%%%%%%%%%
+% For me, as with the fully connected layer,  we still have to know the input size to fix the filter size and the stride ahead. So it will still not work.
+%%%%%%%%%%%%%%%%%%%%% A VERIFIER 
+
+\paragraph{7. We call the receptive field of a neuron the set of pixels of the image on which the output of this neuron depends. What are the sizes of the receptive fields of the neurons of the first and second convolutional layers? Can you imagine what happens to the deeper layers? How to interpret it?}
+% Calculating the receptive field's size is done based on the kernel size, stride, and padding of the convolutional layers, and it grows progressively larger in deeper layers due to successive convolutions.
+
+The receptive field (RF) $l_k$ of layer $k$ is:
+
+\[ l_k = l_{k-1} + \left((f_k - 1) \times \prod_{i=1}^{k-1}s_i\right) \]
+
+where $l_{k-1}$ is the receptive field of layer $k-1$, $f_k$ is the filter size (height or width, but assuming they are the same here), and $s_i$ is the stride of layer $i$.
+
+The formula above calculates receptive field from bottom up (from layer 1). Intuitively, RF in layer $k$ covers $(f_k - 1) \times s_{k-1}$ more pixels relative with layer $k-1$. However, the increment needs to be translated to the first layer, so the increments is a factorial --- a stride in layer $k-1$ is exponentially more strides in the lower layers.
+
+% TODO https://distill.pub/2019/computing-receptive-fields/#solving-receptive-field-region 
+
+\section{Training \textit{from scratch} of the model}
+\subsection{Network architecture}
+\paragraph{8. For convolutions, we want to keep the same spatial dimensions at the output as at the input. What padding and stride values are needed?}
+We want $ x = x_{out}, y = y_{out} $: let's use our equations \ref{eq:1}, \ref{eq:2} to find the values of $p$ and $s$.
+\[
+    p = \frac{(s-1)x + k - s}{2}
+\]
+Knowing $k = 5$ and that our images are of size $32 \times 32 $, we can pick any $p = \frac{31s - 27}{2}$. Because we generally want to use every pixel (and not padding pixels) so we pick $ s = 1 $ so $ p = 2 $ to minimise them both.
+
+\paragraph{9. For max poolings, we want to reduce the spatial dimensions by a factor of 2. What padding and stride values are needed?}
+A pooling layer acts like a convolution: let's proceed as in question 8. This time we want $ x_{out} = \frac{1}{2}x, y_{out} = \frac{1}{2}y$.
+\[
+    p = \frac{(\frac{1}{2}s - 1) x + k - s}{2}
+\]
+Knowing $k = 2$ and that our images are of size $32 \times 32 $, we can pick any $p = \frac{15s - 30}{2}$. We generally want to use every pixel (and not padding pixels) so we pick $ s = 2 $ so $ p = 0 $ to minimise them both.
+
+\paragraph{10. $ \bigstar $ For each layer, indicate the output size and the number of weights to learn. Comment on this repartition.}
+To simplify the presentation, we have provided a plot of the CNN architecture in figure~\ref{fig:AlexNetstylelog}. In this architecture, we begin with a 3-channel image measuring 32 by 32 pixels. As mentioned in questions 8 and 9, convolutional layers maintain the same spatial dimensions in the outputs as in the inputs, while pooling layers reduce the spatial dimensions by a factor of two. The following is a breakdown of the number of parameters:
+\begin{itemize}
+    \item conv1: 32 filters of 5 by 5 for 3 channels $\rightarrow 32\times 5\times 5\times 3 = 2,400$ parameters
+    \item conv2: 64 filters of 5 by 5 for 32 channels $\rightarrow 64\times 5\times 5\times 32 = 51,200$ parameters
+    \item conv3: 64 filters of 5 by 5 for 64 channels $\rightarrow 64\times 5\times 5\times 64 = 102,400$ parameters
+    \item 1000 neurons with 1024 values as input $\rightarrow (1000 + 1)\times 1024=1,025,024$ parameters. The "$+1$" is for biases.
+    \item 10 neurons with 1000 values as input $\rightarrow 11\times 1000=11,000$ parameters
+\end{itemize}
+
+The fully connected layer \texttt{fc4} alone accounts for up to 86~\% of the total number of parameters, underscoring the significant computational demands associated with these layers during the learning process.
+
+%%%%%%%%%%%%%%%%
+% IL Y A DES BIAIS AUSSI DANS LES CONV A INCLURE DANS LES CALCULS
+% https://stackoverflow.com/questions/42786717/how-to-calculate-the-number-of-parameters-for-convolutional-neural-network
+%%%%%%%%%%%%%%%
+% \begin{figure}[!htbp]
+%     \centering
+%     \includegraphics*[width=\textwidth]{figs/AlexNet_style.png}
+%     \caption{}
+%     \label{AlexNetstyle}
+% \end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=\textwidth]{figs/AlexNet_style_log.png}
+    \caption{Network architecture}
+    \label{fig:AlexNetstylelog}
+\end{figure}
+
+\paragraph{11. What is the total number of weights to learn? Compare that to the number of examples.}
+This leads to a total of 1,192,024 parameters for training. Considering a dataset comprising 50,000 training samples and 10,000 test samples, totaling 60,000 examples (with 6,000 images per class), it does warrant caution regarding the potential for overfitting.
+
+\paragraph{12. Compare the number of parameters to learn with that of the BoW and SVM approach.}
+The complexity and, hence, the number of parameters in a BoW and SVM approach depend on the chosen visual vocabulary size. For instance, employing a dictionary of 1000 visual words for the task of classifying 10 classes would result in \( (1000 + 1) \times 10 = 10,010 \) parameters to be learned. It's important to note that in this approach, we also need to fine-tune the hyperparameters of our classifier, with the kernel type and the regularization parameter \( C \) being the most significant. As a result, the parameter space in this approach is considerably smaller when compared to our deep CNN model.
+%% Je crois que c'est ça : dans un SVM le nombre de paramètres à apprendre c'est les poids (+ biais) qui sont définis par l'input, ici un BoW. Vu qu'on a 10 classes, on applique la stratégie du one-vs-all, donc on a 10 SVMs (1 par classe). Le BoW c'est juste une représentation spéciale de l'input (des images) : on calcule des features (SIFT), on cluster (K-Means) et on a nos "visual words" en calculant les histogrammes pour chaque image. Donc le nombre de visual words = nombre de bins de l'histogramme.
+%% Si c'est pas clair faut reprendre le TME0...
+
+\subsection{Network learning}
+\paragraph{14. $ \bigstar $ In the provided code, what is the major difference between the way to calculate loss and accuracy in train and in test (other than the the difference in data)?}
+The difference in the code lies in the fact that we do not provide an optimizer to the \texttt{epoch()} function. Consequently, we do not train the network using test examples, and there is no backward pass to calculate and update the loss.
+% Le code de base compute la loss à chaque batch, alors qu'on change les paramètres à chaque batch, donc ça rend les comparaisons plus difficile. En général (et c'est ce que j'ai changé dans le code), on compute la loss
+
+\paragraph{16. $ \bigstar $ What are the effects of the learning rate and of the batch-size?}
+The learning rate and batch size are critical hyperparameters that significantly impact training performance, speed, and stability:
+
+\begin{itemize}
+    \item A high learning rate can cause the model to overshoot the minimum, causing divergent behavior and an inability for the model to learn effectively. On the other hand, having a low learning rate can slow down the training process significantly, possibly leading to a premature convergence to suboptimal solutions. In some cases, a lower learning rate results in a more precise convergence by allowing the model to explore the parameter space thoroughly. Figure~\ref{fig:learning_rate_influence} illustrates the effects of different learning rates with a fixed batch size of 32.
+    \item Larger batch size provides a more accurate estimate of the gradient, potentially leading to more stable and consistent training steps. However, this comes with increased memory usage. Conversely, smaller batch sizes can introduce noise, making the path to convergence less direct and possibly longer in terms of epochs. Smaller batches reduce memory requirements, making them suitable for resource-constrained systems. Figure~\ref{fig:batch_size_influence} illustrates the impact of various batch sizes with a fixed learning rate of 0.01.
+
+\end{itemize}
+
+It's important to note that learning rate and batch size are often interrelated. Changes in batch size may require adjusting the learning rate to maintain training quality. This relationship arises from the need to balance the aggressiveness of updates when averaging gradients across more samples. Typically, a linear scaling rule is applied: multiplying the batch size by a factor $k$ also multiplies the learning rate by $k$, while keeping other hyperparameters constant. This relationship is shown in figure~\ref{fig:linear_scaling}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=\textwidth]{figs/CNN/learning_rate_influence.pdf}
+    \caption{Influence of learning rate with a batch size fixed at 32}
+    \label{fig:learning_rate_influence}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=\textwidth]{figs/CNN/batch_size_influence.pdf}
+    \caption{Influence of batch size rate with a learnig rate fixed at 0.01}
+    \label{fig:batch_size_influence}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=\textwidth]{figs/CNN/linear_scaling.pdf}
+    \caption{Relationship between batch size and learning rate}
+    \label{fig:linear_scaling}
+\end{figure}
+
+\paragraph{17. What is the error at the start of the first epoch, in train and test? How can you interpret this?}
+
+For the following experiments, we will compare our results with those presented in figure~\ref{fig:base_result}, where a batch size of 128 and a learning rate of 0.01 were employed.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=\textwidth]{figs/CNN/base_result.pdf}
+    \caption{Accuracy and losses in train and test}
+    \label{fig:base_result}
+\end{figure}
+
+% At the initial epoch, we observed respective accuracies of 0.0101 on the training set and 0.0989 on the test set, along with corresponding losses of 2.3007 and 2.2976.
+
+The situation where test accuracy surpasses training accuracy at the beginning can be attributed to the fact that training loss and accuracy are calculated at each batch, implying that parameters and, consequently, results (loss and accuracy) fluctuate considerably before the completion of the first epoch. This means that during the first batch of the first epoch, the loss is computed based on only a subset of the data equal to the batch size.
+
+In contrast, test loss and accuracy are determined at the end of the first epoch, after the model has been exposed to the entire training dataset. These values are more reliable than those obtained from the training phase at the outset of the first epoch.
+
+% At the first epoch, we have respectively in train and test an accuracy of 0.0101 and of 0.0989 for a loss of 2.3007 and 2.2976. 
+
+% The accuracy on the test set is better that the accuracy on train. It's because.
+% We must be aware that the training loss and accuracy is calculated \textbf{at every batch} so before the end of the first epoch, parameters and so result (loss and accuracy) are variating a lot. It mean that at the first batch of the first epoch we take into account the loss calculated only with \textit{batch\_size} examples.
+
+% Contrary to the test loss and accuracy that are computed at the end of the first epoch, after the model have seen all training example. Those value are more true that those from train at the first epoch % pire phrase
+
+\paragraph{18. $ \bigstar $ Interpret the results. What's wrong? What is this phenomenon?}
+We observe overfitting, as our caution led us to anticipate. This phenomenon becomes evident around the thirtieth epoch when our test accuracy plateaus at approximately 60~\%, while the training accuracy continues to improve. This signifies that while the model is improving its performance on the training dataset, it is struggling to generalize effectively to new, unseen test images.
+
+\section{Results improvements}
+\subsection{Standardization of examples}
+\paragraph{19. Describe your experimental results.}
+
+Standardization helps mitigate the issues caused by the varying scales and ranges in raw data. By doing this, we can expect improved model training, consistent data distribution and reduced numerical instability. In our experimental results, we do find that standardizing accelerates model training, as we need 20 less epochs to reach convergence in train. Furthermore, we observe increased stability, both in loss and accuracy.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=\textwidth]{figs/CNN/standardization.pdf}
+    \caption{Accuracy and losses in train and test using standardization}
+    \label{fig:standardization}
+\end{figure}
+
+\paragraph{20. Why only calculate the average image on the training examples and normalize the validation examples with the same image?}
+This practice guarantees that the model evaluates its performance on data processed similarly to the training data, without any prior knowledge of the validation set's specific characteristics. Calculating these statistics using the validation set would result in "data leakage", where the model gains insights into the validation data. This approach is essential for an impartial evaluation of the model's performance and its ability to generalize to new, unseen data.
+
+\paragraph{21. Bonus : There are other normalization schemes that can be more efficient like ZCA normalization. Try other methods, explain the differences and compare them to the one requested.}
+
+A few common normalization techniques are :
+
+\begin{itemize}
+    \item \textbf{Global Contrast Normalization}: this technique involves normalization of images by subtracting the mean of the entire image (not per channel) and dividing by the standard deviation of the entire image. GCN is aimed at reducing the effect of lighting variations by flattening the image illumination and enhancing contrast.
+    \item \textbf{PCA/ZCA Whitening}: these are linear algebra techniques that aims to decorrelate features. This is beneficial because decorrelated features can improve the learning efficiency of some models. ZCA is a variant of PCA that maintains the original data representation whereas PCA completely destroys it. However, these techniques can be computationally intensive.
+    \item \textbf{L1/L2 Normalization}: this technique normalizes the pixels of the image by dividing each pixel value by the L1 (sum of absolute pixel values) or L2 norm (square root of the sum of the squared pixel values) of the image. This normalization is useful when you want to measure the relative importance of pixel values rather than their absolute magnitudes.
+    \item \textbf{MinMax Scaling}: this technique involves rescaling the range of pixel intensity values. Each pixel value is scaled based on the minimum and maximum pixel values found in the dataset. This is a simple scaling technique but does not handle outliers well.
+\end{itemize}
+
+We performed a comparison of these techniques, and the results are displayed in Figure~\ref{fig:standardization_influence}. It is worth noting that PCA proved to be computationally demanding, doubling the required training time. L1 standardization exhibited poor performance, which we suspect may be attributed to the normalization process involving the division of each pixel value by the sum of absolute pixel values, resulting in excessively low values. L2 normalization performed better than its counterpart during training but did not generalize effectively during testing. In contrast, per-channel standardization consistently ranks among the top-performing methods, demonstrating superior performance. It's worth noting that there is little to no discernible difference in performance between per-channel standardization and its global counterpart, GCN.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=\textwidth]{figs/CNN/standardization_influence.pdf}
+    \caption{Influence of standardization techniques}
+    \label{fig:standardization_influence}
+\end{figure}
+
+\subsection{Increase in the number of training examples by \textit{data increase}}
+\paragraph{22. Describe your experimental results and compare them to previous results.}
+
+By artificially increasing our dataset, we expect to have a model that generalize better, as it becomes less sensitive to the specifities of the training images, due to the introduction of variability. Moreover, random crops and flips introduce a level of perturbation to the data, helping the model to become more robust to variations it might encounter in real-world scenarios.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=\textwidth]{figs/CNN/dataincrease.pdf}
+    \caption{Accuracy and losses in train and test using data augmentation}
+    \label{fig:dataincrease}
+\end{figure}
+
+Our experimental results show that our model generalizes much better and we observe less overfitting, which is good.
+
+\paragraph{23. Does this horizontal symmetry approach seems usable on all types of images? In what cases can it be or not be?}
+For many general tasks, especially those involving natural scenes or objects, horizontal flipping does not change the essence of the subject. For instance, a car is still recognizable as a car, whether flipped or not. This technique is effective in such contexts, contributing to model robustness without misleading the training process. However, in tasks where orientation is crucial to the object's identity or the scene's context, flipping may not be suitable. For example, in handwritten text recognition, letter and number orientation is fundamental, and flipping changes the characters' semantics. Similarly, in scenarios like medical imaging, where a left-right flip might alter the diagnosis (consider organs' positions), this method is not applicable.
+
+\paragraph{24. What limits do you see in this type of data increase by transformation of the dataset?}
+Augmentation can sometimes exacerbate class imbalances, particularly if transformations are applied uniformly across classes without considering their initial distribution. Augmenting already overrepresented classes can intensify the imbalance. Some transformations might introduce features that are unnatural, potentially leading the model to learn false patterns. For instance, excessive rotation or scaling might create unnatural shapes or perspectives that the model might wrongly interpret as relevant features. Data augmentation, especially sophisticated methods, increases the computational burden. It requires additional processing for each image and can slow down the training process, demanding more efficient hardware solutions. While augmentation expands the dataset, it doesn't contribute new information beyond the initial data's constraints. The transformations create variability but within the context of existing data, possibly limiting the model's ability to generalize in radically new scenarios.
+
+\paragraph{25. Bonus : Other data augmentation methods are possible. Find out which ones and test some.}
+A wide array of augmentation methods is available, including but not limited to rotation, flips, zooming, perspective alteration, affine transformations, color adjustments (brightness, contrast, saturation, hue), sharpness modification, Gaussian blur, polarization, solarization, pixel erasure, channel permutation, grayscale conversion, and more.
+
+We tried random erasing and random rotation (0° to 180°) on the train dataset and random rotation (0° to 90°) on the test dataset. Results are displayed on figure~\ref{fig:dataincrease_rotation}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=\textwidth]{figs/CNN/dataincrease_rotation.pdf}
+    \caption{Accuracy and losses in train and test using data augmentation}
+    \label{fig:dataincrease_rotation}
+\end{figure}
+
+% We tried random erasing and random rotation on train dataset and gaussian blur on test dataset, results are displayed on figure~\ref{fig:dataincrease_bis}. Because we use completely different data augmentation techniques on our datasets, the model fails to generalize.
+
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics*[width=\textwidth]{figs/CNN/dataincrease_bis.pdf}
+%     \caption{Accuracy and losses in train and test using data augmentation}
+%     \label{fig:dataincrease_bis}
+% \end{figure}
+
+\subsection{Variants of the optimization algorithm}
+\paragraph{26. Describe your experimental results and compare them to previous results, including learning stability.}
+
+Incorporating a learning rate scheduler controls how quickly or slowly a model adapts to the problem at hand. Thus, we expect a controlled model convergence, as the model's training process benefits from a more cautious approach to reaching the global minimum of the loss function by gradually decreasing the learning rate. It should also permits to avoid plateaus, i.e. regions where the model's accuracy does not improve significantly due to slow learning. Last, we expect an enhanced training stability.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=\textwidth]{figs/CNN/optim_variants.pdf}
+    \caption{Accuracy and losses using an exponential decay scheduler with SGD}
+    \label{fig:optim_variants}
+\end{figure}
+
+\paragraph{27. Why does this method improve learning?}
+The fundamental reason exponential decay learning rate scheduling improves learning lies in its dynamic adaptation to the training process's needs. In the early phases of training, where the initial parameters are likely far from optimal, a larger learning rate helps cover more ground. However, as training progresses, it becomes more about refinement, requiring smaller updates to fine-tune the model, something achieved by reducing the learning rate.
+
+Moreover, this method acknowledges that the landscape of the loss function is not uniformly shaped. Some areas might be steep (necessitating larger steps for efficiency), while others might be flat or have a complex curvature (where smaller steps are necessary for finding the precise minimum). An exponential decay schedule for the learning rate adapts to these needs inherently, allowing for a more nuanced and, consequently, more effective approach to model training.
+
+However, it's essential to approach the setting of the initial learning rate and decay factor with care, as these hyperparameters can significantly affect the training's effectiveness and efficiency. Too rapid a decay might mean the learning rate reduces too quickly, curtailing the model's capacity to learn, while too slow a decay might keep the learning rate too high, leading to the aforementioned issues of overshooting or oscillating around the minimum.
+
+\paragraph{28. \textbf{Bonus}: Many other variants of SGD exist and many learning rate planning strategies exist. Which ones? Test some of them.}
+
+In this study, we employed various optimizer configurations and learning rate scheduling techniques. Initially, we visualize the learning rate dynamics throughout the training epochs using figure~\ref{fig:schedulers_comparison}. Subsequently, we analyze the impact of these scheduling methods on both training and testing accuracies, as well as losses, as demonstrated in figure~\ref{fig:schedulers_influence}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=\textwidth]{figs/CNN/schedulers_comparison.pdf}
+    \caption{Learning rates curves}
+    \label{fig:schedulers_comparison}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=\textwidth]{figs/CNN/schedulers_influence.pdf}
+    \caption{Influence of different schedulers on SGD}
+    \label{fig:schedulers_influence}
+\end{figure}
+
+Firstly, it's noteworthy that both the Constant and Linear learning rate schedulers exhibit a tendency to increase the learning rate, resulting in detrimental performance after a considerable number of epochs, even though it might have been beneficial at the beginning (otherwise they would not have showed this behavior). Conversely, all the other schedulers converge to a similar learning rate value, with the Polynomial scheduler being the fastest to reach this point, albeit with a relatively modest performance of approximately 80~\% in train and 70~\% in test. The top three performers among the schedulers are Exponential, Step (which exhibit similar behavior), and Cosine. Cosine, owing to the nature of its function, takes the longest to reach its learning rate plateau.
+
+Additionally, it's essential to recognize that there exist alternative optimizers more effective than SGD. We conducted a comparative analysis, the results of which are depicted in figure~\ref{fig:optimizers_influence}. Among the optimizers, Adagrad demonstrated the highest performance, closely followed by its variant, Adadelta. Conversely, both AdamW and RMSProp exhibited relatively poorer performance and displayed numerical instability during testing, with Adam occupying an intermediate position. It's noteworthy that none of the optimization methods led to overfitting.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=\textwidth]{figs/CNN/optimizers_influence.pdf}
+    \caption{Influence of different optimizers}
+    \label{fig:optimizers_influence}
+\end{figure}
+
+\subsection{Regularization of the network by \textit{dropout}}
+\paragraph{29. Describe your experimental results and compare them to previous results.}
+
+Integrating a dropout layer in a neural network is a strategic move to combat the risk of overfitting, especially before a fully connected layer that has a substantial number of weights. Thus, we expect reduced overfitting and enhanced network performance.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=\textwidth]{figs/CNN/dropout.pdf}
+    \caption{Accuracy and losses in train and test, using a dropout on \texttt{fc4}}
+    \label{fig:dropout}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=\textwidth]{figs/CNN/dropout_with_scheduler.pdf}
+    \caption{Accuracy and losses in train and test, using a dropout on \texttt{fc4} and a scheduler}
+    \label{fig:dropout_with_scheduler}
+\end{figure}
+
+\paragraph{30. What is regularization in general?}
+Regularization refers to techniques that constrain a model's learning capacity indirectly or directly to prevent overfitting, which occurs when a model learns the training data too closely and fails to generalize well to unseen data. Regularization methods work by adding a penalty to the loss function or by manipulating the training data or model architecture. The goal is to discourage the learning of overly complex models, as these are more prone to overfitting, by prioritizing simpler, more generalizable models that perform better on unseen data. Common regularization techniques include L1 and L2 regularization, dropout, data augmentation, early stopping, and even architectural choices like choosing simpler models over more complex ones.
+
+\paragraph{31. Research and "discuss" possible interpretations of the effect of dropout on the behavior of a network using it?}
+Dropout is a regularization technique where random neurons (along with their connections) are "dropped out" (or temporarily removed) from the network with a certain probability, preventing their activation, during training.
+
+Dropout forces neurons to learn more robust and independent representations by making the presence of other neurons unreliable. Without dropout, neurons can become co-adapted, meaning they rely on the specific output of other neurons. By randomly removing different neurons, dropout disrupts these potentially intricate co-adaptations, ensuring that each neuron contributes individually to the solution.
+
+Dropout can be interpreted as a form of model averaging or ensemble learning. Each training epoch uses a different "thinned" network, and predictions on unseen data are effectively the aggregated output of these numerous networks. This ensemble approach is known to generally improve model robustness and generalization.
+
+Dropout introduces variability into the network, somewhat akin to injecting noise into the hidden units' outputs. This noise can help prevent the network from fitting the training data too precisely, effectively acting as a form of stochastic data augmentation.
+
+\paragraph{32. What is the influence of the hyperparameter of this layer?}
+The hyperparameter of this layer is called the "dropout rate" and represents the probability that any given neuron will be temporarily dropped. A very high dropout rate means more neurons are dropped during training. While this might increase regularization (thus potentially reducing overfitting), if the rate is too high, the network might lose too much information, making learning difficult and possibly leading to underfitting. A lower dropout rate maintains more neurons active but might offer insufficient regularization, making the model still prone to overfitting, especially if it's a complex, deep network. Results of this hyperparameter on our architecture are displayed on figure~\ref{fig:dropout_hyperparameter}. In our specific case, a minimal dropout rate enhances training performance but leads to overfitting. Conversely, employing a high dropout rate significantly mitigates the overfitting issue. Unexpectedly, setting the dropout rate to $p=1$ renders our model incapable of learning.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=\textwidth]{figs/CNN/dropout_hyperparameter.pdf}
+    \caption{Influence of dropout rate $p$}
+    \label{fig:dropout_hyperparameter}
+\end{figure}
+
+\paragraph{33. What is the difference in behavior of the dropout layer between training and test?}
+During training, neurons are randomly deactivated with each batch of data, with the dropout rate determining the fraction of neurons to drop. This random deactivation happens every time a new batch is fed to the model. During test, dropout is disabled and acts as identity function, meaning all neurons are active. This approach is necessary to prevent the random uncertainty introduced by dropout during training from affecting the model's predictions on new data.
+
+\subsection{Use of \textit{batch normalization}}
+
+\paragraph{34. Describe your experimental results and compare them to previous results.}
+
+oui
+
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=\textwidth]{figs/CNN/batchnorm.pdf}
+    \caption{Accuracy and losses in train and test}
+    \label{fig:batchnorm}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=\textwidth]{figs/CNN/batchnorm_with_dropout.pdf}
+    \caption{Accuracy and losses in train and test, with dropout layer}
+    \label{fig:batchnorm_with_dropout}
+\end{figure}
+
+\subsection{Combination of all methods}
+Now that we have individually explored various methods to enhance our results within a relatively straightforward convolutional network architecture, one might wonder what happens when we combine all these techniques, much like the Power Rangers assembling with their mechs. Our expectation is that this comprehensive approach will yield significantly improved results characterized by minimal overfitting, strong generalization, and enhanced robustness. Results confirm our expectation and are displayed in figure~\ref{fig:combined}. It's worth noting that this approach may appear excessive, as it produces results similar to the one obtained using a dropout and a learning rate scheduler.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=\textwidth]{figs/CNN/combined.pdf}
+    \caption{Accuracy and losses in train and test}
+    \label{fig:combined}
+\end{figure}
