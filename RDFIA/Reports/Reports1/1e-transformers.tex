@@ -108,13 +108,53 @@ Once again, the test loss proves to be the most informative aspect of Figure~\re
 \end{figure}
 
 \paragraph{MLP hidden layer size}
+Finally, we conducted tests to assess the influence of the size of the MLP hidden layer, and the results are displayed in Figure~\ref{fig:mlp_ratio_influence}. Analyzing the test loss, show that increasing the hidden size appears to improve the results without inducing overfitting. However, it's important to note that a strong ceiling effect on accuracy limits our ability to draw definitive conclusions.
 
 \begin{figure}[H]
     \centering
-    % \includegraphics*[width=\textwidth]{figs/Transformers/mlp_ratio_influence.pdf}
+    \includegraphics*[width=\textwidth]{figs/Transformers/mlp_ratio_influence.pdf}
     \caption{Influence of the hidden layer size in the MLP part of a transformer block}
     \label{fig:mlp_ratio_influence}
 \end{figure}
 
+\section{Experiment on Fashion MNIST!}
+Fashion-MNIST is a dataset of Zalando's article images—consisting of a training set of 60,000 examples and a test set of 10,000 examples. Each example is a 28x28 grayscale image, associated with a label from 10 classes. We intend Fashion-MNIST to serve as a direct drop-in replacement for the original MNIST dataset for benchmarking machine learning algorithms. It shares the same image size and structure of training and testing splits.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=.5\textwidth]{figs/Transformers/fashion-mnist-sprite.png}
+    \caption{Sample of the Fashio-MNIST dataset (each class takes three-rows)}
+\end{figure}
+
+As demonstrated in the previous section, Vision Transformers have pushed the boundaries of the classic MNIST dataset, approaching near-perfect accuracy in testing. To investigate whether a ceiling effect was limiting our ability to draw meaningful conclusions, we replicated all the experiments on the Fashion MNIST dataset. Surprisingly, we did not observe a consistent ceiling effect across all experiments. In some cases, the results were quite similar between the classic MNIST and Fashion MNIST datasets, with the accuracy curves shifting from 100\% to around 80\%. However, in other instances, we gained valuable insights into the impact of various hyperparameters.
+
+
+
+
+
+
 
 \section{Larger transformers}
+\subsection{Questions}
+\paragraph{What it is the problem and why we have it? Explain if we have also such problem with CNNs.}
+The model \texttt{vit\_base\_patch16\_224} is trained on 224x224 images from the ImageNet dataset. In the first layer of the ViT, the input image is divided into fixed-size patches to create embedded vectors. It's crucial to maintain the same image size as the one the model was designed for. 
+
+In this case, it necessitates resizing the images to 224x224 RGB pixels. However, this may not be ideal as resizing could distort the images and potentially affect the model's performance.
+
+\subsection{Without pretraining}
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=\textwidth]{figs/Transformers/stats_vit.pdf}
+    \caption{}
+    \label{fig:}
+\end{figure}
+
+
+\subsection{With pretraining}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=\textwidth]{figs/Transformers/stats_vit_pretrained.pdf}
+    \caption{}
+    \label{fig:}
+\end{figure}
