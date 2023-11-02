@@ -26,3 +26,4 @@ ipython_config.py
 
 datasets
 RDFIA/TME/TME5/MNIST
+RDFIA/TME/TME5/Fashion-MNIST/FashionMNIST/raw/
