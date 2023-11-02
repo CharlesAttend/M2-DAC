@@ -58,11 +58,11 @@ Fully connected layers usually expect inputs of a specific size. However, if we 
 
 The receptive field (RF) $l_k$ of layer $k$ is:
 
-$$ l_k = l_{k-1} + ((f_k - 1) * \prod_{i=1}^{k-1}s_i) $$
+\[ l_k = l_{k-1} + \left((f_k - 1) \times \prod_{i=1}^{k-1}s_i\right) \]
 
 where $l_{k-1}$ is the receptive field of layer $k-1$, $f_k$ is the filter size (height or width, but assuming they are the same here), and $s_i$ is the stride of layer $i$.
 
-The formula above calculates receptive field from bottom up (from layer 1). Intuitively, RF in layer $k$ covers $(f_k - 1) * s_{k-1}$ more pixels relative with layer $k-1$. However, the increment needs to be translated to the first layer, so the increments is a factorial --- a stride in layer $k-1$ is exponentially more strides in the lower layers.
+The formula above calculates receptive field from bottom up (from layer 1). Intuitively, RF in layer $k$ covers $(f_k - 1) \times s_{k-1}$ more pixels relative with layer $k-1$. However, the increment needs to be translated to the first layer, so the increments is a factorial --- a stride in layer $k-1$ is exponentially more strides in the lower layers.
 
 % TODO https://distill.pub/2019/computing-receptive-fields/#solving-receptive-field-region 
 
@@ -74,7 +74,6 @@ We want $ x = x_{out}, y = y_{out} $: let's use our equations \ref{eq:1}, \ref{e
     p = \frac{(s-1)x + k - s}{2}
 \]
 Knowing $k = 5$ and that our images are of size $32 \times 32 $, we can pick any $p = \frac{31s - 27}{2}$. Because we generally want to use every pixel (and not padding pixels) so we pick $ s = 1 $ so $ p = 2 $ to minimise them both.
-
 
 \paragraph{9. For max poolings, we want to reduce the spatial dimensions by a factor of 2. What padding and stride values are needed?}
 A pooling layer acts like a convolution: let's proceed as in question 8. This time we want $ x_{out} = \frac{1}{2}x, y_{out} = \frac{1}{2}y$.
@@ -89,11 +88,11 @@ To simplify the presentation, we have provided a plot of the CNN architecture in
     \item conv1: 32 filters of 5 by 5 for 3 channels $\rightarrow 32\times 5\times 5\times 3 = 2,400$ parameters
     \item conv2: 64 filters of 5 by 5 for 32 channels $\rightarrow 64\times 5\times 5\times 32 = 51,200$ parameters
     \item conv3: 64 filters of 5 by 5 for 64 channels $\rightarrow 64\times 5\times 5\times 64 = 102,400$ parameters
-    \item 1000 neurons with a 1024 values as input $\rightarrow (1000 + 1)\times 1024=1,025,024$ parameters. The "$+1$" is for biases.
-    \item 10 neurons with a 1000 values as input $\rightarrow 11\times 1000=11,000$ parameters
+    \item 1000 neurons with 1024 values as input $\rightarrow (1000 + 1)\times 1024=1,025,024$ parameters. The "$+1$" is for biases.
+    \item 10 neurons with 1000 values as input $\rightarrow 11\times 1000=11,000$ parameters
 \end{itemize}
 
-The fully connected layer alone accounts for up to 86~\% of the total number of parameters, underscoring the significant computational demands associated with these layers during the learning process.
+The fully connected layer \texttt{fc4} alone accounts for up to 86~\% of the total number of parameters, underscoring the significant computational demands associated with these layers during the learning process.
 
 %%%%%%%%%%%%%%%%
 % IL Y A DES BIAIS AUSSI DANS LES CONV A INCLURE DANS LES CALCULS
@@ -116,7 +115,9 @@ The fully connected layer alone accounts for up to 86~\% of the total number of 
 This leads to a total of 1,192,024 parameters for training. Considering a dataset comprising 50,000 training samples and 10,000 test samples, totaling 60,000 examples (with 6,000 images per class), it does warrant caution regarding the potential for overfitting.
 
 \paragraph{12. Compare the number of parameters to learn with that of the BoW and SVM approach.}
-%%  TODO
+The complexity and, hence, the number of parameters in a BoW and SVM approach depend on the chosen visual vocabulary size. For instance, employing a dictionary of 1000 visual words for the task of classifying 10 classes would result in \( (1000 + 1) \times 10 = 10,010 \) parameters to be learned. It's important to note that in this approach, we also need to fine-tune the hyperparameters of our classifier, with the kernel type and the regularization parameter \( C \) being the most significant. As a result, the parameter space in this approach is considerably smaller when compared to our deep CNN model.
+%% Je crois que c'est ça : dans un SVM le nombre de paramètres à apprendre c'est les poids (+ biais) qui sont définis par l'input, ici un BoW. Vu qu'on a 10 classes, on applique la stratégie du one-vs-all, donc on a 10 SVMs (1 par classe). Le BoW c'est juste une représentation spéciale de l'input (des images) : on calcule des features (SIFT), on cluster (K-Means) et on a nos "visual words" en calculant les histogrammes pour chaque image. Donc le nombre de visual words = nombre de bins de l'histogramme.
+%% Si c'est pas clair faut reprendre le TME0...
 
 \subsection{Network learning}
 \paragraph{14. $ \bigstar $ In the provided code, what is the major difference between the way to calculate loss and accuracy in train and in test (other than the the difference in data)?}
@@ -209,7 +210,7 @@ A few common normalization techniques are :
     \item \textbf{MinMax Scaling}: this technique involves rescaling the range of pixel intensity values. Each pixel value is scaled based on the minimum and maximum pixel values found in the dataset. This is a simple scaling technique but does not handle outliers well.
 \end{itemize}
 
-We performed a comparison of these techniques, and the results are displayed in Figure~\ref{fig:standardization_influence}. It is worth noting that PCA proved to be computationally demanding, doubling the required training time. L1 standardization exhibited poor performance, which we suspect may be attributed to the normalization process involving the division of each pixel value by the sum of absolute pixel values, resulting in excessively low values. L2 normalization performed better than its counterpart during training but did not generalize effectively during testing. In contrast, per-channel standardization consistently ranks among the top-performing methods, demonstrating superior performance. It's worth noting that there is little to no discernible difference between per-channel standardization and its global counterpart, GCN.
+We performed a comparison of these techniques, and the results are displayed in Figure~\ref{fig:standardization_influence}. It is worth noting that PCA proved to be computationally demanding, doubling the required training time. L1 standardization exhibited poor performance, which we suspect may be attributed to the normalization process involving the division of each pixel value by the sum of absolute pixel values, resulting in excessively low values. L2 normalization performed better than its counterpart during training but did not generalize effectively during testing. In contrast, per-channel standardization consistently ranks among the top-performing methods, demonstrating superior performance. It's worth noting that there is little to no discernible difference in performance between per-channel standardization and its global counterpart, GCN.
 
 \begin{figure}[H]
     \centering
@@ -241,14 +242,23 @@ Augmentation can sometimes exacerbate class imbalances, particularly if transfor
 \paragraph{25. Bonus : Other data augmentation methods are possible. Find out which ones and test some.}
 A wide array of augmentation methods is available, including but not limited to rotation, flips, zooming, perspective alteration, affine transformations, color adjustments (brightness, contrast, saturation, hue), sharpness modification, Gaussian blur, polarization, solarization, pixel erasure, channel permutation, grayscale conversion, and more.
 
-We tried random erasing and random rotation on train dataset and gaussian blur on test dataset, results are displayed on figure~\ref{fig:dataincrease_bis}. 
+We tried random erasing and random rotation (0° to 180°) on the train dataset and random rotation (0° to 90°) on the test dataset. Results are displayed on figure~\ref{fig:dataincrease_rotation}.
 
 \begin{figure}[H]
     \centering
-    \includegraphics*[width=\textwidth]{figs/CNN/dataincrease_bis.pdf}
+    \includegraphics*[width=\textwidth]{figs/CNN/dataincrease_rotation.pdf}
     \caption{Accuracy and losses in train and test using data augmentation}
-    \label{fig:dataincrease_bis}
+    \label{fig:dataincrease_rotation}
 \end{figure}
+
+% We tried random erasing and random rotation on train dataset and gaussian blur on test dataset, results are displayed on figure~\ref{fig:dataincrease_bis}. Because we use completely different data augmentation techniques on our datasets, the model fails to generalize.
+
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics*[width=\textwidth]{figs/CNN/dataincrease_bis.pdf}
+%     \caption{Accuracy and losses in train and test using data augmentation}
+%     \label{fig:dataincrease_bis}
+% \end{figure}
 
 \subsection{Variants of the optimization algorithm}
 \paragraph{26. Describe your experimental results and compare them to previous results, including learning stability.}
@@ -289,7 +299,7 @@ In this study, we employed various optimizer configurations and learning rate sc
 
 Firstly, it's noteworthy that both the Constant and Linear learning rate schedulers exhibit a tendency to increase the learning rate, resulting in detrimental performance after a considerable number of epochs, even though it might have been beneficial at the beginning (otherwise they would not have showed this behavior). Conversely, all the other schedulers converge to a similar learning rate value, with the Polynomial scheduler being the fastest to reach this point, albeit with a relatively modest performance of approximately 80~\% in train and 70~\% in test. The top three performers among the schedulers are Exponential, Step (which exhibit similar behavior), and Cosine. Cosine, owing to the nature of its function, takes the longest to reach its learning rate plateau.
 
-Additionally, it's essential to recognize that there exist alternative optimizers more effective than SGD. We conducted a comparative analysis, the results of which are depicted in figure~\ref{fig:optimizers_influence}. In this study, we did not employ any learning rate schedulers. Among the optimizers, Adagrad demonstrated the highest performance, closely followed by its variant, Adadelta. Conversely, both AdamW and RMSProp exhibited relatively poorer performance and displayed numerical instability during testing, with Adam occupying an intermediate position. It's noteworthy that none of the optimization methods led to overfitting.
+Additionally, it's essential to recognize that there exist alternative optimizers more effective than SGD. We conducted a comparative analysis, the results of which are depicted in figure~\ref{fig:optimizers_influence}. Among the optimizers, Adagrad demonstrated the highest performance, closely followed by its variant, Adadelta. Conversely, both AdamW and RMSProp exhibited relatively poorer performance and displayed numerical instability during testing, with Adam occupying an intermediate position. It's noteworthy that none of the optimization methods led to overfitting.
 
 \begin{figure}[H]
     \centering
