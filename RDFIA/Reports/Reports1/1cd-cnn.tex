@@ -265,6 +265,8 @@ We tried random erasing and random rotation (0° to 180°) on the train dataset 
 
 Incorporating a learning rate scheduler controls how quickly or slowly a model adapts to the problem at hand. Thus, we expect a controlled model convergence, as the model's training process benefits from a more cautious approach to reaching the global minimum of the loss function by gradually decreasing the learning rate. It should also permits to avoid plateaus, i.e. regions where the model's accuracy does not improve significantly due to slow learning. Last, we expect an enhanced training stability.
 
+Figure~\ref{fig:optim_variants} depicts our results. We can see that the loss curve exhibits greater stability when compared to the baseline results (refer to Figure~\ref{fig:base_result}).
+
 \begin{figure}[H]
     \centering
     \includegraphics*[width=\textwidth]{figs/CNN/optim_variants.pdf}
@@ -311,7 +313,7 @@ Additionally, it's essential to recognize that there exist alternative optimizer
 \subsection{Regularization of the network by \textit{dropout}}
 \paragraph{29. Describe your experimental results and compare them to previous results.}
 
-Integrating a dropout layer in a neural network is a strategic move to combat the risk of overfitting, especially before a fully connected layer that has a substantial number of weights. Thus, we expect reduced overfitting and enhanced network performance.
+Integrating a dropout layer in a neural network is a strategic move to combat the risk of overfitting, especially before a fully connected layer that has a substantial number of weights. Thus, we expect reduced overfitting and enhanced network performance. Figure~\ref{fig:dropout} and figure~\ref{fig:dropout_with_scheduler} depicts two experiments with dropout.
 
 \begin{figure}[H]
     \centering
@@ -373,11 +375,11 @@ oui
 \end{figure}
 
 \subsection{Combination of all methods}
-Now that we have individually explored various methods to enhance our results within a relatively straightforward convolutional network architecture, one might wonder what happens when we combine all these techniques, much like the Power Rangers assembling with their mechs. Our expectation is that this comprehensive approach will yield significantly improved results characterized by minimal overfitting, strong generalization, and enhanced robustness. Results confirm our expectation and are displayed in figure~\ref{fig:combined}. It's worth noting that this approach may appear excessive, as it produces results similar to the one obtained using a dropout and a learning rate scheduler.
+Now that we have individually explored various methods to enhance our results within a relatively straightforward convolutional network architecture, one might wonder what happens when we combine all these techniques (standardization, data increase, optimizer, scheduler, dropout, batch normalization), much like the Power Rangers assembling with their mechs. Our expectation is that this comprehensive approach will yield significantly improved results characterized by minimal overfitting, strong generalization, and enhanced robustness. Results confirm our expectation and are displayed in figure~\ref{fig:combined}. It's worth noting that this approach may appear excessive, as it produces results similar to the one obtained using a dropout and a learning rate scheduler.
 
 \begin{figure}[H]
     \centering
     \includegraphics*[width=\textwidth]{figs/CNN/combined.pdf}
-    \caption{Accuracy and losses in train and test}
+    \caption{Accuracy and losses in train and test using all methods}
     \label{fig:combined}
 \end{figure}
