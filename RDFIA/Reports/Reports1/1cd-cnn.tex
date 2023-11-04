@@ -56,31 +56,31 @@ Fully connected layers usually expect inputs of a specific size. However, if we 
 \paragraph{7. We call the receptive field of a neuron the set of pixels of the image on which the output of this neuron depends. What are the sizes of the receptive fields of the neurons of the first and second convolutional layers? Can you imagine what happens to the deeper layers? How to interpret it?}
 % Calculating the receptive field's size is done based on the kernel size, stride, and padding of the convolutional layers, and it grows progressively larger in deeper layers due to successive convolutions.
 
-The receptive field (RF) $l_k$ of layer $k$ is:
+The receptive field $l_k$ of layer $k$ is:
 
 \[ l_k = l_{k-1} + \left((f_k - 1) \times \prod_{i=1}^{k-1}s_i\right) \]
 
 where $l_{k-1}$ is the receptive field of layer $k-1$, $f_k$ is the filter size (height or width, but assuming they are the same here), and $s_i$ is the stride of layer $i$.
 
-The formula above calculates receptive field from bottom up (from layer 1). Intuitively, RF in layer $k$ covers $(f_k - 1) \times s_{k-1}$ more pixels relative with layer $k-1$. However, the increment needs to be translated to the first layer, so the increments is a factorial --- a stride in layer $k-1$ is exponentially more strides in the lower layers.
+The formula above calculates receptive field from bottom up (from layer 1). Intuitively, a receptive field in layer $k$ covers $(f_k - 1) \times s_{k-1}$ more pixels relative with layer $k-1$. However, the increment needs to be translated to the first layer, so the increments is a factorial: a stride in layer $k-1$ is exponentially more strides in the lower layers. In our case, the receptive field of the first convolutional layer is of size 5, which matches the size of the kernel. Consequently, the size of the receptive field of the second layer increases to $ 5 + (5 - 1) = 9 $. This means that each pixel in the output of the second layer takes into account information from 9 pixels in the previous layer. As the neural network progresses into deeper layers, the receptive field continues to grow. When done correctly, the receptive field size of the final layer will match the size of the input image, allowing each pixel in the output to gather information from every pixel in the input image. One can think of the receptive fields as the "eyes" of the neural network.
 
 % TODO https://distill.pub/2019/computing-receptive-fields/#solving-receptive-field-region 
 
 \section{Training \textit{from scratch} of the model}
 \subsection{Network architecture}
 \paragraph{8. For convolutions, we want to keep the same spatial dimensions at the output as at the input. What padding and stride values are needed?}
-We want $ x = x_{out}, y = y_{out} $: let's use our equations \ref{eq:1}, \ref{eq:2} to find the values of $p$ and $s$.
+We want $ x = x_{out}$, $ y = y_{out} $: let's use our equations \ref{eq:1}, \ref{eq:2} to find the values of $p$ and $s$.
 \[
     p = \frac{(s-1)x + k - s}{2}
 \]
-Knowing $k = 5$ and that our images are of size $32 \times 32 $, we can pick any $p = \frac{31s - 27}{2}$. Because we generally want to use every pixel (and not padding pixels) so we pick $ s = 1 $ so $ p = 2 $ to minimise them both.
+Knowing $k = 5$ and that our images are of size $32 \times 32 $, we can pick any $p = \frac{31s - 27}{2}$. Since we typically aim to utilize all available pixels in an image while minimizing the need for padding, we choose a stride value of $ s = 1 $ and a padding value of $ p = 2 $, which minimize both parameters.
 
 \paragraph{9. For max poolings, we want to reduce the spatial dimensions by a factor of 2. What padding and stride values are needed?}
-A pooling layer acts like a convolution: let's proceed as in question 8. This time we want $ x_{out} = \frac{1}{2}x, y_{out} = \frac{1}{2}y$.
+A pooling layer acts like a convolution: let's proceed as in question 8. This time we want $ x_{out} = x/2$, $ y_{out} = y/2 $.
 \[
     p = \frac{(\frac{1}{2}s - 1) x + k - s}{2}
 \]
-Knowing $k = 2$ and that our images are of size $32 \times 32 $, we can pick any $p = \frac{15s - 30}{2}$. We generally want to use every pixel (and not padding pixels) so we pick $ s = 2 $ so $ p = 0 $ to minimise them both.
+Knowing $k = 2$ and that our images are of size $32 \times 32 $, we can pick any $p = \frac{15s - 30}{2}$. Following the same logic as in the previous question, we opt for a stride value of $ s = 2 $ and a padding value of $ p = 0 $, which minimize both parameters.
 
 \paragraph{10. $ \bigstar $ For each layer, indicate the output size and the number of weights to learn. Comment on this repartition.}
 To simplify the presentation, we have provided a plot of the CNN architecture in figure~\ref{fig:AlexNetstylelog}. In this architecture, we begin with a 3-channel image measuring 32 by 32 pixels. As mentioned in questions 8 and 9, convolutional layers maintain the same spatial dimensions in the outputs as in the inputs, while pooling layers reduce the spatial dimensions by a factor of two. The following is a breakdown of the number of parameters:
@@ -137,21 +137,21 @@ It's important to note that learning rate and batch size are often interrelated.
 
 \begin{figure}[H]
     \centering
-    \includegraphics*[width=\textwidth]{figs/CNN/learning_rate_influence.pdf}
+    \includegraphics*[width=0.9\textwidth]{figs/CNN/learning_rate_influence.pdf}
     \caption{Influence of learning rate with a batch size fixed at 32}
     \label{fig:learning_rate_influence}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics*[width=\textwidth]{figs/CNN/batch_size_influence.pdf}
+    \includegraphics*[width=0.9\textwidth]{figs/CNN/batch_size_influence.pdf}
     \caption{Influence of batch size rate with a learnig rate fixed at 0.01}
     \label{fig:batch_size_influence}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics*[width=\textwidth]{figs/CNN/linear_scaling.pdf}
+    \includegraphics*[width=0.9\textwidth]{figs/CNN/linear_scaling.pdf}
     \caption{Relationship between batch size and learning rate}
     \label{fig:linear_scaling}
 \end{figure}
@@ -162,16 +162,14 @@ For the following experiments, we will compare our results with those presented 
 
 \begin{figure}[H]
     \centering
-    \includegraphics*[width=\textwidth]{figs/CNN/base_result.pdf}
+    \includegraphics*[width=0.9\textwidth]{figs/CNN/base_result.pdf}
     \caption{Accuracy and losses in train and test}
     \label{fig:base_result}
 \end{figure}
 
 % At the initial epoch, we observed respective accuracies of 0.0101 on the training set and 0.0989 on the test set, along with corresponding losses of 2.3007 and 2.2976.
 
-The situation where test accuracy surpasses training accuracy at the beginning can be attributed to the fact that training loss and accuracy are calculated at each batch, implying that parameters and, consequently, results (loss and accuracy) fluctuate considerably before the completion of the first epoch. This means that during the first batch of the first epoch, the loss is computed based on only a subset of the data equal to the batch size.
-
-In contrast, test loss and accuracy are determined at the end of the first epoch, after the model has been exposed to the entire training dataset. These values are more reliable than those obtained from the training phase at the outset of the first epoch.
+The situation where test accuracy surpasses training accuracy at the beginning can be attributed to the fact that training loss and accuracy are calculated at each batch, implying that parameters and, consequently, results (loss and accuracy) fluctuate considerably before the completion of the first epoch. This means that during the first batch of the first epoch, the loss is computed based on only a subset of the data equal to the batch size. In contrast, test loss and accuracy are determined at the end of the first epoch, after the model has been exposed to the entire training dataset. These values are more reliable than those obtained from the training phase at the outset of the first epoch.
 
 % At the first epoch, we have respectively in train and test an accuracy of 0.0101 and of 0.0989 for a loss of 2.3007 and 2.2976. 
 
@@ -191,7 +189,7 @@ Standardization helps mitigate the issues caused by the varying scales and range
 
 \begin{figure}[H]
     \centering
-    \includegraphics*[width=\textwidth]{figs/CNN/standardization.pdf}
+    \includegraphics*[width=0.9\textwidth]{figs/CNN/standardization.pdf}
     \caption{Accuracy and losses in train and test using standardization}
     \label{fig:standardization}
 \end{figure}
@@ -199,22 +197,22 @@ Standardization helps mitigate the issues caused by the varying scales and range
 \paragraph{20. Why only calculate the average image on the training examples and normalize the validation examples with the same image?}
 This practice guarantees that the model evaluates its performance on data processed similarly to the training data, without any prior knowledge of the validation set's specific characteristics. Calculating these statistics using the validation set would result in "data leakage", where the model gains insights into the validation data. This approach is essential for an impartial evaluation of the model's performance and its ability to generalize to new, unseen data.
 
-\paragraph{21. Bonus : There are other normalization schemes that can be more efficient like ZCA normalization. Try other methods, explain the differences and compare them to the one requested.}
+\paragraph{21. Bonus: There are other normalization schemes that can be more efficient like ZCA normalization. Try other methods, explain the differences and compare them to the one requested.}
 
 A few common normalization techniques are :
 
 \begin{itemize}
     \item \textbf{Global Contrast Normalization}: this technique involves normalization of images by subtracting the mean of the entire image (not per channel) and dividing by the standard deviation of the entire image. GCN is aimed at reducing the effect of lighting variations by flattening the image illumination and enhancing contrast.
     \item \textbf{PCA/ZCA Whitening}: these are linear algebra techniques that aims to decorrelate features. This is beneficial because decorrelated features can improve the learning efficiency of some models. ZCA is a variant of PCA that maintains the original data representation whereas PCA completely destroys it. However, these techniques can be computationally intensive.
-    \item \textbf{L1/L2 Normalization}: this technique normalizes the pixels of the image by dividing each pixel value by the L1 (sum of absolute pixel values) or L2 norm (square root of the sum of the squared pixel values) of the image. This normalization is useful when you want to measure the relative importance of pixel values rather than their absolute magnitudes.
-    \item \textbf{MinMax Scaling}: this technique involves rescaling the range of pixel intensity values. Each pixel value is scaled based on the minimum and maximum pixel values found in the dataset. This is a simple scaling technique but does not handle outliers well.
+    \item \textbf{L1/L2 Normalization}: this technique normalizes the pixels of the image by dividing each pixel value by the L1 (sum of absolute pixel values) or L2 norm (square root of the sum of the squared pixel values) of the image. This normalization is useful when we want to measure the relative importance of pixel values rather than their absolute magnitudes.
+    \item \textbf{Min-Max Scaling}: this technique involves rescaling the range of pixel intensity values. Each pixel value is scaled based on the minimum and maximum pixel values found in the dataset. This is a simple scaling technique but does not handle outliers well.
 \end{itemize}
 
 We performed a comparison of these techniques, and the results are displayed in Figure~\ref{fig:standardization_influence}. It is worth noting that PCA proved to be computationally demanding, doubling the required training time. L1 standardization exhibited poor performance, which we suspect may be attributed to the normalization process involving the division of each pixel value by the sum of absolute pixel values, resulting in excessively low values. L2 normalization performed better than its counterpart during training but did not generalize effectively during testing. In contrast, per-channel standardization consistently ranks among the top-performing methods, demonstrating superior performance. It's worth noting that there is little to no discernible difference in performance between per-channel standardization and its global counterpart, GCN.
 
 \begin{figure}[H]
     \centering
-    \includegraphics*[width=\textwidth]{figs/CNN/standardization_influence.pdf}
+    \includegraphics*[width=0.9\textwidth]{figs/CNN/standardization_influence.pdf}
     \caption{Influence of standardization techniques}
     \label{fig:standardization_influence}
 \end{figure}
@@ -226,12 +224,12 @@ By artificially increasing our dataset, we expect to have a model that generaliz
 
 \begin{figure}[H]
     \centering
-    \includegraphics*[width=\textwidth]{figs/CNN/dataincrease.pdf}
+    \includegraphics*[width=0.9\textwidth]{figs/CNN/dataincrease.pdf}
     \caption{Accuracy and losses in train and test using data augmentation}
     \label{fig:dataincrease}
 \end{figure}
 
-Our experimental results show that our model generalizes much better and we observe less overfitting, which is good.
+Our experimental results demonstrate that our model exhibits improved generalization and reduced overfitting, which is a positive outcome. However, it's important to note that we still observe some degree of instability in testing.
 
 \paragraph{23. Does this horizontal symmetry approach seems usable on all types of images? In what cases can it be or not be?}
 For many general tasks, especially those involving natural scenes or objects, horizontal flipping does not change the essence of the subject. For instance, a car is still recognizable as a car, whether flipped or not. This technique is effective in such contexts, contributing to model robustness without misleading the training process. However, in tasks where orientation is crucial to the object's identity or the scene's context, flipping may not be suitable. For example, in handwritten text recognition, letter and number orientation is fundamental, and flipping changes the characters' semantics. Similarly, in scenarios like medical imaging, where a left-right flip might alter the diagnosis (consider organs' positions), this method is not applicable.
@@ -239,26 +237,28 @@ For many general tasks, especially those involving natural scenes or objects, ho
 \paragraph{24. What limits do you see in this type of data increase by transformation of the dataset?}
 Augmentation can sometimes exacerbate class imbalances, particularly if transformations are applied uniformly across classes without considering their initial distribution. Augmenting already overrepresented classes can intensify the imbalance. Some transformations might introduce features that are unnatural, potentially leading the model to learn false patterns. For instance, excessive rotation or scaling might create unnatural shapes or perspectives that the model might wrongly interpret as relevant features. Data augmentation, especially sophisticated methods, increases the computational burden. It requires additional processing for each image and can slow down the training process, demanding more efficient hardware solutions. While augmentation expands the dataset, it doesn't contribute new information beyond the initial data's constraints. The transformations create variability but within the context of existing data, possibly limiting the model's ability to generalize in radically new scenarios.
 
-\paragraph{25. Bonus : Other data augmentation methods are possible. Find out which ones and test some.}
+\paragraph{25. Bonus: Other data augmentation methods are possible. Find out which ones and test some.}
 A wide array of augmentation methods is available, including but not limited to rotation, flips, zooming, perspective alteration, affine transformations, color adjustments (brightness, contrast, saturation, hue), sharpness modification, Gaussian blur, polarization, solarization, pixel erasure, channel permutation, grayscale conversion, and more.
 
 We tried random erasing and random rotation (0° to 180°) on the train dataset and random rotation (0° to 90°) on the test dataset. Results are displayed on figure~\ref{fig:dataincrease_rotation}.
 
 \begin{figure}[H]
     \centering
-    \includegraphics*[width=\textwidth]{figs/CNN/dataincrease_rotation.pdf}
+    \includegraphics*[width=0.9\textwidth]{figs/CNN/dataincrease_rotation.pdf}
     \caption{Accuracy and losses in train and test using data augmentation}
     \label{fig:dataincrease_rotation}
 \end{figure}
 
-% We tried random erasing and random rotation on train dataset and gaussian blur on test dataset, results are displayed on figure~\ref{fig:dataincrease_bis}. Because we use completely different data augmentation techniques on our datasets, the model fails to generalize.
+One may also wonder what happens when we train a model using certain transformations and test it using transformations that the model hasn't encountered during training. Figure~\ref{fig:dataincrease_bis} illustrates the consequences of this approach, where we applied random erasing and random rotation (0° to 180°) to the training dataset and random rotation (180° to 360°) to the test dataset. This experiment highlights that even though both involve rotations, the model may struggle to generalize when faced with previously unseen transformations.
 
-% \begin{figure}[H]
-%     \centering
-%     \includegraphics*[width=\textwidth]{figs/CNN/dataincrease_bis.pdf}
-%     \caption{Accuracy and losses in train and test using data augmentation}
-%     \label{fig:dataincrease_bis}
-% \end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=0.9\textwidth]{figs/CNN/dataincrease_bis.pdf}
+    \caption{Accuracy and losses in train and test using data augmentation}
+    \label{fig:dataincrease_bis}
+\end{figure}
+
+As a final note, we want to mention that as we introduced more transformations, we observed a significant increase in training time, with the training process taking at least twice as long. This highlights the computational complexity associated with this technique, as discussed in question 24.
 
 \subsection{Variants of the optimization algorithm}
 \paragraph{26. Describe your experimental results and compare them to previous results, including learning stability.}
@@ -269,7 +269,7 @@ Figure~\ref{fig:optim_variants} depicts our results. We can see that the loss cu
 
 \begin{figure}[H]
     \centering
-    \includegraphics*[width=\textwidth]{figs/CNN/optim_variants.pdf}
+    \includegraphics*[width=0.9\textwidth]{figs/CNN/optim_variants.pdf}
     \caption{Accuracy and losses using an exponential decay scheduler with SGD}
     \label{fig:optim_variants}
 \end{figure}
@@ -281,20 +281,20 @@ Moreover, this method acknowledges that the landscape of the loss function is no
 
 However, it's essential to approach the setting of the initial learning rate and decay factor with care, as these hyperparameters can significantly affect the training's effectiveness and efficiency. Too rapid a decay might mean the learning rate reduces too quickly, curtailing the model's capacity to learn, while too slow a decay might keep the learning rate too high, leading to the aforementioned issues of overshooting or oscillating around the minimum.
 
-\paragraph{28. \textbf{Bonus}: Many other variants of SGD exist and many learning rate planning strategies exist. Which ones? Test some of them.}
+\paragraph{28. Bonus: Many other variants of SGD exist and many learning rate planning strategies exist. Which ones? Test some of them.}
 
 In this study, we employed various optimizer configurations and learning rate scheduling techniques. Initially, we visualize the learning rate dynamics throughout the training epochs using figure~\ref{fig:schedulers_comparison}. Subsequently, we analyze the impact of these scheduling methods on both training and testing accuracies, as well as losses, as demonstrated in figure~\ref{fig:schedulers_influence}.
 
 \begin{figure}[H]
     \centering
-    \includegraphics*[width=\textwidth]{figs/CNN/schedulers_comparison.pdf}
+    \includegraphics*[width=0.9\textwidth]{figs/CNN/schedulers_comparison.pdf}
     \caption{Learning rates curves}
     \label{fig:schedulers_comparison}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics*[width=\textwidth]{figs/CNN/schedulers_influence.pdf}
+    \includegraphics*[width=0.9\textwidth]{figs/CNN/schedulers_influence.pdf}
     \caption{Influence of different schedulers on SGD}
     \label{fig:schedulers_influence}
 \end{figure}
@@ -305,7 +305,7 @@ Additionally, it's essential to recognize that there exist alternative optimizer
 
 \begin{figure}[H]
     \centering
-    \includegraphics*[width=\textwidth]{figs/CNN/optimizers_influence.pdf}
+    \includegraphics*[width=0.9\textwidth]{figs/CNN/optimizers_influence.pdf}
     \caption{Influence of different optimizers}
     \label{fig:optimizers_influence}
 \end{figure}
@@ -317,14 +317,14 @@ Integrating a dropout layer in a neural network is a strategic move to combat th
 
 \begin{figure}[H]
     \centering
-    \includegraphics*[width=\textwidth]{figs/CNN/dropout.pdf}
+    \includegraphics*[width=0.9\textwidth]{figs/CNN/dropout.pdf}
     \caption{Accuracy and losses in train and test, using a dropout on \texttt{fc4}}
     \label{fig:dropout}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics*[width=\textwidth]{figs/CNN/dropout_with_scheduler.pdf}
+    \includegraphics*[width=0.9\textwidth]{figs/CNN/dropout_with_scheduler.pdf}
     \caption{Accuracy and losses in train and test, using a dropout on \texttt{fc4} and a scheduler}
     \label{fig:dropout_with_scheduler}
 \end{figure}
@@ -342,11 +342,11 @@ Dropout can be interpreted as a form of model averaging or ensemble learning. Ea
 Dropout introduces variability into the network, somewhat akin to injecting noise into the hidden units' outputs. This noise can help prevent the network from fitting the training data too precisely, effectively acting as a form of stochastic data augmentation.
 
 \paragraph{32. What is the influence of the hyperparameter of this layer?}
-The hyperparameter of this layer is called the "dropout rate" and represents the probability that any given neuron will be temporarily dropped. A very high dropout rate means more neurons are dropped during training. While this might increase regularization (thus potentially reducing overfitting), if the rate is too high, the network might lose too much information, making learning difficult and possibly leading to underfitting. A lower dropout rate maintains more neurons active but might offer insufficient regularization, making the model still prone to overfitting, especially if it's a complex, deep network. Results of this hyperparameter on our architecture are displayed on figure~\ref{fig:dropout_hyperparameter}. In our specific case, a minimal dropout rate enhances training performance but leads to overfitting. Conversely, employing a high dropout rate significantly mitigates the overfitting issue. Unexpectedly, setting the dropout rate to $p=1$ renders our model incapable of learning.
+The hyperparameter of this layer is called the "dropout rate" and represents the probability that any given neuron will be temporarily dropped. A very high dropout rate means more neurons are dropped during training. While this might increase regularization (thus potentially reducing overfitting), if the rate is too high, the network might lose too much information, making learning difficult and possibly leading to underfitting. A lower dropout rate maintains more neurons active but might offer insufficient regularization, making the model still prone to overfitting, especially if it's a complex, deep network. Results of this hyperparameter on our architecture are displayed on figure~\ref{fig:dropout_hyperparameter}. In our specific case, a minimal dropout rate enhances training performance but leads to overfitting. Conversely, employing a high dropout rate significantly mitigates the overfitting issue. Unexpectedly, setting the dropout rate to $p=1$ (meaning \textbf{\textit{all}} layers are dropped) renders our model incapable of learning.
 
 \begin{figure}[H]
     \centering
-    \includegraphics*[width=\textwidth]{figs/CNN/dropout_hyperparameter.pdf}
+    \includegraphics*[width=0.9\textwidth]{figs/CNN/dropout_hyperparameter.pdf}
     \caption{Influence of dropout rate $p$}
     \label{fig:dropout_hyperparameter}
 \end{figure}
@@ -362,14 +362,14 @@ oui
 
 \begin{figure}[H]
     \centering
-    \includegraphics*[width=\textwidth]{figs/CNN/batchnorm.pdf}
+    \includegraphics*[width=0.9\textwidth]{figs/CNN/batchnorm.pdf}
     \caption{Accuracy and losses in train and test}
     \label{fig:batchnorm}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics*[width=\textwidth]{figs/CNN/batchnorm_with_dropout.pdf}
+    \includegraphics*[width=0.9\textwidth]{figs/CNN/batchnorm_with_dropout.pdf}
     \caption{Accuracy and losses in train and test, with dropout layer}
     \label{fig:batchnorm_with_dropout}
 \end{figure}
@@ -379,7 +379,7 @@ Now that we have individually explored various methods to enhance our results wi
 
 \begin{figure}[H]
     \centering
-    \includegraphics*[width=\textwidth]{figs/CNN/combined.pdf}
+    \includegraphics*[width=0.9\textwidth]{figs/CNN/combined.pdf}
     \caption{Accuracy and losses in train and test using all methods}
     \label{fig:combined}
 \end{figure}

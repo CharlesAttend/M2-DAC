@@ -5,28 +5,30 @@
     \includegraphics*[width=.8\textwidth]{figs/Transformers/The-Vision-Transformer-architecture-a-the-main-architecture-of-the-model-b-the.png}
 \end{figure}
 
-\section{Self Attention}
+% mettre la source non ?
+
+\section{Self-Attention}
 \paragraph{What is the main feature of self-attention, especially compared to its convolutional counterpart? What is its main challenge in terms of computation/memory?}
-Unlike convolutional layers that consider a local neighborhood around each input position, self-attention can weigh all positions across the entire sequence (here the image), providing a form of global receptive field. This is beneficial for tasks where the relevant context can be far from the current position. Convolutional layers have a fixed receptive field, which limits their ability to capture long-range dependencies unless many layers are stacked or dilated convolutions are used. 
+Unlike convolutional layers that consider a local neighborhood around each input position, self-attention can weigh all positions across the entire sequence (here the image), providing a form of global receptive field. This is beneficial for tasks where the relevant context can be far from the current position. Convolutional layers have a fixed receptive field, which limits their ability to capture long-range dependencies unless many layers are stacked or dilated convolutions are used.
 
 The primary challenge of self-attention is its computational and memory complexity, particularly the quadratic complexity with respect to the sequence length. In self-attention, every element in the input sequence interacts with every other element, leading to a time and space complexity of something like $ O(n^2) $, where $n$ is the length of the input sequence. This makes self-attention computationally expensive and memory-intensive for long sequences.
 
 \paragraph{At first, we are going to only consider the simple case of one head. Write the equations and complete the following code. And don't forget a final linear projection at the end!}
 
 First we need to compute three different linear projection of the input $ X $ : the Query $ Q $, the Key $ K $, and the Value $ V $.
+
 \begin{align*}
-    Q &= X W_q, \\
-    K &= X W_k, \\
-    V &= X W_v  \\
+    Q & = X W_q, \\
+    K & = X W_k, \\
+    V & = X W_v
 \end{align*}
 
-
-The main part of attention is the dot product between the Query and the Key. Those are a set of vector that we learn. The goal is to learn representation of Key that answer the Query to orient the attention. The dot product is high where the model need attention. 
+The main part of attention is the dot product between the Query and the Key. Those are a set of vector that we learn. The goal is to learn representation of Key that answer the Query to orient the attention. The dot product is high where the model need attention.
 
 But we must be aware that when values of the key and query vectors are large, the dot products can become very large. This can result in large values in the softmax function, leading to vanishing gradients during backpropagation. Scaling down the dot products by $ \sqrt[]{d_k} $ (where $ d_k $  is the dimensionality of the query and key vectors) helps in keeping the gradients in a manageable range, which in turn stabilizes the training. As the variance of the dot product grows with the dimensionality, it also keep it constant.
 
 \begin{align*}
-    \text{Attention}(Q, K, V) &= \text{Softmax}\left(\frac{QK^t}{\sqrt{d_k}}\right)V \\
+    \text{Attention}(Q, K, V) & = \text{Softmax}\left(\frac{QK^t}{\sqrt{d_k}}\right)V
 \end{align*}
 
 The Value matrix represents the actual content of the input tokens. Once the attention scores are computed, they are used to weight the value vectors $ V $.
@@ -36,7 +38,7 @@ The Value matrix represents the actual content of the input tokens. Once the att
 \paragraph{Write the equations of Multi-Heads Self-Attention.}
 \[
     \text{MultiHead}(Q, K, V) = \text{Concat}(\text{head}_1, ..., \text{head}_h)W^O
-.\]
+    .\]
 where $\text{head}_i = \text{Attention}(QW_i^Q, KW_i^K, VW_i^V)$. The Attention function is the same as described in the single-head attention, and $W^O$ is a final linear layer's weights.
 
 \section{Transfomer block}
@@ -46,44 +48,44 @@ Let's define the operations within a Transformers block:
 
 \begin{enumerate}
     \item Let \( x \) be the input to the Transformers block, which in our case is a patch from the image plus a positional embedding. We begin by normalizing the input using Layer Normalization (LayerNorm):
-    
-    \[
-        z = \text{LayerNorm}(x)
-        \]
-        
-        \item We then compute the Query (Q), Key (K), and Value (V) matrices, which are used in the Multi-Head Attention mechanism as explained in the previous question:
-        
-\[
-    Q = z \cdot W_q, \quad K = z \cdot W_k, \quad V = z \cdot W_v
-    \]
-    
-\item Next, we pass these matrices \( Q \), \( K \), and \( V \) into the Multi-Head Attention mechanism:
 
-\[
-\text{AttOutput} = \text{MultiHead}(Q, K, V)
-\]
+          \[
+              z = \text{LayerNorm}(x)
+          \]
 
-\item We add the normalized input \( z \) to the output of the Multi-Head Attention and apply Layer Normalization again:
+    \item We then compute the Query (Q), Key (K), and Value (V) matrices, which are used in the Multi-Head Attention mechanism as explained in the previous question:
 
-\[
-\text{MidLayerOutput} = \text{LayerNorm}(z + \text{AttOutput})
-\]
+          \[
+              Q = z \cdot W_q, \quad K = z \cdot W_k, \quad V = z \cdot W_v
+          \]
 
-\item We retain this result and add it to the output of the MLP (Multi-Layer Perceptron) head, which is a two-layer linear network with a GeLU (Gaussian Error Linear Unit) or ReLU (Rectified Linear Unit) activation function, defined as follows:
+    \item Next, we pass these matrices \( Q \), \( K \), and \( V \) into the Multi-Head Attention mechanism:
 
-\[
-\text{MLP}(x) = \text{ReLU}(x \cdot W_1 + b_1) \cdot W_2 + b_2
-\]
+          \[
+              \text{AttOutput} = \text{MultiHead}(Q, K, V)
+          \]
 
-\item Finally, we compute the output of the MLP and add it to the \text{MidLayerOutput} to obtain the final output of the Transformers block:
+    \item We add the normalized input \( z \) to the output of the Multi-Head Attention and apply Layer Normalization again:
 
-\[
-    \text{MLPOutput} = \text{MLP}(\text{MidLayerOutput})
-\]
-\[
-    \text{FinalOutput} = \text{MLPOutput} + \text{MidLayerOutput}
-\]
-After this last addition, we obtain the final output of a Transformers block.
+          \[
+              \text{MidLayerOutput} = \text{LayerNorm}(z + \text{AttOutput})
+          \]
+
+    \item We retain this result and add it to the output of the MLP (Multi-Layer Perceptron) head, which is a two-layer linear network with a GeLU (Gaussian Error Linear Unit) or ReLU (Rectified Linear Unit) activation function, defined as follows:
+
+          \[
+              \text{MLP}(x) = \text{ReLU}(x \cdot W_1 + b_1) \cdot W_2 + b_2
+          \]
+
+    \item Finally, we compute the output of the MLP and add it to the \text{MidLayerOutput} to obtain the final output of the Transformers block:
+
+          \[
+              \text{MLPOutput} = \text{MLP}(\text{MidLayerOutput})
+          \]
+          \[
+              \text{FinalOutput} = \text{MLPOutput} + \text{MidLayerOutput}
+          \]
+          After this last addition, we obtain the final output of a Transformers block.
 \end{enumerate}
 
 \section{Full ViT model}
@@ -106,7 +108,7 @@ This positionnal embedding is then sum to the image embedding.
 \section{Experiment on MNIST!}
 The overall performance of our small transformer is really good on MNIST. The convergence is quick and the accuracy really high for every experiments.
 
-\subsubsection{Hyperparameters influences}
+\subsection{Hyperparameters influences}
 As we did in previus experiments, we'll analyse the influence of hyperparmeter by ploting loss and accuracy on the train and test dataset.
 
 \paragraph{Embed dimension}
@@ -118,7 +120,7 @@ On the other hand, the embedding size of 16 achieves similar performance to the 
 
 \begin{figure}[H]
     \centering
-    \includegraphics*[width=\textwidth]{figs/Transformers/embed_dim_influence_25.pdf}
+    \includegraphics*[width=0.9\textwidth]{figs/Transformers/embed_dim_influence_25.pdf}
     \caption{Influence of the size of the embed dimension}
     \label{fig:embed_dim_influence}
 \end{figure}
@@ -130,7 +132,7 @@ As anticipated, a patch size as small as 2 by 2 pixels encountered greater chall
 
 \begin{figure}[H]
     \centering
-    \includegraphics*[width=\textwidth]{figs/Transformers/patch_size_influence.pdf}
+    \includegraphics*[width=0.9\textwidth]{figs/Transformers/patch_size_influence.pdf}
     \caption{Influence of the patch size}
     \label{fig:patch_size_influence}
 \end{figure}
@@ -140,7 +142,7 @@ The influence of the number of transformer blocks is evident in Figure~\ref{fig:
 
 \begin{figure}[H]
     \centering
-    \includegraphics*[width=\textwidth]{figs/Transformers/nb_block_influence.pdf}
+    \includegraphics*[width=0.9\textwidth]{figs/Transformers/nb_block_influence.pdf}
     \caption{Influence of the number of transformers blocks}
     \label{fig:nb_block_influence}
 \end{figure}
@@ -150,7 +152,7 @@ Once again, the test loss proves to be the most informative aspect of Figure~\re
 
 \begin{figure}[H]
     \centering
-    \includegraphics*[width=\textwidth]{figs/Transformers/num_heads_influence.pdf}
+    \includegraphics*[width=0.9\textwidth]{figs/Transformers/num_heads_influence.pdf}
     \caption{Influence of the number of self attention head in one transformer block }
     \label{fig:num_heads_influence}
 \end{figure}
@@ -160,7 +162,7 @@ Finally, we conducted tests to assess the influence of the size of the MLP hidde
 
 \begin{figure}[H]
     \centering
-    \includegraphics*[width=\textwidth]{figs/Transformers/mlp_ratio_influence.pdf}
+    \includegraphics*[width=0.9\textwidth]{figs/Transformers/mlp_ratio_influence.pdf}
     \caption{Influence of the hidden layer size in the MLP part of a transformer block}
     \label{fig:mlp_ratio_influence}
 \end{figure}
@@ -168,7 +170,7 @@ Finally, we conducted tests to assess the influence of the size of the MLP hidde
 \section{Larger transformers}
 \subsection{Questions}
 \paragraph{What it is the problem and why we have it? Explain if we have also such problem with CNNs.}
-The model \texttt{vit\_base\_patch16\_224} is trained on 224x224 images from the ImageNet dataset. In the first layer of the ViT, the input image is divided into fixed-size patches to create embedded vectors. It's crucial to maintain the same image size as the one the model was designed for. 
+The model \texttt{vit\_base\_patch16\_224} is trained on 224x224 images from the ImageNet dataset. In the first layer of the ViT, the input image is divided into fixed-size patches to create embedded vectors. It's crucial to maintain the same image size as the one the model was designed for.
 
 In this case, it necessitates resizing the images to 224x224 RGB pixels. However, this may not be ideal as resizing could distort the images and potentially affect the model's performance.
 
@@ -176,31 +178,31 @@ In this case, it necessitates resizing the images to 224x224 RGB pixels. However
 ...
 
 \subsection{Learning from scratch}
-As denoted by figure~\ref{fig:stats_vit}, the ViT had difficulty to learn from scratch on MNIST. Due to the model size, four epochs took approximatly 45 minutes and bringed accuracy to somewhat 20 percents on test. 
+As denoted by figure~\ref{fig:stats_vit}, the ViT had difficulty to learn from scratch on MNIST. Due to the model size, four epochs took approximatly 45 minutes and bringed accuracy to somewhat 20 percents on test.
 
 \begin{figure}[H]
     \centering
-    \includegraphics*[width=\textwidth]{figs/Transformers/stats_vit.pdf}
+    \includegraphics*[width=0.9\textwidth]{figs/Transformers/stats_vit.pdf}
     \caption{}
     \label{fig:stats_vit}
 \end{figure}
 
 
-\subsection{Fine tuning}
-Result are much better when finetuning as we can see in figure~\ref{fig:stats_vit_pretrained}
+\subsection{Fine-tuning}
+Result are much better when fine-tuning as we can see in figure~\ref{fig:stats_vit_pretrained}
 \begin{figure}[H]
     \centering
-    \includegraphics*[width=\textwidth]{figs/Transformers/stats_vit_pretrained.pdf}
+    \includegraphics*[width=0.9\textwidth]{figs/Transformers/stats_vit_pretrained.pdf}
     \caption{}
     \label{fig:stats_vit_pretrained}
 \end{figure}
 
-\section{Experiment on Fashion MNIST!}
+\section{Experiments on Fashion MNIST!}
 Fashion-MNIST is a dataset of Zalando's article images—consisting of a training set of 60,000 examples and a test set of 10,000 examples. Each example is a 28x28 grayscale image, associated with a label from 10 classes. We intend Fashion-MNIST to serve as a direct drop-in replacement for the original MNIST dataset for benchmarking machine learning algorithms. It shares the same image size and structure of training and testing splits.
 
 \begin{figure}[H]
     \centering
-    \includegraphics*[width=.5\textwidth]{figs/Transformers/fashion-mnist-sprite.png}
+    \includegraphics*[width=.6\textwidth]{figs/Transformers/fashion-mnist-sprite.png}
     \caption{Sample of the Fashion-MNIST dataset (each class takes three-rows)}
 \end{figure}
 
@@ -209,12 +211,12 @@ As demonstrated in the previous section, Vision Transformers have pushed the bou
 We will now briefly review each experiment to see if we can gain new insights. Each figure mentioned will be linked and displayed in the appendix.
 \begin{enumerate}
     \item \textbf{Embedding Dimension}: When comparing the results between the classic MNIST dataset (Figure~\ref{fig:embed_dim_influence}) and the Fashion MNIST dataset (Figure~\ref{fig:fashion:embed_dim_influence}), our earlier conclusions drawn from the classic MNIST dataset hold true but are more pronounced. Larger embedding sizes converge at lower accuracy and loss values, while smaller embedding sizes take more time to converge but show promise.
-    
+
     \item \textbf{Patch Size}: In both the classic MNIST dataset (Figure~\ref{fig:patch_size_influence}) and the Fashion MNIST dataset (Figure~\ref{fig:fashion:patch_size_influence}), patch sizes of 28 or 14 pixels continue to exhibit similar performance.
-    
+
     \item \textbf{Number of Transformers Blocks}: Our earlier conclusion from the classic MNIST dataset, where a high number of blocks could potentially induce overfitting (Figure~\ref{fig:nb_block_influence}), is not as evident in the Fashion MNIST dataset (Figure~\ref{fig:fashion:nb_block_influence}). Using eight transformers blocks does result in some learning difficulties, as indicated by the red curve having lower accuracy and higher loss.
-    
+
     \item \textbf{Number of Heads in a Block}: The observation that more self-attention heads tend to yield better results, as seen in the classic MNIST dataset (Figure~\ref{fig:num_heads_influence}), appears to hold true for the Fashion MNIST dataset as well (Figure~\ref{fig:fashion:num_heads_influence}).
-    
+
     \item \textbf{MLP Hidden Layer Size}: The comparison between the classic MNIST dataset (Figure~\ref{fig:mlp_ratio_influence}) and the Fashion MNIST dataset (Figure~\ref{fig:fashion:mlp_ratio_influence}) reaffirms our previous conclusion. While increasing the MLP hidden layer size may not necessarily induce overfitting, the effect is less clear in the Fashion MNIST dataset.
 \end{enumerate}
