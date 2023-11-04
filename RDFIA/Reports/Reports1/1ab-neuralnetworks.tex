@@ -303,14 +303,212 @@ So, the gradient of the loss with respect to the weights of the output layer \( 
 \end{enumerate}
 
 \section{Implementation}
-\subsection{Forward and backward manuals}
 
+In this section, the primary focus was on exploring how a simple neural network model can perform at classifying tasks which can be difficult with normal machine learning techniques. The context varied from circular data to image classification, and the overall approach was to confirm the theory of precedent section and experiment with different hyperparameters to understand their effects on model performance.
+
+\subsection{Forward and backward manuals}
+In neural network training using SGD, it is common practice to average the gradients calculated during the backward pass over the batch size. The idea behind this scaling is to make the learning rate independent of the batch size, so that the updates to the model parameters are roughly consistent regardless of the batch size. We compared these two approaches in Figure~\ref{fig:manual_nn}.
+
+One significant observation is that when using batch normalization, the network requires much more time to achieve its performance, needing 100 epochs instead of 10. However, the trade-off is that the training process becomes much more stable.
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figs/NN/manual_acc_loss.pdf}
+        \caption{Accuracy and losses curves without batch size normalization}
+        \label{subfig:manual_acc_loss}
+    \end{subfigure}
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figs/NN/manual_acc_loss_bis.pdf}
+        \caption{Accuracy and losses curves with batch size normalization}
+        \label{subfig:manual_acc_loss_bis}
+    \end{subfigure}
+    \caption{To batch normalize, or not to batch normalize.}
+    \label{fig:manual_nn}
+\end{figure}
+
+In the following experiments, we have chosen to continue with batch normalization. We then proceeded to investigate the influence of learning rate and batch size. The results are presented in figure~\ref{fig:manual_bs_lr}. Our findings align with the expectations discussed in Question 11.
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figs/NN/manual_batchsize.pdf}
+        \caption{Influence of batch size}
+        \label{subfig:manual_batchsize}
+    \end{subfigure}
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figs/NN/manual_lr.pdf}
+        \caption{Influence of learning rate}
+        \label{subfig:manual_lr}
+    \end{subfigure}
+    \caption{Influence of learning rate and batch size}
+    \label{fig:manual_bs_lr}
+\end{figure}
+
+In the provided notebook, you will also find animated figures that showcase the evolution of the learning process and the visualization of the decision boundaries. Unexpectedly, by the end of the training, we can observe circular decision boundaries for the circular data as the model is able to classify the data correctly.
+
+% \pagebreak
 \subsection{Simplification of the backward pass with \texttt{torch.autograd}}
+
+The results of this section are presented in figure~\ref{fig:autograd}. It's worth noting that we obtained similar results to when we did not use batch normalization, as indicated by the learning instability. However, our overall conclusions remain consistent.
+
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{\textwidth}
+        \centering
+        \includegraphics[width=0.5\textwidth, height=5cm]{figs/NN/autograd_acc_loss.pdf}
+        \caption{Accuracy and losses curves with \texttt{torch.autograd}}
+        \label{subfig:autograd_acc_loss}
+    \end{subfigure}
+\end{figure}
+
+\begin{figure}[H]\ContinuedFloat
+    \centering
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figs/NN/autograd_batchsize.pdf}
+        \caption{Influence of batch size}
+        \label{subfig:autograd_batchsize}
+    \end{subfigure}
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figs/NN/autograd_lr.pdf}
+        \caption{Influence of learning rate}
+        \label{subfig:autograd_lr}
+    \end{subfigure}
+    \caption{\texttt{torch.autograd}}
+    \label{fig:autograd}
+\end{figure}
 
 \subsection{Simplification of the forward pass with \texttt{torch.nn} layers}
 
+The results of this section can be found in figure~\ref{fig:torchnn}. In this case, we observe that learning takes longer compared to using manual layers. It requires 150 epochs to reach its maximum performance. This could be attributed to how Torch initializes its layers. However, the training process appears to be more stable, as evidenced by the loss curve.
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{\textwidth}
+        \centering
+        \includegraphics[width=0.88\textwidth]{figs/NN/torchnn_acc_loss.pdf}
+        \caption{Accuracy and losses curves using \texttt{torch.nn} layers}
+        \label{subfig:torchnn_acc_loss}
+    \end{subfigure}
+\end{figure}
+
+\begin{figure}[H]\ContinuedFloat
+    \centering
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figs/NN/torchnn_batch_size.pdf}
+        \caption{Influence of batch size}
+        \label{subfig:torchnn_batchsize}
+    \end{subfigure}
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figs/NN/torchnn_lr.pdf}
+        \caption{Influence of learning rate}
+        \label{subfig:torchnn_lr}
+    \end{subfigure}
+    \caption{\texttt{torch.nn} }
+    \label{fig:torchnn}
+\end{figure}
+
 \subsection{Simplification of the SGD with \texttt{torch.optim}}
 
-\subsection{MNIST application}
+The results of this section are presented in figure~\ref{fig:torchoptim}. The training process is significantly more stable, but it requires a much longer time to converge, taking 300 epochs to reach its maximum performance. 
 
-\subsection{Bonus: SVM}
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{\textwidth}
+        \centering
+        \includegraphics[width=0.88\textwidth]{figs/NN/torchoptim_acc_loss.pdf}
+        \caption{Accuracy and losses curves using \texttt{torch.optim}}
+        \label{subfig:torchoptim_acc_loss}
+    \end{subfigure}
+\end{figure}
+
+\begin{figure}[H]\ContinuedFloat
+    \centering
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figs/NN/torchoptim_batchsize.pdf}
+        \caption{Influence of batch size}
+        \label{subfig:torchoptim_batchsize}
+    \end{subfigure}
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figs/NN/torchoptim_lr.pdf}
+        \caption{Influence of learning rate}
+        \label{subfig:torchoptim_lr}
+    \end{subfigure}
+    \caption{\texttt{torch.optin} }
+    \label{fig:torchoptim}
+\end{figure}
+
+\subsection{MNIST application}
+The following section presents the results of our model on the MNIST dataset, as shown in figure~\ref{fig:mnist}. Despite its simplicity, the model performs remarkably well. However, there is some instability, which can likely be addressed with a learning rate scheduler or by trying a different optimizer.
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{\textwidth}
+        \centering
+        \includegraphics[width=0.88\textwidth]{figs/NN/mnist_acc_loss.pdf}
+        \caption{Accuracy and losses curves of our model on MNIST}
+        \label{subfig:mnist_acc_loss}
+    \end{subfigure}
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figs/NN/mnist_cm.pdf}
+        \caption{Confusion Matrix}
+        \label{subfig:mnist_cm}
+    \end{subfigure}
+    \caption{Performance on MNIST}
+    \label{fig:mnist}
+\end{figure}
+
+
+\subsection{SVM}
+
+We also explored the SVM approach on our circular data, and the decision boundaries, along with their corresponding accuracies, are presented in figure~\ref{fig:svm_comparison}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{figs/NN/svm_comparison.pdf}
+    \caption{Comparison of SVM}
+    \label{fig:svm_comparison}
+\end{figure}
+
+It's evident that a linear SVM doesn't work well with circular data. Linear SVMs are designed to find a linear decision boundary that separates data into two classes. Circular data cannot be accurately separated by a single straight line, which is our case here. The Radial Basis Function (RBF) kernel is often the best choice compared to polynomial and sigmoid kernels for circular data because it can capture complex, nonlinear patterns more effectively, and it is better suited to model the circular decision boundaries typically found in such data. RBF kernels can flexibly adapt to various shapes and are more versatile in representing circular patterns, as shown here. It's worth noting that the linear and polynomial kernels did not perform significantly better than a random function.
+
+Furthermore, we conducted experimentations into the influence of the regularization parameter $C$ in the SVM. The results are visualized in figure~\ref{fig:svm_regularization}. The parameter $C$ in SVMs controls the trade-off between maximizing the margin and minimizing the classification error on the training data.
+
+\begin{itemize}
+    \item When $C$ is large, the SVM aims to minimize the classification error on the training data, which results in a smaller margin, meaning that the decision boundary can be more flexible and may even fit noisy data points. This can lead to overfitting. This effect can especially be seen on the polynomial SVM. 
+    \item When $C$ is small, the SVM prioritizes maximizing the margin, even if it means allowing some training points to be misclassified. It results in a larger margin, which often leads to a simpler decision boundary. It encourages the SVM to find a more robust decision boundary that generalizes better to unseen data.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{\textwidth}
+        \centering
+        \includegraphics[width=0.9\textwidth]{figs/NN/svm_regularization_grid.pdf}
+        \caption{Decision boundaries}
+        \label{subfig:svm_regularization_grid}
+    \end{subfigure}
+\end{figure}
+
+\begin{figure}[H]\ContinuedFloat
+    \centering
+    \begin{subfigure}{0.9\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figs/NN/svm_regularization_acc.pdf}
+        \caption{Impact of $C$ on accuracy}
+        \label{subfig:svm_regularization_acc}
+    \end{subfigure}
+    \caption{Influence of regularization parameter}
+    \label{fig:svm_regularization}
+\end{figure}
