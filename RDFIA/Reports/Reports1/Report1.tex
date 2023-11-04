@@ -1,6 +1,6 @@
 \documentclass{report}
 \usepackage[utf8]{inputenc}
-\usepackage[a4paper, margin=2.5cm]{geometry}
+\usepackage[a4paper, right=2.5cm, left=2.5cm, top=2cm, bottom=2cm]{geometry}
 \usepackage{graphicx}
 % \usepackage[french]{babel}
 
@@ -12,9 +12,12 @@
 \usepackage{amsthm}
 \usepackage{systeme}
 \usepackage{fancyhdr}
-\usepackage{subcaption}
 \usepackage{hyperref}
 \usepackage{float}
+\usepackage{titling}
+\usepackage{lipsum}
+\usepackage{subcaption}
+% \usepackage{subfig}
 
 \renewcommand*\familydefault{\sfdefault} %% Only if the base font of the document is to be sans serif
 \hypersetup{
@@ -44,13 +47,21 @@
 \newtheorem*{note}{Note}
 %\newtheorem{case}{Case}
 
-\title{
-    Deep Learning Practical Work \\
-    \Large \textbf{Basics on deep learning for vision}
-}
+\title{Basics on deep learning for vision}
 
 \author{Aymeric \textsc{Delefosse} \& Charles \textsc{Vin}}
 \date{2023 -- 2024}
+
+% Definition of \maketitle
+\makeatletter         
+\def\@maketitle{
+    \begin{center}
+        {\Huge \bfseries \sffamily \@title }\\[4ex] 
+        {\Large  \@author}\\[4ex] 
+        \@date\\[8ex]
+        \includegraphics[width=40cm]{../figs/sorbonne-science.pdf}
+    \end{center}}
+\makeatother
 
 \fancyhead{}
 \fancyhead[L]{RDFIA}\fancyhead[R]{DAC 2023 -- 2024}
@@ -58,7 +69,29 @@
 \thispagestyle{plain}
 
 \begin{document}
-\maketitle
+
+\begin{titlepage}
+    \centering
+    
+    % Title
+    \vspace*{\fill}
+    \Huge \thetitle \par
+    \vspace{2mm}
+    \Large \textbf{Deep Learning Practical Work} \par
+    \vspace{2mm}
+
+    % Author
+    \Large \theauthor \par
+    \vspace{2mm}
+    % Date
+    \large \thedate \par
+    
+    \vfill
+    
+    \includegraphics[width=0.3\textwidth]{../figs/sorbonne-science.pdf}
+    
+\end{titlepage}
+
 \tableofcontents
 \newpage
 
