@@ -139,37 +139,38 @@ As anticipated, a patch size as small as 2 by 2 pixels encountered greater chall
 
 \begin{figure}[H]
     \centering
-    \includegraphics*[width=0.9\textwidth]{figs/Transformers/patch_size_influence.pdf}
+    \includegraphics*[width=0.9\textwidth]{figs/Transformers/patch_size_influence_25.pdf}
     \caption{Influence of the patch size}
     \label{fig:patch_size_influence}
 \end{figure}
 
 \paragraph{Number of transformers blocks}
-The influence of the number of transformer blocks is evident in \Cref{fig:nb_block_influence}. This experiment exhibits similarities to the one conducted with embedding sizes. In all configurations, convergence to a high level of accuracy is observed. However, it's important to note that a high number of blocks can potentially result dificulty in learning, as indicated by accuracy when using 8 blocks, which is lower than the other curves.
+The influence of the number of transformer blocks is evident in \Cref{fig:nb_block_influence}. This experiment exhibits similarities to the one conducted with embedding sizes. In all configurations, convergence to a high level of accuracy is observed. However, it's important to note that a high number of blocks can potentially result instability in learning, as indicated by the test loss curve when using 8 blocks. This condition also converge to a lower accuracy.
 
 \begin{figure}[H]
     \centering
-    \includegraphics*[width=0.9\textwidth]{figs/Transformers/nb_block_influence.pdf}
+    \includegraphics*[width=0.9\textwidth]{figs/Transformers/nb_block_influence_25.pdf}
     \caption{Influence of the number of transformers blocks}
     \label{fig:nb_block_influence}
 \end{figure}
 
 \paragraph{Number of heads in a block}
-Once again, the test loss proves to be the most informative aspect of \Cref{fig:num_heads_influence}, as other aspects appear to converge to similar points. This plot suggests that an increase in the number of self-attention heads tends to yield better results. Additionally, it's noteworthy that the test loss curves do not overlap, which enhances our confidence in the reliability of these results.
+Plot in \Cref{fig:num_heads_influence} suggests that an increase in the number of self-attention heads tends to yield better results as we can see by looking at accuracy in train and test.
+% Additionally, it's noteworthy that the test loss curves do not overlap, which enhances our confidence in the reliability of these results.
 
 \begin{figure}[H]
     \centering
-    \includegraphics*[width=0.9\textwidth]{figs/Transformers/num_heads_influence.pdf}
+    \includegraphics*[width=0.9\textwidth]{figs/Transformers/num_heads_influence_25.pdf}
     \caption{Influence of the number of self attention head in one transformer block }
     \label{fig:num_heads_influence}
 \end{figure}
 
 \paragraph{MLP hidden layer size}
-Finally, we conducted tests to assess the influence of the size of the MLP hidden layer, and the results are displayed in \Cref{fig:mlp_ratio_influence}. Analyzing the test loss, show that increasing the hidden size appears to improve the results without inducing overfitting. However, it's important to note that a strong ceiling effect on accuracy limits our ability to draw definitive conclusions.
+Finally, we conducted tests to assess the influence of the size of the MLP hidden layer, and the results are displayed in \Cref{fig:mlp_ratio_influence}. Analyzing the test loss, show that increasing the hidden size does not appears to improve the results and don't induce overfitting too. However, it's important to note that a strong ceiling effect on accuracy limits our ability to draw definitive conclusions.
 
 \begin{figure}[H]
     \centering
-    \includegraphics*[width=0.9\textwidth]{figs/Transformers/mlp_ratio_influence.pdf}
+    \includegraphics*[width=0.9\textwidth]{figs/Transformers/mlp_ratio_influence_25.pdf}
     \caption{Influence of the hidden layer size in the MLP part of a transformer block}
     \label{fig:mlp_ratio_influence}
 \end{figure}
@@ -189,7 +190,7 @@ As denoted by \Cref{fig:stats_vit}, the ViT had difficulty to learn from scratch
 
 \begin{figure}[H]
     \centering
-    \includegraphics*[width=0.9\textwidth]{figs/Transformers/stats_vit.pdf}
+    \includegraphics*[width=0.9\textwidth]{figs/Transformers/stats_vit_15.pdf}
     \caption{}
     \label{fig:stats_vit}
 \end{figure}
@@ -217,13 +218,16 @@ As demonstrated in the previous section, Vision Transformers have pushed the bou
 
 We will now briefly review each experiment to see if we can gain new insights. Each figure mentioned will be linked and displayed in the appendix.
 \begin{enumerate}
-    \item \textbf{Embedding Dimension}: When comparing the results between the classic MNIST dataset (\Cref{fig:embed_dim_influence}) and the Fashion MNIST dataset (\Cref{fig:fashion:embed_dim_influence}), our earlier conclusions drawn from the classic MNIST dataset hold true but are more pronounced. Larger embedding sizes converge at lower accuracy and loss values, while smaller embedding sizes take more time to converge but show promise.
+    \item \textbf{Embedding Dimension}: When comparing the results between the classic MNIST dataset (\Cref{fig:embed_dim_influence}) and the Fashion MNIST dataset (\Cref{fig:fashion:embed_dim_influence}), our earlier conclusions drawn from the classic MNIST dataset hold true but are more pronounced. Larger embedding sizes converge at lower accuracy and loss values, while smaller embedding sizes take more time to converge but show promise. We also see more instability during learning with an embeding size of 128.
 
-    \item \textbf{Patch Size}: In both the classic MNIST dataset (\Cref{fig:patch_size_influence}) and the Fashion MNIST dataset (\Cref{fig:fashion:patch_size_influence}), patch sizes of 28 or 14 pixels continue to exhibit similar performance.
+    \item \textbf{Patch Size}: In both the classic MNIST dataset (\Cref{fig:patch_size_influence}) and the Fashion MNIST dataset (\Cref{fig:fashion:patch_size_influence}), patch sizes of 28 or 14 pixels continue to exhibit similar performance. 
 
     \item \textbf{Number of Transformers Blocks}: Our earlier conclusion from the classic MNIST dataset (\Cref{fig:nb_block_influence}), is still valid on the Fashion MNIST dataset (\Cref{fig:fashion:nb_block_influence}). Using eight transformers blocks does result in some learning difficulties, as indicated by the red curve having lower accuracy and higher loss.
 
     \item \textbf{Number of Heads in a Block}: The observation that more self-attention heads tend to yield better results, as seen in the classic MNIST dataset (\Cref{fig:num_heads_influence}), appears to hold true for the Fashion MNIST dataset as well (\Cref{fig:fashion:num_heads_influence}).
 
-    \item \textbf{MLP Hidden Layer Size}: The comparison between the classic MNIST dataset (\Cref{fig:mlp_ratio_influence}) and the Fashion MNIST dataset (\Cref{fig:fashion:mlp_ratio_influence}) reaffirms our previous conclusion. While increasing the MLP hidden layer size may not necessarily induce overfitting, the effect is less clear in the Fashion MNIST dataset.
+    \item \textbf{MLP Hidden Layer Size}: The comparison between the classic MNIST dataset (\Cref{fig:mlp_ratio_influence}) and the Fashion MNIST dataset (\Cref{fig:fashion:mlp_ratio_influence}) reaffirms our previous conclusion. While increasing the MLP hidden layer size still not induce overfitting, we still can't see any effect on the performance.
+    
+    \item \textbf{Larger transformer: training from scratch}:
+    \item \textbf{Larger transformer: fine-tuning}:
 \end{enumerate}
