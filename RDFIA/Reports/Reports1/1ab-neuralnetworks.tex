@@ -54,7 +54,7 @@ For squared error loss, $\hat{y}_i$ should vary in a way that makes it closer to
 Cross-entropy loss is better suited for classification tasks for several reasons:
 
 \begin{itemize}
-    \item Cross-entropy loss is based on the negative logarithm of the predicted probability of the true class. This logarithmic nature amplifies errors when the predicted probability deviates from 1 (for the correct class) and from 0 (for incorrect classes), depicted in figure~\ref{fig:CELoss}. Consequently, it effectively penalizes misclassifications, making it particularly suitable for classification tasks. However, it is imperative that $\hat{y}$ remains within the range $[0, 1]$ for this loss to be effective.
+    \item Cross-entropy loss is based on the negative logarithm of the predicted probability of the true class. This logarithmic nature amplifies errors when the predicted probability deviates from 1 (for the correct class) and from 0 (for incorrect classes), depicted in \Cref{fig:CELoss}. Consequently, it effectively penalizes misclassifications, making it particularly suitable for classification tasks. However, it is imperative that $\hat{y}$ remains within the range $[0, 1]$ for this loss to be effective.
     \item Cross-entropy loss is often used in conjunction with the SoftMax activation function in the output layer of neural networks for multi-class classification. The SoftMax function ensures that the predicted probabilities sum to 1, aligning perfectly with the requirements of the cross-entropy loss.
 \end{itemize}
 
@@ -307,7 +307,7 @@ So, the gradient of the loss with respect to the weights of the output layer \( 
 In this section, the primary focus was on exploring how a simple neural network model can perform at classifying tasks which can be difficult with normal machine learning techniques. The context varied from circular data to image classification, and the overall approach was to confirm the theory of precedent section and experiment with different hyperparameters to understand their effects on model performance.
 
 \subsection{Forward and backward manuals}
-In neural network training using SGD, it is common practice to average the gradients calculated during the backward pass over the batch size. The idea behind this scaling is to make the learning rate independent of the batch size, so that the updates to the model parameters are roughly consistent regardless of the batch size. We compared these two approaches in Figure~\ref{fig:manual_nn}.
+In neural network training using SGD, it is common practice to average the gradients calculated during the backward pass over the batch size. The idea behind this scaling is to make the learning rate independent of the batch size, so that the updates to the model parameters are roughly consistent regardless of the batch size. We compared these two approaches in \Cref{fig:manual_nn}.
 
 One significant observation is that when using batch normalization, the network requires much more time to achieve its performance, needing 100 epochs instead of 10. However, the trade-off is that the training process becomes much more stable.
 
@@ -329,7 +329,7 @@ One significant observation is that when using batch normalization, the network 
     \label{fig:manual_nn}
 \end{figure}
 
-In the following experiments, we have chosen to continue with batch normalization. We then proceeded to investigate the influence of learning rate and batch size. The results are presented in figure~\ref{fig:manual_bs_lr}. Our findings align with the expectations discussed in Question 11.
+In the following experiments, we have chosen to continue with batch normalization. We then proceeded to investigate the influence of learning rate and batch size. The results are presented in \Cref{fig:manual_bs_lr}. Our findings align with the expectations discussed in Question 11.
 
 \begin{figure}[H]
     \centering
@@ -354,7 +354,7 @@ In the provided notebook, you will also find animated figures that showcase the 
 % \pagebreak
 \subsection{Simplification of the backward pass with \texttt{torch.autograd}}
 
-The results of this section are presented in figure~\ref{fig:autograd}. It's worth noting that we obtained similar results to when we did not use batch normalization, as indicated by the learning instability. However, our overall conclusions remain consistent.
+The results of this section are presented in \Cref{fig:autograd}. It's worth noting that we obtained similar results to when we did not use batch normalization, as indicated by the learning instability. However, our overall conclusions remain consistent.
 
 
 \begin{figure}[H]
@@ -387,7 +387,7 @@ The results of this section are presented in figure~\ref{fig:autograd}. It's wor
 
 \subsection{Simplification of the forward pass with \texttt{torch.nn} layers}
 
-The results of this section can be found in figure~\ref{fig:torchnn}. In this case, we observe that learning takes longer compared to using manual layers. It requires 150 epochs to reach its maximum performance. This could be attributed to how Torch initializes its layers. However, the training process appears to be more stable, as evidenced by the loss curve.
+The results of this section can be found in \Cref{fig:torchnn}. In this case, we observe that learning takes longer compared to using manual layers. It requires 150 epochs to reach its maximum performance. This could be attributed to how Torch initializes its layers. However, the training process appears to be more stable, as evidenced by the loss curve.
 
 \begin{figure}[H]
     \centering
@@ -419,7 +419,7 @@ The results of this section can be found in figure~\ref{fig:torchnn}. In this ca
 
 \subsection{Simplification of the SGD with \texttt{torch.optim}}
 
-The results of this section are presented in figure~\ref{fig:torchoptim}. The training process is significantly more stable, but it requires a much longer time to converge, taking 300 epochs to reach its maximum performance. 
+The results of this section are presented in \Cref{fig:torchoptim}. The training process is significantly more stable, but it requires a much longer time to converge, taking 300 epochs to reach its maximum performance. 
 
 \begin{figure}[H]
     \centering
@@ -450,7 +450,7 @@ The results of this section are presented in figure~\ref{fig:torchoptim}. The tr
 \end{figure}
 
 \subsection{MNIST application}
-The following section presents the results of our model on the MNIST dataset, as shown in figure~\ref{fig:mnist}. Despite its simplicity, the model performs remarkably well. However, there is some instability, which can likely be addressed with a learning rate scheduler or by trying a different optimizer.
+The following section presents the results of our model on the MNIST dataset, as shown in \Cref{fig:mnist}. Despite its simplicity, the model performs remarkably well. However, there is some instability, which can likely be addressed with a learning rate scheduler or by trying a different optimizer.
 
 \begin{figure}[H]
     \centering
@@ -473,7 +473,7 @@ The following section presents the results of our model on the MNIST dataset, as
 
 \subsection{SVM}
 
-We also explored the SVM approach on our circular data, and the decision boundaries, along with their corresponding accuracies, are presented in figure~\ref{fig:svm_comparison}.
+We also explored the SVM approach on our circular data, and the decision boundaries, along with their corresponding accuracies, are presented in \Cref{fig:svm_comparison}.
 
 \begin{figure}[H]
     \centering
@@ -484,7 +484,7 @@ We also explored the SVM approach on our circular data, and the decision boundar
 
 It's evident that a linear SVM doesn't work well with circular data. Linear SVMs are designed to find a linear decision boundary that separates data into two classes. Circular data cannot be accurately separated by a single straight line, which is our case here. The Radial Basis Function (RBF) kernel is often the best choice compared to polynomial and sigmoid kernels for circular data because it can capture complex, nonlinear patterns more effectively, and it is better suited to model the circular decision boundaries typically found in such data. RBF kernels can flexibly adapt to various shapes and are more versatile in representing circular patterns, as shown here. It's worth noting that the linear and polynomial kernels did not perform significantly better than a random function.
 
-Furthermore, we conducted experimentations into the influence of the regularization parameter $C$ in the SVM. The results are visualized in figure~\ref{fig:svm_regularization}. The parameter $C$ in SVMs controls the trade-off between maximizing the margin and minimizing the classification error on the training data.
+Furthermore, we conducted experimentations into the influence of the regularization parameter $C$ in the SVM. The results are visualized in \Cref{fig:svm_regularization}. The parameter $C$ in SVMs controls the trade-off between maximizing the margin and minimizing the classification error on the training data.
 
 \begin{itemize}
     \item When $C$ is large, the SVM aims to minimize the classification error on the training data, which results in a smaller margin, meaning that the decision boundary can be more flexible and may even fit noisy data points. This can lead to overfitting. This effect can especially be seen on the polynomial SVM. 
