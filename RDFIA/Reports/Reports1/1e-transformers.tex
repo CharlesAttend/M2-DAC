@@ -95,9 +95,7 @@ Let's define the operations within a Transformers block:
     After this last addition, we obtain the final output of a Transformers block.
 \end{enumerate}
 
-\section{Full ViT model}
-
-\subsection{Questions}
+\section{Full ViT model : Questions}
 
 \paragraph{Explain what is a Class token and why we use it?}
 The class token is positionned as the first token. It is represented as a learnable vector which gets updated during the forward pass. It accumulate information from different parts of the image as it gets updated through the Transformer layers. As it sum-up all the image, we use it to classify the image.
@@ -114,13 +112,12 @@ This positionnal embedding is then sum to the image embedding.
     \label{fig:pe_viz}
 \end{figure}
 
-\section{Experiment on MNIST!}
+\section{Experiment on MNIST! : Hyperparameters influences}
 The overall performance of our small transformer is really good on MNIST. The convergence is quick and the accuracy really high for every experiments.
 
-\subsection{Hyperparameters influences}
 As we did in previus experiments, we'll analyse the influence of hyperparmeter by ploting loss and accuracy on the train and test dataset.
 
-\paragraph{Embed dimension}
+\subsection{Embed dimension}
 First, let's examine the performance of different embedding dimensions in \Cref{fig:embed_dim_influence}. Several notable observations can be made:
 
 In this figure, it's evident that an embedding dimension of 16 takes slightly more epochs to converge compared to other sizes. Conversely, the size of 128 converges at the same speed but achieves the lowest final accuracy and loss. Importantly, this larger size does not exhibit signs of overfitting. It's worth mentioning that training with an embedding size of 128 also requires more time (in terms of minutes) due to the increased number of parameters.
@@ -134,7 +131,7 @@ On the other hand, the embedding size of 16 achieves similar performance to the 
     \label{fig:embed_dim_influence}
 \end{figure}
 
-\paragraph{Patch size}
+\subsection{Patch size}
 \Cref{fig:patch_size_influence} illustrates the impact of patch size on the learning process. Similar to the previous paragraph, it's apparent that all conditions ultimately converge to nearly the same level of accuracy. However, the test loss provides more informative insights.
 
 As anticipated, a patch size as small as 2 by 2 pixels encountered greater challenges in learning due to its diminutive dimensions. On the other hand, a patch size of 28 by 28 pixels is equivalent to the size of an MNIST image, and thus, no patches are formed. This particular configuration, along with a patch size of 14 pixels, exhibits the lowest initial loss and maintains this characteristic throughout most of the training epochs.
@@ -146,7 +143,7 @@ As anticipated, a patch size as small as 2 by 2 pixels encountered greater chall
     \label{fig:patch_size_influence}
 \end{figure}
 
-\paragraph{Number of transformers blocks}
+\subsection{Number of transformers blocks}
 The influence of the number of transformer blocks is evident in \Cref{fig:nb_block_influence}. This experiment exhibits similarities to the one conducted with embedding sizes. In all configurations, convergence to a high level of accuracy is observed. However, it's important to note that a high number of blocks can potentially result instability in learning, as indicated by the test loss curve when using 8 blocks. This condition also converge to a lower accuracy.
 
 \begin{figure}[H]
@@ -156,7 +153,7 @@ The influence of the number of transformer blocks is evident in \Cref{fig:nb_blo
     \label{fig:nb_block_influence}
 \end{figure}
 
-\paragraph{Number of heads in a block}
+\subsection{Number of heads in a block}
 Plot in \Cref{fig:num_heads_influence} suggests that an increase in the number of self-attention heads tends to yield better results as we can see by looking at accuracy in train and test.
 % Additionally, it's noteworthy that the test loss curves do not overlap, which enhances our confidence in the reliability of these results.
 
@@ -167,7 +164,7 @@ Plot in \Cref{fig:num_heads_influence} suggests that an increase in the number o
     \label{fig:num_heads_influence}
 \end{figure}
 
-\paragraph{MLP hidden layer size}
+\subsection{MLP hidden layer size}
 Finally, we conducted tests to assess the influence of the size of the MLP hidden layer, and the results are displayed in \Cref{fig:mlp_ratio_influence}. Analyzing the test loss, show that increasing the hidden size does not appears to improve the results and don't induce overfitting too. However, it's important to note that a strong ceiling effect on accuracy limits our ability to draw definitive conclusions.
 
 \begin{figure}[H]
