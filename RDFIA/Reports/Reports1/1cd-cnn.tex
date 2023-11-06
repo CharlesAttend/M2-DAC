@@ -92,7 +92,7 @@ To simplify the presentation, we have provided a plot of the CNN architecture in
     \item 10 neurons with 1000 values as input $\rightarrow 11\times 1000=11,000$ parameters
 \end{itemize}
 
-The fully connected layer \texttt{fc4} alone accounts for up to 86~\% of the total number of parameters, underscoring the significant computational demands associated with these layers during the learning process.
+The fully connected layer \texttt{fc4} alone accounts for up to 86\% of the total number of parameters, underscoring the significant computational demands associated with these layers during the learning process.
 
 %%%%%%%%%%%%%%%%
 % IL Y A DES BIAIS AUSSI DANS LES CONV A INCLURE DANS LES CALCULS
@@ -179,7 +179,7 @@ The situation where test accuracy surpasses training accuracy at the beginning c
 % Contrary to the test loss and accuracy that are computed at the end of the first epoch, after the model have seen all training example. Those value are more true that those from train at the first epoch % pire phrase
 
 \paragraph{18. $ \bigstar $ Interpret the results. What's wrong? What is this phenomenon?}
-We observe overfitting, as our caution led us to anticipate. This phenomenon becomes evident around the thirtieth epoch when our test accuracy plateaus at approximately 60~\%, while the training accuracy continues to improve. This signifies that while the model is improving its performance on the training dataset, it is struggling to generalize effectively to new, unseen test images.
+We observe overfitting, as our caution led us to anticipate. This phenomenon becomes evident around the thirtieth epoch when our test accuracy plateaus at approximately 60\%, while the training accuracy continues to improve. This signifies that while the model is improving its performance on the training dataset, it is struggling to generalize effectively to new, unseen test images.
 
 \section{Results improvements}
 \subsection{Standardization of examples}
@@ -265,7 +265,7 @@ As a final note, we want to mention that as we introduced more transformations, 
 
 Incorporating a learning rate scheduler controls how quickly or slowly a model adapts to the problem at hand. Thus, we expect a controlled model convergence, as the model's training process benefits from a more cautious approach to reaching the global minimum of the loss function by gradually decreasing the learning rate. It should also permits to avoid plateaus, i.e. regions where the model's accuracy does not improve significantly due to slow learning. Last, we expect an enhanced training stability.
 
-\Cref{fig:optim_variants} depicts our results. We can see that the loss curve exhibits greater stability when compared to the baseline results (refer to \Cref{fig:base_result}).
+\Cref{fig:optim_variants} depicts our results. We can see that the loss curve exhibits greater stability when compared to the baseline results (refer to \Cref{fig:base_result}). One noteworthy element is the accuracy in train, stabilizing around 60\% whereas we converged to 100\% in the baseline. 
 
 \begin{figure}[H]
     \centering
@@ -299,7 +299,7 @@ In this study, we employed various optimizer configurations and learning rate sc
     \label{fig:schedulers_influence}
 \end{figure}
 
-Firstly, it's noteworthy that both the Constant and Linear learning rate schedulers exhibit a tendency to increase the learning rate, resulting in detrimental performance after a considerable number of epochs, even though it might have been beneficial at the beginning (otherwise they would not have showed this behavior). Conversely, all the other schedulers converge to a similar learning rate value, with the Polynomial scheduler being the fastest to reach this point, albeit with a relatively modest performance of approximately 80~\% in train and 70~\% in test. The top three performers among the schedulers are Exponential, Step (which exhibit similar behavior), and Cosine. Cosine, owing to the nature of its function, takes the longest to reach its learning rate plateau.
+Firstly, it's noteworthy that both the Constant and Linear learning rate schedulers exhibit a tendency to increase the learning rate, resulting in detrimental performance after a considerable number of epochs, even though it might have been beneficial at the beginning (otherwise they would not have showed this behavior). Conversely, all the other schedulers converge to a similar learning rate value, with the Polynomial scheduler being the fastest to reach this point, albeit with a relatively modest performance of approximately 80\% in train and 70\% in test. The top three performers among the schedulers are Exponential, Step (which exhibit similar behavior), and Cosine. Cosine, owing to the nature of its function, takes the longest to reach its learning rate plateau.
 
 Additionally, it's essential to recognize that there exist alternative optimizers more effective than SGD. We conducted a comparative analysis, the results of which are depicted in \Cref{fig:optimizers_influence}. Among the optimizers, Adagrad demonstrated the highest performance, closely followed by its variant, Adadelta. Conversely, both AdamW and RMSProp exhibited relatively poorer performance and displayed numerical instability during testing, with Adam occupying an intermediate position. It's noteworthy that none of the optimization methods led to overfitting.
 
@@ -358,7 +358,7 @@ During training, neurons are randomly deactivated with each batch of data, with 
 
 \paragraph{34. Describe your experimental results and compare them to previous results.}
 
-oui
+In this experiment, we investigated the impact of batch normalization with and without a dropout layer while also utilizing a learning rate scheduler. Batch normalization is employed to mitigate issues associated with changing input distributions during training, commonly referred to as internal covariate shift. One notable effect of batch normalization is the acceleration of the training process. By normalizing the inputs of each layer, it ensures a stable distribution, reducing the time required for the network to adapt to internal covariate shift. Consequently, training converges in fewer epochs, yielding superior model quality compared to networks without batch normalization.
 
 \begin{figure}[H]
     \centering
@@ -366,6 +366,16 @@ oui
     \caption{Accuracy and losses in train and test}
     \label{fig:batchnorm}
 \end{figure}
+
+Using batch normalization (\Cref{fig:batchnorm}) produced improved results compared to the base outcome (\Cref{fig:base_result}). Notably, examining the test loss in both plots reveals that batch normalization enhances stability. On the other hand, employing a dropout layer and a scheduler without batch normalization (\Cref{fig:dropout_with_scheduler}) resulted in significantly better performance, achieving a test accuracy of approximately 85\%. This stands in contrast to batch normalization alone, which yielded an accuracy just below 80\% (\Cref{fig:batchnorm}). Interestingly, combining batch normalization with dropout did not demonstrate a significant difference, suggesting that batch normalization's regularization effect reduces the need for additional regularization techniques like dropout.
+
+% In this experiment, we tried to use batch normalization with and without a dropout layer. We kept a scheduler in both cases. batch normalozation helps alleviation some of the complications caused when input distributions changes during training (a problem known as internal covariate shift).
+
+% One of the most immediate effects observed with batch normalization is the acceleration of the training process. Normalizing the inputs of each layer ensures that they have a stable distribution, reducing the amount of time the network needs to adapt to internal covariate shift. As a result, training requires fewer epochs to converge to a similar or even superior quality of model, compared to networks without batch normalization.
+
+% Using batch norm (\Cref{fig:batchnorm}) improved the result when comparing to the base result in \Cref{fig:base_result}. When checking at the test loss in both plot, Batch norm did his job and avoided overfiting 
+
+% Result was much better when we were using the droput layer and a scheduler without batch normalization \Cref{fig:dropout_with_scheduler}. We had a test accuracy of approximatly 85 percent whereas with batch normlization, we have under 80 percent of accuracy. Those result look much more like if we did not used a scheduler like in figure \cref*{fig:dropout}.  However, batch norm with dropout did not show any significan difference, even though it'ss bit bitter It confirms the fact thant since batch normalization has a regularizing effect, there's less need for other regulazrization techniques like dropout. 
 
 \begin{figure}[H]
     \centering
