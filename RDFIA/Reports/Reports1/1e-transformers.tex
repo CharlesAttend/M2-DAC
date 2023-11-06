@@ -184,24 +184,39 @@ In this case, it necessitates resizing the images to 224x224 RGB pixels. However
 
 \paragraph{Provide some ideas on how to make transformer work on small datasets. You can take inspiration from some recent work.}
 
+We found a lot of "classics" solution when searching how to make thing work on small dataset. There were transfer learning, data augmentation, regularization to avoid overfiting. 
+Digging a paper named "Efficient Training of Visual Transformers with Small Datasets" gave a few more sophisticated ideas. The documents promote the introduction of an auxiliary self-supervised task for training regularization and the use of hybrid architectures that blend convolutional layers with attention layers. These approaches are grounded in the principle that transformers can be made more data-efficient by incorporating mechanisms that allow them to leverage both local and global information from images.
+
+\textbf{Auxiliary Self-Supervised Task}: This method introduces a novel training regularization technique that supplements the standard supervised learning process. In computer vision, common pretext tasks with still images are based on extracting two different views from the same image (e.g., two different crops) and then considering these as a pair of positive images, likely sharing the same semantic content. Most current self-supervised computer
+vision approaches can be categorised in contrastive learning, clustering methods, asymmetric networks and feature-decorrelation methods. Those self-supervised task are particularly effective because it encourages the model to internalize a richer understanding of the image structure, which is beneficial when the availability of annotated data is scarce.
+
+The paper proposes an additional task in which the model is trained to forecast the relative spatial positions of various segments within the input image. This task is based on the transformer's final token embeddings and leverages the inherent spatial connections within the image. By predicting the geometric distances between pairs of output token embeddings, the transformer is incentivized to acquire more intricate and refined representations of the input data.
+
+\textbf{Hybrid Architectures}: Hybrid transformer architectures are designed to mitigate the data-intensive requirements of standard transformer models by integrating convolutional neural network (CNN) elements. These elements introduce a local inductive bias, which is naturally present in CNNs due to their convolutional layers' ability to capture local patterns and structures within an image. By combining the global receptive fields of transformers with the local processing of CNNs, hybrid architectures can effectively learn from both small-scale local features and large-scale global dependencies. This duality allows the model to maintain performance even when trained on smaller datasets, as the convolutional components help to pre-structure the learning process, reducing the amount of data needed to achieve effective training outcomes.
+
+In essence, the underlying concept shared by all iterations of this approach revolves around arranging the individual token embeddings into a geometric grid. In this grid, each embedding vector's position corresponds to a specific spot in the input image. With this geometric arrangement of embeddings, convolutional layers can be employed to process adjacent embeddings, thereby prompting the network to pay attention to localized features within the image.
+
+The primary distinction among these various versions lies in where the convolutional operation is employed. This includes factors such as whether it's applied solely in the initial representations or throughout all the layers, whether it's used in the token-to-query/key/value projections or within the forward layers, and so on.
 
 \subsection{Learning from scratch}
-As denoted by \Cref{fig:stats_vit}, the ViT had difficulty to learn from scratch on MNIST. Due to the model size (see first question of \Cref{paragraph:complexity}), four epochs took approximatly 45 minutes and bringed accuracy to somewhat 20 percents on test.
+As shown in Figure~\ref{fig:stats_vit}, the Vision Transformer (ViT) encountered challenges when learning from scratch on the MNIST dataset. The training process exhibited significant instability, resulting in low accuracy. This difficulty could be attributed to the limited amount of data available for training. Models like ViT are typically pretrained on millions of images, whereas the MNIST dataset consists of only 60,000 images for 10 classes.
+
+Additionally, considering the size of the ViT model (as discussed in the first question of the previous section), training for four epochs consumed approximately 45 minutes and achieved a test accuracy of around 20 percent.
 
 \begin{figure}[H]
     \centering
     \includegraphics*[width=0.9\textwidth]{figs/Transformers/stats_vit_15.pdf}
-    \caption{}
+    \caption{Accuracy and losses in train and test when training a large ViT from scratch}
     \label{fig:stats_vit}
 \end{figure}
 
 
 \subsection{Fine-tuning}
-Result are much better when fine-tuning as we can see in \Cref{fig:stats_vit_pretrained}
+Results improved significantly when fine-tuning the pretrained Vision Transformer, as depicted in Figure~\ref{fig:stats_vit_pretrained}. However, despite the improvement, the training process still exhibited instability, and it appears that the ViT struggled to effectively learn from the MNIST dataset, even when fine-tuned.
 \begin{figure}[H]
     \centering
-    \includegraphics*[width=0.9\textwidth]{figs/Transformers/stats_vit_pretrained.pdf}
-    \caption{}
+    \includegraphics*[width=0.9\textwidth]{figs/Transformers/stats_vit_pretrained_15.pdf}
+    \caption{Accuracy and losses in train and test using a pre-trained large ViT}
     \label{fig:stats_vit_pretrained}
 \end{figure}
 
@@ -228,6 +243,6 @@ We will now briefly review each experiment to see if we can gain new insights. E
 
     \item \textbf{MLP Hidden Layer Size}: The comparison between the classic MNIST dataset (\Cref{fig:mlp_ratio_influence}) and the Fashion MNIST dataset (\Cref{fig:fashion:mlp_ratio_influence}) reaffirms our previous conclusion. While increasing the MLP hidden layer size still not induce overfitting, we still can't see any effect on the performance.
     
-    \item \textbf{Larger transformer: training from scratch}:
-    \item \textbf{Larger transformer: fine-tuning}:
+    \item \textbf{Larger transformer: Training from scratch}:
+    \item \textbf{Larger transformer: Fine-tuning}:
 \end{enumerate}
