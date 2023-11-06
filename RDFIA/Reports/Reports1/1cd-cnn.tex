@@ -47,11 +47,11 @@ In a fully-connected layer, each pixel of the flattened image is associated with
 This $1 \times 1$ convolution employs a stride equal to the width of the input image, ensuring that the filter remains fixed and does not slide to different positions. Furthermore, the filter size is exactly the same as the image. The number of filters used in this convolution is equivalent to the number of neurons in the fully-connected layer.
 
 \paragraph{6. Suppose that we therefore replace fully-connected by their equivalent in convolutions, answer again the question 4. If we can calculate the output, what is its shape and interest?}
-Fully connected layers usually expect inputs of a specific size. However, if we replace the fully connected layers in a neural network with their convolutional equivalents, we can indeed process images of sizes different from what the network was initially trained on. If an input image larger than the expected size is used, the convolution operations will produce larger feature maps in the intermediate layers, and these will propagate through the network. The final convolutional layers, which replace the fully connected layers, will apply their filters to the full spatial extent of the incoming feature maps. The output shape, in this case, won't be the typical single row of class scores. Instead, it will be a spatial map of scores, with dimensions depending on the input size, the characteristics of the convolutional layers, and the operations applied during the forward pass.
+Fully connected layers usually expect inputs of a specific size. However, if we replace the fully connected layers in a neural network with their convolutional equivalents, we can indeed process images of sizes different from what the network was initially trained on \textit{until the next step} which is the loss computation. 
 
-%%%%%%%%%%%%%%%%%%%%%
-% For me, as with the fully connected layer,  we still have to know the input size to fix the filter size and the stride ahead. So it will still not work.
-%%%%%%%%%%%%%%%%%%%%% A VERIFIER 
+If an input image larger than the expected size is used, the convolution operations will produce larger feature maps in the intermediate layers, and these will propagate through the network. The final convolutional layers, which replace the fully connected layers, will apply their filters to the full spatial extent of the incoming feature maps. The output shape, in this case, won't be the typical single row of class scores. Instead, it will be a spatial map of scores of size $ (r + 1) \times (c+1) $ where $ r $ is the number of rows added and $ c $ is the number of columns. In this case, this last convolution layer does not act perfectly as a fully connected layers because we still have to know the input size to fix the filter size and the stride ahead.
+
+An issue that arises after the model has undergone the forward pass is computing the loss on the spatial map of scores, as typical loss functions expect a single row of class scores. One potential solution is to employ Average Pooling on the spatial map of scores, aggregating the scores spatially to obtain a single row of class scores suitable for loss computation.
 
 \paragraph{7. We call the receptive field of a neuron the set of pixels of the image on which the output of this neuron depends. What are the sizes of the receptive fields of the neurons of the first and second convolutional layers? Can you imagine what happens to the deeper layers? How to interpret it?}
 % Calculating the receptive field's size is done based on the kernel size, stride, and padding of the convolutional layers, and it grows progressively larger in deeper layers due to successive convolutions.
@@ -85,19 +85,15 @@ Knowing $k = 2$ and that our images are of size $32 \times 32 $, we can pick any
 \paragraph{10. $ \bigstar $ For each layer, indicate the output size and the number of weights to learn. Comment on this repartition.}
 To simplify the presentation, we have provided a plot of the CNN architecture in \Cref{fig:AlexNetstylelog}. In this architecture, we begin with a 3-channel image measuring 32 by 32 pixels. As mentioned in questions 8 and 9, convolutional layers maintain the same spatial dimensions in the outputs as in the inputs, while pooling layers reduce the spatial dimensions by a factor of two. The following is a breakdown of the number of parameters:
 \begin{itemize}
-    \item conv1: 32 filters of 5 by 5 for 3 channels $\rightarrow 32\times 5\times 5\times 3 = 2,400$ parameters
-    \item conv2: 64 filters of 5 by 5 for 32 channels $\rightarrow 64\times 5\times 5\times 32 = 51,200$ parameters
-    \item conv3: 64 filters of 5 by 5 for 64 channels $\rightarrow 64\times 5\times 5\times 64 = 102,400$ parameters
+    \item conv1: 32 filters of 5 by 5 for 3 channels $\rightarrow 32\times 5\times 5\times 3 = 2,400$ parameters (plus one biases per channel if activated)
+    \item conv2: 64 filters of 5 by 5 for 32 channels $\rightarrow 64\times 5\times 5\times 32 = 51,200$ parameters (plus one biases per channel if activated)
+    \item conv3: 64 filters of 5 by 5 for 64 channels $\rightarrow 64\times 5\times 5\times 64 = 102,400$ parameters (plus one biases per channel if activated)
     \item 1000 neurons with 1024 values as input $\rightarrow (1000 + 1)\times 1024=1,025,024$ parameters. The "$+1$" is for biases.
     \item 10 neurons with 1000 values as input $\rightarrow 11\times 1000=11,000$ parameters
 \end{itemize}
 
 The fully connected layer \texttt{fc4} alone accounts for up to 86~\% of the total number of parameters, underscoring the significant computational demands associated with these layers during the learning process.
 
-%%%%%%%%%%%%%%%%
-% IL Y A DES BIAIS AUSSI DANS LES CONV A INCLURE DANS LES CALCULS
-% https://stackoverflow.com/questions/42786717/how-to-calculate-the-number-of-parameters-for-convolutional-neural-network
-%%%%%%%%%%%%%%%
 % \begin{figure}[!htbp]
 %     \centering
 %     \includegraphics*[width=\textwidth]{figs/AlexNet_style.png}
@@ -363,14 +359,14 @@ oui
 \begin{figure}[H]
     \centering
     \includegraphics*[width=0.9\textwidth]{figs/CNN/batchnorm.pdf}
-    \caption{Accuracy and losses in train and test}
+    \caption{Accuracy and losses in train and test using batch normalization and a scheduler}
     \label{fig:batchnorm}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics*[width=0.9\textwidth]{figs/CNN/batchnorm_with_dropout.pdf}
-    \caption{Accuracy and losses in train and test, with dropout layer}
+    \caption{Accuracy and losses in train and test, using batch normalization, a dropout layer and a scheduler}
     \label{fig:batchnorm_with_dropout}
 \end{figure}
 
