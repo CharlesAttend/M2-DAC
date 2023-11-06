@@ -97,6 +97,8 @@ Let's define the operations within a Transformers block:
 
 \section{Full ViT model}
 
+\subsection{Questions}
+
 \paragraph{Explain what is a Class token and why we use it?}
 The class token is positionned as the first token. It is represented as a learnable vector which gets updated during the forward pass. It accumulate information from different parts of the image as it gets updated through the Transformer layers. As it sum-up all the image, we use it to classify the image.
 
@@ -199,7 +201,7 @@ In essence, the underlying concept shared by all iterations of this approach rev
 The primary distinction among these various versions lies in where the convolutional operation is employed. This includes factors such as whether it's applied solely in the initial representations or throughout all the layers, whether it's used in the token-to-query/key/value projections or within the forward layers, and so on.
 
 \subsection{Learning from scratch}
-As shown in Figure~\ref{fig:stats_vit}, the Vision Transformer (ViT) encountered challenges when learning from scratch on the MNIST dataset. The training process exhibited significant instability, resulting in low accuracy. This difficulty could be attributed to the limited amount of data available for training. Models like ViT are typically pretrained on millions of images, whereas the MNIST dataset consists of only 60,000 images for 10 classes.
+As shown in \Cref{fig:stats_vit}, the Vision Transformer (ViT) encountered challenges when learning from scratch on the MNIST dataset. The training process exhibited significant instability, resulting in low accuracy. This difficulty could be attributed to the limited amount of data available for training. Models like ViT are typically pretrained on millions of images, whereas the MNIST dataset consists of only 60,000 images for 10 classes.
 
 Additionally, considering the size of the ViT model (as discussed in the first question of the previous section), training for four epochs consumed approximately 45 minutes and achieved a test accuracy of around 20 percent.
 
@@ -212,7 +214,7 @@ Additionally, considering the size of the ViT model (as discussed in the first q
 
 
 \subsection{Fine-tuning}
-Results improved significantly when fine-tuning the pretrained Vision Transformer, as depicted in Figure~\ref{fig:stats_vit_pretrained}. However, despite the improvement, the training process still exhibited instability, and it appears that the ViT struggled to effectively learn from the MNIST dataset, even when fine-tuned.
+Results improved significantly when fine-tuning the pretrained Vision Transformer, as depicted in \Cref{fig:stats_vit_pretrained}. However, despite the improvement, the training process still exhibited instability, and it appears that the ViT struggled to effectively learn from the MNIST dataset, even when fine-tuned.
 \begin{figure}[H]
     \centering
     \includegraphics*[width=0.9\textwidth]{figs/Transformers/stats_vit_pretrained_15.pdf}
@@ -243,6 +245,10 @@ We will now briefly review each experiment to see if we can gain new insights. E
 
     \item \textbf{MLP Hidden Layer Size}: The comparison between the classic MNIST dataset (\Cref{fig:mlp_ratio_influence}) and the Fashion MNIST dataset (\Cref{fig:fashion:mlp_ratio_influence}) reaffirms our previous conclusion. While increasing the MLP hidden layer size still not induce overfitting, we still can't see any effect on the performance.
     
-    \item \textbf{Larger transformer: Training from scratch}:
-    \item \textbf{Larger transformer: Fine-tuning}:
+    \item \textbf{Larger transformer: Training from scratch}:  When training a larger transformer from scratch, both on Classic MNIST (\Cref{fig:stats_vit}) and Fashion MNIST (\Cref{fig:fashion:stats_vit}), there are issues with instability and low accuracy. Interestingly, the model seems to perform slightly better on Fashion MNIST.
+    
+    \item \textbf{Larger transformer: Fine-tuning}: Fine-tuning a larger transformer, on the other hand, shows improved stability during training. While it still learns slowly, it performs slightly better on Fashion MNIST (\Cref{fig:fashion:stats_vit_pretrained}) compared to Classic MNIST (\Cref{fig:stats_vit_pretrained}).
 \end{enumerate}
+
+\section{Experiments conclusion}
+Fine-tuning a ViT can be challenging and may require a substantial amount of data to achieve optimal results. Conversely, training a customized, smaller ViT can yield significant benefits. In the process of training our compact transformer architecture, it is advisable to avoid overly large embedding sizes while considering the augmentation of the number of heads within a block.
