@@ -261,7 +261,7 @@ As a final note, we want to mention that as we introduced more transformations, 
 
 Incorporating a learning rate scheduler controls how quickly or slowly a model adapts to the problem at hand. Thus, we expect a controlled model convergence, as the model's training process benefits from a more cautious approach to reaching the global minimum of the loss function by gradually decreasing the learning rate. It should also permits to avoid plateaus, i.e. regions where the model's accuracy does not improve significantly due to slow learning. Last, we expect an enhanced training stability.
 
-\Cref{fig:optim_variants} depicts our results. We can see that the loss curve exhibits greater stability when compared to the baseline results (refer to \Cref{fig:base_result}). One noteworthy element is the accuracy in train, stabilizing around 60\% whereas we converged to 100\% in the baseline. 
+\Cref{fig:optim_variants} depicts our results. We can see that the loss curve exhibits greater stability when compared to the baseline results (refer to \Cref{fig:base_result}).
 
 \begin{figure}[H]
     \centering
@@ -363,7 +363,7 @@ In this experiment, we investigated the impact of batch normalization with and w
     \label{fig:batchnorm}
 \end{figure}
 
-Using batch normalization (\Cref{fig:batchnorm}) produced improved results compared to the base outcome (\Cref{fig:base_result}). Notably, examining the test loss in both plots reveals that batch normalization enhances stability. On the other hand, employing a dropout layer and a scheduler without batch normalization (\Cref{fig:dropout_with_scheduler}) resulted in significantly better performance, achieving a test accuracy of approximately 85\%. This stands in contrast to batch normalization alone, which yielded an accuracy just below 80\% (\Cref{fig:batchnorm}). Interestingly, combining batch normalization with dropout did not demonstrate a significant difference, suggesting that batch normalization's regularization effect reduces the need for additional regularization techniques like dropout.
+Using batch normalization (\Cref{fig:batchnorm}) produced improved results compared to the base outcome (\Cref{fig:base_result}). Notably, examining the test loss in both plots reveals that batch normalization enhances stability. On the other hand, employing a dropout layer and a scheduler without batch normalization (\Cref{fig:dropout_with_scheduler}) did not resulte in significantly better performance. Interestingly, combining batch normalization with dropout did not demonstrate a significant difference, suggesting that batch normalization's regularization effect reduces the need for additional regularization techniques like dropout.
 
 % In this experiment, we tried to use batch normalization with and without a dropout layer. We kept a scheduler in both cases. batch normalozation helps alleviation some of the complications caused when input distributions changes during training (a problem known as internal covariate shift).
 
@@ -380,6 +380,25 @@ Using batch normalization (\Cref{fig:batchnorm}) produced improved results compa
     \label{fig:batchnorm_with_dropout}
 \end{figure}
 
+Because batch normalization regulates the inputs to each layer, no input value has an excessively high or low range. This controlled environment means that the learning process is more stable, reducing the issue of gradient explosion or vanishing gradients. Consequently, there is a reduced need to control the learning rate. In \Cref{fig:batchnorm_no_scheduler}, we remove the scheduler and we see siiliar result than with one.  Also,it makes the neural network can effectively learn even with higher initial learning rates, as seen in \Cref{fig:batchnorm_no_scheduler_high_lr} where we employed a learning rate of 0.1 instead of 0.01. The model still learns, and the loss falls still in the same range, but it.
+thus, batch norm makes the training process more resilient and less sensitive to the specific choice of initial learning rates.
+
+Because batch normalization regulates the inputs to each layer, no input value has an excessively high or low range.  This controlled environment means that the learning process is more stable, reducing the issue of gradient explosion or vanishing gradients. As demonstrated in \Cref{fig:batchnorm_no_scheduler}, even without a learning rate scheduler, the results are similar \Cref{fig:batchnorm}. Furthermore, batch normalization enables neural networks to effectively learn even with higher initial learning rates, as evident in \Cref{fig:batchnorm_no_scheduler_high_lr} where we used a learning rate of 0.1 instead of 0.01. The model still learns, and the loss follows a similar trajectory, illustrating that batch normalization makes the training process more resilient and less sensitive to the specific choice of initial learning rates.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=0.9\textwidth]{figs/CNN/batchnorm_no_scheduler.pdf}
+    \caption{Accuracy and losses in train and test, using batch normalization (no learning rate scheduler)}
+    \label{fig:batchnorm_no_scheduler}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=0.9\textwidth]{figs/CNN/batchnorm_no_scheduler_high_lr.pdf}
+    \caption{Accuracy and losses in train and test, using batch normalization (no learning rate scheduler), and a learning rate of 0.1}
+    \label{fig:batchnorm_no_scheduler_high_lr}
+\end{figure}
+
 \subsection{Combination of all methods}
 Now that we have individually explored various methods to enhance our results within a relatively straightforward convolutional network architecture, one might wonder what happens when we combine all these techniques (standardization, data increase, optimizer, scheduler, dropout, batch normalization), much like the Power Rangers assembling with their mechs. Our expectation is that this comprehensive approach will yield significantly improved results characterized by minimal overfitting, strong generalization, and enhanced robustness. Results confirm our expectation and are displayed in \Cref{fig:combined}. It's worth noting that this approach may appear excessive, as it produces results similar to the one obtained using a dropout and a learning rate scheduler.
 
@@ -388,4 +407,20 @@ Now that we have individually explored various methods to enhance our results wi
     \includegraphics*[width=0.9\textwidth]{figs/CNN/combined.pdf}
     \caption{Accuracy and losses in train and test using all methods}
     \label{fig:combined}
+\end{figure}
+
+We utilized SGD optimization in \Cref{fig:combined}, but as we have observed, there are more effective techniques available. Figures~\ref{fig:combined_adam} and \ref{fig:combined_adagrad} show our results with the Adam and Adagrad optimizers, respectively. One notable fact is that we observe higher test accuracy than train accuracy. This is surprising as we usually expect our models to perform better on the data they have seen (train data) than on unseen data (test data). We attribute this phenomenon to the combination of various regularization techniques and our adoption of new optimization methods.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=0.9\textwidth]{figs/CNN/combined_adam.pdf}
+    \caption{Accuracy and losses in train and test using all methods and Adam optimization}
+    \label{fig:combined_adam}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=0.9\textwidth]{figs/CNN/combined_adagrad.pdf}
+    \caption{Accuracy and losses in train and test using all methods and Adagrad optimization}
+    \label{fig:combined_adagrad}
 \end{figure}
