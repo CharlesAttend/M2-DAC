@@ -52,8 +52,6 @@ If an input image larger than the expected size is used, the convolution operati
 An issue that arises after the model has undergone the forward pass is computing the loss on the spatial map of scores, as typical loss functions expect a single row of class scores. One potential solution is to employ Average Pooling on the spatial map of scores, aggregating the scores spatially to obtain a single row of class scores suitable for loss computation.
 
 \paragraph{7. We call the receptive field of a neuron the set of pixels of the image on which the output of this neuron depends. What are the sizes of the receptive fields of the neurons of the first and second convolutional layers? Can you imagine what happens to the deeper layers? How to interpret it?}
-% Calculating the receptive field's size is done based on the kernel size, stride, and padding of the convolutional layers, and it grows progressively larger in deeper layers due to successive convolutions.
-
 The size of a layer's receptive field, denoted as $RF_k$ for layer $k$, is determined by the convolutional layers' kernel size, stride, and padding. The formula to calculate $RF_k$ is:
 
 \[ RF_k = RF_{k-1} + (f_k - 1) \times \prod_{i=1}^{k-1}s_i \]
@@ -62,7 +60,7 @@ where $ RF_{k-1} $ represents the receptive field size of the previous layer, $ 
 
 In our case, the first convolutional layer's receptive field's size is 5, matching the kernel size. Consequently, the size of the receptive field of the second layer increases to $ 5 + (5 - 1) = 9 $ (considering stride is 1). This means that each pixel in the output of the second layer takes into account information from 9 pixels in the previous layers. As the neural network progresses into deeper layers, the receptive field continues to grow, as each new convolutional layer combines features from the previous layer's receptive fields. When done correctly, the receptive field size of the final layer can match the size of the input image, allowing each pixel in the output to gather information from every pixel in the input image. One can think of the receptive fields as the "eyes" of the neural network.
 
-% TODO https://distill.pub/2019/computing-receptive-fields/#solving-receptive-field-region 
+% https://distill.pub/2019/computing-receptive-fields/#solving-receptive-field-region 
 
 \section{Training \textit{from scratch} of the model}
 \subsection{Network architecture}
@@ -86,7 +84,7 @@ To simplify the presentation, we have provided a plot of the CNN architecture in
     \item conv1: 32 filters of 5 by 5 for 3 channels $\rightarrow 32 \times ((5\times 5\times 3) + 1) = 2,432$ parameters
     \item conv2: 64 filters of 5 by 5 for 32 channels $\rightarrow 64\times ((5\times 5\times 32) + 1) = 51,264$ parameters
     \item conv3: 64 filters of 5 by 5 for 64 channels $\rightarrow 64\times ((5\times 5\times 64) + 1) = 102,464$ parameters
-    \item 1000 neurons with 1024 values as input (4 by 4 for 64 channels) $\rightarrow 1000 \times (1024 + 1) = 1,025,000$ parameters
+    \item 1000 neurons with 1024 values as input $\rightarrow 1000 \times (1024 + 1) = 1,025,000$ parameters
     \item 10 neurons with 1000 values as input $\rightarrow 10 \times (1000 + 1) = 10,010$ parameters
 \end{itemize}
 
@@ -178,6 +176,9 @@ The situation where test accuracy surpasses training accuracy at the beginning c
 We observe overfitting, as our caution led us to anticipate. This phenomenon becomes evident around the thirtieth epoch when our test accuracy plateaus at approximately 60\%, while the training accuracy continues to improve. This signifies that while the model is improving its performance on the training dataset, it is struggling to generalize effectively to new, unseen test images.
 
 \section{Results improvements}
+
+In the following experiments, we focused on optimizing our model. Our approach involved exploring regularization techniques, optimization methods, and data augmentation strategies. Our primary approach was to test individual elements separately to avoid bias, but we occasionally stacked techniques when appropriate. The goal was to uncover best practices for designing and training CNNs while mitigating challenges like overfitting and instability during training.
+
 \subsection{Standardization of examples}
 \paragraph{19. Describe your experimental results.}
 
@@ -309,7 +310,7 @@ Additionally, it's essential to recognize that there exist alternative optimizer
 \subsection{Regularization of the network by \textit{dropout}}
 \paragraph{29. Describe your experimental results and compare them to previous results.}
 
-Integrating a dropout layer in a neural network is a strategic move to combat the risk of overfitting, especially before a fully connected layer that has a substantial number of weights. Thus, we expect reduced overfitting and enhanced network performance. \Cref{fig:dropout} and \Cref{fig:dropout_with_scheduler} depicts two experiments with dropout.
+Integrating a dropout layer in a neural network is a strategic move to prevent overfitting, especially before a fully connected layer that has a substantial number of weights. As anticipated, our experiments illustrated in \Cref{fig:dropout} and \Cref{fig:dropout_with_scheduler} confirm reduced overfitting and improved network performance. Notably, the combination of dropout with a learning rate scheduler yielded the best results among the techniques we employed.
 
 \begin{figure}[H]
     \centering
@@ -385,14 +386,14 @@ Furthermore, by normalizing the inputs to each layer, it prevents extreme values
 \begin{figure}[H]
     \centering
     \includegraphics*[width=0.9\textwidth]{figs/CNN/batchnorm_no_scheduler.pdf}
-    \caption{Accuracy and losses in train and test, using batch normalization (no learning rate scheduler)}
+    \caption{Accuracy and losses in train and test, using batch normalization and no learning rate scheduler}
     \label{fig:batchnorm_no_scheduler}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics*[width=0.9\textwidth]{figs/CNN/batchnorm_no_scheduler_high_lr.pdf}
-    \caption{Accuracy and losses in train and test, using batch normalization (no learning rate scheduler), and a learning rate of 0.1}
+    \caption{Accuracy and losses in train and test, using batch normalization, no learning rate scheduler and a learning rate of 0.1}
     \label{fig:batchnorm_no_scheduler_high_lr}
 \end{figure}
 
@@ -406,7 +407,7 @@ Now that we have individually explored various methods to enhance our results wi
     \label{fig:combined}
 \end{figure}
 
-We utilized SGD optimization in \Cref{fig:combined}, but as we have observed, there are more effective techniques available. Figures~\ref{fig:combined_adam} and \ref{fig:combined_adagrad} show our results with the Adam and Adagrad optimizers, respectively. One notable fact is that we observe higher test accuracy than train accuracy. This is surprising as we usually expect our models to perform better on the data they have seen (train data) than on unseen data (test data). We attribute this phenomenon to the combination of various regularization techniques and our adoption of new optimization methods.
+We utilized SGD optimization in \Cref{fig:combined}, but as we have observed, there are more effective techniques available. Figures~\ref{fig:combined_adam} and \ref{fig:combined_adagrad} show our results with the Adam and Adagrad optimizers, respectively. One notable fact is that we observe higher test accuracy than train accuracy. This is surprising as we usually expect our models to perform better on the data they have seen (train data) than on unseen data (test data). We attribute this phenomenon to the combination of various regularization techniques and our adoption of new optimization methods. However, while both Adam and Adagrad controlled overfitting remarkably well, their test accuracies were slightly lower than what we achieved with SGD. Nevertheless, the strategies we've explored in this chapter have proven to be essential in enhancing the robustness of convolutional neural networks.
 
 \begin{figure}[H]
     \centering
