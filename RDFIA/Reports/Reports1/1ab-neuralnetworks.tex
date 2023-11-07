@@ -23,18 +23,18 @@ $y \in \{0,1\}$ represents the ground truth, where the values are binary (0 or 1
 $\hat{y} \in [0,1]$ represents a probability-like score assigned to each class by the model. $\hat{y}$ reflects the model's level of confidence in its predictions for each class.
 
 \paragraph{6. Why use a $\text{SoftMax}$ function as the output activation function?}
-The reason for employing the SoftMax function is to transform $\tilde{y} \in \mathbb{R}$ into a probability distribution. While there are several methods to achieve this transformation, $\text{SoftMax}$ is a commonly utilized choice, especially in multi-class classification problems.
+The reason for employing the SoftMax function is to transform $\tilde{y} \in \mathbb{R}$ into a probability distribution, which is especially useful in multi-class classification problems, as it returns the predicted probability for the $j^\mathrm{th}$ class given a sample $x$, $ P(y=j | x) $. 
 
 \paragraph{7. Write the mathematical equations allowing to perform the \textit{forward} pass of the neural network, i.e. allowing to successively produce $\hat{h}$, $ h $, $ \tilde{y} $, $ \hat{y} $, starting at $x$.}
 Let $W_i$ and $b_i$ denote the parameters for layer $i$, $f_i(x) = x W_i ^T + b_i$ represent the linear transformation, and $g_i(x)$ be the activation function for layer $i$.
 
-Calculate the weighted sum and activation for the first hidden layer:
+Let's calculate the weighted sum and activation for the first hidden layer:
 \begin{align*}
     \tilde{h} & = f_0(x)         \\
     h         & = g_0(\tilde{h})
 \end{align*}
 
-Proceed to the output layer by computing the weighted sum and activation for the output layer:
+Then, let's proceed to the output layer by computing the weighted sum and activation for the output layer:
 \begin{align*}
     \tilde{y} & = f_1(h)         \\
     \hat{y}   & = g_1(\tilde{y})
@@ -44,7 +44,7 @@ These equations describe the sequential steps involved in the forward pass of th
 
 \subsection{Loss function}
 \paragraph{8. During training, we try to minimize the loss function. For cross entropy and squared error, how must the $ \hat{y}_i $  vary to decrease the global loss function $ \mathcal{L} $?}
-Our aim is to minimize the loss function $\mathcal{L}$ to train a model effectively. To decrease cross-entropy loss, make $\hat{y}_i$ closer to 1 when $y_i$ is 1 and closer to 0 when $y_i$ is 0.
+Our aim is to minimize the loss function $\mathcal{L}$ to train a model effectively.
 
 For the cross-entropy loss, $\hat{y}_i$ should vary in a way that makes it closer to the true target value $y_i$ for each data point. Specifically, when $y_i = 1$, $\hat{y}_i$ should be pushed towards 1. The closer $\hat{y}_i$ is to 1, the lower the loss. Conversely, when $y_i = 0$, $\hat{y}_i$ should be pushed towards 0. The closer $\hat{y}_i$ is to 0, the lower the loss.
 
@@ -91,7 +91,7 @@ A higher learning rate typically results in faster convergence because it leads 
 
 Conversely, a smaller learning rate allows the optimization algorithm to take smaller steps, which can be advantageous for exploring local minima more thoroughly and escaping shallow local minima. Nonetheless, if the learning rate is too small, it may lead to slow convergence or getting stuck in local minima.
 
-To address these challenges, various techniques like learning rate schedules (gradually reducing the learning rate over time) or adaptive learning rate methods (e.g., Adam) have been developed to automate learning rate adjustments during training. The choice of learning rate may also be influenced by the batch size used in mini-batch stochastic gradient descent, as smaller batch sizes may require smaller learning rates to maintain stability.
+To address these challenges, various techniques like learning rate schedulers (gradually reducing the learning rate over time) or adaptive learning rate methods (e.g., Adam) have been developed to automate learning rate adjustments during training. The choice of learning rate may also be influenced by the batch size used in mini-batch stochastic gradient descent, as smaller batch sizes may require smaller learning rates to maintain stability.
 
 In practice, selecting an appropriate learning rate often involves experimentation and can be problem-specific. Techniques such as grid search or random search, in combination with cross-validation, can aid in determining an optimal learning rate for a particular task.
 
@@ -112,14 +112,14 @@ Let us define the cross-entropy loss as \( l(y, \hat{y}) = - \sum_{i=1}^{D} y_i 
                   & = - \sum_{i=1}^{D} y_i \log_{} \text{SoftMax}(\tilde{y_i})                                               \\
                   & = - \sum_{i=1}^{D} y_i \log_{} \frac{e^{\tilde{y_i}}}{\sum_{j=1}^{D} e^{\tilde{y_j}} }                   \\
                   & = - \sum_{i=1}^{D} y_i \left[ \log_{} e^{\tilde{y}_i} - \log_{} \sum_{j=1}^{D} e^{\tilde{y}_j}  \right]  \\
-                  & = - \sum_{i=1}^{D} y_i \tilde{y}_i - y_i \log_{} \sum_{j=1}^{D}e^{\tilde{y}_j}                           \\
+                  & = - \sum_{i=1}^{D} y_i \tilde{y}_i - y_i \log_{} \left( \sum_{j=1}^{D}e^{\tilde{y}_j} \right)                           \\
                   & = - \sum_{i=1}^{D} y_i \tilde{y}_i + \sum_{i=1}^{D} y_i \log_{} \left(\sum_{j}^{D}e^{\tilde{y}_j}\right) \\
                   & = - \sum_{i=1}^{D} y_i \tilde{y}_i + \log_{} \left(\sum_{j}^{D}e^{\tilde{y}_j}\right) \sum_{i=1}^{D} y_i
 \end{align*}
 
-Since $y_i$ is one-hot encoded, we know that $\sum_i y_i = 1$. Thus, we have the final expression for the cross-entropy loss:
+Since $y_i$ is one-hot encoded, we know that $\sum_{i=1}^{D} y_i = 1$. Thus, we have the final expression for the cross-entropy loss:
 
-\[ l(y, \hat{y}) = - \sum_{i}^{} y_i \tilde{y}_i + \log_{} \left(\sum_{i}^{} e^{\tilde{y}_i}\right) \]
+\[ l(y, \hat{y}) = - \sum_{i=1}^{D} y_i \tilde{y}_i + \log_{} \left(\sum_{i=1}^{D} e^{\tilde{y}_i}\right) \]
 
 \paragraph{15. Write the gradient of the \textit{loss} (\textit{cross-entropy}) relative to the intermediate output $ \tilde{y} $ }
 \begin{align*}
@@ -140,7 +140,7 @@ Since $y_i$ is one-hot encoded, we know that $\sum_i y_i = 1$. Thus, we have the
     = \hat{y} - y
 \]
 
-\paragraph{16. Using the \textit{backpropagation}, write the gradient of the \textit{loss} with respect to the weights of the output layer $ \nabla _{W_y}l $ . Note that writing this gradient uses $ \nabla _{\tilde{y}}l $ . Do the same for $ \nabla _{b_y}l $.}
+\paragraph{16. Using the \textit{backpropagation}, write the gradient of the \textit{loss} with respect to the weights of the output layer $ \nabla _{W_y}l $ . Note that writing this gradient uses $ \nabla _{\tilde{y}}l $ . Do the same for $ \nabla _{b_y}l $.\\}
 
 Starting with \( \nabla _{W_y} l \), we have:
 
@@ -309,27 +309,27 @@ In this section, the primary focus was on exploring how a simple neural network 
 \subsection{Forward and backward manuals}
 In neural network training using SGD, it is common practice to average the gradients calculated during the backward pass over the batch size. The idea behind this scaling is to make the learning rate independent of the batch size, so that the updates to the model parameters are roughly consistent regardless of the batch size. We compared these two approaches in \Cref{fig:manual_nn}.
 
-One significant observation is that when using batch normalization, the network requires much more time to achieve its performance, needing 100 epochs instead of 10. However, the trade-off is that the training process becomes much more stable.
+One significant observation is that when using batch averaging, the network requires much more time to achieve its performance, needing 100 epochs instead of 10. However, the trade-off is that the training process becomes much more stable.
 
 \begin{figure}[H]
     \centering
     \begin{subfigure}{0.45\textwidth}
         \centering
         \includegraphics[width=\textwidth]{figs/NN/manual_acc_loss.pdf}
-        \caption{Accuracy and losses curves without batch size normalization}
+        \caption{Accuracy and losses curves without batch size averaging}
         \label{subfig:manual_acc_loss}
     \end{subfigure}
     \begin{subfigure}{0.45\textwidth}
         \centering
         \includegraphics[width=\textwidth]{figs/NN/manual_acc_loss_bis.pdf}
-        \caption{Accuracy and losses curves with batch size normalization}
+        \caption{Accuracy and losses curves with batch size averaging}
         \label{subfig:manual_acc_loss_bis}
     \end{subfigure}
-    \caption{To batch normalize, or not to batch normalize.}
+    \caption{To batch average, or not to batch average.}
     \label{fig:manual_nn}
 \end{figure}
 
-In the following experiments, we have chosen to continue with batch normalization. We then proceeded to investigate the influence of learning rate and batch size. The results are presented in \Cref{fig:manual_bs_lr}. Our findings align with the expectations discussed in Question 11.
+In the following experiments, we have chosen to continue with batch averaging. We then proceeded to investigate the influence of learning rate and batch size. The results are presented in \Cref{fig:manual_bs_lr}. Our findings align with the expectations discussed in Question 11.
 
 \begin{figure}[H]
     \centering
@@ -381,7 +381,7 @@ The results of this section are presented in \Cref{fig:autograd}. It's worth not
         \caption{Influence of learning rate}
         \label{subfig:autograd_lr}
     \end{subfigure}
-    \caption{\texttt{torch.autograd}}
+    \caption{Results using \texttt{torch.autograd}}
     \label{fig:autograd}
 \end{figure}
 
@@ -413,7 +413,7 @@ The results of this section can be found in \Cref{fig:torchnn}. In this case, we
         \caption{Influence of learning rate}
         \label{subfig:torchnn_lr}
     \end{subfigure}
-    \caption{\texttt{torch.nn} }
+    \caption{Results using \texttt{torch.nn}}
     \label{fig:torchnn}
 \end{figure}
 
@@ -445,7 +445,7 @@ The results of this section are presented in \Cref{fig:torchoptim}. The training
         \caption{Influence of learning rate}
         \label{subfig:torchoptim_lr}
     \end{subfigure}
-    \caption{\texttt{torch.optin} }
+    \caption{Results using \texttt{torch.optim}}
     \label{fig:torchoptim}
 \end{figure}
 
@@ -484,12 +484,11 @@ We also explored the SVM approach on our circular data, and the decision boundar
 
 It's evident that a linear SVM doesn't work well with circular data. Linear SVMs are designed to find a linear decision boundary that separates data into two classes. Circular data cannot be accurately separated by a single straight line, which is our case here. The Radial Basis Function (RBF) kernel is often the best choice compared to polynomial and sigmoid kernels for circular data because it can capture complex, nonlinear patterns more effectively, and it is better suited to model the circular decision boundaries typically found in such data. RBF kernels can flexibly adapt to various shapes and are more versatile in representing circular patterns, as shown here. It's worth noting that the linear and polynomial kernels did not perform significantly better than a random function.
 
-Furthermore, we conducted experimentations into the influence of the regularization parameter $C$ in the SVM. The results are visualized in \Cref{fig:svm_regularization}. The parameter $C$ in SVMs controls the trade-off between maximizing the margin and minimizing the classification error on the training data.
+Furthermore, we conducted experimentations into the influence of the regularization parameter $C$ in the SVM. The results are visualized in \Cref{fig:svm_regularization}. The parameter $C$ in SVMs controls the trade-off between maximizing the margin and minimizing the classification error on the training data. 
 
-\begin{itemize}
-    \item When $C$ is large, the SVM aims to minimize the classification error on the training data, which results in a smaller margin, meaning that the decision boundary can be more flexible and may even fit noisy data points. This can lead to overfitting. This effect can especially be seen on the polynomial SVM. 
-    \item When $C$ is small, the SVM prioritizes maximizing the margin, even if it means allowing some training points to be misclassified. It results in a larger margin, which often leads to a simpler decision boundary. It encourages the SVM to find a more robust decision boundary that generalizes better to unseen data.
-\end{itemize}
+When $C$ is large, the SVM aims to minimize the classification error on the training data, which results in a smaller margin, meaning that the decision boundary can be more flexible and may even fit noisy data points. This can lead to overfitting. This effect can especially be seen on the polynomial SVM. 
+
+When $C$ is small, the SVM prioritizes maximizing the margin, even if it means allowing some training points to be misclassified. It results in a larger margin, which often leads to a simpler decision boundary. It encourages the SVM to find a more robust decision boundary that generalizes better to unseen data.
 
 \begin{figure}[H]
     \centering

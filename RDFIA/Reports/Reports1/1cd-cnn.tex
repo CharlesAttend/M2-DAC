@@ -83,14 +83,16 @@ A pooling layer acts like a convolution: let's proceed as in question 8. This ti
 Knowing $k = 2$ and that our images are of size $32 \times 32 $, we can pick any $p = \frac{15s - 30}{2}$. Following the same logic as in the previous question, we opt for a stride value of $ s = 2 $ and a padding value of $ p = 0 $, which minimize both parameters.
 
 \paragraph{10. $ \bigstar $ For each layer, indicate the output size and the number of weights to learn. Comment on this repartition.}
-To simplify the presentation, we have provided a plot of the CNN architecture in \Cref{fig:AlexNetstylelog}. In this architecture, we begin with a 3-channel image measuring 32 by 32 pixels. As mentioned in questions 8 and 9, convolutional layers maintain the same spatial dimensions in the outputs as in the inputs, while pooling layers reduce the spatial dimensions by a factor of two. The following is a breakdown of the number of parameters:
+To simplify the presentation, we have provided a plot of the CNN architecture in \Cref{fig:AlexNetstylelog}. In this architecture, we begin with a 3-channel image measuring 32 by 32 pixels. As mentioned in questions 8 and 9, convolutional layers maintain the same spatial dimensions in the outputs as in the inputs, while pooling layers reduce the spatial dimensions by a factor of two. Moreover, there are no trainable weights in pooling layers. The following is a breakdown of the number of parameters:
 \begin{itemize}
-    \item conv1: 32 filters of 5 by 5 for 3 channels $\rightarrow 32\times 5\times 5\times 3 = 2,400$ parameters (plus one biases per channel if activated)
-    \item conv2: 64 filters of 5 by 5 for 32 channels $\rightarrow 64\times 5\times 5\times 32 = 51,200$ parameters (plus one biases per channel if activated)
-    \item conv3: 64 filters of 5 by 5 for 64 channels $\rightarrow 64\times 5\times 5\times 64 = 102,400$ parameters (plus one biases per channel if activated)
-    \item 1000 neurons with 1024 values as input $\rightarrow (1000 + 1)\times 1024=1,025,024$ parameters. The "$+1$" is for biases.
-    \item 10 neurons with 1000 values as input $\rightarrow 11\times 1000=11,000$ parameters
+    \item conv1: 32 filters of 5 by 5 for 3 channels $\rightarrow 32 \times ((5\times 5\times 3) + 1) = 2,432$ parameters
+    \item conv2: 64 filters of 5 by 5 for 32 channels $\rightarrow 64\times ((5\times 5\times 32) + 1) = 51,264$ parameters
+    \item conv3: 64 filters of 5 by 5 for 64 channels $\rightarrow 64\times ((5\times 5\times 64) + 1) = 102,464$ parameters
+    \item 1000 neurons with 1024 ($4 \times 4 \times 64$) values as input $\rightarrow 1000 \times (1024 + 1) = 1,025,000$ parameters
+    \item 10 neurons with 1000 values as input $\rightarrow 10 \times (1000 + 1) = 10,010$ parameters
 \end{itemize}
+
+\noindent \textbf{Note}: the "$+1$" are for biases.\\
 
 The fully connected layer \texttt{fc4} alone accounts for up to 86\% of the total number of parameters, underscoring the significant computational demands associated with these layers during the learning process.
 
@@ -108,7 +110,7 @@ The fully connected layer \texttt{fc4} alone accounts for up to 86\% of the tota
 \end{figure}
 
 \paragraph{11. What is the total number of weights to learn? Compare that to the number of examples.}
-This leads to a total of 1,192,024 parameters for training. Considering a dataset comprising 50,000 training samples and 10,000 test samples, totaling 60,000 examples (with 6,000 images per class), it does warrant caution regarding the potential for overfitting.
+This leads to a total of 1,191,170 parameters for training. Considering a dataset comprising 50,000 training samples and 10,000 test samples, totaling 60,000 examples (with 6,000 images per class), it does warrant caution regarding the potential for overfitting.
 
 \paragraph{12. Compare the number of parameters to learn with that of the BoW and SVM approach.}
 The complexity and, hence, the number of parameters in a BoW and SVM approach depend on the chosen visual vocabulary size. For instance, employing a dictionary of 1000 visual words for the task of classifying 10 classes would result in \( (1000 + 1) \times 10 = 10,010 \) parameters to be learned. It's important to note that in this approach, we also need to fine-tune the hyperparameters of our classifier, with the kernel type and the regularization parameter \( C \) being the most significant. As a result, the parameter space in this approach is considerably smaller when compared to our deep CNN model.
