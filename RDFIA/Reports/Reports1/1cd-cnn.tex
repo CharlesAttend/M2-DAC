@@ -54,13 +54,13 @@ An issue that arises after the model has undergone the forward pass is computing
 \paragraph{7. We call the receptive field of a neuron the set of pixels of the image on which the output of this neuron depends. What are the sizes of the receptive fields of the neurons of the first and second convolutional layers? Can you imagine what happens to the deeper layers? How to interpret it?}
 % Calculating the receptive field's size is done based on the kernel size, stride, and padding of the convolutional layers, and it grows progressively larger in deeper layers due to successive convolutions.
 
-The receptive field $l_k$ of layer $k$ is:
+The size of a layer's receptive field, denoted as $RF_k$ for layer $k$, is determined by the convolutional layers' kernel size, stride, and padding. The formula to calculate $RF_k$ is:
 
-\[ l_k = l_{k-1} + \left((f_k - 1) \times \prod_{i=1}^{k-1}s_i\right) \]
+\[ RF_k = RF_{k-1} + (f_k - 1) \times \prod_{i=1}^{k-1}s_i \]
 
-where $l_{k-1}$ is the receptive field of layer $k-1$, $f_k$ is the filter size (height or width, but assuming they are the same here), and $s_i$ is the stride of layer $i$.
+where $ RF_{k-1} $ represents the receptive field size of the previous layer, $ f_k $ is the size of the filter at the current layer $ k $, and $ s_i $ are the strides of all layers up to layer $ k-1 $.
 
-The formula above calculates receptive field from bottom up (from layer 1). Intuitively, a receptive field in layer $k$ covers $(f_k - 1) \times s_{k-1}$ more pixels relative with layer $k-1$. However, the increment needs to be translated to the first layer, so the increments is a factorial: a stride in layer $k-1$ is exponentially more strides in the lower layers. In our case, the receptive field of the first convolutional layer is of size 5, which matches the size of the kernel. Consequently, the size of the receptive field of the second layer increases to $ 5 + (5 - 1) = 9 $. This means that each pixel in the output of the second layer takes into account information from 9 pixels in the previous layer. As the neural network progresses into deeper layers, the receptive field continues to grow. When done correctly, the receptive field size of the final layer will match the size of the input image, allowing each pixel in the output to gather information from every pixel in the input image. One can think of the receptive fields as the "eyes" of the neural network.
+In our case, the first convolutional layer's receptive field's size is 5, matching the kernel size. Consequently, the size of the receptive field of the second layer increases to $ 5 + (5 - 1) = 9 $ (considering stride is 1). This means that each pixel in the output of the second layer takes into account information from 9 pixels in the previous layers. As the neural network progresses into deeper layers, the receptive field continues to grow, as each new convolutional layer combines features from the previous layer's receptive fields. When done correctly, the receptive field size of the final layer can match the size of the input image, allowing each pixel in the output to gather information from every pixel in the input image. One can think of the receptive fields as the "eyes" of the neural network.
 
 % TODO https://distill.pub/2019/computing-receptive-fields/#solving-receptive-field-region 
 
@@ -86,7 +86,7 @@ To simplify the presentation, we have provided a plot of the CNN architecture in
     \item conv1: 32 filters of 5 by 5 for 3 channels $\rightarrow 32 \times ((5\times 5\times 3) + 1) = 2,432$ parameters
     \item conv2: 64 filters of 5 by 5 for 32 channels $\rightarrow 64\times ((5\times 5\times 32) + 1) = 51,264$ parameters
     \item conv3: 64 filters of 5 by 5 for 64 channels $\rightarrow 64\times ((5\times 5\times 64) + 1) = 102,464$ parameters
-    \item 1000 neurons with 1024 ($4 \times 4 \times 64$) values as input $\rightarrow 1000 \times (1024 + 1) = 1,025,000$ parameters
+    \item 1000 neurons with 1024 values as input (4 by 4 for 64 channels) $\rightarrow 1000 \times (1024 + 1) = 1,025,000$ parameters
     \item 10 neurons with 1000 values as input $\rightarrow 10 \times (1000 + 1) = 10,010$ parameters
 \end{itemize}
 
@@ -297,7 +297,7 @@ In this study, we employed various optimizer configurations and learning rate sc
 
 Firstly, it's noteworthy that both the Constant and Linear learning rate schedulers exhibit a tendency to increase the learning rate, resulting in detrimental performance after a considerable number of epochs, even though it might have been beneficial at the beginning (otherwise they would not have showed this behavior). Conversely, all the other schedulers converge to a similar learning rate value, with the Polynomial scheduler being the fastest to reach this point, albeit with a relatively modest performance of approximately 80\% in train and 70\% in test. The top three performers among the schedulers are Exponential, Step (which exhibit similar behavior), and Cosine. Cosine, owing to the nature of its function, takes the longest to reach its learning rate plateau.
 
-Additionally, it's essential to recognize that there exist alternative optimizers more effective than SGD. We conducted a comparative analysis, the results of which are depicted in \Cref{fig:optimizers_influence}. Among the optimizers, Adagrad demonstrated the highest performance, closely followed by its variant, Adadelta. Conversely, both AdamW and RMSProp exhibited relatively poorer performance and displayed numerical instability during testing, with Adam occupying an intermediate position. It's noteworthy that none of the optimization methods led to overfitting.
+Additionally, it's essential to recognize that there exist alternative optimizers more effective than SGD. We conducted a comparative analysis in this experiment (without incorporating any learning rate schedulers), the results of which are depicted in \Cref{fig:optimizers_influence}. Among the optimizers, Adagrad demonstrated the highest performance, closely followed by its variant, Adadelta. Conversely, both AdamW and RMSProp exhibited relatively poorer performance and displayed numerical instability during testing, with Adam occupying an intermediate position. It's noteworthy that none of the optimization methods led to overfitting.
 
 \begin{figure}[H]
     \centering
@@ -363,7 +363,7 @@ In this experiment, we investigated the impact of batch normalization with and w
     \label{fig:batchnorm}
 \end{figure}
 
-Using batch normalization (\Cref{fig:batchnorm}) produced improved results compared to the base outcome (\Cref{fig:base_result}). Notably, examining the test loss in both plots reveals that batch normalization enhances stability. On the other hand, employing a dropout layer and a scheduler without batch normalization (\Cref{fig:dropout_with_scheduler}) did not resulte in significantly better performance. Interestingly, combining batch normalization with dropout did not demonstrate a significant difference, suggesting that batch normalization's regularization effect reduces the need for additional regularization techniques like dropout.
+Using batch normalization (see \Cref{fig:batchnorm}) yielded improved results compared to the base outcome (see \Cref{fig:base_result}). Notably, examining the test loss in both plots reveals that batch normalization enhances stability. On the other hand, employing a dropout layer and a scheduler without batch normalization (\Cref{fig:dropout_with_scheduler}) resulted in significantly better performance, achieving a test accuracy of approximately 85\%. This stands in contrast to batch normalization alone, which yielded an accuracy just below 80\% (\Cref{fig:batchnorm}). Interestingly, combining batch normalization with dropout did not demonstrate a significant difference, suggesting that batch normalization's regularization effect reduces the need for additional regularization techniques like dropout.
 
 % In this experiment, we tried to use batch normalization with and without a dropout layer. We kept a scheduler in both cases. batch normalozation helps alleviation some of the complications caused when input distributions changes during training (a problem known as internal covariate shift).
 
@@ -380,10 +380,7 @@ Using batch normalization (\Cref{fig:batchnorm}) produced improved results compa
     \label{fig:batchnorm_with_dropout}
 \end{figure}
 
-Because batch normalization regulates the inputs to each layer, no input value has an excessively high or low range. This controlled environment means that the learning process is more stable, reducing the issue of gradient explosion or vanishing gradients. Consequently, there is a reduced need to control the learning rate. In \Cref{fig:batchnorm_no_scheduler}, we remove the scheduler and we see siiliar result than with one.  Also,it makes the neural network can effectively learn even with higher initial learning rates, as seen in \Cref{fig:batchnorm_no_scheduler_high_lr} where we employed a learning rate of 0.1 instead of 0.01. The model still learns, and the loss falls still in the same range, but it.
-thus, batch norm makes the training process more resilient and less sensitive to the specific choice of initial learning rates.
-
-Because batch normalization regulates the inputs to each layer, no input value has an excessively high or low range.  This controlled environment means that the learning process is more stable, reducing the issue of gradient explosion or vanishing gradients. As demonstrated in \Cref{fig:batchnorm_no_scheduler}, even without a learning rate scheduler, the results are similar \Cref{fig:batchnorm}. Furthermore, batch normalization enables neural networks to effectively learn even with higher initial learning rates, as evident in \Cref{fig:batchnorm_no_scheduler_high_lr} where we used a learning rate of 0.1 instead of 0.01. The model still learns, and the loss follows a similar trajectory, illustrating that batch normalization makes the training process more resilient and less sensitive to the specific choice of initial learning rates.
+Furthermore, by normalizing the inputs to each layer, it prevents extreme values that can lead to issues like gradient explosion or vanishing gradients. As a result, the need for fine-tuning the learning rate is reduced. This stability is evident in \Cref{fig:batchnorm_no_scheduler}, where we removed the learning rate scheduler and observed similar results. Additionally, batch normalization allows the neural network to effectively learn even with higher initial learning rates, as demonstrated in \Cref{fig:batchnorm_no_scheduler_high_lr} where we used a learning rate of 0.1 instead of 0.01. Despite the higher learning rate, the model still learns effectively, and the loss remains within an acceptable range, illustrating that batch normalization makes the training process more resilient and less sensitive to the specific choice of initial learning rates.
 
 \begin{figure}[H]
     \centering

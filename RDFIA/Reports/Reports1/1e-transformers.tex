@@ -91,7 +91,7 @@ Let's define the operations within a Transformers block:
     After this last addition, we obtain the final output of a Transformers block.
 \end{enumerate}
 
-\section{Full ViT model : Questions}
+\section{Full ViT model: Questions}
 
 \paragraph{Explain what is a Class token and why we use it?}
 The class token is positionned as the first token. It is represented as a learnable vector which gets updated during the forward pass. It accumulate information from different parts of the image as it gets updated through the Transformer layers. As it sum-up all the image, we use it to classify the image.
@@ -177,10 +177,12 @@ The model \texttt{vit\_base\_patch16\_224} is trained on $224 \times 224$ images
 
 In this case, it necessitates resizing the images to $224 \times 224$ RGB pixels. However, this may not be ideal as resizing could distort the images and potentially affect the model's performance.
 
+As discussed in question 4 of chapter 2, a CNN wouldn't have any problem until the fully-connected layer.
+
 \paragraph{Provide some ideas on how to make transformer work on small datasets. You can take inspiration from some recent work.}
 
 We found a lot of "classics" solution when searching how to make thing work on small dataset. There were transfer learning, data augmentation, regularization to avoid overfiting. 
-Digging a paper named "Efficient Training of Visual Transformers with Small Datasets" gave a few more sophisticated ideas. The documents promote the introduction of an auxiliary self-supervised task for training regularization and the use of hybrid architectures that blend convolutional layers with attention layers. These approaches are grounded in the principle that transformers can be made more data-efficient by incorporating mechanisms that allow them to leverage both local and global information from images.
+Digging a paper named "\href{https://arxiv.org/abs/2106.03746}{Efficient Training of Visual Transformers with Small Datasets}" gave a few more sophisticated ideas. The documents promote the introduction of an auxiliary self-supervised task for training regularization and the use of hybrid architectures that blend convolutional layers with attention layers. These approaches are grounded in the principle that transformers can be made more data-efficient by incorporating mechanisms that allow them to leverage both local and global information from images.
 
 \textbf{Auxiliary Self-Supervised Task}: This method introduces a novel training regularization technique that supplements the standard supervised learning process. In computer vision, common pretext tasks with still images are based on extracting two different views from the same image (e.g., two different crops) and then considering these as a pair of positive images, likely sharing the same semantic content. Most current self-supervised computer
 vision approaches can be categorised in contrastive learning, clustering methods, asymmetric networks and feature-decorrelation methods. Those self-supervised task are particularly effective because it encourages the model to internalize a richer understanding of the image structure, which is beneficial when the availability of annotated data is scarce.
