@@ -105,25 +105,25 @@ For the backpropagation algorithm to be applicable, several criteria must be met
 
 \paragraph{14. The function SoftMax and the \textit{loss} of \textit{cross-entropy} are often used together and their gradient is very simple. Show that the \textit{loss} can be simpliﬁed by:
     \[l = - \sum_{i}^{} y_i \tilde{y}_i + \log_{} \left(\sum_{i}^{} e^{\tilde{y}_i}\right)\]}
-Let us define the cross-entropy loss as \( l(y, \hat{y}) = - \sum_{i=1}^{D} y_i \log \hat{y}_i \), where \( D \) represents the total number of classes. The SoftMax function for a vector \( \tilde{y} \in \mathbb{R}^D \) is defined as \( \text{SoftMax}(\tilde{y_i}) = \frac{e^{\tilde{y_i}}}{\sum_{j=1}^{D} e^{\tilde{y_j}}} \). Notably, the output of the SoftMax function serves as the input for the cross-entropy loss, denoted as \( \hat{y}_i = \text{SoftMax}(\tilde{y_i}) \). Let us substitute this value into the expression.
+Let us define the cross-entropy loss as \( l(y, \hat{y}) = - \sum_{i=1}^{n_y} y_i \log \hat{y}_i \), where \( n_y \) represents the total number of classes. The SoftMax function for a vector \( \tilde{y} \in \mathbb{R}^D \) is defined as \( \text{SoftMax}(\tilde{y_i}) = \frac{e^{\tilde{y_i}}}{\sum_{j=1}^{n_y} e^{\tilde{y_j}}} \). Notably, the output of the SoftMax function serves as the input for the cross-entropy loss, denoted as \( \hat{y}_i = \text{SoftMax}(\tilde{y_i}) \). Let us substitute this value into the expression.
 
 \begin{align*}
-    l(y, \hat{y}) & = - \sum_{i=1}^{D} y_i \log_{} \hat{y}_i                                                                 \\
-                  & = - \sum_{i=1}^{D} y_i \log_{} \text{SoftMax}(\tilde{y_i})                                               \\
-                  & = - \sum_{i=1}^{D} y_i \log_{} \frac{e^{\tilde{y_i}}}{\sum_{j=1}^{D} e^{\tilde{y_j}} }                   \\
-                  & = - \sum_{i=1}^{D} y_i \left[ \log_{} e^{\tilde{y}_i} - \log_{} \sum_{j=1}^{D} e^{\tilde{y}_j}  \right]  \\
-                  & = - \sum_{i=1}^{D} y_i \tilde{y}_i - y_i \log_{} \left( \sum_{j=1}^{D}e^{\tilde{y}_j} \right)                           \\
-                  & = - \sum_{i=1}^{D} y_i \tilde{y}_i + \sum_{i=1}^{D} y_i \log_{} \left(\sum_{j}^{D}e^{\tilde{y}_j}\right) \\
-                  & = - \sum_{i=1}^{D} y_i \tilde{y}_i + \log_{} \left(\sum_{j}^{D}e^{\tilde{y}_j}\right) \sum_{i=1}^{D} y_i
+    l(y, \hat{y}) & = - \sum_{i=1}^{n_y} y_i \log_{} \hat{y}_i                                                                 \\
+                  & = - \sum_{i=1}^{n_y} y_i \log_{} \text{SoftMax}(\tilde{y_i})                                               \\
+                  & = - \sum_{i=1}^{n_y} y_i \log_{} \frac{e^{\tilde{y_i}}}{\sum_{j=1}^{n_y} e^{\tilde{y_j}} }                   \\
+                  & = - \sum_{i=1}^{n_y} y_i \left[ \log_{} e^{\tilde{y}_i} - \log_{} \sum_{j=1}^{n_y} e^{\tilde{y}_j}  \right]  \\
+                  & = - \sum_{i=1}^{n_y} y_i \tilde{y}_i - y_i \log_{} \left( \sum_{j=1}^{n_y}e^{\tilde{y}_j} \right)                           \\
+                  & = - \sum_{i=1}^{n_y} y_i \tilde{y}_i + \sum_{i=1}^{n_y} y_i \log_{} \left(\sum_{j}^{n_y}e^{\tilde{y}_j}\right) \\
+                  & = - \sum_{i=1}^{n_y} y_i \tilde{y}_i + \log_{} \left(\sum_{j}^{n_y}e^{\tilde{y}_j}\right) \sum_{i=1}^{n_y} y_i
 \end{align*}
 
-Since $y_i$ is one-hot encoded, we know that $\sum_{i=1}^{D} y_i = 1$. Thus, we have the final expression for the cross-entropy loss:
+Since $y_i$ is one-hot encoded, we know that $\sum_{i=1}^{n_y} y_i = 1$. Thus, we have the final expression for the cross-entropy loss:
 
-\[ l(y, \hat{y}) = - \sum_{i=1}^{D} y_i \tilde{y}_i + \log_{} \left(\sum_{i=1}^{D} e^{\tilde{y}_i}\right) \]
+\[ l(y, \hat{y}) = - \sum_{i=1}^{n_y} y_i \tilde{y}_i + \log_{} \left(\sum_{i=1}^{n_y} e^{\tilde{y}_i}\right) \]
 
 \paragraph{15. Write the gradient of the \textit{loss} (\textit{cross-entropy}) relative to the intermediate output $ \tilde{y} $ }
 \begin{align*}
-    \frac{\partial l}{\partial \tilde{y}_i} & = -y_i + \frac{\frac{\partial }{\partial \tilde{y}_i } (\sum_{j=1}^{D} e^{ \tilde{y}_j })}{\sum_{j=1}^{D} e^{ \tilde{y}_j }} \\
+    \frac{\partial l}{\partial \tilde{y}_i} & = -y_i + \frac{\frac{\partial }{\partial \tilde{y}_i } (\sum_{j=1}^{n_y} e^{ \tilde{y}_j })}{\sum_{j=1}^{n_y} e^{ \tilde{y}_j }} \\
                                             & = - y_i + \frac{e^{\tilde{y}_i}}{\sum_{j=1}^{n_y} e^{ \tilde{y}_j}}                                                          \\
                                             & = - y_i + \text{SoftMax}(\tilde{y})_i
 \end{align*}
