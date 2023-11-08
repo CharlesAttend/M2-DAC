@@ -51,6 +51,13 @@
 \begin{itemize}
     \item $ L $ number of layer 
 \end{itemize}
+\section{Neural ODE}
+Comme je connais vraiment rien en équa dif je vais sum up une vidéo. \begin{itemize}
+    \item Neural ODE : mieux que les RNN pour prédire les time series
+    \item Considère une NN non plus de manière discrète avec des layers/block de neurone mais d'une manière continue 
+    \item Proche des Equa dif, et on peut utiliser la théorie de ça pour train à la place de la descente de gradiant 
+    \item Pas appris beaucoup plus 
+\end{itemize}
 
 \section{Introduction}
 \begin{itemize}
@@ -61,12 +68,34 @@
         \item Scaling at initialization : \begin{itemize}
             \item Initialisation importante : avoid grad problems, larger learning rate (better generalization)
             \item Exploding gradients \textbf{during backprop}== $ \left\| \frac{\partial \mathcal{L}}{\partial h_0 }  \right\| \geq \geq \left\| \frac{\partial \mathcal{L}}{\partial h_L }  \right\|  $ with an high probability 
-            \item $\rightarrow$ need to study distibution
+            \item $\rightarrow$ they study distibution and the choice of $ \alpha _L = \frac{1}{\sqrt[]{L}} $ 
         \end{itemize}
         \item The continuous approach : \begin{itemize}
-            \item 
+            \item Si on pose $ \alpha _L = 1/L$  $\rightarrow$ ResNet= ODE
+            \item Mais contradictoire avec le résultat de la section précédente $ \alpha _L = \frac{1}{\sqrt[]{L}} $ 
+            \item En faite  $ \alpha _L = \frac{1}{\sqrt[]{L}} $ correspond au bon choix pour neural stochastic pdifferential equation (SDE). Qui correspond à un ResNet avec une initialisation particulière
         \end{itemize}
+        \item Section 4 : test de differente valeur de $ \alpha _L $ dans le cadre SDE
+    \end{itemize}
+    \item Related work : \begin{itemize}
+        \item Plein de papier sur $ \alpha _L $, plein de solution possible
+        \item Nous on analise $ \alpha _L$ au moment de l'initialisation des paramètres 
+        \item D'autre gens on trouvé $ \alpha _L = \frac{1}{\sqrt[]{L}} $ mais sans donner trop de math et sans fouiller les autres cas $ \alpha _L \ll \frac{1}{\sqrt[]{L}} $, $ \alpha _L \approx \frac{1}{\sqrt[]{L}} $, $ \alpha _L \gg \frac{1}{\sqrt[]{L}} $ et sans faire le lien avec les équa dif
+        \item Des gens on déjà fait le lien avec les equa diff mais dans des cas moins général je crois
     \end{itemize}
 \end{itemize}
 
+\section{Scaling at initialization}
+\subsection{Model and assumptions}
+\subsection{Probabilistic setting at initialization }
+\begin{itemize}
+    \item Les paramètre du modèle est une collection iid de variable aléatoire $\rightarrow$ donc les états cachés $ h_0, \dots, h_L $ aussi (mais il sont martingale eux mais osef pour l'instant)
+    \item La distribution initial des paramèter n'est pas dépendante de $ L $, donc indépendante de l'architecture du modèle considéré. Pratique !
+    \item 
+\end{itemize}
+
+\subsection{Assumptions}
+\begin{itemize}
+    \item $ s^2 $ sub-Gaussian : $ \forall \lambda \in \mathbb{R}, \mathbb{E}(\lambda X) \leq  \exp (\frac{\lambda ^2 s^2 }{2})$  a sub-Gaussian distribution is a probability distribution with strong tail decay.
+\end{itemize}
 \end{document}
