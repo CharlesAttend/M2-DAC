@@ -1,0 +1,93 @@
+normaliser les images par m sig de image net 
+
+3. 
+
+
+
+
+
+\chapter{Transfer Learning}
+\section{VGG16 Architecture}
+\paragraph{1. $\bigstar$ Knowing that the fully-connected layers account for the majority of the parameters in a model, give an estimate on the number of parameters of VGG16.}
+
+There are three fully-connected layers at the end of the VGG16 architecture. Calculating their weights is relatively straightforward. We take into account the inclusion of biases.
+
+\begin{itemize}
+    \item The first fully-connected layer receives an input of size 7 by 7 by 512 (the resulting output of the convolutional layers), which equals an input size of 25,088. Knowing that there are 4,096 neurons, this layer has a total of $(25,088 + 1) \times 4,096 = 102,764,544$ trainable weights.
+    \item The second fully-connected layer receives the input from the previous layer, which is 4,096, and also consists of 4,096 neurons, resulting in $(4,096 + 1) \times 4,096 = 16,781,312$ trainable weights.
+    \item Lastly, the third fully-connected layer, consisting of 1,000 neurons, has $(4,096 + 1) \times 1,000 = 4,097,000$ parameters.
+\end{itemize}
+
+Thus, the fully connected layers account for a total of 123,642,856 parameters. We can confidently state that they represent at least 85\% of the model, implying there should be around 140 million parameters to learn. If we consider a margin of 5\%, there should be between 137,380,951 and 154,553,570 parameters.
+
+We can readily confirm that the convolutional layers account for 14,714,688 parameters, meaning that there are actually 138,357,544 parameters in VGG16, meaning the fully-connected layers accounts to 89\% of parameters.
+
+% conv1 - 2 layers
+% ((3*3*3)+1)*64 = 1,792
+% ((64*3*3)+1)*64 = 36,928
+% TOTAL 38720
+
+% conv2 - 2 layers
+% ((64*3*3)+1)*128 = 73,856
+% ((128*3*3)+1)*128 = 147,584
+% TOTAL 221440
+
+% conv3 - 3 layers
+% ((128*3*3)+1)*256 = 295,168
+% ((256*3*3)+1)*256 = 590,080
+% ((256*3*3)+1)*256 = 590,080
+% TOTAL 1475328
+
+% conv4 - 3 layers
+% ((256*3*3)+1)*512 = 1,180,160
+% ((512*3*3)+1)*512 = 2,359,808
+% ((512*3*3)+1)*512 = 2,359,808
+% TOTAL 5,899,776. 
+
+% conv5 - 3 layers
+% ((512*3*3)+1)*512 = 2,359,808
+% ((512*3*3)+1)*512 = 2,359,808
+% ((512*3*3)+1)*512 = 2,359,808
+% TOTAL 7,079,424
+% TOTAL CONVS = 14,714,688
+
+% fc1
+% (7x7x512 + 1)*4096 = 102,764,544
+
+% fc2
+% (4096+1)*4096 = 16,781,312
+
+% fc3
+% (4096+1)*1000 = 4,097,000
+% TOTAL FC - 123,642,856
+% TOTAL VG16 - 138,357,544
+
+\paragraph{2. $\bigstar$ What is the output size of the last layer of VGG16? What does it correspond to?}
+The output size of the last layer of VGG16 is 1000. It corresponds to the 1000 classes of the ImageNet dataset that the model has been trained on. Each element in this output vector represents  the network's prediction scores for a specific class in the ImageNet dataset, and the class with the highest score is considered the predicted class for our given input image.
+
+\paragraph{3. \textbf{Bonus}: Apply the network on several images of your choice and comment on the results.}
+bóbr
+
+\paragraph{4. \textbf{Bonus}: Visualize several activation maps obtained after the first convolutional layer. How can we interpret them?}
+
+\section{Transfer Learning with VGG16 on 15 Scene}
+\subsection{Approach}
+\paragraph{5. $\bigstar$ Why not directly train VGG16 on 15 Scene?}
+The 15 Scene dataset is quite small compared to the massive ImageNet dataset that VGG16 was originally trained on. VGG16 requires a lot of data to generalize well and to avoid overfitting. Moreover, training such a model from scratch is computationally expensive and time-consuming.
+
+% VGG from scratch, pas assez de donnée pour le gros model, risque fort d'overfitting 
+
+\paragraph{6. $\bigstar$ How can pre-training on ImageNet help classification for 15 Scene?}
+What's the assumption behind transfert learning : the data are somehow simililar 
+
+\paragraph{7. What limits can you see with feature extraction?}
+
+
+\subsection{Feature Extraction with VGG16}
+\paragraph{8. What is the impact of the layer at which the features are extracted?}
+
+
+\paragraph{9. The images from 15 Scene are black and white, but VGG16 requires RGB images. How can we get around this problem?}
+
+
+\paragraph{10. Rather than training an independent classifier, is it possible to just use the neural network? Explain.}
