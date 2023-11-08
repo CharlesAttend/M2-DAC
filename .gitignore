@@ -25,5 +25,8 @@ ipython_config.py
 .datamaestro/
 
 datasets
-RDFIA/TME/TME5/MNIST
-RDFIA/TME/TME5/Fashion-MNIST/FashionMNIST/raw/
+MNIST
+Fashion-MNIST/FashionMNIST/raw/
+15SceneData/
+15ScenesData.zip
+imagenet_classes.pkl
