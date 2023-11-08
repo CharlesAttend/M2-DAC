@@ -1,14 +1,12 @@
 \chapter{Introduction to transformers}
-
 \begin{figure}[H]
     \centering
     \includegraphics*[width=.8\textwidth]{figs/Transformers/The-Vision-Transformer-architecture-a-the-main-architecture-of-the-model-b-the.png}
+    \caption*{The Vision Transformer architecture: (a) the main architecture of the model; (b) the Transformer encoder module; (c) the Multiscale-self attention (MSA) head, and (d) the self-attention (SA) head.\\Bazi, Yakoub \& Bashmal, Laila \& Al Rahhal, Mohamad \& Dayil, Reham \& Ajlan, Naif. (2021). Vision Transformers for Remote Sensing Image Classification. Remote Sensing. 13. 516. 10.3390/rs13030516. }
 \end{figure}
 
-% mettre la source non ?
-
 \section{Self-Attention}
-\paragraph{What is the main feature of self-attention, especially compared to its convolutional counterpart? What is its main challenge in terms of computation/memory?}
+\paragraph{What is the main feature of self-attention, especially compared to its convolutional counterpart? What is its main challenge in terms of computation/memory?}\label{paragraph:complexity}
 Unlike convolutional layers that consider a local neighborhood around each input position, self-attention can weigh all positions across the entire sequence (here the image), providing a form of global receptive field. This is beneficial for tasks where the relevant context can be far from the current position. Convolutional layers have a fixed receptive field, which limits their ability to capture long-range dependencies unless many layers are stacked or dilated convolutions are used.
 
 The primary challenge of self-attention is its computational and memory complexity, particularly the quadratic complexity with respect to the sequence length. In self-attention, every element in the input sequence interacts with every other element, leading to a time and space complexity of something like $ O(n^2) $, where $n$ is the length of the input sequence. This makes self-attention computationally expensive and memory-intensive for long sequences.
@@ -27,11 +25,15 @@ The main part of attention is the dot product between the Query and the Key. Tho
 
 But we must be aware that when values of the key and query vectors are large, the dot products can become very large. This can result in large values in the softmax function, leading to vanishing gradients during backpropagation. Scaling down the dot products by $ \sqrt[]{d_k} $ (where $ d_k $  is the dimensionality of the query and key vectors) helps in keeping the gradients in a manageable range, which in turn stabilizes the training. As the variance of the dot product grows with the dimensionality, it also keep it constant.
 
-\begin{align*}
-    \text{Attention}(Q, K, V) & = \text{Softmax}\left(\frac{QK^t}{\sqrt{d_k}}\right)V
-\end{align*}
+\[
+    \text{Attention}(Q, K, V) = \text{Softmax}\left(\frac{QK^t}{\sqrt{d_k}}\right)V
+.\]
 
-The Value matrix represents the actual content of the input tokens. Once the attention scores are computed, they are used to weight the value vectors $ V $.
+The Value matrix represents the actual content of the input tokens. Once the attention scores are computed, they are used to weight the value vectors $ V $. Optionnaly, it's possible to do a last final linear projection at the then, in this case we have 
+\[
+    \text{Attention}(Q, K, V) = \text{Softmax}\left(\frac{QK^t}{\sqrt{d_k}}\right)V W
+.\]
+
 
 \section{Multi-head self-attention}
 
@@ -49,52 +51,53 @@ Let's define the operations within a Transformers block:
 \begin{enumerate}
     \item Let \( x \) be the input to the Transformers block, which in our case is a patch from the image plus a positional embedding. We begin by normalizing the input using Layer Normalization (LayerNorm):
 
-          \[
-              z = \text{LayerNorm}(x)
-          \]
+        \[
+            z = \text{LayerNorm}(x)
+        \]
 
     \item We then compute the Query (Q), Key (K), and Value (V) matrices, which are used in the Multi-Head Attention mechanism as explained in the previous question:
 
-          \[
-              Q = z \cdot W_q, \quad K = z \cdot W_k, \quad V = z \cdot W_v
-          \]
+        \[
+            Q = z \cdot W_q, \quad K = z \cdot W_k, \quad V = z \cdot W_v
+        \]
 
     \item Next, we pass these matrices \( Q \), \( K \), and \( V \) into the Multi-Head Attention mechanism:
 
-          \[
-              \text{AttOutput} = \text{MultiHead}(Q, K, V)
-          \]
+        \[
+            \text{AttOutput} = \text{MultiHead}(Q, K, V)
+        \]
 
     \item We add the normalized input \( z \) to the output of the Multi-Head Attention and apply Layer Normalization again:
 
-          \[
-              \text{MidLayerOutput} = \text{LayerNorm}(z + \text{AttOutput})
-          \]
+        \[
+            \text{MidLayerOutput} = \text{LayerNorm}(z + \text{AttOutput})
+        \]
 
-    \item We retain this result and add it to the output of the MLP (Multi-Layer Perceptron) head, which is a two-layer linear network with a GeLU (Gaussian Error Linear Unit) or ReLU (Rectified Linear Unit) activation function, defined as follows:
+    \item The MLP (Multi-Layer Perceptron) head is a two-layer linear network with a GeLU (Gaussian Error Linear Unit) or ReLU (Rectified Linear Unit) activation function, defined as follows:
 
-          \[
-              \text{MLP}(x) = \text{ReLU}(x \cdot W_1 + b_1) \cdot W_2 + b_2
-          \]
+        \[
+            \text{MLP}(x) = \text{ReLU}(x \cdot W_1 + b_1) \cdot W_2 + b_2
+        \]
 
-    \item Finally, we compute the output of the MLP and add it to the \text{MidLayerOutput} to obtain the final output of the Transformers block:
+    Finally, we compute the output of the MLP and add it to the \text{MidLayerOutput} to obtain the final output of the Transformers block:
 
-          \[
-              \text{MLPOutput} = \text{MLP}(\text{MidLayerOutput})
-          \]
-          \[
-              \text{FinalOutput} = \text{MLPOutput} + \text{MidLayerOutput}
-          \]
-          After this last addition, we obtain the final output of a Transformers block.
+        \[
+            \text{MLPOutput} = \text{MLP}(\text{MidLayerOutput})
+        \]
+        \[
+            \text{FinalOutput} = \text{MLPOutput} + \text{MidLayerOutput}
+        \]
+
+    After this last addition, we obtain the final output of a Transformers block.
 \end{enumerate}
 
-\section{Full ViT model}
+\section{Full ViT model: Questions}
 
 \paragraph{Explain what is a Class token and why we use it?}
 The class token is positionned as the first token. It is represented as a learnable vector which gets updated during the forward pass. It accumulate information from different parts of the image as it gets updated through the Transformer layers. As it sum-up all the image, we use it to classify the image.
 
 \paragraph{Explain what is the positional embedding (PE) and why it is important?}
-The PE are used to provide the spacial information to the model. Here we use sinusoidal encoding, it provide a fixed, unique and easy to generate encodding for the position. Figure~\ref{fig:pe_viz} is employed to visualize the appearance of sinusoidal encoding. In the context of an image transformer, the x-axis represents the number of image patches created, while the y-axis represents the size of an image patch embedding.  \\
+The PE are used to provide the spacial information to the model. Here we use sinusoidal encoding, it provide a fixed, unique and easy to generate encodding for the position. \Cref{fig:pe_viz} is employed to visualize the appearance of sinusoidal encoding. In the context of an image transformer, the x-axis represents the number of image patches created, while the y-axis represents the size of an image patch embedding.  \\
 Another approach is to learn this positional embedding. This method allows the model to learn the most useful positional representations. \\
 This positionnal embedding is then sum to the image embedding.
 
@@ -105,16 +108,15 @@ This positionnal embedding is then sum to the image embedding.
     \label{fig:pe_viz}
 \end{figure}
 
-\section{Experiment on MNIST!}
+\section{Experiments on MNIST: Hyperparameters influence}
 The overall performance of our small transformer is really good on MNIST. The convergence is quick and the accuracy really high for every experiments.
 
-\subsection{Hyperparameters influences}
 As we did in previus experiments, we'll analyse the influence of hyperparmeter by ploting loss and accuracy on the train and test dataset.
 
-\paragraph{Embed dimension}
-First, let's examine the performance of different embedding dimensions in Figure~\ref{fig:embed_dim_influence}. Several notable observations can be made:
+\subsection{Embed dimension}
+First, let's examine the performance of different embedding dimensions in \Cref{fig:embed_dim_influence}. Several notable observations can be made.
 
-In this figure, it's evident that an embedding dimension of 16 takes slightly more epochs to converge compared to other sizes. Conversely, the size of 128 converges at the same speed but achieves the lowest final accuracy. Importantly, this larger size does not exhibit signs of overfitting. It's worth mentioning that training with an embedding size of 128 also requires more time (in terms of minutes) due to the increased number of parameters.
+In this figure, it's evident that an embedding dimension of 16 takes slightly more epochs to converge compared to other sizes. Conversely, the size of 128 converges at the same speed but achieves the lowest final accuracy and loss. Importantly, this larger size does not exhibit signs of overfitting. It's worth mentioning that training with an embedding size of 128 also requires more time (in terms of minutes) due to the increased number of parameters.
 
 On the other hand, the embedding size of 16 achieves similar performance to the other sizes but with fewer parameters, resulting in reduced energy consumption and training time. This aligns with the principle of Occam's razor, emphasizing the value of simplicity.
 
@@ -125,84 +127,102 @@ On the other hand, the embedding size of 16 achieves similar performance to the 
     \label{fig:embed_dim_influence}
 \end{figure}
 
-\paragraph{Patch size}
-Figure~\ref{fig:patch_size_influence} illustrates the impact of patch size on the learning process. Similar to the previous paragraph, it's apparent that all conditions ultimately converge to nearly the same level of accuracy. However, the test loss provides more informative insights.
+\subsection{Patch size}
+\Cref{fig:patch_size_influence} illustrates the impact of patch size on the learning process. Similar to the previous paragraph, it's apparent that all conditions ultimately converge to nearly the same level of accuracy. However, the test loss provides more informative insights.
 
 As anticipated, a patch size as small as 2 by 2 pixels encountered greater challenges in learning due to its diminutive dimensions. On the other hand, a patch size of 28 by 28 pixels is equivalent to the size of an MNIST image, and thus, no patches are formed. This particular configuration, along with a patch size of 14 pixels, exhibits the lowest initial loss and maintains this characteristic throughout most of the training epochs.
 
 \begin{figure}[H]
     \centering
-    \includegraphics*[width=0.9\textwidth]{figs/Transformers/patch_size_influence.pdf}
+    \includegraphics*[width=0.9\textwidth]{figs/Transformers/patch_size_influence_25.pdf}
     \caption{Influence of the patch size}
     \label{fig:patch_size_influence}
 \end{figure}
 
-\paragraph{Number of transformers blocks}
-The influence of the number of transformer blocks is evident in Figure~\ref{fig:nb_block_influence}. This experiment exhibits similarities to the one conducted with embedding sizes. In all configurations, convergence to a high level of accuracy is observed. However, it's important to note that a high number of blocks can potentially result in overfitting, as indicated by the test loss curve when using 8 blocks, which is notably higher than the other curves.
+\subsection{Number of transformers blocks}
+The influence of the number of transformer blocks is evident in \Cref{fig:nb_block_influence}. This experiment exhibits similarities to the one conducted with embedding sizes. In all configurations, convergence to a high level of accuracy is observed. However, it's important to note that a high number of blocks can potentially result instability in learning, as indicated by the test loss curve when using 8 blocks. This condition also converge to a lower accuracy.
 
 \begin{figure}[H]
     \centering
-    \includegraphics*[width=0.9\textwidth]{figs/Transformers/nb_block_influence.pdf}
+    \includegraphics*[width=0.9\textwidth]{figs/Transformers/nb_block_influence_25.pdf}
     \caption{Influence of the number of transformers blocks}
     \label{fig:nb_block_influence}
 \end{figure}
 
-\paragraph{Number of heads in a block}
-Once again, the test loss proves to be the most informative aspect of Figure~\ref{fig:num_heads_influence}, as other aspects appear to converge to similar points. This plot suggests that an increase in the number of self-attention heads tends to yield better results. Additionally, it's noteworthy that the test loss curves do not overlap, which enhances our confidence in the reliability of these results.
+\subsection{Number of heads in a block}
+Plot in \Cref{fig:num_heads_influence} suggests that an increase in the number of self-attention heads tends to yield better results as we can see by looking at accuracy in train and test.
+% Additionally, it's noteworthy that the test loss curves do not overlap, which enhances our confidence in the reliability of these results.
 
 \begin{figure}[H]
     \centering
-    \includegraphics*[width=0.9\textwidth]{figs/Transformers/num_heads_influence.pdf}
+    \includegraphics*[width=0.9\textwidth]{figs/Transformers/num_heads_influence_25.pdf}
     \caption{Influence of the number of self attention head in one transformer block }
     \label{fig:num_heads_influence}
 \end{figure}
 
-\paragraph{MLP hidden layer size}
-Finally, we conducted tests to assess the influence of the size of the MLP hidden layer, and the results are displayed in Figure~\ref{fig:mlp_ratio_influence}. Analyzing the test loss, show that increasing the hidden size appears to improve the results without inducing overfitting. However, it's important to note that a strong ceiling effect on accuracy limits our ability to draw definitive conclusions.
+\subsection{MLP hidden layer size}
+Finally, we conducted tests to assess the influence of the size of the MLP hidden layer, and the results are displayed in \Cref{fig:mlp_ratio_influence}. Analyzing the test loss, show that increasing the hidden size does not appears to improve the results and don't induce overfitting too. However, it's important to note that a strong ceiling effect on accuracy limits our ability to draw definitive conclusions.
 
 \begin{figure}[H]
     \centering
-    \includegraphics*[width=0.9\textwidth]{figs/Transformers/mlp_ratio_influence.pdf}
+    \includegraphics*[width=0.9\textwidth]{figs/Transformers/mlp_ratio_influence_25.pdf}
     \caption{Influence of the hidden layer size in the MLP part of a transformer block}
     \label{fig:mlp_ratio_influence}
 \end{figure}
 
 \section{Larger transformers}
 \subsection{Questions}
-\paragraph{What it is the problem and why we have it? Explain if we have also such problem with CNNs.}
-The model \texttt{vit\_base\_patch16\_224} is trained on 224x224 images from the ImageNet dataset. In the first layer of the ViT, the input image is divided into fixed-size patches to create embedded vectors. It's crucial to maintain the same image size as the one the model was designed for.
+\paragraph{What is the problem and why we have it? Explain if we have also such problem with CNNs.}
+The model \texttt{vit\_base\_patch16\_224} is trained on $224 \times 224$ images from the ImageNet dataset. In the first layer of the ViT, the input image is divided into fixed-size patches to create embedded vectors by passing through a linear projection. It's crucial to maintain the same image size as the one the model was designed for.
 
-In this case, it necessitates resizing the images to 224x224 RGB pixels. However, this may not be ideal as resizing could distort the images and potentially affect the model's performance.
+In this case, it necessitates resizing the images to $224 \times 224$ RGB pixels. However, this may not be ideal as resizing could distort the images and potentially affect the model's performance.
+
+As discussed in question 4 of chapter 2, a CNN would not have such problem until the fully-connected layer.
 
 \paragraph{Provide some ideas on how to make transformer work on small datasets. You can take inspiration from some recent work.}
-...
+
+We found a lot of "classics" solution when searching how to make thing work on small dataset. There were transfer learning, data augmentation, regularization to avoid overfiting. 
+Digging a paper named "\href{https://arxiv.org/abs/2106.03746}{Efficient Training of Visual Transformers with Small Datasets}" gave a few more sophisticated ideas. The documents promote the introduction of an auxiliary self-supervised task for training regularization and the use of hybrid architectures that blend convolutional layers with attention layers. These approaches are grounded in the principle that transformers can be made more data-efficient by incorporating mechanisms that allow them to leverage both local and global information from images.
+
+\textbf{Auxiliary Self-Supervised Task}: This method introduces a novel training regularization technique that supplements the standard supervised learning process. In computer vision, common pretext tasks with still images are based on extracting two different views from the same image (e.g., two different crops) and then considering these as a pair of positive images, likely sharing the same semantic content. Most current self-supervised computer
+vision approaches can be categorised in contrastive learning, clustering methods, asymmetric networks and feature-decorrelation methods. Those self-supervised task are particularly effective because it encourages the model to internalize a richer understanding of the image structure, which is beneficial when the availability of annotated data is scarce.
+
+The paper proposes an additional task in which the model is trained to forecast the relative spatial positions of various segments within the input image. This task is based on the transformer's final token embeddings and leverages the inherent spatial connections within the image. By predicting the geometric distances between pairs of output token embeddings, the transformer is incentivized to acquire more intricate and refined representations of the input data.
+
+\textbf{Hybrid Architectures}: Hybrid transformer architectures are designed to mitigate the data-intensive requirements of standard transformer models by integrating convolutional neural network (CNN) elements. These elements introduce a local inductive bias, which is naturally present in CNNs due to their convolutional layers' ability to capture local patterns and structures within an image. By combining the global receptive fields of transformers with the local processing of CNNs, hybrid architectures can effectively learn from both small-scale local features and large-scale global dependencies. This duality allows the model to maintain performance even when trained on smaller datasets, as the convolutional components help to pre-structure the learning process, reducing the amount of data needed to achieve effective training outcomes.
+
+In essence, the underlying concept shared by all iterations of this approach revolves around arranging the individual token embeddings into a geometric grid. In this grid, each embedding vector's position corresponds to a specific spot in the input image. With this geometric arrangement of embeddings, convolutional layers can be employed to process adjacent embeddings, thereby prompting the network to pay attention to localized features within the image.
+
+The primary distinction among these various versions lies in where the convolutional operation is employed. This includes factors such as whether it's applied solely in the initial representations or throughout all the layers, whether it's used in the token-to-query/key/value projections or within the forward layers, and so on.
 
 \subsection{Learning from scratch}
-As denoted by figure~\ref{fig:stats_vit}, the ViT had difficulty to learn from scratch on MNIST. Due to the model size, four epochs took approximatly 45 minutes and bringed accuracy to somewhat 20 percents on test.
+As shown in \Cref{fig:stats_vit}, the Vision Transformer (ViT) encountered challenges when learning from scratch on the MNIST dataset. The training process exhibited significant instability, resulting in low accuracy. This difficulty could be attributed to the limited amount of data available for training. Models like ViT are typically pretrained on millions of images, whereas the MNIST dataset consists of only 60,000 images for 10 classes.
+
+Additionally, considering the size of the ViT model (as discussed in the first question of the previous section), training for four epochs consumed approximately 45 minutes and achieved a test accuracy of around 20 percent.
 
 \begin{figure}[H]
     \centering
-    \includegraphics*[width=0.9\textwidth]{figs/Transformers/stats_vit.pdf}
-    \caption{}
+    \includegraphics*[width=0.9\textwidth]{figs/Transformers/stats_vit_15.pdf}
+    \caption{Accuracy and losses in train and test when training a large ViT from scratch}
     \label{fig:stats_vit}
 \end{figure}
 
 
 \subsection{Fine-tuning}
-Result are much better when fine-tuning as we can see in figure~\ref{fig:stats_vit_pretrained}
+Results improved significantly when fine-tuning the pretrained Vision Transformer, as depicted in \Cref{fig:stats_vit_pretrained}. However, despite the improvement, the training process still exhibited instability, and it appears that the ViT struggled to effectively learn from the MNIST dataset, even when fine-tuned.
 \begin{figure}[H]
     \centering
-    \includegraphics*[width=0.9\textwidth]{figs/Transformers/stats_vit_pretrained.pdf}
-    \caption{}
+    \includegraphics*[width=0.9\textwidth]{figs/Transformers/stats_vit_pretrained_15.pdf}
+    \caption{Accuracy and losses in train and test using a pre-trained large ViT}
     \label{fig:stats_vit_pretrained}
 \end{figure}
 
 \section{Experiments on Fashion MNIST!}
-Fashion-MNIST is a dataset of Zalando's article images—consisting of a training set of 60,000 examples and a test set of 10,000 examples. Each example is a 28x28 grayscale image, associated with a label from 10 classes. We intend Fashion-MNIST to serve as a direct drop-in replacement for the original MNIST dataset for benchmarking machine learning algorithms. It shares the same image size and structure of training and testing splits.
+Fashion-MNIST is a dataset of Zalando's article images consisting of a training set of 60,000 examples and a test set of 10,000 examples. Each example is a 28x28 grayscale image, associated with a label from 10 classes. We intend Fashion-MNIST to serve as a direct drop-in replacement for the original MNIST dataset for benchmarking msachine learning algorithms. It shares the same image size and structure of training and testing splits.
 
 \begin{figure}[H]
     \centering
-    \includegraphics*[width=.6\textwidth]{figs/Transformers/fashion-mnist-sprite.png}
+    \includegraphics*[width=.4\textwidth]{figs/Transformers/fashion-mnist-sprite.png}
     \caption{Sample of the Fashion-MNIST dataset (each class takes three-rows)}
 \end{figure}
 
@@ -210,13 +230,20 @@ As demonstrated in the previous section, Vision Transformers have pushed the bou
 
 We will now briefly review each experiment to see if we can gain new insights. Each figure mentioned will be linked and displayed in the appendix.
 \begin{enumerate}
-    \item \textbf{Embedding Dimension}: When comparing the results between the classic MNIST dataset (Figure~\ref{fig:embed_dim_influence}) and the Fashion MNIST dataset (Figure~\ref{fig:fashion:embed_dim_influence}), our earlier conclusions drawn from the classic MNIST dataset hold true but are more pronounced. Larger embedding sizes converge at lower accuracy and loss values, while smaller embedding sizes take more time to converge but show promise.
+    \item \textbf{Embedding Dimension}: When comparing the results between the classic MNIST dataset (\Cref{fig:embed_dim_influence}) and the Fashion MNIST dataset (\Cref{fig:fashion:embed_dim_influence}), our earlier conclusions drawn from the classic MNIST dataset hold true but are more pronounced. Larger embedding sizes converge at lower accuracy and loss values, while smaller embedding sizes take more time to converge but show promise. We also see more instability during learning with an embeding size of 128.
 
-    \item \textbf{Patch Size}: In both the classic MNIST dataset (Figure~\ref{fig:patch_size_influence}) and the Fashion MNIST dataset (Figure~\ref{fig:fashion:patch_size_influence}), patch sizes of 28 or 14 pixels continue to exhibit similar performance.
+    \item \textbf{Patch Size}: In both the classic MNIST dataset (\Cref{fig:patch_size_influence}) and the Fashion MNIST dataset (\Cref{fig:fashion:patch_size_influence}), patch sizes of 28 or 14 pixels continue to exhibit similar performance. 
 
-    \item \textbf{Number of Transformers Blocks}: Our earlier conclusion from the classic MNIST dataset, where a high number of blocks could potentially induce overfitting (Figure~\ref{fig:nb_block_influence}), is not as evident in the Fashion MNIST dataset (Figure~\ref{fig:fashion:nb_block_influence}). Using eight transformers blocks does result in some learning difficulties, as indicated by the red curve having lower accuracy and higher loss.
+    \item \textbf{Number of Transformers Blocks}: Our earlier conclusion from the classic MNIST dataset (\Cref{fig:nb_block_influence}), is still valid on the Fashion MNIST dataset (\Cref{fig:fashion:nb_block_influence}). Using eight transformers blocks does result in some learning difficulties, as indicated by the red curve having lower accuracy and higher loss.
 
-    \item \textbf{Number of Heads in a Block}: The observation that more self-attention heads tend to yield better results, as seen in the classic MNIST dataset (Figure~\ref{fig:num_heads_influence}), appears to hold true for the Fashion MNIST dataset as well (Figure~\ref{fig:fashion:num_heads_influence}).
+    \item \textbf{Number of Heads in a Block}: The observation that more self-attention heads tend to yield better results, as seen in the classic MNIST dataset (\Cref{fig:num_heads_influence}), appears to hold true for the Fashion MNIST dataset as well (\Cref{fig:fashion:num_heads_influence}).
 
-    \item \textbf{MLP Hidden Layer Size}: The comparison between the classic MNIST dataset (Figure~\ref{fig:mlp_ratio_influence}) and the Fashion MNIST dataset (Figure~\ref{fig:fashion:mlp_ratio_influence}) reaffirms our previous conclusion. While increasing the MLP hidden layer size may not necessarily induce overfitting, the effect is less clear in the Fashion MNIST dataset.
+    \item \textbf{MLP Hidden Layer Size}: The comparison between the classic MNIST dataset (\Cref{fig:mlp_ratio_influence}) and the Fashion MNIST dataset (\Cref{fig:fashion:mlp_ratio_influence}) reaffirms our previous conclusion. While increasing the MLP hidden layer size still not induce overfitting, we still can't see any effect on the performance.
+    
+    \item \textbf{Larger transformer: Training from scratch}:  When training a larger transformer from scratch, both on Classic MNIST (\Cref{fig:stats_vit}) and Fashion MNIST (\Cref{fig:fashion:stats_vit}), there are issues with instability and low accuracy. Interestingly, the model seems to perform slightly better on Fashion MNIST.
+    
+    \item \textbf{Larger transformer: Fine-tuning}: Fine-tuning a larger transformer, on the other hand, shows improved stability during training. While it still learns slowly, it performs slightly better on Fashion MNIST (\Cref{fig:fashion:stats_vit_pretrained}) compared to Classic MNIST (\Cref{fig:stats_vit_pretrained}).
 \end{enumerate}
+
+\section{Experiments conclusion}
+Fine-tuning a ViT can be challenging and may require a substantial amount of data to achieve optimal results. Conversely, training a customized, smaller ViT can yield significant benefits. In the process of training our compact transformer architecture, it is advisable to avoid overly large embedding sizes while considering the augmentation of the number of heads within a block.
