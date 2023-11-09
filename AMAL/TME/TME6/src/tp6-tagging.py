@@ -2,6 +2,7 @@ import itertools
 import logging
 from tqdm import tqdm
 import torchmetrics as tm
+import numpy as np
 from datamaestro import prepare_dataset
 from torch.utils.data import Dataset, DataLoader
 from torch.nn.utils.rnn import pad_sequence
@@ -14,12 +15,6 @@ import time
 from icecream import ic
 
 logging.basicConfig(level=logging.INFO)
-
-ds = prepare_dataset("org.universaldependencies.french.gsd")
-
-
-# Format de sortie décrit dans
-# https://pypi.org/project/conllu/
 
 
 class Vocabulary:
@@ -104,54 +99,10 @@ def collate_fn(batch):
     )
 
 
-def train_epoch(loader, model, loss_fn, optimizer=None, logger=None, cuda=False):
-    model.train()
-    loss_list = []
-    acc = tm.classification.Accuracy(task="multiclass", num_classes=5)
-    for input, target in loader:
-        if cuda:  # only with GPU, and not with CPU
-            input = input.cuda()
-            target = target.cuda()
-
-        ic(input.size())
-        ic(target.size())
-        # forward
-        output = model(input)
-        loss = criterion(output, target)
-        loss_list.append(loss.item)
-        # backward if we are training
-        optimizer.zero_grad()
-        loss.backward()
-        optimizer.step()
-    return np.array(loss_list).mean()
-
-
-def evaluate(loader, model, loss_fn, cuda=False):
-    model.eval()
-    acc = tm.classification.Accuracy(task="multiclass", num_classes=5)
-    for input, target in loader:
-        if cuda:  # only with GPU, and not with CPU
-            input = input.cuda()
-            target = target.cuda()
-
-        # forward
-        output = model(input)
-        loss = criterion(output, target)
-
-
-class Model(nn.Module):
-    def __init__(
-        self,
-        hidden_size,
-    ):
-        super().__init__()
-        self.rnn = nn.LSTM(10, 20, 2)
-
-    def forward(self, x):
-        return self.rnn(x)
-
-
 logging.info("Loading datasets...")
+ds = prepare_dataset("org.universaldependencies.french.gsd")
+# Format de sortie décrit dans
+# https://pypi.org/project/conllu/
 words = Vocabulary(True)
 tags = Vocabulary(False)
 train_data = TaggingDataset(ds.train, words, tags, True)
@@ -160,24 +111,85 @@ test_data = TaggingDataset(ds.test, words, tags, False)
 
 
 logging.info("Vocabulary size: %d", len(words))
-
-
-cuda = torch.cuda.is_available()
+logging.info("Tags size: %d", len(tags))
 BATCH_SIZE = 100
-
-lr = 0.001
-nb_epoch = 10
-
-
+BATCH_SIZE = 32
+LEN_WORDS = len(words)
+LEN_TAG = len(tags)
 train_loader = DataLoader(
     train_data, collate_fn=collate_fn, batch_size=BATCH_SIZE, shuffle=True
 )
 dev_loader = DataLoader(dev_data, collate_fn=collate_fn, batch_size=BATCH_SIZE)
 test_loader = DataLoader(test_data, collate_fn=collate_fn, batch_size=BATCH_SIZE)
-model = Model(10)
+
+
+def run_epoch(
+    loader, model, loss_fn, optimizer=None, logger=None, device="cuda", num_classes=18
+):
+    loss_list = []
+    acc = tm.classification.Accuracy(task="multiclass", num_classes=num_classes)
+    acc.to(device)
+    model.to(device)
+    model.train() if optimizer else model.eval()
+    for input, target in loader:
+        input = input.to(device)
+        target = target.to(device)
+
+        # ic(input.size())
+        # ic(target.size())
+        output = model(input)
+        # ic(output.size())
+        output = model.decode(output).transpose(1, 2)
+        # ic(output.size())
+        loss = loss_fn(output, target)
+        loss_list.append(loss.item())
+        acc(output.argmax(1), target)
+        # backward if we are training
+        if optimizer:
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
+    return np.array(loss_list).mean(), acc.compute().item()
+
+
+class Model(nn.Module):
+    def __init__(
+        self,
+        embedding_dim,
+        hidden_size,
+        vocab_size,
+        tag_size,
+    ):
+        super().__init__()
+        self.embedding = nn.Embedding(vocab_size, embedding_dim)
+        self.rnn = nn.LSTM(embedding_dim, hidden_size)
+        self.f_h = nn.Linear(hidden_size, tag_size)
+
+    def forward(self, x):
+        x = self.embedding(x)
+        h, (_, _) = self.rnn(x)
+        return h
+
+    def decode(self, h):
+        return self.f_h(h)
+
+
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+lr = 0.001
+nb_epoch = 10
+
+
+model = Model(32, 64, LEN_WORDS, LEN_TAG)
 loss_fn = nn.CrossEntropyLoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=lr)
 
 for epoch in tqdm(range(nb_epoch)):
-    mean_loss, acc_test = train_epoch(train_loader, model, loss_fn, cuda=cuda)
-    acc_test = evaluate(test_loader, model, loss_fn, cuda=cuda)
+    mean_train_loss, acc_train = run_epoch(
+        train_loader, model, loss_fn, optimizer, device=device
+    )
+    mean_test_loss, acc_test = run_epoch(test_loader, model, loss_fn, device=device)
+    ic(mean_train_loss)
+    ic(acc_train)
+    ic(mean_test_loss)
+    ic(acc_test)
