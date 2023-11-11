@@ -1,0 +1,9 @@
+Adresse,Majeur?,Nationalite,Label
+Paris,oui,Francais,+1
+Paris,non,Francais,-1
+Montpellier,oui,Italien,+1
+Paris,oui,Suisse,-1
+Strasbourg,non,Italien,-1
+Strasbourg,non,Francais,-1
+Strasbourg,oui,Francais,+1
+Montpellier,oui,Suisse,-1
