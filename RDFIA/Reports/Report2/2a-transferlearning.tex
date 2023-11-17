@@ -66,7 +66,11 @@ We can readily confirm that the convolutional layers account for 14,714,688 para
 The output size of the last layer of VGG16 is 1000. It corresponds to the 1000 classes of the ImageNet dataset that the model has been trained on. Each element in this output vector represents  the network's prediction scores for a specific class in the ImageNet dataset, and the class with the highest score is considered the predicted class for our given input image.
 
 \paragraph{3. \textbf{Bonus}: Apply the network on several images of your choice and comment on the results.}
-bóbr
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=0.95\textwidth]{fig/2a/prediction.pdf}
+    \caption{Prediction of VGG16 on few images}
+\end{figure}
 
 \paragraph{4. \textbf{Bonus}: Visualize several activation maps obtained after the first convolutional layer. How can we interpret them?}
 
@@ -78,16 +82,31 @@ The 15 Scene dataset is quite small compared to the massive ImageNet dataset tha
 % VGG from scratch, pas assez de donnée pour le gros model, risque fort d'overfitting 
 
 \paragraph{6. $\bigstar$ How can pre-training on ImageNet help classification for 15 Scene?}
-What's the assumption behind transfert learning : the data are somehow simililar 
+ImageNet represents a vast and diverse dataset, encompassing millions of images distributed across numerous categories. A model pre-trained on this dataset acquires a broad spectrum of features, spanning from fundamental edge and texture detection to intricate patterns. These acquired features serve as a robust initial foundation for extracting meaningful information from the 15 Scene images, even when the particular scenes or objects present in the 15 Scene dataset differ from those in ImageNet. 
+
+This approach proves particularly advantageous given the relatively modest size of our dataset, aiding in mitigating issues associated with insufficient training data, such as overfitting. 
+
+Furthermore, this approach expedites the training process as the model requires only fine-tuning of the previously learned features to adapt to the specific attributes of the new dataset, avoiding the need to start the learning process from scratch.
 
 \paragraph{7. What limits can you see with feature extraction?}
+The effectiveness of transferred features hinges on the similarity between the source task, which is the task the model was originally trained on, and the target task. If the target task significantly diverges from the source task, the extracted features may lack relevance or utility, failing to capture the nuanced details necessary for achieving high accuracy. For example, applying a model trained on natural images to domains like medical images or satellite imagery may not yield optimal results. Adapting such models to new domains often necessitates additional fine-tuning or, in some cases, complete retraining using domain-specific data, which can consume substantial computational resources.
 
+It's worth noting that the biases present in the pre-training dataset can exert an influence on the features extracted by the model. If the pre-training data is not representative or contains inherent biases, these biases can inadvertently permeate into the target task.
+
+Furthermore, utilizing models like VGG16 demands substantial computational resources, encompassing both memory and processing power, which can pose limitations, particularly in resource-constrained environments.
 
 \subsection{Feature Extraction with VGG16}
 \paragraph{8. What is the impact of the layer at which the features are extracted?}
+In general, Earlier layers in a CNN capture basic features like edges and textures, while deeper layers capture more complex, high-level features that are more abstract and representative of the specific content in the image.
 
+For certain tasks, simpler features extracted from early layers might be sufficient, whereas for more complex tasks (like distinguishing between very similar categories), deeper features might be more useful. Earlier layers tend to be more generalizable across different types of images and tasks, while deeper layers are more specific to the kind of images and tasks the network was originally trained on.
 
 \paragraph{9. The images from 15 Scene are black and white, but VGG16 requires RGB images. How can we get around this problem?}
-
+Image from 15 scene are black and white so they only have one channel. VGG requires 3 channel RGB images. The easiest workaround is to Replicate the single channel of the grayscale image across the three RGB channels. Another solution is to average the weights of the first convolutional layer (which is responsible for the RGB channels) so that it can directly accept grayscale images.
 
 \paragraph{10. Rather than training an independent classifier, is it possible to just use the neural network? Explain.}
+Absolutely! You have the flexibility to use any classifier you prefer, including neural networks.
+
+In the case of VGG16 or similar pre-trained models, the original classification layer is typically a neural network. If your classification task closely aligns with what VGG16 was originally trained for, you can fine-tune this neural network directly. However, in cases where your task is significantly different from the original one, it might not yield optimal results to retain the pre-trained classifier, as it's highly specialized towards the original classes.
+
+The choice between an SVM and a neural network classifier depends on your specific requirements. An SVM or a simpler classifier can strike a balance by utilizing the deep features extracted by VGG16 while providing a less complex decision boundary, which might be sufficient for your task. It's a trade-off between complexity and performance, and the choice should be based on the nature of your data and the task's requirements.
