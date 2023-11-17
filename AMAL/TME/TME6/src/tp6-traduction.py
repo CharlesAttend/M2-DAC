@@ -240,6 +240,7 @@ def run_epoch(
     loss_fn,
     num_classes,
     optimizer=None,
+    scheduler=None,
     logger=None,
     device="cuda",
 ):
@@ -290,6 +291,10 @@ def run_epoch(
             loss.backward()
             optimizer[0].step()
             optimizer[1].step()
+            
+            if scheduler:
+                scheduler[0].step()
+                scheduler[1].step()
     pred_sentence = vocFra.getwords(decoder_outputs.argmax(1)[:, 0])
     print(
         f"Original sentence {vocEng.getwords(x[:, 0])}\n",
@@ -309,6 +314,9 @@ nb_epoch = 50
 hidden_size = 64
 embded_size = 64
 
+scheduler = optim.lr_scheduler.ExponentialLR
+gamma = 0.95
+
 wandb.init(
     # set the wandb project where this run will be logged
     project="amal",
@@ -319,6 +327,8 @@ wandb.init(
         "hidden_size": hidden_size,
         "embded_size": embded_size,
         "epochs": nb_epoch,
+        "scheduler": scheduler.__name__
+        "scheduler_gamma": gamma
     },
 )
 
@@ -331,6 +341,8 @@ encoder = Encoder(len_voc_origin, hidden_size, embded_size)
 decoder = Decoder(len_voc_dest, hidden_size, embded_size)
 encoder_optimizer = optim.Adam(encoder.parameters(), lr=lr_encoder)
 decoder_optimizer = optim.Adam(decoder.parameters(), lr=lr_decoder)
+scheduler_encoder = scheduler(encoder_optimizer, gamma=0.95)
+scheduler_decoder = scheduler(decoder_optimizer, gamma=0.95)
 # optimizer = torch.optim.Adam(encoder.parameters(), lr=lr)
 # optimizer.add_param_group(decoder.parameters())
 for epoch in tqdm(range(nb_epoch)):
@@ -341,6 +353,7 @@ for epoch in tqdm(range(nb_epoch)):
         loss_fn,
         len_voc_dest,
         optimizer=(encoder_optimizer, decoder_optimizer),
+        scheduler=(scheduler_encoder, scheduler_decoder),
         device=device,
     )
     mean_test_loss, acc_test = run_epoch(
