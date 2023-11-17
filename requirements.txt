@@ -1,4 +1,4 @@
-black
+# base for TP
 datamaestro
 datamaestro-image
 datamaestro-ml
@@ -6,7 +6,6 @@ datamaestro-text
 ir_datasets
 git+https://github.com/allenai/ir_datasets.git
 conllu
-icecream
 matplotlib
 numpy
 opencv-python
@@ -24,3 +23,10 @@ torchaudio
 torchmetrics
 torchvision
 tqdm
+
+# Personal
+black
+icecream
+wandb
+papermill
+
