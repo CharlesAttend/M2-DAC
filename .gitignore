@@ -30,3 +30,4 @@ Fashion-MNIST/FashionMNIST/raw/
 15SceneData/
 15ScenesData.zip
 imagenet_classes.pkl
+wandb
