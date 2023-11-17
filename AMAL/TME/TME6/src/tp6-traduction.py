@@ -327,7 +327,7 @@ wandb.init(
         "hidden_size": hidden_size,
         "embded_size": embded_size,
         "epochs": nb_epoch,
-        "scheduler": scheduler.__name__
+        "scheduler": scheduler.__name__,
         "scheduler_gamma": gamma
     },
 )
