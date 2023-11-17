@@ -1,4 +1,3 @@
-
 import torch
 import torch.nn as nn
 from torch.nn import CrossEntropyLoss
@@ -7,7 +6,8 @@ from torch.utils.tensorboard import SummaryWriter
 from textloader import *
 from generate import *
 
-#  TODO: 
+#  TODO:
+
 
 def maskedCrossEntropy(output: torch.Tensor, target: torch.LongTensor, padcar: int):
     """
@@ -15,10 +15,10 @@ def maskedCrossEntropy(output: torch.Tensor, target: torch.LongTensor, padcar: i
     :param target: Tenseur length x batch
     :param padcar: index du caractere de padding
     """
-    #  TODO:  Implémenter maskedCrossEntropy sans aucune boucle, la CrossEntropy qui ne prend pas en compte les caractères de padding.
     mask = output != padcar
     # x.view(-1, x.size(2))
-    return CrossEntropyLoss(output*mask, target, reduce='none').mean()
+    # reduce none pour faire une moyenne après 🤔
+    return CrossEntropyLoss(output * mask, target, reduce="none").mean()
 
 
 class RNN(nn.Module):
@@ -37,7 +37,7 @@ class RNN(nn.Module):
         self.hidden_size = hidden_size
         self.output_size = output_size
         self.batch_first = batch_first
-        
+
         self.f_x = nn.Linear(input_size, hidden_size, bias=False)
         self.f_h = nn.Linear(hidden_size, hidden_size)
         self.f_d = nn.Linear(hidden_size, output_size)
@@ -72,7 +72,7 @@ class RNN(nn.Module):
                 h_final[i, :, :] = h
         return h_final
 
-    def one_step(self, x, h):
+    def one_step(self, x, h=None):
         """
 
         Parameters
@@ -86,6 +86,8 @@ class RNN(nn.Module):
         -------
         h_t+1 : (batch,hidden_size)
         """
+        if not h:
+            h = torch.zeros(x.size(0), self.hidden_size)
         # ic(x.size())
         # ic(h.size())
         # ic(self.f_x(x).size())
@@ -104,7 +106,6 @@ class LSTM(RNN):
 class GRU(nn.Module):
     ...
     #  TODO:  Implémenter un GRU
-
 
 
 #  TODO:  Reprenez la boucle d'apprentissage, en utilisant des embeddings plutôt que du one-hot

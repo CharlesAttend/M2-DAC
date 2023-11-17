@@ -45,16 +45,17 @@ loss_train_per_epoch = []
 loss_test_per_epoch = []
 accuracy_train = torchmetrics.classification.Accuracy(
     task="multiclass", num_classes=CLASSES
-)
+).to(device)
 accuracy_test = torchmetrics.classification.Accuracy(
     task="multiclass", num_classes=CLASSES
-)
+).to(device)
 optimizer = torch.optim.Adam(model.parameters(), lr=lr)
 for epoch in tqdm(range(total_epoch)):
     epoch_loss = 0
     epoch_loss_test = 0
     for x, y in data_train:
         x = x.to(device)
+        y = y.to(device)
         # ic(x.size())
         # ic(y.size())
         optimizer.zero_grad()
@@ -77,6 +78,7 @@ for epoch in tqdm(range(total_epoch)):
     with torch.no_grad():
         for x, y in data_test:
             x = x.to(device)
+            y = y.to(device)
             h = torch.zeros(
                 (x.size(0), HIDDEN_SIZE), device=device
             )  # (batch_size, hidden_size)
