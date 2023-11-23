@@ -1,0 +1,68 @@
+\documentclass{report}
+\usepackage[utf8]{inputenc}
+\usepackage[a4paper, margin=2.5cm]{geometry}
+\usepackage{graphicx}
+% \usepackage[french]{babel}
+
+% \usepackage[default,scale=0.95]{opensans}
+\usepackage[T1]{fontenc}
+\usepackage{amssymb} %math
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{systeme}
+\usepackage{bbm}
+\usepackage{hyperref}
+\usepackage{tkz-tab}
+\usepackage{latex_sty/Boites}
+
+\usepackage{tikz}
+\usepackage{xkeyval}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    pdftitle={Optimisation Stochastique},
+    % pdfpagemode=FullScreen,
+    }
+\urlstyle{same} %\href{url}{Text}
+
+% \usepackage{mdframed}
+\theoremstyle{plain} % default
+% \newtheorem{thm}{Théorème}[section]
+% \newtheorem{lem}[thm]{Lemme}
+% \newtheorem{prop}[thm]{Proposition}
+\newboxedtheorem[boxcolor=red, background=red!5, titlebackground=red!20, titleboxcolor = black]{thm}{Théorème}{thcounter}
+\newboxedtheorem[boxcolor=red, background=red!5, titlebackground=red!20, titleboxcolor = black]{prop}{Proposition}{thcounter}
+\newboxedtheorem[boxcolor=red, background=red!5, titlebackground=red!20, titleboxcolor = black]{lem}{Lemme}{thcounter}
+\newtheorem*{cor}{Corollaire}
+%\newtheorem*{KL}{Klein’s Lemma}
+
+\theoremstyle{definition}
+% \newtheorem{defn}{Définition}[section]
+\newboxedtheorem[boxcolor=red, background=red!5, titlebackground=red!20, titleboxcolor = black]{defn}{Définition}{thcounter}
+% \newtheorem{exmp}{Exemple}[section]
+\newboxedtheorem[boxcolor=green, background=green!5, titlebackground=green!20, titleboxcolor = black]{exmp}{Exemple}{thcounter}
+% \newtheorem{xca}[exmp]{Exercise}
+
+\theoremstyle{remark}
+\newtheorem*{rem}{Remarque}
+\newtheorem*{note}{Note}
+\newtheorem{case}{Case}
+
+
+
+
+\title{Optimisation Stochastique}
+\author{Charles Vin}
+\date{S1-2023}
+
+\begin{document}
+\maketitle
+
+\include{part_poly/cours1}
+\include{part_poly/cours2}
+\include{part_poly/cours3}
+
+\end{document}
