@@ -1,0 +1,143 @@
+\chapter{Stochastic Gradient Algorithms (SGD)}
+
+\[
+    \min _{\theta \in \mathbb{R}^d} F(\theta )
+.\]
+
+At any step, assume that we have access to a "random" direction / gradient : $ g_t : \mathbb{R}^d \to \mathbb{R}^d $ 
+
+
+$ \forall t \geq 0 $, $ \theta_{t+1} = \theta_{t} - \gamma_t g_{t+1}(\theta_{t}) $ and $\gamma_t =$ (learning rate) / (step size)
+
+Think of $ g_t $ as a noisy estimate of the "true" gradient, we would like to use instead 
+
+\begin{figure}[htbp]
+    \centering
+    
+    \caption{Noisy gradient descent}
+\end{figure}
+
+\textbf{Hypothesis}: [Unbiased estimates of the gradient]
+\[
+    \mathbb{E}[g_t(\theta _{t-1}) | \theta _{t-1}] = \nabla F(\theta _{t-1})
+.\]
+
+$\theta_{t-1}$ encapsulates all the randomness due to> the past iterations, so we only require "fresh" randomness at time $t$. \\
+
+\section{SDG in machine learning}
+
+There are 2 ways to use SGB in supervised learning 
+
+\subsection{Empirical risk minimization}
+If $F(\theta) = \frac{1}{n} \sum^n_{i=1}l(Y_i, f_\theta(X_i))$
+then at iteration $ t $, we can choose uniformly at random $ i(t) \approx \mathcal{U} ( [1, n ]) $ 
+and define $g_t$ as the gradient of $l_{i(t)} : \theta \mapsto l(Y_{i(t)}, f_{\theta}(X_{i(t)}))$
+A full GD would use $ \nabla F(\theta ) = \frac{1}{n} \sum_{i=1}^{n} \nabla l_i (\theta ), g_t := \nabla l_{i(t)} (\theta ) $  for $ l_i (\theta ) = l(Y_i, f_\theta (X_i)) $, i.e. the $ n $ gradients of the terms composing the sum. SGD relies on a "moisy" estimate of $ \nabla F(\theta ) $ by selecting at random only one term $ \nabla l_{i(t)} $ 
+
+Conditionnally to the training data, we aim at minimizing a deterministic fonctions using a stochastic algo to help on complexity issues. Indeed, the randomness comes from the random indeces $(i_(t))_t$. \\
+There exist minibatch versions where at each iteration the gradient is estimated over a random subset of indices \\
+\begin{itemize}
+    \item reducing the variance of the estimated gradient
+    \item increasing the running time
+\end{itemize}
+The theoritical analysis focuses on the CV to the ERM $\theta^{\star}$ :
+\begin{align*}
+    I &\sim \mathcal{U}([1; n]) \\
+    \mathbb{E}[g_t(\theta) | \theta ] &= \mathbb{E}[ \nabla l_I (\theta ) | \theta ] = \sum_{i=1}^{n}\mathbb{P}(I = i) \nabla l_i (\theta ) \\
+    &= \frac{1}{n} \sum_{i=1}^{n} \nabla l_i (\theta ) = \nabla F(\theta )
+\end{align*}
+
+We can select several times the same $\nabla l_i$ even within $n$ iterations sampling without replacement can be possible but its analysis is more involved (need to handle the bias) see Nagaraj et al 2019
+
+\subsection{Expected risk minimization}
+
+\[
+    F(\theta ) = \mathbb{E}[l(Y, f_\theta (X))]
+.\]
+expected (non-observable) risk, then at each iteration $ t $, we can take $ (X_t, Y_t) $ and define $ g_t $ as the gradient of $ \theta \mapsto l(Y_t, f_\theta (X_t)) $ 
+By swapping the order of expectation and differentiation, we can get unbiased estimators
+
+\[
+    \mathbb{E}_{(X_t,Y_t)}[\nabla_\theta l(Y_t, f_{\theta}(X_t)) ] = \nabla_{\theta} \mathbb{E}[l(Y_t, f_{\theta}(X_t))]_t
+.\]
+
+Sanity-check for linear regression : 
+\[
+    F(\theta ) = \mathbb{E} [ (Y - \left\langle X, \theta  \right\rangle )^2 ] = \mathbb{E}[ f(\theta )]
+.\]
+\[
+    \nabla f(\theta ) = 2 ( \left\langle X, \theta  \right\rangle ) X
+.\]
+\[
+    \left\| \nabla f(\theta ) \right\|  \leq 2 \left| \left\langle X, \theta  \right\rangle  - Y \right|  \left\| X \right\| 
+.\]
+
+
+ If $\forall \theta $, $\mathbb{E}[\left| \left\langle X, \theta \right\rangle  \right| \left\| X \right\| ] < + \infty $, the $\nabla _{\theta } F(\theta) = \nabla_{\theta} \mathbb{E}[(Y - \left\langle X, \theta \right\rangle )^2] = \mathbb{E}[\nabla _{\theta}f(\theta)]$
+
+Note that to preserve the unbiasedness, only a \textbf{signle pass} is allowed. \\
+Here, we directly minimize the generalization risk. As we perfom only one pass, with $ n $ data, we can run only $ n $ SDG iteration. As one can hope that $ (\theta _t)_t $ converge to $ \omega \theta ^\star  $ a minimizer of the expected risk.
+
+In practice, multiple passes are used (and theorelical guarantees fall)
+
+\begin{note}[\textbf{warning}]
+    SGD is not a descent method : the function values often go up but in \textbf{expectaiton} they go down
+\end{note}
+
+In what follows we will handle both situations with a unified view.
+
+\subsection{First impressions on SGD}
+Set for $ i \geq 1, F_i (\theta ) = \frac{1}{2}(\theta  - a_i)^2, a_i \sim \mathcal{U}([-1, 1]) $.\\
+This means that when the data come in a streaming fashion, our goal is to minimize $ \theta \mapsto ^F \mathbb{E} [ \frac{1}{2} (\theta  - a) ^2] $ that we know to be optimal at $ \theta ^\star = \mathbb{E}[a] $. \\
+Without knowing the distribution of $ (a_i)_i $ one can use SGD strategy to estimate $ \theta ^\star = \mathbb{E}[a] $ 
+\begin{align*}
+    \forall t \geq 0&, \begin{cases}
+        \theta _t = \theta _{t-1} - \gamma _t g_t (\theta _[t-1]) \\
+        \theta _0 = cst
+    \end{cases} \\
+    g_t(\theta _{t-1} &= \theta _{t-1} - a_t) \\
+    \theta _t &= (1 - \gamma _t) \theta _{t-1} + \gamma _t a_t 
+\end{align*}
+
+If we choose $\gamma_t = \gamma$ (cst),
+
+\[
+    \theta _t = ... = (1-\gamma)^t \theta_0 + \gamma \sum_{k=0}^{t}(1-\gamma)^k a_{t-k}
+.\]
+
+The first term shrinks to $ 0 $ (we forget the initial condition) if $ \gamma \leq 1 (= 1/L), L = 1 $ 
+\begin{align*}
+    \nabla F (\theta ) &= \mathbb{E}[ \theta - a] \\
+        &= \theta (\text{which is 1-Lip})
+\end{align*}
+
+Note that $\forall \theta $
+\begin{align*}
+    \mathbb{E}[(g_t (\theta ) -\nabla F(\theta ))^2] 
+        &= \mathbb{E}[ ( \theta - a - \theta )^2 ] \\
+        &= \mathbb{E}[a^2], a \sim \mathcal{U}([-1, 1]) \\
+        &= 1/3 (2^2/12)
+\end{align*}
+
+Our gradients enjoy a uniform bound on their variance.
+
+If we continue the calculation 
+\begin{align*}
+    F(\theta ^\star ) 
+        &= F(0) = \mathbb{E}[\frac{1}{2} a^2 ] = \frac{1}{6} \\
+    \mathbb{E}[F(\theta _t) - F(\theta ^{\star })] 
+        &= \mathbb{E}[ \frac{1}{2} (\theta _t - a)^2 ] - \frac{1}{6} \\
+        &= \frac{1}{2} \mathbb{E}[\theta _t ^2]
+\end{align*}
+
+$\mathbb{E}[\theta _t^2] = Var((1-\gamma )^t \theta_0 + \gamma \sum_{k=1}^{t}(1-\gamma)^k a_{t-k}) + (\mathbb{E}[\theta _t])^2$
+\begin{align*}
+    &= \frac{1}{3} \gamma  \frac{1 - ( 1 - \gamma )^{2 (t+1)} }{1 - ( 1 - \gamma )^2 } + ( 1 - \gamma )^{2t} \theta _0^L \\
+    &\to _{t \to +\infty} \begin{cases}
+        \frac{1}{3} \gamma  &\text{ if } \gamma = 1 \\
+        \frac{1}{3} \frac{\gamma }{2 \gamma - \gamma ^2} &\text{ if } 0 < \gamma < 1 \\
+    \end{cases} 
+\end{align*}
+WHICH DOES NOT TEND TO $ 0 $ WHEN $t \to + \infty $ \\
+Obviously the variance $ Var [ \nabla F_1(\theta ^*)] = 1/3 $  at the solution is a big problem.
+Having a vanishing step size could help ! What about Polyak-Reppert averaging ? 

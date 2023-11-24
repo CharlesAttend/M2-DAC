@@ -423,26 +423,21 @@ We can show that $ \epsilon (t) $ is decreasing (this is a Lyapunov energy)
     Cool : Optimal
 \end{thm}
 
-We can take other choices for decreasing $(\alpha _k)_k, the historical choice is$
+We can take other choices for decreasing $(\alpha _k)_k$, the historical choice is
 
 
 \[
-    \alpha _k = \frac{t_k - 1 }{t_k} \text{ with } \begin{cases}
+    \text(Friction : )(1 - \alpha _k) = \frac{t_k - 1 }{t_{k+1}} \text{ with } \begin{cases}
         t_1 = 1 \\
-        t_{k+1} = \frac{1 + \sqrt[]{4 t _k ^2}}{2} \\
+        t_{k+1} = \frac{1 + \sqrt[]{1 + 4 t _k ^2}}{2} \\
     \end{cases} 
 .\]
 CCL : Essayer les deux méthodes : speed upped or not 
 
-\begin{table}[!ht]
+\begin{figure}[htbp]
     \centering
-    \begin{tabular}{|l|l|l|l|l|l|}
-    \hline
-        ~ & GD & Nesterov $\alpha_k = \alpha / k $ & Nesterov $\alpha_k = \alpha$ & HB $\alpha_k = \alpha / k $ & HB $ \alpha_k = \alpha $ \\ \hline
-        CVX + Smooth & $ O(1/k) $  & Good $ O(1/k^2) $ & X $O(1/k)$ & ~ & X $ O(1/K) $ \\ \hline
-        Smooth + strongly cvx & $ O( (\frac{1 + \sqrt{\kappa} }{1+\sqrt{\kappa}})^k ) $ & Good but not optimal $ O((1 - \sqrt{\kappa})) $ & ~ & ~ & May nor CV (Gadhimi), (Dieulevent) \\ \hline
-        + quadratic & $ O( (\frac{1 + \sqrt{\kappa}}{1+\sqrt{\kappa}})^k ) $ & X $ O(1/k^3) $ (Boyd Su Candes) & ~ & ~ & $ O( (\frac{1 + \sqrt{\kappa}}{1+\sqrt{\kappa}})^k ) $ \\ \hline
-        Quadratic but not strongly cvx & X : Linear rate on Ker Otherwise $O(1/K)$ & $ O(1/k^2) $ &   & $ O(1/k^2)$ & ~ \\ \hline
-    \end{tabular}
-\end{table}
-ouin ouin le tableau latex c'est trop chiant
+    \includegraphics[width=.95\textwidth]{figs/table_conv_speed.jpg}
+    \caption{Tableau de la vitesse de convergence des algos}
+\end{figure}
+
+CCL : vanishing friction helps on the worst fcts
