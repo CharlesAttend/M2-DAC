@@ -56,6 +56,16 @@ Those are much better!
 
 \section{Class Visualization}
 \paragraph*{$ \bigstar $ Show and interpret the obtained results.}
+% Oui ça marche mdrrrr, maybe expliquer le principe 
+
 \paragraph*{Try to vary the number of iterations and the learning rate as well as the regularization weight.}
+% With vs without régularisaztion : C'est pas mal en faite sinon ça devient vite n'importe quoi avec des gross saturation de pixel sur les grosse valeur. ça semble vraiment beaucoup mieux de réguler beaucoup 
+% Epoch :! il faut s'assurer un bon nombre d'époch pour obtenir de plus beau résultats 
+
 \paragraph*{Try to use an image from ImageNet as the source image instead of a random image (parameter init\_img). You can use the real class as the target class. Comment on the interest of doing this.}
+% Donner un image de départ fonctionne bien 
+% On peut transformer les objets en d'autre (balo de paille into escargot)
+% Ca donne un point de départ du gradient ce qu'il fait qu'il s'éparpille pas partout 
+
 \paragraph*{\textbf{Bonus:} Test with another network, VGG16, for example, and comment on the results.}
+% Parfois plus délicat de faire des bonne visualization, mais le résultat est clairement plus clair, on voit que le réseau est plus performant que l'autre 
