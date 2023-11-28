@@ -87,15 +87,38 @@ Comme je connais vraiment rien en équa dif je vais sum up une vidéo. \begin{it
 
 \section{Scaling at initialization}
 \subsection{Model and assumptions}
-\subsection{Probabilistic setting at initialization }
+\subsubsection{Probabilistic setting at initialization }
 \begin{itemize}
     \item Les paramètre du modèle est une collection iid de variable aléatoire $\rightarrow$ donc les états cachés $ h_0, \dots, h_L $ aussi (mais il sont martingale eux mais osef pour l'instant)
     \item La distribution initial des paramèter n'est pas dépendante de $ L $, donc indépendante de l'architecture du modèle considéré. Pratique !
     \item 
 \end{itemize}
 
-\subsection{Assumptions}
+\subsubsection{Assumptions}
 \begin{itemize}
     \item $ s^2 $ sub-Gaussian : $ \forall \lambda \in \mathbb{R}, \mathbb{E}(\lambda X) \leq  \exp (\frac{\lambda ^2 s^2 }{2})$  a sub-Gaussian distribution is a probability distribution with strong tail decay.
 \end{itemize}
+
+\begin{prop}[]
+    les resnet du tableau vérifie $ A_1 $ et $ A_2 $ 
+\end{prop}
+
+\subsection{Probabilistic bounds on the norm of the hidden states}
+Part3 du corrolaire  : Coeur du sujet, on vas regarder le comportement de $ \left\| h_L - h_0 \right\| / \left\| h_0 \right\|  $ en fonction de $ L \alpha _L ^2 $. Seul $ \beta = 1/2 $ donne une distribution non dégénéré à l'initialisation
+\begin{itemize}
+    \item $ L \alpha _L ^2 \ll 1 $  identity function
+    \item $ L \alpha _L ^2 \gg 1 $  explosion du gradient avec forte proba
+    \item $ L \alpha _L ^2 \approx 1 $, $ h_L $ fluctue autour de $ h_0 $ avec borne
+\end{itemize}
+Illustration en figure 1.
+
+Figure 2 
+
+
+
+
+
+
+
+
 \end{document}

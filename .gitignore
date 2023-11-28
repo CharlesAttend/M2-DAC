@@ -32,5 +32,5 @@ Fashion-MNIST/FashionMNIST/raw/
 imagenet_classes.pkl
 wandb
 texliveonfly.py
-
+*.npz
 XAI/TME/TME8/data/
