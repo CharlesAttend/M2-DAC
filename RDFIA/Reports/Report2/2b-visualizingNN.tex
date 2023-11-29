@@ -56,16 +56,140 @@ Those are much better!
 
 \section{Class Visualization}
 \paragraph*{$ \bigstar $ Show and interpret the obtained results.}
-% Oui ça marche mdrrrr, maybe expliquer le principe 
+
+\begin{figure}
+    \centering
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        % \includegraphics[width=.4\linewidth]{figs/2b/}
+        \caption{Last iteration}
+        \label{fig:class_viz_gorilla:png}
+    \end{subfigure}%
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        % \includemedia[width=.4\linewidth, height=.4\linewidth]{}{figs/2b/Gorilla_animated_500_regpp_blur_last_frame.gif} % Met tellement de temps à compiler
+        \caption{GIF animation (use Adobe Acrobat for viewing or see \textit{Gorilla\_animated\_500\_regpp\_blur.gif})}
+        \label{fig:class_viz_gorilla:gif}
+    \end{subfigure}
+
+    \caption{Class visualization: started from random noise, maximising the score from the gorilla class}
+    \label{fig:class_viz_gorilla}
+\end{figure}
+
+
 
 \paragraph*{Try to vary the number of iterations and the learning rate as well as the regularization weight.}
-% With vs without régularisaztion : C'est pas mal en faite sinon ça devient vite n'importe quoi avec des gross saturation de pixel sur les grosse valeur. ça semble vraiment beaucoup mieux de réguler beaucoup 
-% Epoch :! il faut s'assurer un bon nombre d'époch pour obtenir de plus beau résultats 
+Looking at the gif in \Cref*{fig:class_viz_gorilla:gif}, we can see the bluring occuring every 10 steps. 
+To make better class visualization, regulation seem to be an important factor. In \Cref*{fig:class_viz_reg}, we tried disabling bluring the image and weight regularization on VGG16. We changed model for obtaining better visuals but all experiments were done on SqueezeNet and VGG16 afterward. Non regulated images seem to be more saturated everywhere, preventing to clearly see the represented class. We suspect that without regularization, the gradient saturate \textbf{everypixel} that could ever had participate to a correct gorilla prediction. By promoting pixel which the model has already engaged the transformation and keeping this direction,regularization permit the arrival of real class image.
+% Pas giga clair maybe 
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[t]{.33\textwidth}
+        \centering
+        % \includegraphics[width=\linewidth]{figs/2b/SqueezeNet/SqueezeNet_bird_animated_reg++_last_frame.png}
+        \caption{With a lot of regularization}
+        \label{fig:class_viz_reg:sub1}
+    \end{subfigure}%
+    \begin{subfigure}[t]{.33\textwidth}
+        \centering
+        % \includegraphics[width=\linewidth]{figs/2b/SqueezeNet_bird_animated_last_frame.png}
+        \caption{With regularization}
+        \label{fig:class_viz_reg:sub2}
+    \end{subfigure}%
+    \begin{subfigure}[t]{.33\textwidth}
+        \centering
+        % \includegraphics[width=\linewidth]{figs/2b/SqueezeNet_bird_animated_no_reg_last_frame.png}
+        \caption{Without regularization}
+        \label{fig:class_viz_reg:sub3}
+    \end{subfigure}
+
+    \caption{Comparaison of the bee eater class visualization using VGG16 with or without regularization (blurring and weight regularization) and starting from a base image of the class.}
+    \label{fig:class_viz_reg}
+\end{figure}
+
+About the number of epoch, our experiment show that we need to make a certain number of epoch to let the visualization converge, thus getting better images.
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[t]{.25\textwidth}
+        \centering
+        % \includegraphics[width=\linewidth]{figs/2b/SqueezeNet/SqueezeNet_bird_animated_1000_regpp_blur_100_frame.png}
+        \caption{200 iterations}
+        \label{fig:class_viz_iter:sub1}
+    \end{subfigure}%
+    \begin{subfigure}[t]{.25\textwidth}
+        \centering
+        % \includegraphics[width=\linewidth]{figs/2b/SqueezeNet/SqueezeNet_bird_animated_1000_regpp_blur_500_frame.png}
+        \caption{500 iterations}
+        \label{fig:class_viz_iter:sub2}
+    \end{subfigure}%
+    \begin{subfigure}[t]{.25\textwidth}
+        \centering
+        % \includegraphics[width=\linewidth]{figs/2b/SqueezeNet/SqueezeNet_bird_animated_1000_regpp_blur_last_frame.png}
+        \caption{1000 iterations}
+        \label{fig:class_viz_iter:sub3}
+    \end{subfigure}%
+    \begin{subfigure}[t]{.25\textwidth}
+        \centering
+        % \includegraphics[width=\linewidth]{figs/2b/SqueezeNet/SqueezeNet_bird_animated_1000_last_frame.png}
+        \caption{1000 iterations, no regularization}
+        \label{fig:class_viz_iter:sub4}
+    \end{subfigure}
+
+    \caption{Same image at different time. The last one is another run but without regularization.}
+    \label{fig:class_viz_iter}
+\end{figure}
 
 \paragraph*{Try to use an image from ImageNet as the source image instead of a random image (parameter init\_img). You can use the real class as the target class. Comment on the interest of doing this.}
-% Donner un image de départ fonctionne bien 
-% On peut transformer les objets en d'autre (balo de paille into escargot)
-% Ca donne un point de départ du gradient ce qu'il fait qu'il s'éparpille pas partout 
+
+Starting using an image is a good method, it give a good starting point of the gradient to create visualization and not going everywhere like when not using regularization.
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{.33\textwidth}
+        \centering
+        % \includegraphics[width=.4\linewidth]{figs/2b/SqueezeNet/SqueezeNet_bird_animated_reg++_last_frame.png}
+        \caption{Last iteration, starting from noise}
+        \label{fig:class_viz_start_image:png_noise}
+    \end{subfigure}%
+    \begin{subfigure}{.33\textwidth}
+        \centering
+        % \includegraphics[width=.4\linewidth]{figs/2b/SqueezeNet/SqueezeNet_bird_animated_same_init_img_reg++_last_frame.png}
+        \caption{Last iteration, starting from same class}
+        \label{fig:class_viz_start_image:png}
+    \end{subfigure}%
+    \begin{subfigure}{.33\textwidth}
+        \centering
+        % \includemedia[width=.4\linewidth, height=.4\linewidth]{}{figs/2b/SqueezeNet/SqueezeNet_bird_animated_same_init_img_reg++.gif} % Met tellement de temps à compiler
+        \caption{GIF animation, starting from same class (use Adobe Acrobat for viewing or see \textit{SqueezeNet\_bird\_animated\_same\_init\_img\_reg++.gif})}
+        \label{fig:class_viz_start_image:gif}
+    \end{subfigure}
+
+    \caption{Class visualization: started from a bee eater image to maximising the score for the bee eater class. All with a strong regularization.}
+    \label{fig:class_viz_start_image}
+\end{figure}
+
+
+It pretty funny to create some objects from other objects. In \Cref*{fig:class_viz_start_image_dif} we started from a image of hays to do a snail class visualization.
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        % \includegraphics[width=.4\linewidth]{figs/2b/SqueezeNet/SqueezeNet_snail_animated_init_img_reg++_last_frame.png}
+        \caption{Last iteration}
+        \label{fig:class_viz_start_image_dif:png}
+    \end{subfigure}%
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        % \includemedia[width=.4\linewidth, height=.4\linewidth]{}{figs/2b/SqueezeNet/SqueezeNet_snail_animated_init_img_reg++.gif} % Met tellement de temps à compiler
+        \caption{GIF animation (use Adobe Acrobat for viewing or see \textit{.gif})}
+        \label{fig:class_viz_start_image_dif:gif}
+    \end{subfigure}
+
+    \caption{Class visualization: started from a hay image to maximising the score for the snail class. All with a strong regularization.}
+    \label{fig:class_viz_start_image_dif}
+\end{figure}
 
 \paragraph*{\textbf{Bonus:} Test with another network, VGG16, for example, and comment on the results.}
+We did the same experiment using VGG16 this time. Visualization are much better because of the overall better performance of VGG16. % Maybe ref la figure saliency map avec VGG16 où il se trompe pas
+
+
 % Parfois plus délicat de faire des bonne visualization, mais le résultat est clairement plus clair, on voit que le réseau est plus performant que l'autre 
