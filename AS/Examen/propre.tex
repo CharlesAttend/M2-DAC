@@ -1,0 +1,122 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[a4paper, margin=2.5cm]{geometry}
+\usepackage{graphicx}
+
+\usepackage[default,scale=0.95]{opensans}
+\usepackage[T1]{fontenc}
+\usepackage{amssymb} %math
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{systeme}
+
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    pdftitle={Overleaf Example},
+    % pdfpagemode=FullScreen,
+    }
+\urlstyle{same} %\href{url}{Text}
+
+\theoremstyle{plain}% default
+\newtheorem{thm}{Théorème}[section]
+\newtheorem{lem}[thm]{Lemme}
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem*{cor}{Corollaire}
+%\newtheorem*{KL}{Klein’s Lemma}
+
+\theoremstyle{definition}
+\newtheorem{defn}{Définition}[section]
+\newtheorem{exmp}{Exemple}[section]
+% \newtheorem{xca}[exmp]{Exercise}
+
+\theoremstyle{remark}
+\newtheorem*{rem}{Remarque}
+\newtheorem*{note}{Note}
+%\newtheorem{case}{Case}
+
+
+
+\title{Cours}
+\author{Charles Vin}
+\date{Date}
+
+\begin{document}
+For any $ 1 \leq  k \leq L  $ 
+
+\paragraph*{Assumptions 1}
+For some $ s \geq 1 $, the entries of $ \sqrt[]{d}V_k $ are symmetric i.i.d., $ s^2 $ sub-Gaussian random variable, independent of $ d $ and $ L $, with unit variance. 
+
+\paragraph*{Assumptions 2}
+For some $ C > 0 $, independent of $ d $ and $ L $, and for any $ h \in \mathbb{R}^D  $ 
+\[
+    \frac{\left\| h \right\| ^2}{2 } \leq  \mathbb{E }[ \left\|  g(h, \theta _ k ) \right\| ^2 ] \leq \left\| h \right\| ^2
+.\]
+\[
+    \mathbb{E } [\left\| g(h, \theta _k)  \right\| ^8 ]\leq C \left\| h  \right\| ^8
+.\]
+
+\paragraph*{Proposition 2}[Admited ?]  Consider a ResNet (4) such that Assumptions (A1) and (A2) are satisfied.
+If \( L\alpha_L^2 \leq 1 \), then, for any \( \delta \in (0, 1) \), with probability at least \( 1 - \delta \),
+\[
+\frac{\|h_L - h_0\|^2}{\|h_0\|^2} \leq \frac{2L\alpha_L^2}{\delta}.
+\]
+
+\paragraph*{Proposition 3}[Admited] Consider a ResNet (4) such that Assumptions (A1) and (A2) are satisfied.
+\begin{itemize}
+    \item[(i)] Assume that $d \geq 64$ and $ \alpha _L ^2 \leq  \frac{2 }{(\sqrt[]{C } s^4 + 4 \sqrt[]{C } + 16 s ^4)d}$. Then, for any $\delta \in (0, 1)$, with probability at least $1 - \delta$,
+    \[
+    \frac{\|h_L - h_0\|^2}{\|h_0\|^2} > \exp\left(\frac{3L\alpha_L^2}{8} - \sqrt{\frac{11L\alpha_L^2}{d\delta}}\right) - 1,
+    \]
+    provided that
+    \[
+    2L \exp\left(-\frac{d}{64\alpha_L^2s^2}\right) \leq \frac{\delta}{11}.
+    \]
+
+    \item[(ii)] Assume that $\alpha_L^2 \leq \frac{1}{\sqrt{C}(d + 128s^4)}$. Then, for any $\delta \in (0, 1)$, with probability at least $1 - \delta$,
+    \[
+    \frac{\|h_L - h_0\|^2}{\|h_0\|^2} < \exp\left(L\alpha_L^2 + \sqrt{\frac{5L\alpha_L^2}{d\delta}}\right) + 1.
+    \]
+\end{itemize}
+
+\begin{cor}[4]
+    Consider a ResNet (4) such that Assumptions (A1) and (A2) are satisfied, and let $\alpha_L = 1/L^\beta$, with $\beta > 0$.
+\begin{itemize}
+    \item[(i)] If $\beta > \frac{1}{2}$, then
+    \[
+    \frac{\|h_L - h_0\|}{\|h_0\|} \xrightarrow{\mathbb{P}} 0 \text{ as } L \to \infty.
+    \]
+    \item[(ii)] If $\beta < \frac{1}{2}$ and $d \geq 9$, then
+    \[
+    \frac{\|h_L - h_0\|}{\|h_0\|} \xrightarrow{\mathbb{P}} \infty \text{ as } L \to \infty.
+    \]
+    \item[(iii)] If $\beta = \frac{1}{2}$, $d \geq 64$, $L \geq \left(\frac{1}{2}\sqrt{C}s^4 + 2\sqrt{C} + 8s^4)d + 96\sqrt{C}s^4\right)$, then, for any $\delta \in (0, 1)$, with probability at least $1 - \delta$,
+    \[
+    \exp\left(\frac{3}{8} - \sqrt{\frac{22}{d\delta}}\right) - 1 < \frac{\|h_L - h_0\|^2}{\|h_0\|^2} < \exp\left(1 + \sqrt{\frac{10}{d\delta}}\right) + 1,
+    \]
+    provided that
+    \[
+    2L \exp\left(-\frac{Ld}{64s^2}\right) \leq \frac{\delta}{11}.
+    \]
+\end{itemize}
+
+\end{cor}
+\begin{proof}[Proof: ]
+    Statement ($ i $) is a consequence of Proposition 2. We have $ L \alpha _L ^2 = \frac{L}{L^{2\beta} } = L^{1 - 2 \beta } $, as $ \beta > 1/2 \Leftrightarrow 1 - 2 \beta < 0$ we have $L^{1 - 2 \beta } = \frac{1}{L^{2 \beta  -1}} \underset{L\to +\infty}{\longrightarrow} 0 $. Thus
+    \begin{align*}
+        & \frac{\|h_L - h_0\|^2}{\|h_0\|^2} \leq \frac{2L\alpha_L^2}{\delta}.
+        \overunderset{\mathbb{P}}{L\to +\infty}{\longrightarrow} 0 
+    \end{align*}
+
+    Statement ($ ii $) is a consequence of Proposition 3.
+\end{proof}
+
+
+
+
+
+
+\end{document}
