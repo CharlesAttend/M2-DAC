@@ -161,31 +161,34 @@ $ F: \mathbb{R}^d \to \mathbb{R} $ convex, diff, L-smooth (its gradient is L-Lip
 
 $ \mu \text{-strongly}$ convex, $ \mu > 0 $. 
 \begin{itemize}
-    \item convexity (\textbf{"well"} under chords) : $ F(\eta \theta + (1 - \eta ) \theta ^\prime ) \leq  \eta F(\theta ) + (1 - \eta ) F(\theta ^\prime ), \forall \theta , \theta ^\prime \frac{\mu (1 - \mu )}{2} \left\| \theta - \theta ^\prime  \right\| ^2 _2 , \forall \eta  \in 
+    \item convexity (\textbf{"well"} under chords) : $ F(\eta \theta + (1 - \eta ) \theta ^\prime ) \leq  \eta F(\theta ) + (1 - \eta ) F(\theta ^\prime ) - \frac{\eta (1 - \eta ) \mu }{2} \left\| \theta - \theta ^\prime  \right\| ^2 _2 , \forall \theta , \theta ^\prime , \forall \eta  \in 
     [0, 1] $ 
-    \item If we add diff (tangent lie \textbf{"well"} below) we have $ F(\theta ^\prime ) \geq F(\theta ) + < \nabla F(\theta ) , \theta ^\prime - \theta  > \forall \theta , \theta ^\prime + \frac{\mu }{2} \left\| \theta - \theta ^\prime  \right\|^2_2 $ 
-    \item (\textbf{"well"}increasing slopes) $ \langle \nabla F(\theta ) - \nabla F(\theta ^\prime ), \theta - \theta ^\prime \rangle \geq 0 + \mu \left\| \theta - \theta ^\prime  \right\|  $
+    \item If we add diff (tangent lie \textbf{"well"} below) we have $ F(\theta ^\prime ) \geq F(\theta ) + < \nabla F(\theta ) , \theta ^\prime - \theta  > + \frac{\mu }{2} \left\| \theta - \theta ^\prime  \right\|^2_2, \forall \theta , \theta ^\prime  $ 
+    \item (\textbf{"well"}increasing slopes) $ \langle \nabla F(\theta ) - \nabla F(\theta ^\prime ), \theta - \theta ^\prime \rangle \geq 0 + \mu \left\| \theta - \theta ^\prime  \right\| _2 ^2  $
     \item if we add $ \mathcal{C}^2 $ (curves upwards) $ \forall \theta , Hess_F (\theta ) \succeq \mu Id $ (SDP)
 \end{itemize}
-$ F $ is $ \mu \text{-strongly} $ convex $ \forall \theta _0, \theta \mapsto F(\theta ) - \frac{\mu }{2} \left\| \theta  - \theta _0 \right\|^2 _2 $ is convex. \\
-L-Smooth : $ \forall \theta , \theta ^\prime, \left\| \nabla F(\theta ) - \nabla F(\theta ^\prime ) \right\| \leq  L \left\| \theta - \theta ^\prime  \right\| $ 
+Other definition:
+\begin{itemize}
+    \item $ F $ is $ \mu \text{-strongly} $ convex $ \forall \theta _0, \theta \mapsto F(\theta ) - \frac{\mu }{2} \left\| \theta  - \theta _0 \right\|^2 _2 $ is convex.
+    \item L-Smooth : $ \forall \theta , \theta ^\prime, \left\| \nabla F(\theta ) - \nabla F(\theta ^\prime ) \right\| \leq  L \left\| \theta - \theta ^\prime  \right\| $ 
+\end{itemize}
 
 \begin{lem}[Descent lemma]
-    Assume that $ F $  is L-Smooth. Therefore $ \forall \theta , \theta ^\prime \in  $ dommain of f 
+    Assume that $ F $  is L-Smooth. Therefore $ \forall \theta , \theta ^\prime \in  $ domain of $ F $ 
     \[
         F(\theta ^\prime ) \leq  F(\theta ) + \langle \nabla F(\theta ) , \theta ^\prime  - \theta \rangle + \frac{L}{2} \left\| \theta ^\prime  - \theta  \right\| 
     .\]
-    \begin{proof}[Preuve : ]
-        \begin{align*}
-            F (\theta ^\prime ) 
-                &= F(\theta ) + \int_{0}^{1} < \nabla F(\theta  + t(\theta ^\prime - \theta )), \theta ^\prime - \theta > dt \\
-                &= F(\theta ) \mathbf{+} < \nabla F(\theta ), \theta ^\prime  - \theta > + \int_{0}^{1} < \nabla F(\theta  + t(\theta ^\prime - \theta )) \mathbf{-} \nabla F(\theta ), \theta ^\prime  - \theta > dt \\
-                &\leq F(\theta ) \mathbf{+} \langle \nabla F(\theta ), \theta ^\prime  - \theta \rangle + \int_{0}^{1} \left\| \nabla F(\theta + t(\theta ^\prime  - \theta )) - \nabla F(\theta ) \right\| \left\| \theta  ^\prime - \theta  \right\| dt \\
-                &\leq F(\theta ) \mathbf{+} \langle \nabla F(\theta ), \theta ^\prime  - \theta \rangle + \int_{0}^{1} t L \left\| \theta ^\prime  - \theta  \right\|^2 dt \\
-                &\leq F(\theta ) \mathbf{+} \langle \nabla F(\theta ), \theta ^\prime  - \theta \rangle + \frac{1}{2} L \left\| \theta  ^\prime  - \theta  \right\| ^2 _2
-        \end{align*}
-    \end{proof}
 \end{lem}
+\begin{proof}[Preuve : ]
+    \begin{align*}
+        F (\theta ^\prime ) 
+            &= F(\theta ) + \int_{0}^{1} < \nabla F(\theta  + t(\theta ^\prime - \theta )), \theta ^\prime - \theta > dt \\
+            &= F(\theta ) \mathbf{+} < \nabla F(\theta ), \theta ^\prime  - \theta > + \int_{0}^{1} < \nabla F(\theta  + t(\theta ^\prime - \theta )) \mathbf{-} \nabla F(\theta ), \theta ^\prime  - \theta > dt \\
+            &\leq F(\theta ) \mathbf{+} \langle \nabla F(\theta ), \theta ^\prime  - \theta \rangle + \int_{0}^{1} \left\| \nabla F(\theta + t(\theta ^\prime  - \theta )) - \nabla F(\theta ) \right\| \left\| \theta  ^\prime - \theta  \right\| dt \\
+            &\leq F(\theta ) \mathbf{+} \langle \nabla F(\theta ), \theta ^\prime  - \theta \rangle + \int_{0}^{1} t L \left\| \theta ^\prime  - \theta  \right\|^2 dt \\
+            &\leq F(\theta ) \mathbf{+} \langle \nabla F(\theta ), \theta ^\prime  - \theta \rangle + \frac{1}{2} L \left\| \theta  ^\prime  - \theta  \right\| ^2 _2
+    \end{align*}
+\end{proof}
 
 \paragraph*{Consequence of this quadratics upper bound }
 
@@ -331,10 +334,10 @@ Indeed $ \frac{\partial (F \circ \theta )}{\partial t}(t) = \langle \nabla F(\th
     \begin{align*}
         \left\| \theta _{t+1} - \theta ^\star  \right\| ^2 
             &= \left\| \theta _t - \theta ^\star  \right\| ^2 - 2 \gamma  \langle \nabla F(\theta _t), \theta _t - \theta ^\star \rangle + \gamma  ^2 \left\| \nabla F(\theta _t) \right\| ^2 \\
-            &\geq  \left\| \theta _t - \theta ^\star  \right\| ^2 - 2 \gamma ( 1 - \frac{\gamma L }{2}) \langle \nabla F(\theta -t) , \theta _t - \theta ^\star \rangle  \\
+            &\geq  \left\| \theta _t - \theta ^\star  \right\| ^2 - 2 \gamma ( 1 - \frac{\gamma L }{2}) \langle \nabla F(\theta _t) , \theta _t - \theta ^\star \rangle  \\
             &\Rightarrow 2 \gamma (1 - \frac{\gamma L}{2}) \langle \nabla F(\theta _t) , \theta _t - \theta ^\star \rangle \leq  \left\| \theta _{t+1} - \theta ^\star  \right\| ^2 - \left\| \theta _t - \theta ^\star  \right\| ^2  \\
             &\Rightarrow 2 \gamma (1 - \frac{\gamma L }{2}) (F(\theta _t) - F(\theta ^\star )) \leq  \left\| \theta _{t+1} - \theta ^\star  \right\| ^2 - \left\| \theta _t - \theta ^\star  \right\| ^2  \\
-        F(\theta _t) - F^\star 
+        F(\theta _t) - F(\theta ^\star )
             &\leq \frac{1}{T}\sum_{t=1}^{T} F(\theta _t) - F(\theta ^\star ) \\
             &\leq \frac{\left\| \theta _0 - \theta ^\star  \right\| ^2}{ 2 \gamma (1 - \frac{\gamma L}{2}) T}
     \end{align*}

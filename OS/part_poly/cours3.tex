@@ -31,7 +31,7 @@ On regarde \begin{itemize}
 \end{thm}
 
 \begin{thm}[]
-    If $ F $ is L-Smooth, diff and $ \mu  $ - strongly convexe, then for all step size $ \gamma \leq 1/L $ 
+    If $ F $ is L-Smooth, diff and $ \mu  $ - strongly convex, then for all step size $ \gamma \leq 1/L $ 
     \begin{align*}
         \left\| \theta _T - \theta ^\star  \right\| ^2 
             &\leq (1 - \gamma \mu ) ^T \left\| \theta _0 - \theta ^\star  \right\| ^2 \\
@@ -41,7 +41,7 @@ On regarde \begin{itemize}
 
 \begin{note}
     \begin{enumerate}
-        \item The algorithm is the same so the CV rate is improved only by properties of F. In such a casen the rate is said to be linear.
+        \item The algorithm is the same so the CV rate is improved only by properties of F. In such a case the rate is said to be linear.
         \item CV rate on the iterates (!!) and not only on the objective rate 
         \begin{align*}
             F(\theta _T) - F(\theta ^\star ) 
@@ -53,21 +53,24 @@ On regarde \begin{itemize}
             \frac{\mu }{2} \left\| \theta _T - \theta ^\star  \right\| ^2 \leq_{\text{strong cvxty}}  F(\theta _T) - F(\theta ^\star ) \leq  + \frac{L}{2} \left\| \theta _T  - \theta ^\star \right\|
         .\]
         \item Choice of $\gamma$ : the largest possible.
-        \item $\mu \leq L$. ($\mu = L$ iff $F(\theta)= \dfrac{L}{2}\left\| \theta - \theta ^ {\star} \right\| $)
+        \item $\mu \leq L$. ($\mu = L$ if $F(\theta)= \dfrac{L}{2}\left\| \theta - \theta ^ {\star} \right\| $)
     \end{enumerate}
 
-    $\kappa = \dfrac{\mu}{L}$ is called the condition number of F. \\
-    $\kappa << 1$ "Bad conditioning"
-    \begin{figure}[!h]
+    So : \begin{itemize}
+        \item $\kappa = \dfrac{\mu}{L}$ is called the condition number of F.
+        \item $\kappa << 1$ "Bad conditioning"
+        \item $\kappa \simeq 1$ "good conditioning"
+    \end{itemize}
+
+    \begin{figure}[!htbp]
         \centering
-        \includegraphics[width=.75\textwidth]{figs/bad_kappa.jpg}
+        \includegraphics[width=.5\textwidth]{figs/bad_kappa.jpg}
         \caption{With $ \kappa \ll 1 $ "bad conditioning" }
     \end{figure}
-
-    $\kappa \simeq 1$ "good conditioning"
-    \begin{figure}[!h]
+    
+    \begin{figure}[!htbp]
         \centering
-        \includegraphics[width=.75\textwidth]{figs/good_kappa.jpg}
+        \includegraphics[width=.5\textwidth]{figs/good_kappa.jpg}
         \caption{With $ \kappa \approx 1 $ "good conditioning" }
     \end{figure}
 
@@ -78,20 +81,20 @@ On regarde \begin{itemize}
                 &= \left\| \theta _t - \theta ^\star  \right\| ^2 - 2 \gamma \left\langle \nabla F (\theta _t), \theta _t - \theta ^\star  \right\rangle + \gamma ^2 \left\| \nabla F(\theta _t) \right\| ^2 \\
                 &= \left\| \theta _t - \theta ^\star  \right\| ^2 - 2 \gamma \left\langle \nabla F (\theta _t), \theta ^\star - \theta _t \right\rangle + \gamma ^2 \left\| \nabla F(\theta _t) \right\| ^2 \\
         \end{align*}
-        By $ \mu  $ -strong convexity, we got 
+        By $ \mu  $-strong convexity, we got 
         \begin{align*}
             &F(\theta ^\star ) \geq F(\theta _t) + \left\langle \nabla F(\theta _t) , \theta ^\star - \theta _t  \right\rangle + \frac{\mu }{2}\left\| \theta ^\star - \theta _t \right\| ^2 \\
             & \Rightarrow \left\langle \nabla F(\theta _t) , \theta ^\star - \theta _t \right\rangle \leq F(\theta ^\star ) - F(\theta _t) - \frac{\mu }{2}\left\| \theta ^\star -  \theta _t \right\| ^2
         \end{align*}
         
-        Therefore $\left\| \theta_{t+1} - \theta^{\star }  \right\|^2 \leq \left\| \theta_t - \theta^{\star }\right\|^2 - 2 \gamma (F(\theta_t) - F(\theta ^{\star }) + \dfrac{\mu}{2} \left\| \theta ^{\star } - theta_t \right\|^2 ) + \gamma ^2 \left\| \nabla F(\theta_t ) \right\|^2    $
+        Therefore $\left\| \theta_{t+1} - \theta^{\star }  \right\|^2 \leq \left\| \theta_t - \theta^{\star }\right\|^2 - 2 \gamma (F(\theta_t) - F(\theta ^{\star }) + \dfrac{\mu}{2} \left\| \theta ^{\star } - \theta_t \right\|^2 ) + \gamma ^2 \left\| \nabla F(\theta_t ) \right\|^2    $
 
         Beside, by L-smoothness, we get 
         \begin{align*}
             F(\theta _{t+1}) - F(\theta _t) 
                 &= F(\theta _t - \gamma \nabla F(\theta _t)) - F(\theta _t) \\
-                &= [F(\theta _t \tau \nabla F(\theta _t))]^\gamma _{\tau = 0} \\
-                &= -\int_{0}^{\gamma } \left\langle \nabla F(\theta _t), \nabla F(\theta _t - \tau \nabla F(\theta _t)) \right\rangle d \tau 
+                &= [F(\theta _t - \tau \nabla F(\theta _t))]^\gamma _{\tau = 0} \\
+                &= -\int_{0}^{\gamma } \left\langle \nabla F(\theta _t), \nabla F(\theta _t - \tau \nabla F(\theta _t)) \right\rangle d \tau \\
                 &= -\int_{0}^{\gamma } \left\langle \nabla F(\theta _t), \nabla F(\theta _t - \tau \nabla F(\theta _t)) \right\rangle + \nabla F(\theta _t) - \nabla F(\theta _t) d \tau \\
                 &= - \gamma \left\| \nabla F(\theta _t) \right\| ^2 + \int_{0}^{\gamma } \left\langle \nabla F(\theta _t), \nabla F(\theta _t) - \nabla F(\theta _t - \tau \nabla F(\theta _t)) \right\rangle d \tau \\
                 &\leq - \gamma \left\| \nabla F(\theta _t)  \right\| ^2 + \int_{0}^{\gamma }\tau L \left\| \nabla F(\theta _t) \right\| ^2 d \tau  \\
@@ -99,7 +102,7 @@ On regarde \begin{itemize}
         \end{align*}
         Combining the 2 previous inequalities, 
         \begin{align*}
-            \left\| \theta_{t+1} - \theta ^{star} \right\|^2 &\leq  \left\| \theta_{t} - \theta ^{star} \right\|^2 (1 - \gamma \mu ) - 2 \gamma (F(\theta_t) - F^{\star }) + \frac{\gamma ^2 }{\gamma - \gamma^2 \frac{L}{2}} \\
+            \left\| \theta_{t+1} - \theta ^{\star} \right\|^2 &\leq  \left\| \theta_{t} - \theta ^{\star} \right\|^2 (1 - \gamma \mu ) - 2 \gamma (F(\theta_t) - F^{\star }) + \frac{\gamma ^2 }{\gamma - \gamma^2 \frac{L}{2}} \\
             &\leq (1 - \gamma \mu ) \left\| \theta_t - \theta ^\star  \right\| ^2 - \gamma ( \frac{2 \gamma - \gamma ^2 \frac{L}{2} - \gamma }{\gamma - \gamma ^2 \frac{L}{2}}) ( F(\theta _t ) - F^\star )
         \end{align*}
         using that $ F(\theta ) \geq F(\theta ^\star ) \Rightarrow F(\theta _t) - F(\theta _{t+1}) \leq F(\theta _t) - F(\theta ^\star ) $  
@@ -129,13 +132,13 @@ On regarde \begin{itemize}
     .\]
     
     \begin{align*}
-        F(\bar{\theta_T}) - F(\theta ^{star}) 
+        F(\bar{\theta_T}) - F(\theta ^{\star}) 
             &\leq \frac{\left\| \theta_0 - \theta ^{\star } \right\|^2 }{2 \gamma T} +  \frac{\gamma \beta ^2}{2} \\
             &= \textcolor{orange}{\left\| \frac{\theta _0 - \theta^{\star }}{\sqrt[]{T}} \right\| \text{ for } \gamma = \gamma ^{\star}} 
         \text{ (when looking at below figures)}
     \end{align*}
     \[
-        F(\bar{\theta_T}) - F(\theta ^{star}) \leq \frac{\left\| \theta_0 - \theta ^{\star } \right\|^2 }{2 \gamma T} +  \frac{\gamma \beta ^2}{2}     
+        F(\bar{\theta_T}) - F(\theta ^{\star}) \leq \frac{\left\| \theta_0 - \theta ^{\star } \right\|^2 }{2 \gamma T} +  \frac{\gamma \beta ^2}{2}     
     .\]
 \end{thm}
 NB: now there is a trade-off on the choice of $ \gamma  $. Now we have two terms : 
