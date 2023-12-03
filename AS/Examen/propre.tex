@@ -49,14 +49,14 @@
 
 
 \chapter{Introduction}
-\section{L'architecture ResNet}
 Avant l'introduction de ResNet en 2015 par He et al, l'architecture GoogLeNet était le dernier gagnant des challenges de vision par ordinateur. Cette architecture venait contrer les problèmes d'apprentissage lié à une augmentation de la profondeur de VGG, une autre architecture proche de ResNet. 
 
 En effet, un réseau plus profond permet apporte dans certaine condition de meilleurs performance, mais aussi des problèmes comme l'explosion ou l'évanouissement du gradient de la loss. Lors de la backpropagation, les grandes ou petites valeurs peuvent s'amplifier à chaque couche du réseau donnant un gradient beaucoup plus grand/petit à la dernière couche du réseau en comparaison de la première. C'est un effet multiplicatif et donc en lien avec la profondeur du réseau.
 
-Pour un réseau d'une profondeur $ L $, on modélise ces états cachés de dimension $ d $  par une séquence $ (h_k)_{0 \leq k \leq L - 1} $ avec $ h_k \in \mathbb{R}^d, \forall 0 \leq k \leq L $. On peut décrire mathématiquement l'explosion du gradient tel que, avec une forte probabilité, $ \left\| \frac{\partial \mathcal{L}}{\partial h_0} \right\|  \gg  \left\| \frac{\partial \mathcal{L}}{\partial h_L} \right\|  $ où $ \mathcal{L} $ représente la loss et $ \left\| \cdot  \right\|  $ la norme euclidienne.
+Pour un réseau d'une profondeur $ L $, on modélise ces états cachés de dimension $ d $  par une séquence $ (h_k)_{1 \leq k \leq L} $ avec $ h_k \in \mathbb{R}^d, \forall 0 \leq k \leq L $. On peut décrire mathématiquement l'explosion du gradient tel que, avec une forte probabilité, $ \left\| \frac{\partial \mathcal{L}}{\partial h_0} \right\|  \gg  \left\| \frac{\partial \mathcal{L}}{\partial h_L} \right\|  $ où $ \mathcal{L} $ représente la loss et $ \left\| \cdot  \right\|  $ la norme euclidienne.
 
-La solution apporté par GoogLeNet n'améliorait pas tant les performances comparé à VGG et restait assez complexe. Sa profondeur était comparable à celle de VGG, passant de 22 à 16 couches. En 2015, ResNet arriva avec un modèle allant jusqu'à 152 couches, divisant par deux le nombre d'erreur de GoogLeNet. Son inovation est la présence de \textit{skip connections} entre les couches successives, permetant un meilleurs passage du gradient au sein du réseau. Mathématiquement, on peut alors écrire la relation récurente pour la suite $ (h_k)_{0 \leq k \leq L - 1} $ tel que 
+
+La solution apporté par GoogLeNet n'améliorait pas tant les performances comparé à VGG et restait assez complexe. Sa profondeur était comparable à celle de VGG, passant de 22 à 16 couches. En 2015, ResNet arriva avec un modèle allant jusqu'à 152 couches, divisant par deux le nombre d'erreur de GoogLeNet. Son inovation est la présence de \textit{skip connections} entre les couches successives, permetant un meilleurs passage du gradient au sein du réseau. Mathématiquement, on peut alors écrire la relation récurente pour la suite $ (h_k)_{1 \leq k \leq L} $ tel que 
 \[
     h_{k+1 } = h_k + f(h_k, \theta _{k+1})
 .\]
@@ -71,18 +71,24 @@ ResNets est devenus la base de nombreux modèles d'apprentissage profond de poin
     \label{fig:resnet}
 \end{figure}
 
-Malgrès cette technique, ResNet soufre toujours de problème de gradient lors de l'apprentissage. L'approche historique pour éviter cela est de normaliser les état cachés à la sortie de chaque couche (\textit{batch normalization}). Toutefois, cela à un cout computationnel et une forte dépendance par rapport à la taille du \textit{batch}. Une alternative consiste à incorporer un facteur d'échelle \( \alpha_L \) devant le terme résiduel, ce qui conduit au modèle suivant : 
+Malgrès cette technique, ResNet soufre toujours de problème de gradient lors de l'apprentissage. L'approche historique pour éviter cela est de normaliser les état cachés à la sortie de chaque couche (\textit{batch normalization}). Toutefois, cela à un cout computationnel et une forte dépendance par rapport à la taille du \textit{batch}. Une alternative consiste à incorporer un facteur d'échelle $ \alpha _L $ devant le terme résiduel, ce qui conduit au modèle suivant : 
 \[
     h_{k+1} = h_k + \alpha_L f(h_k, \theta_{k+1})
 .\]
 Le choix de ce facteur $ \alpha _L $ est cruciale et dépend naturellement de la profondeur du réseau. Il garantit que la variance du signal ne change pas radicalement lorsqu'il se propage à travers les couche. Mais il n'y a pour l'instant pas de preuve formel ni de preuve mathématique dans le choix de ce facteur de régularisation.
 
-LIEN AVEC LES ODE A INTRODUIRE ICI ?
+% LIEN AVEC LES ODE A INTRODUIRE ICI ?
 
-Dans ce cours, nous étudirons le rôle de valeur de $ \alpha _L $ dans les problèmes de gradient à travers deux grand axes d'exploration. 
+Dans ce cours, nous étudirons les fondements mathématiques du pourquoi et comment choisir la valeur de $ \alpha _L $ en fonction de $ L $  et de la distribution initiale des poids afin d'éviter les problèmes d'apprentissage. Pour cela, il existe deux grands axes d'étude :
 \begin{enumerate}
-    \item 
+    \item $ \alpha _L  $ à l'initialisation : L'initialition des paramètres joue un rôle majeur dans le bon déroulement de la phase d'apprentissage d'un modèle et même au dela sur les capacités de généralisation d'un modèle. Une mauvaise initialisation peut entrainer une divergence ou un évanouissement rapide du gradient, voir même un blocage dans l'apprentissage. Etudier le role de $ \alpha _L  $ au moment de l'initialisation est intéréssant. Nous nous placerons donc dans le contexte mathématique suivant : a l'initialisation les poids de chaque couche $ (\theta _k)_{1 \leq k \leq L} $ sont choisis comme la réalisation indépendament et identiquement distribué (i.i.d) d'une loi, classiquement Gaussienne ou uniforme sur $ \mathbb{R}^p $.
+    \item L'approche continue 
 \end{enumerate}
+
+
+\chapter*{$ \alpha _L  $ à l'initialisation}
+
+
 
 
 
