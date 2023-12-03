@@ -1,0 +1,105 @@
+\chapter*{Le facteur $\alpha_L$ à l'initialisation}
+
+Dans cette section, notre objectif est d'examiner comment le facteur de mise à l'échelle $\alpha_L$ affecte la stabilité des ResNets lors de leur initialisation, en supposant que les poids sont des variables aléatoires indépendantes et identiquement distribuées (i.i.d.). Nous analyserons la modélisation, l'initialisation des paramètres et les hypothèses nécessaires à cette démarche.
+% Faire un horizon de la partie "related works" en creusant plus loin ? 
+
+\section{Modèle et hypothèses}
+\subsection{Modèle}
+Le modèle est basé sur un ensemble de données composé de $n$ paires $(x_i, y_i)_{1 \leq i \leq n}$ avec $x_i \in \mathbb{R}^{n_{\text{in}}}$ comme vecteur d'entrée et $y_i \in \mathbb{R}^{n_{\text{out}}}$ comme vecteur de sortie à prédire (soit en valeurs continues soit en format \textit{one-hot}). Soit $F_\pi(x) \in \mathbb{R}^{n_{\text{out}}}, x \in \mathbb{R}^{n_{\text{in}}}$ la sortie du ResNet définie par 
+\begin{align*}
+    h_0 &= Ax, \\
+    h_{k+1} &= h_k + \alpha_L V_{k+1}g(h_k, \theta_k), \quad 0 \leq k \leq L - 1, \\
+    F_{\pi}(x) &= Bh_L,
+\end{align*}
+où $\pi = (A, B, (\theta_k)_{k \leq L}, (V_k)_{1 \leq k \leq L})$ sont les paramètres du modèle avec $A \in \mathbb{R}^{d \times n_{\text{in}}}, B \in \mathbb{R}^{n_{\text{out}} \times d}, \theta_k \in \mathbb{R}^p$ et $V_k \in \mathbb{R}^{d \times d}$ pour $k = 1, \ldots, L$. La fonction $g : \mathbb{R}^d \times \mathbb{R}^p \to \mathbb{R}^d$ représente le choix de l'architecture d'un bloc du ResNet. Nous nous intéressons principalement à la suite des états cachés $(h_k)_{0 \leq k \leq L}$ et non aux changements de dimension permis par les matrices $A$ et $B$.
+% Un aspect important du modèle (4) est que la fonction de couche prend la forme d'une multiplication matrice-vecteur, ce qui sera crucial pour utiliser les résultats de concentration sur des variables aléatoires ??????? Important ????????? 
+Finalement, on définit $l: \mathbb{R}^{n_{\text{out}}} \times \mathbb{R}^{n_{\text{out}}} \to \mathbb{R}_+$ comme la fonction de \textit{loss}, différentiable par rapport à son premier paramètre. Cette \textit{loss} peut être une perte quadratique ou une entropie croisée. L'objectif de l'apprentissage est de trouver le paramètre optimal $\pi$ qui minimise le risque empirique $\mathcal{L}(\pi) = \sum_{i=1}^{n} l(F_\pi(x_i), y_i)$ à travers une descente de gradient stochastique ou l'une de ses variantes.
+
+\subsection{Initialisation des paramètres} 
+Nous rappelons que $\theta_k \in \mathbb{R}^p$ et $V_k \in \mathbb{R}^{d \times d}$ sont les paramètres des couches cachées de notre modèle pour tout $k \in \llbracket 1, L \rrbracket$. Ces paramètres sont choisis à l'initialisation comme la réalisation de variables aléatoires i.i.d., généralement suivant une distribution uniforme ou gaussienne. Cette initialisation est indépendante de $L$ et donc du modèle représenté par $g$, permettant de considérer plusieurs architectures différentes dans notre étude. Nous examinerons également d'autres approches dépendantes du modèle pour étudier le choix de $\alpha_L$ (par exemple, Yang et Schoenholz, 2017 ou Wang et al., 2022).
+
+\subsection{Hypothèses}
+Pour notre première hypothèse, nous avons besoin de la définition suivante :
+\begin{definition}[Variable aléatoire $s^2$ sub-gaussienne]
+    En théorie des probabilités, une distribution $s^2$ sub-gaussienne est une distribution de probabilité caractérisée par une décroissance rapide des queues de distribution. Bien qu'il existe de nombreuses définitions et propriétés, nous retiendrons dans ce cours la suivante : soit $X$ une variable aléatoire réelle,
+    \[
+        \forall \lambda \in \mathbb{R}, \mathbb{E}[\exp(\lambda X)] \leq \exp\left(\frac{\lambda^2 s^2}{2}\right).
+    \]
+    De manière informelle, les queues d'une distribution sub-gaussienne sont dominées par celles d'une distribution gaussienne, c'est-à-dire qu'elles décroissent au moins aussi rapidement.
+\end{definition}
+Pour tout $ 1 \leq  k \leq L  $
+\begin{assumption}\label{H1}
+    Pour un certain $ s \geq 1 $, les entrées de  $ \sqrt{d}V_k $ sont des variables aléatoires symétriques i.i.d., $ s^2 $ sub-gaussiennes, indépendantes de $ d $ et $ L $ et de variance unitaire.
+\end{assumption}
+
+\begin{assumption}\label{H2}
+    Pour un certain $ C > 0 $, indépendant de $ d $ et $ L $, et pour tout $ h \in \mathbb{R}^D  $ 
+    \[
+        \frac{\left\| h \right\| ^2}{2 } \leq  \mathbb{E }[ \left\|  g(h, \theta _ k ) \right\| ^2 ] \leq \left\| h \right\| ^2
+    .\]
+    \[
+        \mathbb{E } [\left\| g(h, \theta _k)  \right\| ^8 ]\leq C \left\| h  \right\| ^8
+    .\]
+\end{assumption}
+
+\textbf{A TERMINER UN PEU MIEUX}
+
+
+\section{Limite probabilistique de la norme des états cachés}
+\begin{proposition}[Admise ?]\label{prop2}
+    Considérons un ResNet (4) tel que les hypothèses \ref{H1} et \ref{H2} soient satisfaites.
+    Si \( L\alpha_L^2 \leq 1 \), alors, pour tout \( \delta \in (0, 1) \), avec une probabilité d'au moins \( 1 - \delta \),
+    \[
+        \frac{\|h_L - h_0\|^2}{\|h_0\|^2} \leq \frac{2L\alpha_L^2}{\delta}
+    .\]
+\end{proposition}
+
+\begin{proposition}[Admise]\label{prop3}
+    Considérons un ResNet (4) tel que les hypothèses \ref{H1} et \ref{H2} soient satisfaites.
+    \begin{itemize}
+        \item[(i)] Supposons que $ d \geq 64 $ et $ \alpha _L ^2 \leq  \frac{2 }{(\sqrt{C } s^4 + 4 \sqrt{C } + 16 s ^4)d} $. Alors, pour tout $ \delta \in (0, 1) $, avec une probabilité d'au moins $ 1 - \delta $,
+        \[
+            \frac{\|h_L - h_0\|^2}{\|h_0\|^2} > \exp\left(\frac{3L\alpha_L^2}{8} - \sqrt{\frac{11L\alpha_L^2}{d\delta}}\right) - 1,
+        \]
+        à condition que
+        \[
+            2L \exp\left(-\frac{d}{64\alpha_L^2s^2}\right) \leq \frac{\delta}{11}.
+        \]
+        \item[(ii)] Supposons que $ \alpha_L^2 \leq \frac{1}{\sqrt{C}(d + 128s^4)} $. Alors, pour tout $ \delta \in (0, 1)$, avec une probabilité d'au moins $1 - \delta $,
+        \[
+            \frac{\|h_L - h_0\|^2}{\|h_0\|^2} < \exp\left(L\alpha_L^2 + \sqrt{\frac{5L\alpha_L^2}{d\delta}}\right) + 1.
+        \]
+    \end{itemize}
+\end{proposition}
+
+\begin{cor}\label{cor4}
+    Considérons un ResNet (4) tel que les hypothèses \ref{H1} et \ref{H2} soient satisfaites, et soit $ \alpha_L = 1/L^\beta $, avec $ \beta > 0 $.
+    \begin{itemize}
+        \item[(i)] Si $ \beta > \frac{1}{2} $, alors
+        \[
+            \frac{\|h_L - h_0\|}{\|h_0\|} \xrightarrow{\mathbb{P}} 0 \text{ lorsque } L \to \infty.
+        \]
+        \item[(ii)] Si $ \beta < \frac{1}{2}$ et $d \geq 9 $, alors
+        \[
+            \frac{\|h_L - h_0\|}{\|h_0\|} \xrightarrow{\mathbb{P}} \infty \text{ lorsque } L \to \infty.
+        \]
+        \item[(iii)] Si $ \beta = \frac{1}{2} $, $ d \geq 64$, $L \geq \left(\frac{1}{2}\sqrt{C}s^4 + 2\sqrt{C} + 8s^4)d + 96\sqrt{C}s^4\right) $, alors, pour tout $ \delta \in (0, 1) $, avec une probabilité d'au moins $ 1 - \delta $,
+        \[
+            \exp\left(\frac{3}{8} - \sqrt{\frac{22}{d\delta}}\right) - 1 < \frac{\|h_L - h_0\|^2}{\|h_0\|^2} < \exp\left(1 + \sqrt{\frac{10}{d\delta}}\right) + 1,
+        \]
+        à condition que
+        \[
+            2L \exp\left(-\frac{Ld}{64s^2}\right) \leq \frac{\delta}{11}.
+        \]
+    \end{itemize}
+\end{cor}
+
+\begin{proof}[Preuve : ]
+    L'affirmation ($ i $) est une conséquence de la Proposition \ref{prop2}. Nous avons $ L \alpha _L ^2 = \frac{L}{L^{2\beta} } = L^{1 - 2 \beta } $, comme $ \beta > 1/2 \Leftrightarrow 1 - 2 \beta < 0 $ nous avons $ L^{1 - 2 \beta } = \frac{1}{L^{2 \beta  -1}} \underset{L\to +\infty}{\longrightarrow} 0 $. Ainsi
+    \begin{align*}
+        & \frac{\|h_L - h_0\|^2}{\|h_0\|^2} \leq \frac{2L\alpha_L^2}{\delta}.
+        \overunderset{\mathbb{P}}{L\to +\infty}{\longrightarrow} 0 
+    \end{align*}
+
+    L'affirmation ($ ii $) est une conséquence de la Proposition \ref{prop3}.
+\end{proof}
