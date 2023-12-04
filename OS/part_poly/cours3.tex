@@ -45,12 +45,12 @@ On regarde \begin{itemize}
         \item CV rate on the iterates (!!) and not only on the objective rate 
         \begin{align*}
             F(\theta _T) - F(\theta ^\star ) 
-            &\leq \langle \nabla F(\theta ^\infty ), \theta _T - \theta  ^\star \rangle  + \frac{L}{2} \left\| \theta _T  - \theta ^\star \right\| \\
-            &= 0 + \frac{L}{2} \left\| \theta _T  - \theta ^\star \right\|
+            &\leq \langle \nabla F(\theta ^\infty ), \theta _T - \theta  ^\star \rangle  + \frac{L}{2} \left\| \theta _T  - \theta ^\star \right\| ^2 \\
+            &= 0 + \frac{L}{2} \left\| \theta _T  - \theta ^\star \right\| ^2
         \end{align*}
         
         \[
-            \frac{\mu }{2} \left\| \theta _T - \theta ^\star  \right\| ^2 \leq_{\text{strong cvxty}}  F(\theta _T) - F(\theta ^\star ) \leq  + \frac{L}{2} \left\| \theta _T  - \theta ^\star \right\|
+            \frac{\mu }{2} \left\| \theta _T - \theta ^\star  \right\| ^2 \leq_{\text{strong cvxty}}  F(\theta _T) - F(\theta ^\star ) \leq   \frac{L}{2} \left\| \theta _T  - \theta ^\star \right\|
         .\]
         \item Choice of $\gamma$ : the largest possible.
         \item $\mu \leq L$. ($\mu = L$ if $F(\theta)= \dfrac{L}{2}\left\| \theta - \theta ^ {\star} \right\| $)
@@ -79,7 +79,7 @@ On regarde \begin{itemize}
             \left\| \theta _{t+1} - \theta ^\star  \right\| ^2 
                 &= \left\| \theta _t - \gamma \nabla F(\theta _t) - \theta ^\star  \right\| ^2 \\
                 &= \left\| \theta _t - \theta ^\star  \right\| ^2 - 2 \gamma \left\langle \nabla F (\theta _t), \theta _t - \theta ^\star  \right\rangle + \gamma ^2 \left\| \nabla F(\theta _t) \right\| ^2 \\
-                &= \left\| \theta _t - \theta ^\star  \right\| ^2 - 2 \gamma \left\langle \nabla F (\theta _t), \theta ^\star - \theta _t \right\rangle + \gamma ^2 \left\| \nabla F(\theta _t) \right\| ^2 \\
+                &= \left\| \theta _t - \theta ^\star  \right\| ^2 + 2 \gamma \left\langle \nabla F (\theta _t), \theta ^\star - \theta _t \right\rangle + \gamma ^2 \left\| \nabla F(\theta _t) \right\| ^2 \\
         \end{align*}
         By $ \mu  $-strong convexity, we got 
         \begin{align*}
@@ -95,10 +95,10 @@ On regarde \begin{itemize}
                 &= F(\theta _t - \gamma \nabla F(\theta _t)) - F(\theta _t) \\
                 &= [F(\theta _t - \tau \nabla F(\theta _t))]^\gamma _{\tau = 0} \\
                 &= -\int_{0}^{\gamma } \left\langle \nabla F(\theta _t), \nabla F(\theta _t - \tau \nabla F(\theta _t)) \right\rangle d \tau \\
-                &= -\int_{0}^{\gamma } \left\langle \nabla F(\theta _t), \nabla F(\theta _t - \tau \nabla F(\theta _t)) \right\rangle + \nabla F(\theta _t) - \nabla F(\theta _t) d \tau \\
+                &= -\int_{0}^{\gamma } \left\langle \nabla F(\theta _t), \nabla F(\theta _t - \tau \nabla F(\theta _t)) \right\rangle + \left\| \nabla F(\theta _t) \right\|^2  - \left\| \nabla F(\theta _t) \right\|^2 d \tau \\
                 &= - \gamma \left\| \nabla F(\theta _t) \right\| ^2 + \int_{0}^{\gamma } \left\langle \nabla F(\theta _t), \nabla F(\theta _t) - \nabla F(\theta _t - \tau \nabla F(\theta _t)) \right\rangle d \tau \\
-                &\leq - \gamma \left\| \nabla F(\theta _t)  \right\| ^2 + \int_{0}^{\gamma }\tau L \left\| \nabla F(\theta _t) \right\| ^2 d \tau  \\
-                &\leq - (\gamma - \frac{\gamma ^2 L}{2}) \left\| \nabla (F(\theta _t )) \right\| ^2 \text{ using CS + L-smooth}
+                &\leq - \gamma \left\| \nabla F(\theta _t)  \right\| ^2 + \int_{0}^{\gamma }\tau L \left\| \nabla F(\theta _t) \right\| ^2 d \tau \quad \text{ (using CS + L-smooth)} \\
+                &\leq - (\gamma - \frac{\gamma ^2 L}{2}) \left\| \nabla (F(\theta _t )) \right\| ^2 
         \end{align*}
         Combining the 2 previous inequalities, 
         \begin{align*}

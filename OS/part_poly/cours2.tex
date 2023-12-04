@@ -334,11 +334,11 @@ Indeed $ \frac{\partial (F \circ \theta )}{\partial t}(t) = \langle \nabla F(\th
     \begin{align*}
         \left\| \theta _{t+1} - \theta ^\star  \right\| ^2 
             &= \left\| \theta _t - \theta ^\star  \right\| ^2 - 2 \gamma  \langle \nabla F(\theta _t), \theta _t - \theta ^\star \rangle + \gamma  ^2 \left\| \nabla F(\theta _t) \right\| ^2 \\
-            &\geq  \left\| \theta _t - \theta ^\star  \right\| ^2 - 2 \gamma ( 1 - \frac{\gamma L }{2}) \langle \nabla F(\theta _t) , \theta _t - \theta ^\star \rangle  \\
-            &\Rightarrow 2 \gamma (1 - \frac{\gamma L}{2}) \langle \nabla F(\theta _t) , \theta _t - \theta ^\star \rangle \leq  \left\| \theta _{t+1} - \theta ^\star  \right\| ^2 - \left\| \theta _t - \theta ^\star  \right\| ^2  \\
-            &\Rightarrow 2 \gamma (1 - \frac{\gamma L }{2}) (F(\theta _t) - F(\theta ^\star )) \leq  \left\| \theta _{t+1} - \theta ^\star  \right\| ^2 - \left\| \theta _t - \theta ^\star  \right\| ^2  \\
-        F(\theta _t) - F(\theta ^\star )
-            &\leq \frac{1}{T}\sum_{t=1}^{T} F(\theta _t) - F(\theta ^\star ) \\
+            &\leq  \left\| \theta _t - \theta ^\star  \right\| ^2 - 2 \gamma ( 1 - \frac{\gamma L }{2}) \langle \nabla F(\theta _t) , \theta _t - \theta ^\star \rangle  \\
+            &\Rightarrow 2 \gamma (1 - \frac{\gamma L}{2}) \langle \nabla F(\theta _t) , \theta _t - \theta ^\star \rangle \leq  \left\| \theta _{t-1} - \theta ^\star  \right\| ^2 - \left\| \theta _t - \theta ^\star  \right\| ^2  \\
+            &\Rightarrow 2 \gamma (1 - \frac{\gamma L }{2}) (F(\theta _t) - F(\theta ^\star )) \leq  \left\| \theta _{t-1} - \theta ^\star  \right\| ^2 - \left\| \theta _t - \theta ^\star  \right\| ^2  \\
+            &\Rightarrow F(\theta _t) - F(\theta ^\star )
+            \leq \frac{1}{T}\sum_{t=1}^{T} F(\theta _t) - F(\theta ^\star ) \\
             &\leq \frac{\left\| \theta _0 - \theta ^\star  \right\| ^2}{ 2 \gamma (1 - \frac{\gamma L}{2}) T}
     \end{align*}
     
