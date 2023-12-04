@@ -16,7 +16,7 @@ In this section, no empirical proof, no n
 \begin{lem}[]
     If $ \phi  $ is diff, convex, increasing, then $ sign(h^{\star, \phi }) = f^{\star, Bayes} $ with $ h^{\star, \phi }  \in  \arg \min_h R^\phi (h)$ 
 \end{lem}
-\begin{proof}[Preuve : ]
+\begin{proof}[Proof:]
     \begin{enumerate}
         \item \begin{align*}
             R^\phi (h) &= \mathbb{E}[\phi (-Yh(X))(\mathbbm{1}_{Y=1} + \mathbbm{1}_{Y = -1}) | X] \\ 
@@ -83,7 +83,7 @@ When $ h $ approximately minimizes the relaxed excess risk its $ sign(h) $ behav
     (we do not care about $ c $ )
 \end{note}
 
-\begin{proof}[Preuve : ]
+\begin{proof}[Proof:]
     \begin{align*}
         R^{0/1} (sign(h)) - R^{0/1}(f^{\star , Bayes }) &= \mathbb{E}[ \mathbbm{1}_{sign(h(X)) \neq  f^{\star , Bayes}(X) 2  \left| \eta (X) - 1/2 \right| }] \\
         \text{(jensen, (1) )} &\leq \mathbb{E}[ \mathbbm{1}_{sign(h(X)) \neq  f^{\star , Bayes}(X) 2^\gamma  \left| \eta (X) - 1/2 \right| ^\gamma }]^{1/\gamma } \\
@@ -179,7 +179,7 @@ Other definition:
         F(\theta ^\prime ) \leq  F(\theta ) + \langle \nabla F(\theta ) , \theta ^\prime  - \theta \rangle + \frac{L}{2} \left\| \theta ^\prime  - \theta  \right\| 
     .\]
 \end{lem}
-\begin{proof}[Preuve : ]
+\begin{proof}[Proof:]
     \begin{align*}
         F (\theta ^\prime ) 
             &= F(\theta ) + \int_{0}^{1} < \nabla F(\theta  + t(\theta ^\prime - \theta )), \theta ^\prime - \theta > dt \\
@@ -266,7 +266,7 @@ Indeed $ \frac{\partial (F \circ \theta )}{\partial t}(t) = \langle \nabla F(\th
 \begin{thm}[]
     For $ F $ an L-Smooth. for $ \gamma _t = \gamma , \forall t $ with $ \gamma < 2/L $ 
     \[
-        F(\theta _t) - F(\theta ^\star ) \leq \frac{\left\| \theta _0 \theta 
+        F(\theta _t) - F(\theta ^\star ) \leq \frac{\left\| \theta _0 - \theta 
         ^\star  \right\| }{2 \gamma (1 - \frac{\gamma L}{2}) T }
     .\]
     For $ \gamma = \frac{1}{L} $ we have 
@@ -296,13 +296,13 @@ Indeed $ \frac{\partial (F \circ \theta )}{\partial t}(t) = \langle \nabla F(\th
     \end{note}
 \end{thm}
 
-\begin{proof}[Preuve : ]
+\begin{proof}[Proof:]
     \begin{align*}
         \left\| \theta _{t+1} - \theta ^\star  \right\| ^2 _2  
             &= ^{\text{(GD)}} \left\| \theta _t - \gamma \nabla F(\theta _t) - \theta ^\star  \right\| ^2 _2 \\
             &= \left\| \theta _t - \theta ^\star  \right\| ^2 _2 - 2 \gamma  \langle \nabla F(\theta _t), \theta _t - \theta ^\star \rangle + \gamma ^2 \left\| \nabla F(\theta _t) \right\| ^2 _2
     \end{align*}
-    Function convexe + L-Smooth : $ \left\| \nabla F(\theta ) \right\| ^2 \leq L \langle \nabla F(\theta ), \theta  - \theta ^\star \rangle $. This is a consequence of the co-coercivity of $ \nabla F $ (with param $ 1/L $ )
+    Function convex + L-Smooth : $ \left\| \nabla F(\theta ) \right\| ^2 \leq L \langle \nabla F(\theta ), \theta  - \theta ^\star \rangle $. This is a consequence of the co-coercivity of $ \nabla F $ (with param $ 1/L $ )
     \begin{note}[Co-coercivity]
         $ F $ convex, L-Smooth, then $ \theta , \theta ^\prime  $ 
         \[

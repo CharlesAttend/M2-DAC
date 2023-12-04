@@ -130,7 +130,7 @@ Claim : Stability implies generalization
     
 \end{note}
 
-\begin{proof}[Preuve : ]
+\begin{proof}[Proof:]
     \begin{align*}
         \mathcal{R}(A(\mathcal{D}_n)) - \mathcal{R}(\theta ^\star ) &= \mathcal{R}(A(\mathcal{D}_n)) - \hat{\mathcal{R}} _{n, \mathcal{D}_n} (A (\mathcal{D}_n )) \\
         &+ \hat{\mathcal{R}} _{n, \mathcal{D}_n} (A (\mathcal{D}_n )) - \hat{\mathcal{R}} _{n, \mathcal{D}_n} (\hat{\theta }^{ERM}) \\
@@ -160,7 +160,7 @@ Claim : Stability implies generalization
         \mathbb{E}[ \mathcal{R}(A(\mathcal{D}_n)) - \hat{\mathcal{R}}_{n,\mathcal{D}_n}] \leq \beta (n)
     .\]
 \end{thm}
-\begin{proof}[Preuve : ]
+\begin{proof}[Proof:]
     Reminder \begin{itemize}
         \item $ \mathcal{R} (A(\mathcal{D}_n)) = \mathbb{E}_{(X,Y) \sim p}[ l(Y, A(\mathcal{D}_n)) | \mathcal{D}_n] $ 
         \item $ \mathbb{E}_{\mathcal{D}_n} [ \mathcal{R}(A (\mathcal{D}_n))] $ 
@@ -223,7 +223,7 @@ The ridge regularized risk is $\mu $ strongly cvx.
     $\rightarrow$ \textbf{Good:} this is a fast rate !! [see Srebro, Sridahran, Shalev-shwartz]
 \end{thm}
 
-\begin{proof}[Preuve : ]
+\begin{proof}[Proof:]
     \begin{enumerate}
         \item By strong convexity, $\hat{\mathcal{R}}_{n, \mathcal{D}_n}(\theta ) - \hat{\mathcal{R}}_{n, \mathcal{D}_n}(\overbrace{A(\mathcal{D}_n)}^{\hat{\theta }^{ERM}}) \geq  \frac{\mu }{2} \left\| \theta  - A(\mathcal{D}_n) \right\|^2_2 $ \\
             Let $ k \in \{1, \dots, n\} $, apply this inequation to $ \theta = A(\mathcal{D}_n ^{(k)}) $ then $ \hat{\mathcal{R}}_{n, \mathcal{D}_n} (A(\mathcal{D}_n)) - \hat{\mathcal{R}}_{n,\mathcal{D}_n} (A(\mathcal{D}_n)) \geq \frac{\mu }{2} \left\| A(\mathcal{D}_n ^{(k)}) - A(\mathcal{D}_n)  \right\| _2 ^2 $ 

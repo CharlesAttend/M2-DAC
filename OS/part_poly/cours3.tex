@@ -74,7 +74,7 @@ On regarde \begin{itemize}
         \caption{With $ \kappa \approx 1 $ "good conditioning" }
     \end{figure}
 
-    \begin{proof}[Preuve : ]
+    \begin{proof}[Proof:]
         \begin{align*}
             \left\| \theta _{t+1} - \theta ^\star  \right\| ^2 
                 &= \left\| \theta _t - \gamma \nabla F(\theta _t) - \theta ^\star  \right\| ^2 \\
@@ -118,11 +118,11 @@ On regarde \begin{itemize}
 
 \subsubsection{Subgradient method}
 \begin{thm}[GD for non-smooth fonctions]
-    Hypothese : $ F $ convexe, has subgradients, $ \beta  $ -Lipschitz 
+    Hypothese : $ F $ convex, has subgradients, $ \beta  $ -Lipschitz 
         \[
             \begin{cases}
-                \left\| \nabla F(\theta ) \right\| ^2 \leq \beta ^2\\
-                \forall \eta \in \partial F(\theta), \left\| \eta  \right\| ^2 \leq \beta ^2
+                \left\| \nabla F(\theta ) \right\| ^2 &\leq \beta ^2\\
+                \left\| \eta  \right\| ^2 &\leq \beta ^2, \quad \forall \eta \in \partial F(\theta)
             \end{cases} 
         .\]
     Then GD iterates with Polyak-Ruppert averaging enjoy the following error bound 
@@ -173,7 +173,7 @@ $F(\frac{1}{T} \sum^T_{t=1} \theta_t) - F^{\star } \leq \frac{1}{T} \sum^T_{t=1}
 And $(F(\theta _t) - F^{\star })$ is on $\frac{1}{t}$ \\
 So, $F(\frac{1}{T} \sum^T_{t=1} \theta_t) - F^{\star } \leq \frac{1}{T} \sum^T_{t=1} (F(\theta _t) - F^{\star }) \lesssim \mathcal{O}(\frac{\log_{T}}{T})$.
 
-\begin{proof}[Preuve : ]
+\begin{proof}[Proof:]
     \begin{align*}
         \left\| \theta _{t + 1} - \theta ^\star  \right\| ^2 
             &= \left\| \theta _t - \gamma _t g_t - \theta ^\star  \right\| ^2 \text{ with } g_t \in \partial F(\theta _t) \\
@@ -221,10 +221,10 @@ So, $F(\frac{1}{T} \sum^T_{t=1} \theta_t) - F^{\star } \leq \frac{1}{T} \sum^T_{
     \end{figure}
 
     Another way to deal with this is to add a smooth regularized term. In particular, if $\theta ^{\star }$ is minimizer of F then it minimizes as well
-    \[ \theta  \mapsto F(\theta) + \gamma \left\| \theta - \theta ^{\star } \right\| \text{ for } gamma > 0  \]
+    \[ \theta  \mapsto F(\theta) + \gamma \left\| \theta - \theta ^{\star } \right\| \text{ for } \gamma > 0  \]
 
-    Now the regulatized fonction is strongly convexe and the only subgradient at the solution is the zero vector : \begin{itemize}
-        \item \textbf{Good} : It addresses tje main drawback of subgrad methods
+    Now the regulatized fonction is strongly convex and the only subgradient at the solution is the zero vector : \begin{itemize}
+        \item \textbf{Good} : It addresses the main drawback of subgrad methods
         \item \textbf{Bad} : We have to know $ \theta ^\star  $ 
     \end{itemize}
 
@@ -232,7 +232,7 @@ So, $F(\frac{1}{T} \sum^T_{t=1} \theta_t) - F^{\star } \leq \frac{1}{T} \sum^T_{
     \[ 
         \theta _{t+1} = \arg \min_{\theta} F(\theta) + \frac{1}{2 \gamma _t} \left\| \theta - \theta_t  \right\|^2 
     \]
-    When $ F $ is convex, $ F + \frac{1}{2 \gamma _t} \left\| \circ  - \theta _t \right\| ^2 $ is strictly convexe so the mapping is well defined. This gives the proximal operator / Moreau envelope. 
+    When $ F $ is convex, $ F + \frac{1}{2 \gamma _t} \left\| \circ  - \theta _t \right\| ^2 $ is strictly convex so the mapping is well defined. This gives the proximal operator / Moreau envelope. 
     
     \[
         prox _{\gamma _t F} (\theta ) = \arg \min_{\tilde{\theta}} F(\tilde{\theta }) + \frac{1}{2 \gamma _t} \left\| \theta - \tilde{\theta}  \right\|^2 
@@ -317,7 +317,7 @@ Can we do better with a \textbf{gradient-like} algo ?
 \end{thm}
 
 \begin{thm}[Nesterov 2003]
-    $ \forall \theta _0 \in \mathbb{R}^d, \mu > 0, L > 0, \exists F $ $ mu $-strongly convexe and L-smooth such that for every gradient-like algo \begin{enumerate}
+    $ \forall \theta _0 \in \mathbb{R}^d, \mu > 0, L > 0, \exists F $ $ mu $-strongly convex and L-smooth such that for every gradient-like algo \begin{enumerate}
         \item $ F(\theta _t) - \inf F \geq  \frac{\mu }{2} ( \frac{1 - \sqrt[]{\kappa }}{1 + \sqrt[]{\kappa }} )^{2t} \left\| \theta _0 - \theta ^\star  \right\|  $ 
         \item $\left\| \theta _t - \theta ^{\star } \right\| \geq (\frac{1 - \sqrt[]{\kappa }}{1 + \sqrt[]{\kappa }})^t \left\|  \right\| \theta _0 - \theta ^{\star } \quad $ with $\kappa = \frac{\mu }{L}$ 
     \end{enumerate}
@@ -404,7 +404,7 @@ We can show that $ \epsilon (t) $ is decreasing (this is a Lyapunov energy)
     CV rate $\mathcal{O}((\frac{1 - \kappa }{1 + \kappa })^t )$
 
     Cool : We have Optimal rate and constant friction is enough \\
-    But : HB can fail on general strongly convexe fonction and need to know $ \mu  $  (and $ L $ )
+    But : HB can fail on general strongly convex fonction and need to know $ \mu  $  (and $ L $ )
 \end{thm}
 
 \paragraph*{NESTEROV}
