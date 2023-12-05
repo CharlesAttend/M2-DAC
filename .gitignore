@@ -34,3 +34,7 @@ wandb
 texliveonfly.py
 *.npz
 XAI/TME/TME8/data/
+AMAL/TME/TME8/src/test-1000.pth
+*.pth
+*.model
+*.vocab
