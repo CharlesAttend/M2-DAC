@@ -95,7 +95,7 @@ On regarde \begin{itemize}
                 &= F(\theta _t - \gamma \nabla F(\theta _t)) - F(\theta _t) \\
                 &= [F(\theta _t - \tau \nabla F(\theta _t))]^\gamma _{\tau = 0} \\
                 &= -\int_{0}^{\gamma } \left\langle \nabla F(\theta _t), \nabla F(\theta _t - \tau \nabla F(\theta _t)) \right\rangle d \tau \\
-                &= -\int_{0}^{\gamma } \left\langle \nabla F(\theta _t), \nabla F(\theta _t - \tau \nabla F(\theta _t)) \right\rangle + \left\| \nabla F(\theta _t) \right\|^2  - \left\| \nabla F(\theta _t) \right\|^2 d \tau \\
+                &= -\int_{0}^{\gamma } \left\langle \nabla F(\theta _t), \nabla F(\theta _t - \tau \nabla F(\theta _t)) + \nabla F(\theta _t) - \nabla F(\theta _t)\right\rangle d \tau \\
                 &= - \gamma \left\| \nabla F(\theta _t) \right\| ^2 + \int_{0}^{\gamma } \left\langle \nabla F(\theta _t), \nabla F(\theta _t) - \nabla F(\theta _t - \tau \nabla F(\theta _t)) \right\rangle d \tau \\
                 &\leq - \gamma \left\| \nabla F(\theta _t)  \right\| ^2 + \int_{0}^{\gamma }\tau L \left\| \nabla F(\theta _t) \right\| ^2 d \tau \quad \text{ (using CS + L-smooth)} \\
                 &\leq - (\gamma - \frac{\gamma ^2 L}{2}) \left\| \nabla (F(\theta _t )) \right\| ^2 
