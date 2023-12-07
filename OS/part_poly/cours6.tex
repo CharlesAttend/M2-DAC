@@ -220,7 +220,7 @@ The ridge regularized risk is $\mu $ strongly cvx.
     .\]
     Assume that $ \left\| X \right\| _2 \leq \mathcal{R} $ a.s. \\
     Then, the ERM algo $ A(\mathcal{D}_n) \equiv \hat{\theta }^{ERM} $   is $ \frac{4 \beta ^2 R^2}{\mu n} $ uniformly stable.\\ 
-    $\rightarrow$ \textbf{Good:} this is a fast rate !! [see Srebro, Sridahran, Shalev-shwartz]
+    $\rightarrow$ \textbf{Good:} this is a fast rate !! (for ERM) [see Srebro, Sridahran, Shalev-shwartz]
 \end{thm}
 
 \begin{proof}[Proof:]
@@ -254,9 +254,9 @@ The ridge regularized risk is $\mu $ strongly cvx.
 \section{Stability of SGD ()}
 \textbf{Algo} 
 \begin{align*}
-                &\theta _0 (\gamma _t)_{t=1} ^T \\
-                &\forall 0 \leq t \leq T-1, \theta _{t+1} = \theta _t - \gamma _t g_{t+1} (\theta _t) \\
-    \text{with }&g_{t+1}(\theta ) = \nabla _\theta l(Y_{i_{t+1}}, X_{i_{t+1}}^T \theta ) (\text{ linear predictors )} \\
+                &\theta _0 , (\gamma _t)_{t=1} ^T \\
+                &\forall 0 \leq t \leq T-1, \quad \theta _{t+1} = \theta _t - \gamma _t g_{t+1} (\theta _t) \\
+    \text{with }&g_{t+1}(\theta ) = \nabla _\theta l(Y_{i_{t+1}}, \theta^T X_{i_{t+1}} ) (\text{ linear predictors }) \\
                 &i_{t+1} \sim \mathcal{U}(\{1, \dots, n\})
 \end{align*}
 
@@ -286,7 +286,7 @@ With stong convexity, we would get $\leq  (1 - 2 \gamma \mu (1- \frac{\gamma L}{
 
 \begin{thm}[]
     Consider $ A \equiv  $ Algo 2, i.e. SGD with $ T $ steps \& step size $ (\gamma _t)_{t=1,\dots,T} $. \\
-    Assume that $ \forall k \in \{1, \dots, n\}, \psi : \theta \mapsto l (Y_k, X_k^T \theta ) $ is convex, L-Smooth, BR Lipschitz (which is ok for $ l $ B-Lip \& $ \left\| X  \right\| \leq R  $ a.s. ) \\
+    Assume that $ \forall k \in \{1, \dots, n\}, \psi_k : \theta \mapsto l (Y_k, X_k^T \theta ) $ is convex, L-Smooth, BR Lipschitz (which is ok for $ l $ B-Lip \& $ \left\| X  \right\| \leq R  $ a.s. ) \\
     Then A is uniformly stable with $ \beta (n) = \frac{2 B^2 R^2 \sum_{t=1 }^{T } \gamma _t }{n} $ 
 \end{thm}
 
