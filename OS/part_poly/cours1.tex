@@ -1,1 +1,35 @@
-RATRAPER COURS 1 
+%RATRAPER COURS 1 
+\chapter{Some basics of statistical learning}
+
+\underline{Nouveau cours du 15/11} 
+
+$\mathcal{D}_n = {(X_1, Y_1), \dots, (X_n,Y_n)}$ training samples iid copies of $(X,Y)$. $X \in \mathcal{X}$ and $Y \in \mathcal{Y}$ 
+
+\begin{itemize}
+    \item \textbf{goal} : fing a predictor surch that $f(X_i) \simeq Y_i$ on the training set. \\
+    but above all $f(X_{\text{new}}) \simeq Y_{\text{new}}$ (test set) 
+    \item \textbf{Risk} : $\mathcal{R}^{\textcolor{green}{(l)} }(f) = \underarrow[\mathbb{E}][\uparrow]{\textcolor{red}{on (X,Y)}} [ \overarrow[\ell][\downarrow]{\textcolor{green}{loss}}(Y, f(X))]$
+    \item \textbf{Bayes predictor} : $f^\ast  \in \arg \min \mathcal{R}(f)$ \\
+    $ \mathcal{R}^\ast = \mathcal{R}(f^\ast) = \inf \limits_{f} \mathcal{R}(f) $
+    \item \textbf{Empirical risk} : $\hat{\mathcal{R}}_n (f) := \frac{1}{n} \sum \limits_{i=1}^{n} \ell (Y_i, f(X_i))$ \\
+    $\hat{f}^{\text{ERM}} \in  \arg \min \limits_f \hat{\mathcal{R}}_n (f) $ (On some class of predictor)
+\end{itemize}
+
+Statistical learning theory focuses on controlling 
+\[
+    \mathcal{R}_n (\hat{f}_n) - \mathcal{R}^\ast  \text{  or  } \hat{\mathcal{R}}_n (\hat{f}_n) - \mathcal{R}^\ast
+\]
+for $\hat{f}_n$ a constructed predictor on the training set of size $n$. \\
+
+\textbf{Classical error decomposition} :
+\[
+    \mathcal{R} (\hat{f}_n) - \mathcal{R}^\ast = 
+    \textcolor{violet}{\underbrace{\color{black}\inf_{f \in \mathcal{F}} \mathcal{R}(f) - \mathcal{R}^\ast }_{\text{approximation error}} } 
+    + \textcolor{cyan}{\underbrace{\color{black} \mathcal{R}(\hat{f}^\text{ERM}) - \inf_{f \in \mathcal{F}} \mathcal{R}(f) }_{\text{estimation error}} }
+    +  \textcolor{gray}{\underbrace{\color{black} \mathcal{R} (\hat{f}_n) - \mathcal{R}(\hat{f}^\text{ERM}) }_{\substack{\text{error due to the use of an} \\ \text{ optimisation algo for ERM} } }}
+.\]
+
+
+
+
+

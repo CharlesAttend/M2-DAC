@@ -52,8 +52,12 @@
 \newtheorem{case}{Case}
 
 \newcommand{\ind}{\perp\!\!\!\!\perp} 
-
-
+\NewDocumentCommand{\underarrow}{O{=} O{\downarrow} m}{%
+  \underset{\makebox[0pt]{\begin{tabular}{@{}c@{}}\ensuremath{#2}\\[0pt]#3\end{tabular}}}{#1}
+}
+\NewDocumentCommand{\overarrow}{O{=} O{\uparrow} m}{%
+  \overset{\makebox[0pt]{\begin{tabular}{@{}c@{}}#3\\[0pt]\ensuremath{#2}\end{tabular}}}{#1}
+}
 
 \title{Optimisation Stochastique}
 \author{Charles Vin}
