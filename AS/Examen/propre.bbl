@@ -1,0 +1,8 @@
+\begin{thebibliography}{1}
+
+\bibitem{torchvision2016}
+TorchVision maintainers and contributors.
+\newblock Torchvision: Pytorch's computer vision library.
+\newblock \url{https://github.com/pytorch/vision}, 2016.
+
+\end{thebibliography}

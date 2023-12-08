@@ -12,11 +12,11 @@ Le modèle est basé sur un ensemble de données composé de $n$ paires $(x_i, y
     F_{\pi}(x) &= Bh_L,
 \end{align*}
 où $\pi = (A, B, (\theta_k)_{k \leq L}, (V_k)_{1 \leq k \leq L})$ sont les paramètres du modèle avec $A \in \mathbb{R}^{d \times n_{\text{in}}}, B \in \mathbb{R}^{n_{\text{out}} \times d}, \theta_k \in \mathbb{R}^p$ et $V_k \in \mathbb{R}^{d \times d}$ pour $k = 1, \ldots, L$. La fonction $g : \mathbb{R}^d \times \mathbb{R}^p \to \mathbb{R}^d$ représente le choix de l'architecture d'un bloc du ResNet. Nous nous intéressons principalement à la suite des états cachés $(h_k)_{0 \leq k \leq L}$ et non aux changements de dimension permis par les matrices $A$ et $B$.
-% Un aspect important du modèle (4) est que la fonction de couche prend la forme d'une multiplication matrice-vecteur, ce qui sera crucial pour utiliser les résultats de concentration sur des variables aléatoires ??????? Important ????????? 
+% Un aspect important du modèle \cite{torchvision2016} est que la fonction de couche prend la forme d'une multiplication matrice-vecteur, ce qui sera crucial pour utiliser les résultats de concentration sur des variables aléatoires ??????? Important ????????? 
 Finalement, on définit $l: \mathbb{R}^{n_{\text{out}}} \times \mathbb{R}^{n_{\text{out}}} \to \mathbb{R}_+$ comme la fonction de \textit{loss}, différentiable par rapport à son premier paramètre. Cette \textit{loss} peut être une perte quadratique ou une entropie croisée. L'objectif de l'apprentissage est de trouver le paramètre optimal $\pi$ qui minimise le risque empirique $\mathcal{L}(\pi) = \sum_{i=1}^{n} l(F_\pi(x_i), y_i)$ à travers une descente de gradient stochastique ou l'une de ses variantes.
 
 \subsection{Initialisation des paramètres} 
-Nous rappelons que $\theta_k \in \mathbb{R}^p$ et $V_k \in \mathbb{R}^{d \times d}$ sont les paramètres des couches cachées de notre modèle pour tout $k \in \llbracket 1, L \rrbracket$. Ces paramètres sont choisis à l'initialisation comme la réalisation de variables aléatoires i.i.d., généralement suivant une distribution uniforme ou gaussienne. Cette initialisation est indépendante de $L$ et donc du modèle représenté par $g$, permettant de considérer plusieurs architectures différentes dans notre étude. Nous examinerons également d'autres approches dépendantes du modèle pour étudier le choix de $\alpha_L$ (par exemple, Yang et Schoenholz, 2017 ou Wang et al., 2022).
+Nous rappelons que $\theta_k \in \mathbb{R}^p$ et $V_k \in \mathbb{R}^{d \times d}$ sont les paramètres des couches cachées de notre modèle pour tout $k \in \llbracket 1, L \rrbracket$. Ces paramètres sont choisis à l'initialisation comme la réalisation de variables aléatoires i.i.d., généralement suivant une distribution uniforme ou gaussienne. Cette initialisation est indépendante de $L$ et donc du modèle représenté par $g$, permettant de considérer plusieurs architectures différentes dans notre étude. Nous examinerons également d'autres approches dépendantes du modèle pour étudier le choix de $\alpha_L$ (par exemple, Yang et Schoenholz, 2017 ou Wang et al., 2022 \cite{torchvision2016}).
 
 \subsection{Hypothèses}
 Pour notre première hypothèse, nous avons besoin de la définition suivante :
@@ -27,35 +27,66 @@ Pour notre première hypothèse, nous avons besoin de la définition suivante :
     \]
     De manière informelle, les queues d'une distribution sub-gaussienne sont dominées par celles d'une distribution gaussienne, c'est-à-dire qu'elles décroissent au moins aussi rapidement.
 \end{definition}
-Pour tout $ 1 \leq  k \leq L  $
+
+Avec cette définition en tête, passons aux hypothèses. Pour tout $ 1 \leq  k \leq L  $
 \begin{assumption}\label{H1}
     Pour un certain $ s \geq 1 $, les entrées de  $ \sqrt{d}V_k $ sont des variables aléatoires symétriques i.i.d., $ s^2 $ sub-gaussiennes, indépendantes de $ d $ et $ L $ et de variance unitaire.
 \end{assumption}
+\begin{note}
+    L'hypothèse \ref{H1} est en pratique satisfaite par toutes les initialisations, en particulier celle par défaut dans les paquets Keras \cite{torchvision2016} et Torch Vision \cite{torchvision2016}.
+    % Cette hypothèse permet de .... dans la preuve ... ??
+\end{note}
 
 \begin{assumption}\label{H2}
     Pour un certain $ C > 0 $, indépendant de $ d $ et $ L $, et pour tout $ h \in \mathbb{R}^D  $ 
     \[
         \frac{\left\| h \right\| ^2}{2 } \leq  \mathbb{E }[ \left\|  g(h, \theta _ k ) \right\| ^2 ] \leq \left\| h \right\| ^2
     .\]
+    and
     \[
         \mathbb{E } [\left\| g(h, \theta _k)  \right\| ^8 ]\leq C \left\| h  \right\| ^8
     .\]
 \end{assumption}
+\begin{note}
+    La première partie de l'hypothèse \ref{H2} assure que $g(\cdot, \theta_{k+1})$ se comporte approximativement comme une isométrie en moyenne, c'est-à-dire qu'elle préserve les longueurs et les mesures d'angles entre son espace de départ et son espace d'arrivée.
 
-\textbf{A TERMINER UN PEU MIEUX}
+    La deuxième partie de l'hypothèse \ref{H2} vise à limiter les variations excessives dans la norme de $g(h_k, \theta_{k+1})$.
+\end{note}
 
+
+% \begin{table}[h]
+%     \centering
+%     \begin{tabular}{lll}
+%         \hline
+%         \textbf{Nom} & \textbf{Récurrence} & \textbf{Paramètres} \\ \hline
+%         res-1 & \( h_{k+1} = h_k + \alpha_L V_{k+1}\sigma(h_k) \) & \( \theta_{k+1} = \emptyset \) \\
+%         res-2 & \( h_{k+1} = h_k + \alpha_L V_{k+1}\sigma(W_{k+1}h_k) \) & \( \theta_{k+1} = W_{k+1} \) \\
+%         res-3 & \( h_{k+1} = h_k + \alpha_L V_{k+1}\text{ReLU}(W_{k+1}h_k) \) & \( \theta_{k+1} = W_{k+1} \) \\ \hline
+%     \end{tabular}
+%     \caption{Exemples d'architectures ResNet considérées dans l'article. Dans les deux premiers cas, la fonction d'activation \( \sigma \) est telle que, pour tout \( x \in \mathbb{R} \), \( a|x| \leq |\sigma(x)| \leq b|x| \), avec \( \frac{1}{\sqrt{2}} \leq a < b \leq 1 \). Dans les deux derniers cas, \( W_{k+1} \in \mathbb{R}^{d \times d} \).}
+%     \label{tab:resnet_architectures}
+% \end{table}
 
 \section{Limite probabilistique de la norme des états cachés}
-\begin{proposition}[Admise ?]\label{prop2}
-    Considérons un ResNet (4) tel que les hypothèses \ref{H1} et \ref{H2} soient satisfaites.
+
+Dans cette section, nous nous intéressons à la quantité $ {\left\| h_L - h_0 \right\|} / {\left\| h_0 \right\|}$. Cette mesure permet d'analyser la valeur des états cachés entre le début et la fin du réseau. Si $\left\| h_L - h_0 \right\| \ll \left\| h_0 \right\|$, cela suggère que le réseau agit presque comme une fonction identité. À l'inverse, un ratio $\left\| h_L - h_0 \right\| \gg \left\| h_0 \right\|$ indique une explosion des valeurs des états cachés. Une situation équilibrée serait représentée par $\left\| h_L - h_0 \right\| \approx \left\| h_0 \right\|$.
+
+Nous appliquerons un raisonnement similaire aux gradients avec la quantité ${\left\| \frac{\partial \mathcal{L}}{\partial h_0} - \frac{\partial \mathcal{L}}{\partial h_L} \right\|} / {\left\| \frac{\partial \mathcal{L}}{\partial h_L} \right\|}$. En raison de la propagation rétroactive du gradient qui commence à partir de la fin du réseau, cette mesure est comparée à la dernière valeur du gradient $\frac{\partial \mathcal{L}}{\partial h_L}$.
+
+Les propositions et corollaires suivants décriront comment le rapport ${\left\| h_L - h_0 \right\|} / {\left\| h_0 \right\|}$ se comporte en fonction de $L\alpha_L$, en établissant différentes bornes supérieures et inférieures.
+
+
+\begin{proposition}[Admise ? J'ai pas su la démontrer oof]\label{prop2}
+    Considérons un ResNet \cite{torchvision2016} tel que les hypothèses \ref{H1} et \ref{H2} soient satisfaites.
     Si \( L\alpha_L^2 \leq 1 \), alors, pour tout \( \delta \in (0, 1) \), avec une probabilité d'au moins \( 1 - \delta \),
     \[
         \frac{\|h_L - h_0\|^2}{\|h_0\|^2} \leq \frac{2L\alpha_L^2}{\delta}
     .\]
 \end{proposition}
+La proposition \ref{prop2} par sa borne supérieur petite indique que le réseau se comporte comme une fonction identité dans le cas où $ L \alpha ^2 _L \ll 1 $.
 
 \begin{proposition}[Admise]\label{prop3}
-    Considérons un ResNet (4) tel que les hypothèses \ref{H1} et \ref{H2} soient satisfaites.
+    Considérons un ResNet \cite{torchvision2016} tel que les hypothèses \ref{H1} et \ref{H2} soient satisfaites.
     \begin{itemize}
         \item[(i)] Supposons que $ d \geq 64 $ et $ \alpha _L ^2 \leq  \frac{2 }{(\sqrt{C } s^4 + 4 \sqrt{C } + 16 s ^4)d} $. Alors, pour tout $ \delta \in (0, 1) $, avec une probabilité d'au moins $ 1 - \delta $,
         \[
@@ -71,9 +102,13 @@ Pour tout $ 1 \leq  k \leq L  $
         \]
     \end{itemize}
 \end{proposition}
+La proposition \ref{prop3} aborde les deux cas restants : $L \alpha_L^2 \gg 1$ et $L \alpha_L^2 \approx 1$. Dans la partie \textit{(i)}, la borne inférieure indique une explosion très probable du gradient lorsque $L \alpha_L^2 \gg 1$. La partie \textit{(ii)} traite du cas où $L \alpha_L^2 \approx 1$, avec une borne supérieure qui, en combinaison avec celle de \textit{(i)}, suggère que $h_L$ fluctue autour de $h_0$, étant ainsi borné des deux côtés.
 
+Cette proposition \ref{prop3} peut présenter des hypothèses qui semblent atypiques, mais elles sont en réalité souvent vérifiées dans la majorité des ResNets profonds. En effet, il est courant de trouver des ResNets avec une profondeur $L \geq 100$, pour lesquels on définit généralement $\alpha_L = 1 / L^\beta$ avec $\beta > 0$. De plus, la dimension des états cachés atteint fréquemment des valeurs telles que $d \geq 100$.
+
+Les conséquences des propositions \ref{prop2} et \ref{prop3} vont devenir plus clair en fixant $ \alpha _L = 1/L ^\beta $ comme montré dans le corollaire suivant.
 \begin{cor}\label{cor4}
-    Considérons un ResNet (4) tel que les hypothèses \ref{H1} et \ref{H2} soient satisfaites, et soit $ \alpha_L = 1/L^\beta $, avec $ \beta > 0 $.
+    Considérons un ResNet \cite{torchvision2016} tel que les hypothèses \ref{H1} et \ref{H2} soient satisfaites, et soit $ \alpha_L = 1/L^\beta $, avec $ \beta > 0 $.
     \begin{itemize}
         \item[(i)] Si $ \beta > \frac{1}{2} $, alors
         \[
@@ -93,8 +128,24 @@ Pour tout $ 1 \leq  k \leq L  $
         \]
     \end{itemize}
 \end{cor}
+Le corollaire 4 clarifie le comportement de notre dernier état caché $ \left\| h_L \right\|  $  en fonction de $ \beta  $. 
+\begin{itemize}
+    \item Lorsque $ \beta > 1/2 $, la distance entre $ h_L $ et $ h_0 $ converge vers zéro lorsque $ L $ tend vers l'infinie. Indiquant un réseau aggisant essentiellement comme une fonction identité.
+    \item Lorsque $ \beta < 1/2 $, la norme de $ h_L $ explose.
+    \item Lorsque $ \beta = 1/2 $, On voit que $ h_L $ fluctue autour de $ h_0 $, indépendament de la longueur du réseau $ L $.
+\end{itemize}
+On conclu donc que seul fixer $ \beta = 1/2 $ permet d'obtenir une distribution correcte.
 
-\begin{proof}[Preuve : ]
+Le corollaire 4 précise le comportement de notre dernier état caché $\left\| h_L \right\|$ en fonction de $\beta$.
+\begin{itemize}
+    \item Lorsque $\beta > 1/2$, la distance entre $h_L$ et $h_0$ tend vers zéro lorsque $L$ augmente indéfiniment. Cela indique que le réseau fonctionne essentiellement comme une fonction identité.
+    \item Lorsque $\beta < 1/2$, la norme de $h_L$ tend à l'explosion avec la valeur de $ L $ .
+    \item Lorsque $\beta = 1/2$, $h_L$ fluctue autour de $h_0$, indépendamment de la longueur du réseau $L$.
+\end{itemize}
+En conséquence, fixer $\beta = 1/2$ est la seule manière d'assurer une distribution adéquate des valeurs de $h_L$.
+
+
+\begin{proof}[Preuve du corollaire \ref{cor4} : ]
     L'affirmation ($ i $) est une conséquence de la Proposition \ref{prop2}. Nous avons $ L \alpha _L ^2 = \frac{L}{L^{2\beta} } = L^{1 - 2 \beta } $, comme $ \beta > 1/2 \Leftrightarrow 1 - 2 \beta < 0 $ nous avons $ L^{1 - 2 \beta } = \frac{1}{L^{2 \beta  -1}} \underset{L\to +\infty}{\longrightarrow} 0 $. Ainsi
     \begin{align*}
         & \frac{\|h_L - h_0\|^2}{\|h_0\|^2} \leq \frac{2L\alpha_L^2}{\delta}.
@@ -103,3 +154,10 @@ Pour tout $ 1 \leq  k \leq L  $
 
     L'affirmation ($ ii $) est une conséquence de la Proposition \ref{prop3}.
 \end{proof}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=.95\textwidth]{figs/figure_cor4.pdf}
+    \caption{Illustration du corollaire \ref{cor4}. Évolution de $ \left\| h_L - h_0 \right\| / \left\| h_0 \right\| $ en fonction de $ L $ pour différente valeur de $ \beta  $.}
+    \label{fig:cor4}
+\end{figure}
