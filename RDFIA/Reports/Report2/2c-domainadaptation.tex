@@ -1,0 +1,20 @@
+\chapter{Domain Adaptation}
+\graphicspath{{figs/2c/}}
+
+This exploration focuses on domain adaptation to tackle the task of applying models trained in one domain to a distinct yet related domain. This entails the comprehension and application of concepts like the DANN model and the Gradient Reversal Layer, which serve as tools to render a model agnostic to the domain. This practical exercise underscores the complexities of training a model on one dataset, such as labeled MNIST, and subsequently utilizing it effectively on a different dataset, such as unlabeled MNIST-M. This mirrors real-world situations where domain adaptation plays a crucial role, e.g. autonomous driving.
+
+\paragraph*{1. If you keep the network with the three parts (green, blue, pink) but didn't use the GRL, what would happen?}
+
+Without the GRL, the domain classifier would become proficient at distinguishing between source and target domains, counteracting the aim of domain adaptation. This would lead to a more domain-specific model rather than a domain-generalized one.
+
+\paragraph*{2. Why does the performance on the source dataset may degrade a bit ?}
+
+The minor performance decrease on the source dataset result from the model adapting to features common to both domains, slightly reducing its specificity for the source domain.
+
+\paragraph*{3. Discuss the influence of the value of the negative number used to reverse the gradient in the GRL.}
+
+The gradient reversal value balances learning domain-specific features and generalizing across domains. An optimal value is crucial for effective learning without compromising performance on either domain.
+
+\paragraph*{4. Another common method in domain adaptation is pseudo-labeling. Investigate what it is and describe it in your own words.}
+
+Pseudo-labeling involves generating labels for the target domain using the model's predictions. These labels are then used for further training, helping the model adapt to the target domain by leveraging its existing knowledge and narrowing the domain gap.
