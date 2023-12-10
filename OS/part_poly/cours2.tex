@@ -299,7 +299,7 @@ Indeed $ \frac{\partial (F \circ \theta )}{\partial t}(t) = \langle \nabla F(\th
 \begin{proof}[Proof:]
     \begin{align*}
         \left\| \theta _{t+1} - \theta ^\star  \right\| ^2 _2  
-            &= ^{\text{(GD)}} \left\| \theta _t - \gamma \nabla F(\theta _t) - \theta ^\star  \right\| ^2 _2 \\
+            &\overset{(GD)}{=} \left\| \theta _t - \gamma \nabla F(\theta _t) - \theta ^\star  \right\| ^2 _2 \\
             &= \left\| \theta _t - \theta ^\star  \right\| ^2 _2 - 2 \gamma  \langle \nabla F(\theta _t), \theta _t - \theta ^\star \rangle + \gamma ^2 \left\| \nabla F(\theta _t) \right\| ^2 _2
     \end{align*}
     Function convex + L-Smooth : $ \left\| \nabla F(\theta ) \right\| ^2 \leq L \langle \nabla F(\theta ), \theta  - \theta ^\star \rangle $. This is a consequence of the co-coercivity of $ \nabla F $ (with param $ 1/L $ )
