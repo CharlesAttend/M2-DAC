@@ -12,6 +12,7 @@
 \usepackage{systeme}
 \usepackage{xcolor}
 \usepackage{float}
+\usepackage{subcaption}
 
 \usepackage{hyperref}
 \hypersetup{
@@ -49,6 +50,7 @@
 
 \begin{document}
 \maketitle
+
 
 \section{Feature detection \& description}
 \begin{itemize}
@@ -97,13 +99,7 @@ Kernel Tricks :
         \item = 0 = produit orthogonal = éloigné
         \item ++ = vecteur aligné = proche
     \end{itemize}
-    \item Stable pas addition, multiplication, composition avec $ f $ polynome, exponentiel
-    \item La complexité de calcul d'un noyau polynomial est linéaire par rapport $d$ le degré du polynome. Mais pas la dimensionnalité de la projection
-    \item
 \end{itemize}
-
-
-
 
 
 
@@ -116,6 +112,50 @@ Kernel Tricks :
     \item ResNet: good of deep, skip (residual) connection to stabilise training
 \end{itemize}
 
+
+\section{FCN \& Segmentation}
+FCN
+\begin{itemize}
+    \item ImageNet : huge (1.2M), label, centered objects
+    \item VOC, MS COCO: complexe scene : not centered, many different objects, variable size, background 
+    \item Large/Complexe images solution: \begin{itemize}
+        \item Resize : Naïve approach
+        \item Sliding windows 
+    \end{itemize}
+    \item J'arrive pas a capter le diapo, pourtant j'étais au cours ptdr, j'vais écrire ce que je comprend
+    \item We're trying to make a network that output heat maps per class and can classify each image
+    \item Heat map $\rightarrow$ score by class == not easy, need pooling ($ h \times w \times K \text{ feature } \rightarrow h \times w \times C \text{ classes } \rightarrow 1 \times 1 \times C \text{ probabilities by classes}$ )
+    \item Different pooling method \begin{itemize}
+        \item GAP
+        \item Max 
+        \item LSE 
+        \item WELDON: max+min pooling: keep also the min to have a localized evidence of the \textit{abscence} of the class. For example, take an image with a bed and a chair, the chair indicate a dinning room but the bed tells it's not !
+    \end{itemize}
+\end{itemize}
+Supervised Sementic Segmentation
+\begin{itemize}
+    \item F-CN : upsample progressivly (pas clair help)
+    \item DeepLab \begin{itemize}
+        \item Input : Heat map for one classes 
+        \item $\rightarrow$ Upscaling with bi-interpolation and with atrous filtering (== conv with dilatation !)
+        \item $\rightarrow$ Fully-connected Conditionnal Random Field (CRF) : \begin{itemize}
+            \item Model conditional probability distributions
+            \item Graph of pixels
+            \item Use the intensity of the heat map pixel (unary term) and the relationships between pairs of neighboring pixels (pariwise term) i.e. penalizes similar pixels having different labels
+            \item $\rightarrow$ into an energy function $\rightarrow$ minimization of this function
+        \end{itemize}
+    \end{itemize}
+    \item Deconvolution Networks \begin{itemize}
+        \item Mirrored version of the CNN
+        \item Unpooling layer : output = sparse activation map \begin{itemize}
+            \item Switch variable : where to had empty pixels (obtained during pooling (idk how))
+        \end{itemize}
+        \item Deconvolution : learning a filter to go from $ 1 $  pixel to $ 3 \times 3 $
+        \item Add skip connection between the convolution and the deconvolution network $\rightarrow$ U-Net
+    \end{itemize}
+\end{itemize}
+
+
 \section{ViT}
 \begin{figure}[H]
     \centering
@@ -123,6 +163,7 @@ Kernel Tricks :
 \end{figure}
 \begin{itemize}
     \item ConvNet = local attention (less local after many layers) VS ViT = global attention 
+    \item To achieve downstream task such as detection, segmentation, videos $\rightarrow$ Encore $\rightarrow$ process $\rightarrow$ decode, all with ViT. The decoder take a task specific query array. 
 \end{itemize}
 
 \section{GANs}
@@ -141,7 +182,10 @@ Kernel Tricks :
         V(\textcolor{red}{G}, \textcolor{green}{D}) & = \mathbb{E}_{x\sim P_{\text{data}}}[\log \textcolor{green}{D}(x)] + \mathbb{E}_{\textcolor{red}{x\sim P_G}}[\log(1 - \textcolor{green}{D}(x))] \\
         \textcolor{red}{G^*}                        & = \arg \textcolor{red}{\min_{G}} \textcolor{green}{\max_{D}} V(\textcolor{red}{G}, \textcolor{green}{D})
     \end{align*} \begin{itemize}
-        \item For the generator $ \max _D V(G,D) $ evaluate the "difference" between $ P_G $ and $ P_{\text{data}} $
+        \item For the generator $ \max _D V(G,D) $ evaluate the "difference" between $ P_G $ and $ P_{\text{data}} $. The solution of this loss is $ P_G = P_{\text{data}} $ 
+        \item $ D(x) $ probability that $ x \in P_G $ with $ x \in P_{\text{data}} $  $\rightarrow$ to maximise
+        \item $ D(G(z)) $ probability that the output of the generator $ G $  is a real image $\rightarrow$ to maximise $ \max _G D(G(z)) $  $ \Leftrightarrow $ to $ \min _G 1 - D(G(z)) $  
+        \item \( D \) tries to maximize the probability it correctly classifies reals and fakes (\( \log(D(x)) \)), and \( G \) tries to minimize the probability that \( D \) will predict its outputs are fake (\( \log(1 - D(G(z))) \)).
     \end{itemize}
     \item Evaluation:
     \item Cons: Learning can be hard : G and D must be well synchronized for convergence
@@ -155,4 +199,53 @@ Kernel Tricks :
     \end{itemize}
     \item Editing: Possible to change a generated image in the latent space to move it in a different class zone with linear interpolation (smiling womand - neutral women + neutral man = smiling man)
 \end{itemize}
+
+\section{Conditional GAN}
+
+
+\section{Domain adaptation}
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        \includegraphics*[width=.95\textwidth]{figs/UDA.png}
+    \end{subfigure}%
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        \includegraphics*[width=.7\textwidth]{figs/transfert_learning_overview.png}
+    \end{subfigure}
+\end{figure}
+Unsupervised Domain Adaptation (UDA)
+\begin{itemize}
+    \item The core idea behind UDA is to align the feature distributions between the source and target domains.
+    \item In the courses, we explored the Adversarial Training techniques, but there are also other
+    \item Domain Adversarial Neural Networks (DANN) \begin{itemize}
+        \item Feature extractor $\rightarrow$ \begin{itemize}
+            \item $\rightarrow$ Label classifier: make predictions on the source domain data
+            \item $\rightarrow$ Domain Discriminator: classify the domain of the features (source or target) 
+        \end{itemize}
+        \item Gradient Reversal Layer \begin{itemize}
+            \item The key innovation in DANN is the Gradient Reversal Layer, which is placed between the feature extractor and the domain discriminator.
+            \item During the backward pass, the Gradient Reversal Layer reverses the gradients flowing into the domain discriminator. This means that the feature extractor is encouraged to produce features that confuse the domain discriminator.
+            \item \textbf{Essentially}, the feature extractor is trained to make domain-specific information less distinguishable by the discriminator, encouraging it to learn domain-invariant features.
+        \end{itemize}
+        \item Loss =  combines the classification loss from the label predictor (for the source domain) and the adversarial loss from the domain discriminator.
+        \item Once the DANN is trained, the shared feature extractor $\rightarrow$ extract features from the target domain $\rightarrow$ clasifier
+    \end{itemize}
+\end{itemize}
+Zero-shot
+\begin{itemize}
+    \item Representing each class by its attributes $\rightarrow$ classify using a table of attribute by class
+    \item Attribute embedding + class embedding $\rightarrow$ Take the nearest class ? $\rightarrow$ Vision + language models \begin{itemize}
+        \item Triplet loss \begin{itemize}
+            \item 3 params : anchor point (the image), positive caption, negative captions
+            \item loss function aims to minimize the distance (or maximize the similarity) between the anchor and the positive example while simultaneously maximizing the distance (or minimizing the similarity) between the anchor and the negative example.
+            \[
+                \text{Triplet Loss }= \max(0, margin + d(anchor, positive) - d(anchor, negative))
+            .\]
+            where d(a, b) represents the distance or dissimilarity between data points a and b.
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
 \end{document}
