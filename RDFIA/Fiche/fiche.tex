@@ -1,0 +1,251 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[a4paper, margin=2.5cm]{geometry}
+\usepackage{graphicx}
+\usepackage[french]{babel}
+
+\usepackage[default,scale=0.95]{opensans}
+\usepackage[T1]{fontenc}
+\usepackage{amssymb} %math
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{systeme}
+\usepackage{xcolor}
+\usepackage{float}
+\usepackage{subcaption}
+
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    pdftitle={Overleaf Example},
+    % pdfpagemode=FullScreen,
+    }
+\urlstyle{same} %\href{url}{Text}
+
+\theoremstyle{plain}% default
+\newtheorem{thm}{Théorème}[section]
+\newtheorem{lem}[thm]{Lemme}
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem*{cor}{Corollaire}
+%\newtheorem*{KL}{Klein’s Lemma}
+
+\theoremstyle{definition}
+\newtheorem{defn}{Définition}[section]
+\newtheorem{exmp}{Exemple}[section]
+% \newtheorem{xca}[exmp]{Exercise}
+
+\theoremstyle{remark}
+\newtheorem*{rem}{Remarque}
+\newtheorem*{note}{Note}
+%\newtheorem{case}{Case}
+
+
+
+\title{Cours}
+\author{Charles Vin}
+\date{Date}
+
+\begin{document}
+\maketitle
+
+
+\section{Feature detection \& description}
+\begin{itemize}
+    \item Local detection/description, looking for invariance
+    \item feature detection : Points/Regions of Interest detection : Corner detection \begin{itemize}
+        \item Detection of change in two directions with the eigenvalue of the Hessian matrix (one value = one direction)
+        \item Convolution with special filter $\rightarrow$ Large value = corner + comparaison with value before moving the windows $\rightarrow$ Threashold $\rightarrow$ corners
+    \end{itemize}
+    \item Feature description : \begin{itemize}
+        \item Example : SIFT
+        \item Similar patch of image == close descriptor
+    \end{itemize}
+    \item Bag of visual word of descriptor / features \begin{itemize}
+        \item Extraction (with feature descriptor or cnn) $\rightarrow$ into clustering (unsupervised learning ; K-Means, GMM, ...)
+        \item
+    \end{itemize}
+    \item K-Means \begin{itemize}
+        \item Loss : $ C(w) = \sum_{i=1}^{n} \min _k \left\| x_i - w_k  \right\| ^2 $
+        \item pros : simplicty, convergence to local min
+        \item Cons: mémory intesive, choice of $ K $, sensitive to init and artefacts, pherical clusters
+    \end{itemize}
+    \item Image signature (not sure about this one): matrix of Likelihood value, size $ M \times K $ with $ K  $ dico size, number of cluster extracted and $ M = \text{ number of feature} $, then take the maximum likehood I think
+\end{itemize}
+
+\section{SVM}
+\begin{itemize}
+    \item Problem: Donnée non linéaire $\rightarrow$ Projection, mais si projection dim ++ $\rightarrow$ Attention sur apprentissage + quel dim choisir $\rightarrow$ Solution : SMV do this auto
+    \item Maximiser la marge $ \gamma  \Leftrightarrow $ minimiser $ \left\| w \right\| $ sous la contrainte $ \forall i, (wx^i + b)y^i \geq 1 $ par des calculs obscures ($ \geq 1 $ car on veut que la distance entre la droite de régression et ces deux marges soit supérieur 1)
+    \item Prise en compte des erreurs si pas de frontière linéaire pur : (soft margin) \begin{itemize}
+        \item $ \xi  $ variable de débordement par rapport à sa marge pour chaque point mal classé $\rightarrow$ Raison obscure $\rightarrow \xi = \max (0, 1 - (wx^i + b) y^i) $ Hinge loss
+        \item On avait $\min ||w||^2$ maintenant $\min ||w|||^2 + K \sum_{}^{}\xi $ avec $K$ hyper param nombre d'erreur
+        \item $ \left\| w  \right\| ^2  $ = margin maximization, $ K \sum_{}^{}\xi $ = Constraint satisfaction
+        \item $ \left\| w  \right\| ^2  $ = Régularization, $ K \sum_{}^{}\xi $ = Data fitting
+    \end{itemize}
+    \item The support vectors are the data points that lie on the margin, which is the region between the decision boundary and the closest data points of each class. Support vectors are critical in SVM because they determine the location and orientation of the decision boundary. All other data points that are not support vectors are not used to construct the decision boundary, which means that SVM is robust to noise and outliers in the data.
+    \item La taille de la marge est un hyper-paramètre important : marge grande == underfitting // marge petite == overfitting (séparation linéaire plus proche des points, moins centrée)
+    \item $ K $ petit = $ K \sum_{}^{}\xi  $ petit = petite pénalisation des erreur = tolérance de celle ci = underfitting // inverse
+    \item Better on noisy problem
+\end{itemize}
+
+Kernel Tricks :
+\begin{itemize}
+    \item Kernel Function : $ k(x,y) = <\phi (x), \phi(y)> $
+    \item Mesure la similarité entre 2 objets \begin{itemize}
+        \item -- = vecteur opposé = éloigné
+        \item = 0 = produit orthogonal = éloigné
+        \item ++ = vecteur aligné = proche
+    \end{itemize}
+\end{itemize}
+
+
+
+\section{CNN arch}
+\begin{itemize}
+    \item LeNet5: first CNN, for MNIST, FC at the end
+    \item AlexNet: bigger, GPU, more data, dropout, pooling, relu, data aug, contrast normalization, FC at the end
+    \item GoogLeNet: Inception layers, auxilary classifier + main classifier, less FC than alexnet at the end of each head (less params) 
+    \item VGG: rly deep, the deeper the better
+    \item ResNet: good of deep, skip (residual) connection to stabilise training
+\end{itemize}
+
+
+\section{FCN \& Segmentation}
+FCN
+\begin{itemize}
+    \item ImageNet : huge (1.2M), label, centered objects
+    \item VOC, MS COCO: complexe scene : not centered, many different objects, variable size, background 
+    \item Large/Complexe images solution: \begin{itemize}
+        \item Resize : Naïve approach
+        \item Sliding windows 
+    \end{itemize}
+    \item J'arrive pas a capter le diapo, pourtant j'étais au cours ptdr, j'vais écrire ce que je comprend
+    \item We're trying to make a network that output heat maps per class and can classify each image
+    \item Heat map $\rightarrow$ score by class == not easy, need pooling ($ h \times w \times K \text{ feature } \rightarrow h \times w \times C \text{ classes } \rightarrow 1 \times 1 \times C \text{ probabilities by classes}$ )
+    \item Different pooling method \begin{itemize}
+        \item GAP
+        \item Max 
+        \item LSE 
+        \item WELDON: max+min pooling: keep also the min to have a localized evidence of the \textit{abscence} of the class. For example, take an image with a bed and a chair, the chair indicate a dinning room but the bed tells it's not !
+    \end{itemize}
+\end{itemize}
+Supervised Sementic Segmentation
+\begin{itemize}
+    \item F-CN : upsample progressivly (pas clair help)
+    \item DeepLab \begin{itemize}
+        \item Input : Heat map for one classes 
+        \item $\rightarrow$ Upscaling with bi-interpolation and with atrous filtering (== conv with dilatation !)
+        \item $\rightarrow$ Fully-connected Conditionnal Random Field (CRF) : \begin{itemize}
+            \item Model conditional probability distributions
+            \item Graph of pixels
+            \item Use the intensity of the heat map pixel (unary term) and the relationships between pairs of neighboring pixels (pariwise term) i.e. penalizes similar pixels having different labels
+            \item $\rightarrow$ into an energy function $\rightarrow$ minimization of this function
+        \end{itemize}
+    \end{itemize}
+    \item Deconvolution Networks \begin{itemize}
+        \item Mirrored version of the CNN
+        \item Unpooling layer : output = sparse activation map \begin{itemize}
+            \item Switch variable : where to had empty pixels (obtained during pooling (idk how))
+        \end{itemize}
+        \item Deconvolution : learning a filter to go from $ 1 $  pixel to $ 3 \times 3 $
+        \item Add skip connection between the convolution and the deconvolution network $\rightarrow$ U-Net
+    \end{itemize}
+\end{itemize}
+
+
+\section{ViT}
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=.8\textwidth]{figs/The-Vision-Transformer-architecture-a-the-main-architecture-of-the-model-b-the.png}
+\end{figure}
+\begin{itemize}
+    \item ConvNet = local attention (less local after many layers) VS ViT = global attention 
+    \item To achieve downstream task such as detection, segmentation, videos $\rightarrow$ Encore $\rightarrow$ process $\rightarrow$ decode, all with ViT. The decoder take a task specific query array. 
+\end{itemize}
+
+\section{GANs}
+\begin{itemize}
+    \item Auto encoder \& VAE \begin{itemize}
+        \item problem : one pixel difference beweet generated image and the target can be either realistic or not
+    \end{itemize}
+    \item Discriminator : generated image VS real images :
+    \item Generator: random image $\rightarrow$ generation $\rightarrow$ discriminator
+    \item Learning: \begin{itemize}
+        \item Discriminator: GD with a freeze generator
+        \item Generator : GD with a freeze discriminator
+        \item loop 50.000 times
+    \end{itemize}
+    \item Math and Loss \begin{align*}
+        V(\textcolor{red}{G}, \textcolor{green}{D}) & = \mathbb{E}_{x\sim P_{\text{data}}}[\log \textcolor{green}{D}(x)] + \mathbb{E}_{\textcolor{red}{x\sim P_G}}[\log(1 - \textcolor{green}{D}(x))] \\
+        \textcolor{red}{G^*}                        & = \arg \textcolor{red}{\min_{G}} \textcolor{green}{\max_{D}} V(\textcolor{red}{G}, \textcolor{green}{D})
+    \end{align*} \begin{itemize}
+        \item For the generator $ \max _D V(G,D) $ evaluate the "difference" between $ P_G $ and $ P_{\text{data}} $. The solution of this loss is $ P_G = P_{\text{data}} $ 
+        \item $ D(x) $ probability that $ x \in P_G $ with $ x \in P_{\text{data}} $  $\rightarrow$ to maximise
+        \item $ D(G(z)) $ probability that the output of the generator $ G $  is a real image $\rightarrow$ to maximise $ \max _G D(G(z)) $  $ \Leftrightarrow $ to $ \min _G 1 - D(G(z)) $  
+        \item \( D \) tries to maximize the probability it correctly classifies reals and fakes (\( \log(D(x)) \)), and \( G \) tries to minimize the probability that \( D \) will predict its outputs are fake (\( \log(1 - D(G(z))) \)).
+    \end{itemize}
+    \item Evaluation:
+    \item Cons: Learning can be hard : G and D must be well synchronized for convergence
+    \item Pros: Computationnal efficient (no complexe likelihood inference), can fit sharper distribution, Spatial resolution, object quality
+    \item Achitecture improvement  \begin{itemize}
+        \item Laplacian Pyramid GAN (LAPGANs) (improve spacial resolution) : improve the generator : combines the strengths of Laplacian pyramids and GANs. It generates images in a coarse-to-fine fashion, where each level of the Laplacian pyramid refines the image details, leading to high-quality, high-resolution image generation.
+        \item DCGANs (Improve object quality): full conv generator and discriminator (no fcc, better activation fnc, batchnorm) ; upsampling step by step
+        \item ProGANs: combine both idea : the network is trained incrementally, starting with low-resolution images and progressively increasing the resolution by adding layers to the network. This approach enhances the stability and efficiency of the training process, allowing the generation of high-resolution, detailed images with improved quality and variation. $\rightarrow$ complicated to train "out of the box" (block adding logistics and have to ajust params for each dataset)
+        \item MSG-GANs: upsampling + skip connection between the generator and the discriminator for better learning
+        \item StyleGANs: style transfer thing with control of the image generation process at different levels of detail through the use of adaptive instance normalization (AdaIN)
+    \end{itemize}
+    \item Editing: Possible to change a generated image in the latent space to move it in a different class zone with linear interpolation (smiling womand - neutral women + neutral man = smiling man)
+\end{itemize}
+
+\section{Conditional GAN}
+
+
+\section{Domain adaptation}
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        \includegraphics*[width=.95\textwidth]{figs/UDA.png}
+    \end{subfigure}%
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        \includegraphics*[width=.7\textwidth]{figs/transfert_learning_overview.png}
+    \end{subfigure}
+\end{figure}
+Unsupervised Domain Adaptation (UDA)
+\begin{itemize}
+    \item The core idea behind UDA is to align the feature distributions between the source and target domains.
+    \item In the courses, we explored the Adversarial Training techniques, but there are also other
+    \item Domain Adversarial Neural Networks (DANN) \begin{itemize}
+        \item Feature extractor $\rightarrow$ \begin{itemize}
+            \item $\rightarrow$ Label classifier: make predictions on the source domain data
+            \item $\rightarrow$ Domain Discriminator: classify the domain of the features (source or target) 
+        \end{itemize}
+        \item Gradient Reversal Layer \begin{itemize}
+            \item The key innovation in DANN is the Gradient Reversal Layer, which is placed between the feature extractor and the domain discriminator.
+            \item During the backward pass, the Gradient Reversal Layer reverses the gradients flowing into the domain discriminator. This means that the feature extractor is encouraged to produce features that confuse the domain discriminator.
+            \item \textbf{Essentially}, the feature extractor is trained to make domain-specific information less distinguishable by the discriminator, encouraging it to learn domain-invariant features.
+        \end{itemize}
+        \item Loss =  combines the classification loss from the label predictor (for the source domain) and the adversarial loss from the domain discriminator.
+        \item Once the DANN is trained, the shared feature extractor $\rightarrow$ extract features from the target domain $\rightarrow$ clasifier
+    \end{itemize}
+\end{itemize}
+Zero-shot
+\begin{itemize}
+    \item Representing each class by its attributes $\rightarrow$ classify using a table of attribute by class
+    \item Attribute embedding + class embedding $\rightarrow$ Take the nearest class ? $\rightarrow$ Vision + language models \begin{itemize}
+        \item Triplet loss \begin{itemize}
+            \item 3 params : anchor point (the image), positive caption, negative captions
+            \item loss function aims to minimize the distance (or maximize the similarity) between the anchor and the positive example while simultaneously maximizing the distance (or minimizing the similarity) between the anchor and the negative example.
+            \[
+                \text{Triplet Loss }= \max(0, margin + d(anchor, positive) - d(anchor, negative))
+            .\]
+            where d(a, b) represents the distance or dissimilarity between data points a and b.
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+\end{document}
