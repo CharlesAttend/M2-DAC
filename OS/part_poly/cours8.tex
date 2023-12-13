@@ -1,0 +1,294 @@
+\underline{Nouveau cours du 13/12} \\
+
+\section{Big sum up of what have been done }
+
+\paragraph{Lecture 1}: $ \mathcal{R}(\hat{f} - \mathcal{R}^\star ) $ with the help of \textbf{uniform bound} over the class of predictors
+
+\[
+    \mathcal{R}(\hat{f} - \mathcal{R}^\star ) \leq \text{approx error} + \text{Stochastic error } + \text{ Optim error}
+.\]
+\begin{itemize}
+    \item Stochastic error : $ \mathcal{O}(1 / \sqrt{n}) $ due to uniform bound and due to working with \textbf{finite} samples
+    \item optimisation error : \textbf{NO NEED TO CONVERGE PRECISELY TOWARDS THE ERM} 
+\end{itemize}
+
+\paragraph{Lecture 2}: Basics of deterministic optim 
+\begin{itemize}
+    \item Definition of convexity, convexe function, $ \mu$-strongly convexe, L-smooth ($\rightarrow$ cocoercivity of the gradient).
+    \item Convergence analysis of GD: L-Smooth ($ \mathcal{O}(1/T) $ ) + $ \mu  $-strongly convex $ \mathcal{O}((1 - \underbrace{\kappa }_{= \mu / L })^t) $  
+    \item Subgradient algo: 2 terms in the bound $\rightarrow$ need of trade-off $\rightarrow$ Choice of the step size 
+    \item Inertial methods : Nesterov, Heavy ball
+\end{itemize}
+
+\paragraph{Lecture 3}: SGD $ \theta _{t+1} = \theta _t - \gamma _{t+1}, g_{t+1}(\theta _t) $ 
+\begin{itemize}
+    \item $\rightarrow$ ERM 
+    \item $\rightarrow$ True risk minimization
+    \item $ \Rightarrow \mathbb{E}[g_t | \mathcal{F}_{t-1}] = \nabla F(\theta _{t - 1}) $ 
+    \item Convergence analysis (with gradient estimates of boundede variance) $\rightarrow$ Again trade off between 2 terms that is reflected bu the choice in the step size. \begin{itemize}
+        \item L-Smooth : $ \gamma = \mathcal{O }(1 / \sqrt{t}) $
+        \item + $ \mu$-strongly convex : $ \gamma = \mathcal{O}(1 / t) $  
+    \end{itemize}
+\end{itemize}
+\begin{figure}[H]
+    \centering
+    % \includegraphics[width=.5\textwidth]{}
+\end{figure}
+
+\paragraph{Lecture 4}: Stability of learning algo 
+\[
+    \text{Gen bound} \leq \frac{\text{Stability } + \text{ Optimisation}}{\text{ Algorithm- dependent}}
+.\]
+\begin{itemize}
+    \item ERM
+    \item SGD with multi-pass !! + early stopping as algorithmic regularization.
+\end{itemize}
+
+\paragraph{Lecture 5}: Better stochastic methods
+
+In case of ERM \begin{enumerate}
+    \item Variance reduction methods
+    \item Inertial stochastic methods (bof)
+    \item Adaptive learning rate ($ \approx  $ Newton quand on peut pas se l'offrir )
+    \item[2+3] ADAM $ \ensuremath\heartsuit $ 
+\end{enumerate}
+
+
+
+
+
+\chapter{Learning in interpolation regimes}
+It is usual in ML to resort to an explicit regularization (ridge / losses, ect ) to control the "size" of the hypothesis space, and above all the stochastic error.
+\begin{figure}[H] % photo at 9:32
+    \centering
+    % \includegraphics[width=.5\textwidth]{}
+\end{figure}
+
+This approach was the paradigm in ML until a few years ago.
+However, large scale models are often trained without such a regularization \& still achieve state-of-the-art \textit{test} performance in certain task. 
+
+$\rightarrow$ Counter-intuitive, all the more so as they are over-parameterized and achieve \textit{zero} in training error. 
+
+\begin{figure}[H]% Table photo taken at 9:44
+    \centering
+    % \includegraphics[width=.5\textwidth]{}
+\end{figure}
+Statistical wisdom suggests that a method that takes advantage of too many degrees of freedom by perfectly interpolating noisy data will be poor at predicting new outcomes. 
+
+In deep learning, training algo seem to induce a bias that break the equivalence among all models that interpolate the observed data $\rightarrow$ \textbf{Implicit bias}
+
+\section{Implicit bias of (S)GD in interpolation regimes}
+\subsection{Regression with least squares}
+
+Settings : Linear model with quadratic cost $ F(\theta ) = \frac{1 }{2n } \sum_{i=1 }^{n } (Y_i - X_i^T \theta )^2 $ with $ (X_i, Y_i)_{1 \leq i \leq n} $ training set, $ \theta \in \mathbb{R}^d, X_i \in \mathbb{R}^d, Y_i \in \mathbb{R} $ 
+\[
+    Y = \begin{pmatrix}
+        Y_1 \\
+        \vdots \\
+        Y_n
+    \end{pmatrix} \in \mathbb{R}^n , \mathbb{X} = \begin{pmatrix}
+        X_1^T \\
+        \vdots \\
+        X_n^T
+    \end{pmatrix}, \rightarrow F(\theta) = \frac{1}{2n} \left\| Y - \mathbb{X } \theta  \right\| _2 ^2
+.\]
+with $ n \ll d $ (overparametrisation). The kernel matrix $ \mathbb{X} \mathbb{X}^T \in \mathbb{R} ^{n \times n} $ is assumed to be invertible. 
+
+Therefore, there exist an infinity of minimizer of $ F $, corresponding to the solutions of the system $ Y = \mathbb{X} \theta $. The set of minimizers is actually an affine space (given a solution $ \theta _0 $ to "$ Y = \mathbb{X} \theta  $"), $ \theta _0 + \ker (\mathbb{X}) $ is the entire set of solution
+\begin{note}[]
+    All the minizer achieve zero training error!
+\end{note}
+
+\paragraph{Running GD} Imagine that you run (S)DG to minimize $ F $ without explicite regularization (L2 norm or L1 norm, ect)
+\[
+    \begin{cases}
+        \theta _0 \in \mathbb{R }^d\\
+        \theta _{t+1} = \theta _t - \gamma \nabla F(\theta _t)
+    \end{cases}
+.\]
+\begin{note}[]
+    Computation of Lip const \begin{align*}
+        \nabla F(\theta ) = \frac{1 }{n } \mathbb{X}^T (\mathbb{X} \theta - Y) \\
+        H_F (\theta ) &= \frac{1}{n} \mathbb{X} \mathbb{X}^T \\
+        L &= \lambda _{max} (\mathbb{X} \mathbb{X} ^T) / n
+    \end{align*}
+\end{note}
+When $ F $ is convex \& L-smooth (with $ L= = \lambda _{max} (\mathbb{X} \mathbb{X} ^T) / n $ ) the GD CV provided $ \gamma < 2 / L $ and typically choosing $ \gamma = 1/L $ ("optimal" constant step size).
+
+In particular when $ \theta _0 = 0 $ and $ \gamma \leq 1/L $ , the GD iterates are $ \theta _{t+1} = \theta _t - \frac{\gamma }{n } \mathbb{X}^T ( \mathbb{X } \theta _T - Y) $. Thus 
+\begin{align*}
+    \mathbb{X} \theta _t - Y 
+        &= \mathbb{X} \theta _{t-1} - \frac{\gamma }{n }\mathbb{X} \mathbb{X}^T (\mathbb{X} \theta _{t-1} - Y) - Y \\
+        &= (I - \frac{\gamma }{n } \mathbb{X} \mathbb{X}^T) (\mathbb{X} \theta _{t - 1} - Y) \\
+        &= ( I - \frac{\gamma }{n } \mathbb{X} \mathbb{X}^T)^t (\mathbb{X} \theta _0 - Y) \\
+        &= - ( I - \frac{\gamma  }{n } \mathbb{X} \mathbb{X} ^T )^t Y (\text{ with } \theta _0 = 0)
+\end{align*}
+This leads to  
+\[
+    \left\| x \theta _t - Y  \right\| _2 ^2 - 0 \leq (1 - \frac{\gamma }{n } \underbrace{\lambda _{min}}_{\neq 0 ; \geq 0} (\mathbb{X} \mathbb{X}^T))^{2t} \left\| Y \right\| _2 ^2
+.\]
+\texttimes: Linear convergence of $ \mathbb{X} \theta _t  $ towards $ Y $ Note that when $ \theta _0 = 0, \theta _t \in In \mathbb{X}^T = span(\{X_1, \dots, X_n\}) $ for all $ t $. Indeed GD iterates are always linear combination of "$ \mathbb{X}^T  $ something". We can write $ \forall t > 0  $ for some $ \alpha _t, \theta _t = \mathbb{X} ^T \alpha _t $  (\textit{"representer thm in an algorithmic version"})
+
+Since \begin{align*}
+    \left\| \mathbb{X} \theta _t - Y  \right\| _2 ^2 &\to _{t \to +\infty } 0 \\
+    \mathbb{X} \theta _t &\to _{t \to +\infty } Y \\
+    \mathbb{X} \mathbb{X} ^T &\to _{t \to +\infty } Y \\
+    \left\| \alpha _t - (\mathbb{X} \mathbb{X} ^T)^{-1} Y \right\| _2 ^2 
+        &= \left\| (\mathbb{X} \mathbb{X}^T)^{-1} \mathbb{X} \mathbb{X}^T \alpha _t - (\mathbb{X} \mathbb{X} ^T)^{-1} Y \right\| _2 ^2 \\ 
+        &\leq (\lambda _{max} ( (\mathbb{X} \mathbb{X} ^T)^{-1} ))^2 \left\| \mathbb{X} \theta _t - Y \right\| _2 ^2 \\
+    \text{then } \alpha _t &\to _{t \to +\infty } (\mathbb{X} \mathbb{X}^T)^{-1} Y
+\end{align*}
+And finally
+\[
+    \left\| \theta _t - \mathbb{X} ^T (\mathbb{X} \mathbb{X} ^T)^{-1} Y \right\| _2 ^2 \to _{t \to +\infty } 0
+.\]
+(sanity check: $ \mathbb{X}^T ( \mathbb{X} \mathbb{X} ^T)^{-1} Y $ is solution of the system). \\
+What is $ \theta ^\star := \mathbb{X}^T (\mathbb{X} \mathbb{X}^T)^{-1} Y $ ? $ \mathbb{X}^T (\mathbb{X} \mathbb{X}^T)^{-1} $ is the pseudo-inverse of $ \mathbb{X} $. Indeed when $ \mathbb{X} \in \mathbb{R}^{n \times d} $, the SVD decompostion of $ \mathbb{X}  $ reads as 
+\begin{align*}
+    \mathbb{X} &= U D V^T \\
+    U \in& \mathbb{R}^{n \times n} \text{ orthogonal } U^T = T^{-1} \\
+    V \in& \mathbb{R }^{d \times d} \text{ orthogonal} \\
+    D \in& \mathbb{R }^{n \times d}, D = [ \begin{pmatrix}
+        \sigma _1 & \dots  & 0 \\
+        \vdots  & \ddots & \vdots \\
+        0 & \dots & \sigma _n
+    \end{pmatrix} | 0 ] \\
+    \sigma _1 \geq \sigma _2 \geq& \dots \sigma _n \underbrace{>}_{rk(\mathbb{X}) = n} \text{ singular values of } \mathbb{X} \\
+    \mathbb{X} ^T (\mathbb{X} \mathbb{X}^T)^{-1} 
+        &= V D^T U^T ( UDV^T VD^T U^T)^{-1} \\
+        &= VD^T U^T (U \begin{pmatrix}
+            \sigma _1 ^2 & \dots  & 0 \\
+            \vdots  & \ddots & \vdots \\
+            0 & \dots & \sigma _n ^2
+        \end{pmatrix} U^T) \\
+        &= V D^T U ^T ( U \begin{pmatrix}
+            1 / \sigma _1 ^2 & \dots  & 0 \\
+            \vdots  & \ddots & \vdots \\
+            0 & \dots & 1/ \sigma _n ^2
+        \end{pmatrix} U^T)
+\end{align*}
+$ \in \underbrace{\mathbb{X} ^T (\mathbb{X} \mathbb{X})^{-1}}_{X^\dagger} $ is the pseudo-inverse of the \textit{fat} matrix $ \mathbb{X} $ 
+\begin{note}[]
+    When $ d \ll n $ , $ \mathbb{X} $ is long and $ \mathbb{X}^{\dagger} = (\mathbb{X}^T \mathbb{X})^{-1} \mathbb{X} ^T $ 
+\end{note}
+We can show that $ \theta ^\star = \mathbb{X} ^T (\mathbb{X} \mathbb{X})^{-1} $ is the solution of "$ Y = \mathbb{X} \theta  $" of the least $ l^2 $-norm 
+\begin{align*}
+    \min  \frac{1 }{2} \left\| \theta  \right\| _2 ^2 = \min _{\theta \in \mathbb{R}^d} \max _{\Lambda \in \mathbb{R}^n} \frac{1 }{2} \left\| \theta  \right\| _2 ^2 + \underbrace{\left\langle \Lambda , \mathbb{X} \theta - Y \right\rangle }_{\Lambda ^T \mathbb{X} \theta - \Lambda ^T Y}
+\end{align*}
+KKT conditionns 
+\[
+    \begin{cases}
+        \theta  + \mathbb{X} \Lambda =1  &\text{ (1)}\\
+        Y = \mathbb{X} \theta &\text{ (2)}\\
+    \end{cases} 
+.\]
+\begin{align*}
+    \text{(1) } 
+        &\Rightarrow \mathbb{X} \theta + \mathbb{X} \mathbb{X} ^T \Lambda = 0 \\
+        &\Rightarrow \Lambda = - (\mathbb{X} \mathbb{X}^T)^{-1} \underbrace{\mathbb{X} \theta }_{Y} = - (\mathbb{X} \mathbb{X}^T)^{-1} Y \\
+    \theta ^\star &= - \mathbb{X} ^T \Lambda = + \mathbb{X}^T (\mathbb{X} \mathbb{X}^T)^{-1} Y
+\end{align*}
+
+\paragraph{Take-home message}: In the case of overparameterized linear regression, the GD initialized at $ 0 $ converge towards the solution of "$ \mathbb{X} \theta = Y $" of \textit{minimal}  $ l^2 $-norm, a.k.a. minimal-$ l^2 $-norm interpolator.
+
+This can be interpreted as an implicit bias / regularization of GD.
+\begin{note}[]
+    This result holds for gradient-based methods in general using linear combination of current \& past gradient : 
+    \begin{itemize}
+        \item[$\checkmark$] (S)GD
+        \item[$\checkmark$] (S)GD with momentum
+        \item[$\checkmark$] Nesterov's acceleration
+        \item[\texttimes] quasi Newton methods
+        \item[\texttimes] diagonally preconditioned methods (Adam/Adagrad)
+    \end{itemize}
+\end{note}
+\begin{note}[]
+    In the overparameterized regime, SGD will also converge to the min-$ l^2 $-norm interpolation, \textit{even} with a \textit{fixed} learning rate. Indeed the minimizers of $ F $ also minimize the $ f_i $'s! Therefore the stochastic noise in the gradient estimates at the optimum is $ 0 $ in the overparameterized regime.
+\end{note}
+
+\subsection{Classification in the interpolation regime/separable case}
+In this section, we are interested in the behaviour of GD for unregularized logistic regression in the separable setting $\rightarrow$ interpolation (zero classification error on the training set). 
+
+\textbf{Goal:} 
+\[
+    \min _{\theta \in \mathbb{R}^d} F(\theta ) := \frac{1}{n} \sum_{i)1}^{n} \log (1 + \exp (-Y_i X_i ^T \theta )) 
+.\]
+(MLE approach associated to the model $ \mathbb{P}(Y=1 | X) = \sigma (X^T \theta ^\star ) $ with $ \sigma  $ sigmoid).
+
+In the case of separable data, $ \exists \theta _{sep} \in \mathbb{R}^d, \forall i = 1, \dots, n$ 
+\[
+    Y_i X_i^T \theta _{sep} > 0
+.\]
+here $ X_i^t \theta a_{sep} $ is \begin{itemize}
+    \item $ > 0 $ for $ Y_i = 1 $
+    \item $ < 0 $ for $ Y_i = -1 $
+\end{itemize}
+$ \frac{1}{n } \sum_{i=1}^{n }\log (1 + \exp (- Y_i X_i ^T (\lambda \theta _{sep}))) \to _{\lambda \to +\infty } 0 $ (pas sur d'où point la flèche de la limite) $\rightarrow$ \textit{No} minimizer, Only infimum.
+
+To focus on the key aspect of the problem, we make some simplifications \begin{enumerate}
+    \item [(i)] consider the gradient flow (GF) from some initialisation point $ \theta (0) = \theta _0 \in \mathbb{R}^d $ and $ \theta ^\prime (t) = - \nabla F(\theta (t)) $ 
+    \item [(ii)] we replacethe logistic loss by exponential loss 
+    \[
+        F(\theta ) = \frac{1 }{n } \sum_{i=1}^{n } \exp (-Y_i X_i^T \theta )
+    .\]
+\end{enumerate}
+\paragraph{Path and time parametrization}: Here we only care about the optimization path $ \{\theta (t) : t \geq 0\} \subset \mathbb{R}^d $, and more particulary its limit. We remark that the optimization path is unchanged if the objective fct is composed with a differentiable function $ h: \mathbb{R} \to \mathbb{R} $ such that $ h^\prime (u) > 0  $ for $ u \in Im F $.
+
+\textbf{Indeed} let $ G = h \circ F $ and call $ \theta _h $ the corresponding GF 
+\begin{align*}
+    & \theta ^\prime _h (t) &= - \nabla G(\theta _h (t))\\
+    \Leftrightarrow & \theta ^\prime _h &= - \nabla F(\theta _h (t)) h^\prime (F(\theta _h (t))) 
+\end{align*}
+Let $ s(t) := \int_{0}^{t} h^\prime (F(\theta _h (s)))ds $, then 
+\[
+    \frac{d}{dt}\theta (s(t)) = \theta ^\prime (s(t)) s^\prime (t) \underbrace{=}_{(GF)} - \nabla F(\theta (s(t))) \underbrace{s^\prime (t)}_{h^\prime (F (\theta _h (t)))} = \frac{d}{dt}  \theta _h(t) 
+.\]
+which show that the paths $ \{\theta _h (t) \}_{t \geq 0} $ and $ \{\theta (s)\}_{s \geq 0} $  are the same.
+
+Keeping this remark in mind, one can consider 
+\[
+    F(\theta ) := - \log (\frac{1 }{n } \sum_{i=1 }^{n } \exp (-Y_i X_i^T \theta )) 
+.\]
+and the dynamics 
+\[
+    \theta ^\prime (t) = \nabla F(\theta (t))
+.\]
+We remove the minus sign in the definition of GD as $ -\log $ has a negative derivative.
+
+\paragraph{Separable data \& margin}: When $ (X_i, Y_i) $ is linearly separable 
+\[
+    \gamma := \max _{\left\| \theta  \right\| _2 \leq 1} \min _i Y_i X_i ^T \theta 
+.\]
+satisfies $ \gamma > 0 $ 
+
+Equivalently, there existe a linear classifier $ \theta _{sep} \in \mathbb{R}^d $ which makes no mistake on the training set, i.e. for all $ i $ 
+\[
+    Y_i = sign (X_i^T \theta _{sep})
+.\]
+For such a dataset, a natural predictor is the (unique) max margin predictof that achieves the max.
+
+\begin{figure}[H] % photo taken at 
+    \centering
+    % \includegraphics[width=.5\textwidth]{}
+\end{figure}
+
+Recall that by Lagrage duality
+\begin{align*}
+    \sup _{\left\| \theta  \right\| _2 \leq 1} \inf _{1 \leq i \leq n} Y_i X_i^T \theta 
+        &= \sup _{\left\| \theta  \right\| _2 \leq 1} \text{ s.t. } \forall i, Y_i X_i^T \theta \geq t \\
+        &= \inf _{\alpha \in \mathbb{R}_+^n} \sup _{\left\| \theta  \right\| _2 \leq 1} t+ \sum \alpha _i (Y_i X_i^T \theta - t) \\
+        &= \inf _{\alpha \in \mathbb{R}_+ ^n} \left\| \sum_{i=1}^{n } \alpha _i Y_i X_i  \right\| _2 \text{ such that } \sum_{i=1}^{n} \alpha _i = 1
+\end{align*}
+KKT : 
+\[
+    \mathcal{L}(t, \theta , \alpha ) = t + \sum_{i}^{} \alpha _i (Y_i X_i^T \theta  - t ) + \mu ( \left\| \theta  \right\| _2 ^2 - 1)
+.\]
+KKT
+\begin{enumerate}
+    \item $ \nabla _t \mathcal{L} = 0 \Rightarrow \sum \alpha _i = 1  $ 
+    \item $ \nabla _\theta  \mathcal{L} = 0 \Rightarrow \sum \alpha _i Y_i X_i + 2 \mu \theta = 1  $ 
+    \item $ \mu = 0 $ or $ \left\| \theta  \right\| _2 ^2 = 1$ 
+\end{enumerate}
+So that $ \theta \propto \sum_i \alpha _i Y_i X_i $ at the optimum. 
+
+By complementary slackness, non-negative $ \alpha _i $ is non zeor only for $ i $ such that at the optimum $ t = Y_i X_i^T \theta  $ , i.e. for $ i $ attaining the minimum $ \min _{1 \leq i \leq } Y_i X_i^T \theta  $ corresponding to the so called \textit{support vectors.}
