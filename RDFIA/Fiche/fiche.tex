@@ -72,7 +72,7 @@
         \item pros : simplicty, convergence to local min
         \item Cons: mémory intesive, choice of $ K $, sensitive to init and artefacts, pherical clusters
     \end{itemize}
-    \item Image signature (not sure about this one): matrix of Likelihood value, size $ M \times K $ with $ K  $ dico size, number of cluster extracted and $ M = \text{ number of feature} $, then take the maximum likehood I think
+    \item Image signature (not sure about this one): matrix of Likelihood value, size $ M \times K $ with $ K = $ dico size/number of cluster extracted and $ M = \text{ number of feature} $, then take the maximum likehood I think
 \end{itemize}
 
 \section{SVM}
@@ -109,7 +109,7 @@ Kernel Tricks :
     \item AlexNet: bigger, GPU, more data, dropout, pooling, relu, data aug, contrast normalization, FC at the end
     \item GoogLeNet: Inception layers, auxilary classifier + main classifier, less FC than alexnet at the end of each head (less params) 
     \item VGG: rly deep, the deeper the better
-    \item ResNet: good of deep, skip (residual) connection to stabilise training
+    \item ResNet: god of deep, skip (residual) connection to stabilise training
 \end{itemize}
 
 
@@ -161,6 +161,10 @@ Supervised Sementic Segmentation
     \centering
     \includegraphics*[width=.8\textwidth]{figs/The-Vision-Transformer-architecture-a-the-main-architecture-of-the-model-b-the.png}
 \end{figure}
+\[
+    Attention(Q,K,V) = softmax(\frac{Q K^T }{\sqrt[]{d_k }}) V
+.\]
+
 \begin{itemize}
     \item ConvNet = local attention (less local after many layers) VS ViT = global attention 
     \item To achieve downstream task such as detection, segmentation, videos $\rightarrow$ Encore $\rightarrow$ process $\rightarrow$ decode, all with ViT. The decoder take a task specific query array. 
@@ -179,7 +183,7 @@ Supervised Sementic Segmentation
         \item loop 50.000 times
     \end{itemize}
     \item Math and Loss \begin{align*}
-        V(\textcolor{red}{G}, \textcolor{green}{D}) & = \mathbb{E}_{x\sim P_{\text{data}}}[\log \textcolor{green}{D}(x)] + \mathbb{E}_{\textcolor{red}{x\sim P_G}}[\log(1 - \textcolor{green}{D}(x))] \\
+        V(\textcolor{red}{G}, \textcolor{green}{D}) & = \mathbb{E}_{x\sim P_{\text{data}}}[\log \textcolor{green}{D}(x)] + \mathbb{E}_{\textcolor{red}{x\sim P_G}}[\log(1 - \textcolor{green}{D}(\textcolor{red}{V}(x))] \\
         \textcolor{red}{G^*}                        & = \arg \textcolor{red}{\min_{G}} \textcolor{green}{\max_{D}} V(\textcolor{red}{G}, \textcolor{green}{D})
     \end{align*} \begin{itemize}
         \item For the generator $ \max _D V(G,D) $ evaluate the "difference" between $ P_G $ and $ P_{\text{data}} $. The solution of this loss is $ P_G = P_{\text{data}} $ 
