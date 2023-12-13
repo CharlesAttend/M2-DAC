@@ -1,13 +1,49 @@
-\begin{thebibliography}{2}
+\begin{thebibliography}{9}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
   \providecommand{\doi}[1]{doi: #1}\else
   \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
 
+\bibitem[Athalye et~al.(2018)Athalye, Engstrom, Ilyas, and Kwok]{athalye2018synthesizing}
+Anish Athalye, Logan Engstrom, Andrew Ilyas, and Kevin Kwok.
+\newblock Synthesizing robust adversarial examples, 2018.
+
+\bibitem[Brown et~al.(2018)Brown, Mané, Roy, Abadi, and Gilmer]{brown2018adversarial}
+Tom~B. Brown, Dandelion Mané, Aurko Roy, Martín Abadi, and Justin Gilmer.
+\newblock Adversarial patch, 2018.
+
+\bibitem[Selvaraju et~al.(2019)Selvaraju, Cogswell, Das, Vedantam, Parikh, and Batra]{Selvaraju_2019}
+Ramprasaath~R. Selvaraju, Michael Cogswell, Abhishek Das, Ramakrishna Vedantam, Devi Parikh, and Dhruv Batra.
+\newblock Grad-cam: Visual explanations from deep networks via gradient-based localization.
+\newblock \emph{International Journal of Computer Vision}, 128\penalty0 (2):\penalty0 336–359, October 2019.
+\newblock ISSN 1573-1405.
+\newblock \doi{10.1007/s11263-019-01228-7}.
+\newblock URL \url{http://dx.doi.org/10.1007/s11263-019-01228-7}.
+
+\bibitem[Shrikumar et~al.(2019)Shrikumar, Greenside, and Kundaje]{shrikumar2019learning}
+Avanti Shrikumar, Peyton Greenside, and Anshul Kundaje.
+\newblock Learning important features through propagating activation differences, 2019.
+
 \bibitem[Simonyan et~al.(2014)Simonyan, Vedaldi, and Zisserman]{simonyan2014deep}
 Karen Simonyan, Andrea Vedaldi, and Andrew Zisserman.
 \newblock Deep inside convolutional networks: Visualising image classification models and saliency maps, 2014.
+
+\bibitem[Smilkov et~al.(2017)Smilkov, Thorat, Kim, Viégas, and Wattenberg]{smilkov2017smoothgrad}
+Daniel Smilkov, Nikhil Thorat, Been Kim, Fernanda Viégas, and Martin Wattenberg.
+\newblock Smoothgrad: removing noise by adding noise, 2017.
+
+\bibitem[Su et~al.(2019)Su, Vargas, and Sakurai]{Su_2019}
+Jiawei Su, Danilo~Vasconcellos Vargas, and Kouichi Sakurai.
+\newblock One pixel attack for fooling deep neural networks.
+\newblock \emph{IEEE Transactions on Evolutionary Computation}, 23\penalty0 (5):\penalty0 828–841, October 2019.
+\newblock ISSN 1941-0026.
+\newblock \doi{10.1109/tevc.2019.2890858}.
+\newblock URL \url{http://dx.doi.org/10.1109/TEVC.2019.2890858}.
+
+\bibitem[Szegedy et~al.(2014)Szegedy, Zaremba, Sutskever, Bruna, Erhan, Goodfellow, and Fergus]{szegedy2014intriguing}
+Christian Szegedy, Wojciech Zaremba, Ilya Sutskever, Joan Bruna, Dumitru Erhan, Ian Goodfellow, and Rob Fergus.
+\newblock Intriguing properties of neural networks, 2014.
 
 \bibitem[Yosinski et~al.(2015)Yosinski, Clune, Nguyen, Fuchs, and Lipson]{yosinski2015understanding}
 Jason Yosinski, Jeff Clune, Anh Nguyen, Thomas Fuchs, and Hod Lipson.

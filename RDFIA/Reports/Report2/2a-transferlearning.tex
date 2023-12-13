@@ -3,7 +3,7 @@
 \chapter{Transfer Learning}
 \graphicspath{{figs/2a/}}
 
-The exploration focuses on Transfer Learning, where we adapt a well-known deep learning model -- VGG16 -- for new applications. This process involves utilizing the VGG16 architecture, originally designed for extensive image recognition, to comprehend and perform image classification on the 15 Scene dataset. It highlights how transfer learning ''revitalizes'' existing models, making them adaptable to new tasks and showcases their flexibility in addressing diverse real-world image processing challenges.
+The exploration focuses on Transfer Learning, where we adapt a well-known deep learning model -- VGG16 -- for new applications. This process involves utilizing the VGG16 architecture, originally designed for extensive image recognition, to comprehend and perform image classification on the 15 Scene dataset. It highlights how transfer learning makes existing models adaptable to new tasks and showcases their flexibility in addressing diverse real-world image processing challenges.
 
 \section{VGG16 Architecture}
 
@@ -68,15 +68,19 @@ The output size of the last layer of VGG16 is 1000. It corresponds to the 1000 c
 
 \paragraph{3. \textbf{Bonus}: Apply the network on several images of your choice and comment on the results.}
 
-.
+In \Cref{fig:vgg16}, we present the results of applying our network to four different images: two relatively common pictures of a tuxedo cat and a dog, along with two more whimsical images one might come across on the internet. The first of these whimsical images is a close-up photo of a wombat, and the second is a photomontage featuring a dog.
+
+This figure illustrates how the images are preprocessed to fit our network's architecture. The third row showcases the model's best predictions. Remarkably, the model accurately classifies each image, even successfully identifying the breed for both cat and dogs.
 
 \begin{figure}[H]
     \centering
     \includegraphics*[width=0.95\textwidth]{predictions.pdf}
     \caption{Prediction of VGG16 on few images}
+    \label{fig:vgg16}
 \end{figure} % BOBR!!!!!!
 
 \paragraph{4. \textbf{Bonus}: Visualize several activation maps obtained after the first convolutional layer. How can we interpret them?}
+TODO
 
 \section{Transfer Learning with VGG16 on 15 Scene}
 
@@ -109,3 +113,6 @@ Image from 15 scene are black and white so they only have one channel. VGG requi
 Absolutely, it is possible to use the neural network itself instead of training an independent classifier. In the case of models like VGG16, the final classification layer is essentially a neural network. If the classification task is similar to what VGG16 was originally trained for, we can fine-tune this neural network for our specific task. However, if the task is substantially different from the original one, it may not be ideal to retain the pre-trained classifier, as it might not perform well on new classes.
 
 The decision between using the pre-trained neural network or training an independent classifier, such as an SVM, depends on the nature of the task and the available data. Using the pre-trained network can save time and computational resources, but fine-tuning or retraining may be necessary for optimal results on different tasks. Using a simpler classifier like an SVM can be a good compromise, leveraging the deep features extracted by the neural network while providing a more interpretable decision boundary.
+
+\paragraph*{11. For every improvement that you test, explain your reasoning and comment on the obtained results.}
+TODO

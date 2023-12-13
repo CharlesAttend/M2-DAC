@@ -1,0 +1,50 @@
+This is BibTeX, Version 0.99d (TeX Live 2023/Arch Linux)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: report2.aux
+A level-1 auxiliary file: 2a-transferlearning.aux
+A level-1 auxiliary file: 2b-visualizingNN.aux
+A level-1 auxiliary file: 2c-domainadaptation.aux
+A level-1 auxiliary file: 2de-gans.aux
+The style file: plainnat.bst
+Database file #1: bib.bib
+You've used 9 entries,
+            2773 wiz_defined-function locations,
+            645 strings with 6695 characters,
+and the built_in function-call counts, 4627 in all, are:
+= -- 365
+> -- 396
+< -- 0
++ -- 132
+- -- 123
+* -- 422
+:= -- 730
+add.period$ -- 26
+call.type$ -- 9
+change.case$ -- 68
+chr.to.int$ -- 9
+cite$ -- 18
+duplicate$ -- 154
+empty$ -- 318
+format.name$ -- 132
+if$ -- 938
+int.to.chr$ -- 1
+int.to.str$ -- 1
+missing$ -- 2
+newline$ -- 52
+num.names$ -- 36
+pop$ -- 154
+preamble$ -- 1
+purify$ -- 59
+quote$ -- 0
+skip$ -- 155
+stack$ -- 0
+substring$ -- 72
+swap$ -- 11
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 99
+warning$ -- 0
+while$ -- 29
+width$ -- 0
+write$ -- 115

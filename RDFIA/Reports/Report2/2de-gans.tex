@@ -1,2 +1,47 @@
 \chapter{Generative Adversarial Networks}
 \graphicspath{{figs/2de/}}
+
+% TODO: intro
+
+\section{Generative Adversarial Networks}
+
+% TODO: intro
+
+\subsection{General principles}
+
+\begin{align}
+    \min_{G} \max_{D} \mathbb{E}_{x^* \sim \text{Data}} \left[ \log D(x^*) \right] + \mathbb{E}_{z \sim P(z)} \left[ \log (1 - D(G(z))) \right] \label{eq:minimax} \\
+    \max_{G} \mathbb{E}_{z \sim P(z)} \left[ \log D(G(z)) \right] \label{eq:G_maximization} \\
+    \max_{D} \mathbb{E}_{x^* \sim \text{Data}} \left[ \log D(x^*) \right] + \mathbb{E}_{z \sim P(z)} \left[ \log (1 - D(G(z))) \right] \label{eq:D_maximization}
+\end{align}
+    
+\paragraph*{1. Interpret the equations \ref{eq:G_maximization} and \ref{eq:D_maximization}. What would happen if we only used one of the two?}
+
+\paragraph*{2. Ideally, what should the generator $G$ transform the distribution $P(z)$ to?}
+
+\paragraph*{3. Remark that the equation \ref{eq:G_maximization} is not directly derived from the equation \ref{eq:minimax}. This is justified by the authors to obtain more stable training and avoid the saturation of gradients. What should the ''true'' equation be here?}
+
+\subsection{Architecture of the networks}
+
+\paragraph*{4. Comment on the training of of the GAN with the default settings (progress of the generations, the loss, stability, image diversity, etc.}
+
+\paragraph*{5. Comment on the diverse experiences that you have performed with the suggestions above. In particular, comment on the stability on training, the losses, the diversity of generated images, etc.}
+
+\section{Conditional Generative Adversarial Networks}
+
+% TODO: intro
+
+\subsection{cDCGAN Architectures for MNIST}
+
+% TODO: intro
+
+\paragraph*{6. Comment on your experiences with the conditional DCGAN.}
+
+\paragraph*{7. Could we remove the vector $y$ from the input of the discriminator (so having $cD(x)$ instead of $cD(x, y)$)?}
+
+% bah si on fait ça on se retrouve dans le cas d'un GAN normal ?
+
+\paragraph*{8. Was your training more or less successful than the unconditional case? Why?}
+
+\paragraph*{9. Test the code at the end. Each column corresponds to a unique noise vector $z$. What could $z$ be interpreted as here?}
+
