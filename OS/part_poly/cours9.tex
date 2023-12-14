@@ -1,0 +1,277 @@
+\underline{Nouveau cours du 14/12} \\
+
+\begin{lem}\label{lemma:ii}
+    With $F$ defined as ($F(\theta ) := - \log (\frac{1 }{n } \sum_{i=1 }^{n } \exp (-Y_i X_i^T \theta ))$), it holds
+    \begin{enumerate}
+        \item $\min_i Y_i X_i^T \theta \leq F(\theta ) \leq \min _i Y_i X_i^T \theta + \log_{n}, \forall \theta \in \mathbb{R}^d  $
+        \item $\left\| \nabla F(\theta ) \right\|_2 \geq \gamma \forall \theta \in \mathbb{R}^d$ 
+    \end{enumerate}
+\end{lem}
+
+\begin{proof}[Preuve : (TD, exo tasse de café)]
+    $ \forall \theta \operatorname{arsinh} \mathbb{R}^d, m_\theta := \min _i Y_i X_i^t \theta  $ 
+    \begin{align*}
+        e^{- m_\theta } 
+            &= \exp (-\min _i Y_i X_i^T \theta ) \\
+            &= \frac{1}{n} \sum_{j=1}^{n } \underbrace{\exp (-\min _i Y_i X_i^T \theta )}_{ \geq Y_j X_j^T \theta, \forall j \in [1, n]} \\
+            &\geq  \frac{1}{n} \underbrace{\sum_{i=1}^{n } \exp (-Y_i X_i ^T \theta )}_{e^{-m_\theta } + \sum_{i=1, i \neq \arg \min X_i}^{n} e^{\dots}}
+    \end{align*}
+    Finally, $e^{-m_\theta } \geq  \frac{1}{n} \sum_{i=1}^{n} e^{-Y_iX_i^T \theta } \geq \frac{1}{n} e^{-m_\theta }$
+    Apply $-\log$ (a decrease fct) to conclude.
+
+    2 - $\mathbb{Z} = \begin{pmatrix}
+        Y_1X_1^T \\
+        \dots \\
+        Y_nX_n^T
+    \end{pmatrix}
+    \in \mathbb{R}^{n \times d}
+    $ \\
+    $\Delta _n = \{p \in \mathbb{R}^n_+ : \sum_{i=1}^{n} p_i =1\}$ 
+
+        a -
+    \begin{align*}
+        \gamma &:= \max _{\left\| \theta  \right\|_2 \leq 1 } \min_i Y_iX_i \theta = e_i^T Z \theta \\
+        &= \max _{\left\| \theta  \right\|_2 \leq 1 } \min_{p \in \Delta_n} p ^T Z \theta \quad(\text{since } \Delta_n \text{is the convex hull of } \{e_i\}_{i=1 \dots n}) \\
+        &= \min_{p \in \Delta_n}\max _{\left\| \theta  \right\|_2 \leq 1 } p ^T Z \theta quad \text{ (by the minimax thm for bilinear function in game theory)}
+    \end{align*} 
+    
+
+
+    Therefore,
+    \begin{align*}
+        \gamma 
+            &= \min _{p \in \delta _n} \max _{\left\| \theta _2 \right\| \leq 1} p^T Z \theta = \left\langle Z^T p, \theta  \right\rangle  \\
+            &= \min _{p \in \delta _n} \left\langle Z^Tp, \frac{Z^T p }{\left\| Z^T p  \right\| _2} \right\rangle \\
+            &= \min _{p \in \delta _n} \left\| Z^T p  \right\| _2 \\
+        F(\theta ) &= - \log (\sum_{i=1}^{n } \exp (-Y_i X_i^T \theta )) 
+    \end{align*}
+    Therefore $ \forall \theta  $ 
+    \begin{align*}
+        \nabla F(\theta ) 
+            &= + \frac{1}{\sum_{i=1}^{n} \exp (Y_i X_i ^T \theta )} \sum_{i=1}^{n} \exp (-Y_i X_i ^T \theta )Y_i X_i \\
+    \end{align*}
+
+    2. $ \mathbb{Z} = \begin{pmatrix}
+        Y_1 X_1^T \\
+        \vdots \\
+        Y_n X_n^T
+    \end{pmatrix} \in \mathbb{R}^{n \times d}
+    $
+
+    Thus $ \nabla F(\theta ) = Z^T p^{(\theta )} $ with $ p^{(\theta )} = (p_i^{(\theta )})_{i=1, \dots, n}, p_i^{(\theta )} = \frac{\exp (-Y_i X_i^T \theta )}{\sum_{j} \exp (-Y_j X_j^T \theta )} $ 
+\end{proof}
+
+
+\begin{thm}[]
+    Assume that the training sample $ (X_i, Y_i)_i $ is seprable (i.e. $ \gamma > 0 $ ). For any initial point $ \theta _0 \in \mathbb{R}^d , \left\| \theta (t) \right\| _2 \xrightarrow[t \to +\infty]{} +\infty  $. 
+    
+    Moreover, the renormalized predictor $ \hat{\theta}(t) = \frac{\theta ^\prime (t)}{\left\| \theta (t) \right\| _2} $ converge to the optimal margin at a rate of $ \mathcal{O }(1/t) $ 
+    
+    Assuming $\theta_0 = \theta $, it holds that for $t \geq t^\ast = \log(n) / \gamma ^2 $
+    \[
+        \min _i Y_iX_i^T \theta (t) \geq \gamma - \frac{\log_{}(n)}{t}
+    .\]
+\end{thm}
+\begin{proof}[Preuve : ]
+    The equivalent of the gradient descent leamma in continuous time 
+    \[
+        \frac{d}{dt} F(\theta (t)) = \nabla F(\theta (t))^T \frac{d \theta(t)}{dt} \underbrace{=}_{(GF)} \left\| \nabla F(\theta(t)) \right\|_2^2  \underbrace{\geq }_{(i) \text{Lemma}} \gamma ^2 
+    .\]
+    F grows unbounded and this $\left\| \theta (t) \right\|_2 \to + \infty $    
+
+    It holds that 
+    \begin{align*}
+        F(\theta (t)) - F(\theta _0) = [F(\theta (s))]_0 ^t 
+            &= \int_{0}^{t} \nabla F(\theta (s))^T \frac{d \theta }{ds}(s) ds \\
+        \text{(GF) }
+            &= \int_{0}^{t} \left\| \nabla F(\theta (s)) \right\| _2 ^2 ds \\
+            &\geq \gamma \int_{0}^{t} \left\| \nabla F(\theta (s)) \right\| _2 ds \text{ (Lemma \ref{lemma:ii})}
+    \end{align*}
+    With $ \theta _0 = 0 , F(\theta _0) = 0 $ 
+    \begin{enumerate}
+        \item \begin{align*}
+            \min_i Y_i X_i^T \theta (t) &\underbrace{\geq }_{\text{Lemma}} F(\theta (t)) - \log_{}n \\
+            & \geq \underbrace{\gamma  \int_{0}^{t} \left\| \nabla F(\theta (s)) \right\|_2 ds - \log_{}n }_{ \text{which is non-negative for } t \geq t^\ast } 
+        \end{align*}
+        and is $ \geq \gamma ^2 - \log_{}n \geq 0 $ when $t \geq t^\ast $
+        
+        Note that 
+        \begin{align*}
+            \left\| \theta (t) \right\| _2 &= \int_{0}^{t} \underbrace{\frac{d}{ds}\left\| \theta (s) \right\| _2}_{\frac{\theta (s) ^T}{\left\| \theta (s) \right\| _2 } \frac{d \theta }{ds}(s) } ds \\
+                &\leq \int_{0}^{t} \left\| \frac{d}{ds} \theta (s) \right\| _2 ds \\
+            \text{(GF) } &= \int_{0}^{t} \left\| \nabla F(\theta (s)) \right\| _2 ds
+        \end{align*}
+        
+        \item Then, $\frac{1}{\left\| \theta  (t) \right\|_2 } \geq \frac{1}{\int_{0}^{t} \left\| \nabla F(\theta (s)) \right\|_2 } ds$
+        
+        \item [(1)x(2)], for $t \geq t^\ast $
+            \begin{align*}
+                \min _i Y_iX_i^T \theta (t) &\geq \gamma - \frac{\log_{}n }{\int_{0}^{t} \left\| \nabla F(\theta (s)) \right\|_2 ds} \\
+                & \underbrace{\geq }_{\text{Lemma}} \gamma - \frac{\log_{}n }{\gamma t}
+            \end{align*}
+    \end{enumerate}
+\end{proof}
+\begin{itemize}
+    \item [$ \checkmark $] For classification task, we only care about the sign of the prediction at test time, so the fact that $ \left\| \theta (t) \right\| _2 \to +\infty  $ is not really an issue.
+    \item [$ \checkmark $] GD diverge but towards the maxmargin classifier. 
+    \item [$ \checkmark $] This \textbf{algorithmic implicit} bias is preserved for GD and the logistic loss. With hands, with separable data, the logistic loss F has an infinimum equal to 0. For any sequence $\theta _t $ such for all $ Y_i X_i^T \theta \xrightarrow[t \to +\infty]{} + \infty $
+    \[
+        F(\theta _t) \xrightarrow[t \to +\infty]{} \inf _{\theta } F(\theta )=0
+    .\]
+    
+
+    It turns out that GD diverges along a direction that is 
+    \[
+        \begin{cases}
+            \left\| \theta _t \right\| _2 &\xrightarrow[t \to +\infty]{} + \infty \\
+            \frac{\theta _t}{\left\| \theta _2 \right\| _2} &\xrightarrow[t \to +\infty]{} \eta \in \mathbb{R}^d
+        \end{cases} 
+    .\]
+    for some $ \eta t $ of unit-norm.
+    \[
+        \nabla F(\theta ) = - \frac{1}{n} \sum_{i=1}^{n} \frac{\exp (-Y_i X_i^T \theta )}{1 + \exp (-Y_i X_i ^T \theta )}Y_i X_i
+    .\]
+    
+    By the structure of the sum of exponentials, the dominant term in $\nabla F(\theta _t)$ corresponds to the indeces $i$ for which $-Y_iX_i^T \eta $ is the largest $\leadsto$ the support vectors ! \\
+    Biblio [Lyu \& Li](2019) extention to homogenous NN. 
+    
+\end{itemize}
+
+\section{Statistical analysis of overparametrization: the double descent phenomenon}
+
+Recall that classical error bounds scale as follows
+\begin{prop}[]
+    $B$-Lipschitz loss $\ell$ \\
+    $\mathcal{F} = \{f_\theta : f_\theta (x) = \theta ^T \phi (x) \left\| \theta  \right\|_2 \leq D \}$ where $\mathbb{E} \left\| \phi (x) \right\|^2_2 \leq R^2 $ 
+    \[
+        \mathbb{E}[\mathcal{R}(f_{\hat{\theta }}^{\text{ERM}})] \leq \inf _{\left\| \theta  \right\|_2 \leq D } \mathcal{R}(f_\theta ) + \frac{2BRD}{\sqrt[]{n}}
+    .\]
+\end{prop}
+
+The "capacity" of the class $ \mathcal{F} $ of learners is controlled here by the norm of its parameter ; it oculd be the number of parameters as well. This type of bounds is in accordance with the following classical scheme
+
+\begin{figure}[H] % photo taken at 15:53
+    \centering
+    % \includegraphics[width=.5\textwidth]{}
+    \caption{Traditional trade-off between approximation and stochastic errors}
+\end{figure}
+However modern architectures involve always more param (achieving zero training error \& achieve state-of-the-art test perf.
+
+\begin{figure}[H] % PHoto taken at 15:59
+    \centering
+    % \includegraphics[width=.5\textwidth]{}
+\end{figure}
+
+When the capacity of $\mathcal{F} \nearrow $, the model becomes over-parameterized, a phenomenon occurs : after the test error explodes, it goes down again.\\
+$\rightarrow $ this is so-called \textbf{double descent}.
+We are going to analyze it for a linear model! (with gaussian features) 
+
+\paragraph{Model} $ Y_i = X_i^T \theta ^\star + \epsilon _i, \theta ^\star \in \mathbb{R}^d $, $ X_i \sim \mathcal{N}(0, Id_d), \epsilon _i \sim \mathcal{N}(0, \sigma ^2) \ind X_i, \theta ^\star \in \arg \min _\theta \mathbb{E}[ (Y - X^T \theta )^2] $ 
+\paragraph{Estimator}: ERM $ \hat{\theta } \in \arg \min _\theta \frac{1}{n} \sum_{i=1}^{n} (Y_i - X_i^T \theta )^2 = \frac{1}{n} \left\| Y - \mathbb{X}\theta  \right\| _2 ^2 $.
+
+Optimality condition : $\mathbb{X}^T \mathbb{X} \theta = \mathbb{X}^T Y$. 
+
+\paragraph[]{When $d<n$ (underparametrized regime)} $\mathbb{X}^T \mathbb{X} \in  \mathbb{R}^{d \times d}$ is almost surely invertible. The traditional least-square estimator is 
+\[
+    \hat{\theta } = (\mathbb{X}^T \mathbb{X})^{-1} \mathbb{X}^T Y
+.\]
+
+
+Then, \begin{align*}
+    \mathcal{R}(\hat{\theta }) 
+        &= \mathbb{E}[(X^T \hat{\theta } - Y)^2] \\
+        &= \mathbb{E}[(X^T \hat{\theta } - Y + X^T \theta ^\star - X^T \theta ^\star )^2] \\
+        &= \mathbb{E}[(X^T \hat{\theta } - X^T \theta ^\star )^2] + \mathbb{E}[ (X^T \theta ^\star - Y)^2] \\
+    \mathcal{R}(\hat{\theta }) - \mathcal{R}(\theta ^\star ) 
+        &= \mathbb{E}[(X^T \hat{\theta } - X^t \theta ^\star )^2] \\
+        &= \mathbb{E}[\left\langle X, \hat{\theta } - \theta ^\star  \right\rangle ^2 ] \\
+        &= \mathbb{E}[(\hat{\theta } - \theta ^\star )^T X X^T (\hat{\theta } - \theta ^\star )] \\
+        &= (\hat{\theta } - \theta ^\star )^T \underbrace{\mathbb{E}[X X^T]}_{Id}(\hat{\theta } - \theta ^\star ) \text{ conditionally to } \mathcal{D}_n \\
+        &= \left\| \hat{\theta } - \theta ^\star  \right\| _2 ^2 \\
+    \mathbb{E}_{\mathcal{D}_n} [ \mathcal{R}(\hat{\theta }) - \mathcal{R}(\theta ^\star )] 
+        &= \mathbb{E}_{\mathcal{D}_n} [ \left\| (\mathbb{X} ^T \mathbb{X})^{-1} \mathbb{X} ^T \textcolor{red}{Y} - \theta ^\star  \right\| _2 ^2 ] \\
+        &= \mathbb{E}_{\mathcal{D}_n} [ \left\| (\mathbb{X} ^T \mathbb{X})^{-1} \mathbb{X} ^T \textcolor{red}{\mathbb{X} \theta ^\star} - \theta ^\star + (\mathbb{X} ^T \mathbb{X})^{-1} \mathbb{X} ^T \textcolor{red}{\epsilon}  \right\| _2 ^2 ] \\
+        &= \mathbb{E}_{\mathcal{D}_n} [ \left\| Id. \theta ^\star - \theta ^\star + (\mathbb{X} ^T \mathbb{X})^{-1} \mathbb{X} ^T \epsilon  \right\| _2 ^2 ] \\
+        &= \mathbb{E}_{\mathcal{D}_n} [ \left\| (\mathbb{X} ^T \mathbb{X})^{-1} \mathbb{X} ^T \epsilon  \right\| _2 ^2 ] \\
+        &= \mathbb{E}_{\mathcal{D}_n} [\textcolor{red}{Tr(} \underbrace{\epsilon ^T \mathbb{X} (\mathbb{X}^T \mathbb{X})^{-1} (\mathbb{X}^T \mathbb{X})^{-1} \mathbb{X}^T \epsilon}_{\textcolor{red}{\mathbb{R}}} \textcolor{red}{)}] \\
+        &= \mathbb{E}_{\mathcal{D}_n} [Tr(\mathbb{X} (\mathbb{X}^T \mathbb{X})^{-2} \mathbb{X}^T \epsilon \epsilon ^T)] \\
+        &= \sigma ^2 \mathbb{E}_\mathbb{X} [ Tr( (\mathbb{X}^T \mathbb{X})^{-2} \mathbb{X}^T \mathbb{X})] \\
+        &= \sigma ^2 \mathbb{E}_\mathbb{X} [ Tr( (\mathbb{X}^T \mathbb{X})^{-\not2 -1} \not\mathbb{X}^T \not\mathbb{X})] \\
+        &= \sigma ^2 \mathbb{E}_\mathbb{X} [ Tr[(\mathbb{X}^T \mathbb{X})^{-1} ] ]
+\end{align*}
+$ \mathbb{X}^T \mathbb{X} \in \mathbb{R}^D $ is a Wishart matrix with $ n $ degrees of freedom almost surely invertible 
+\begin{align*}
+    &\text{(admitted)} \\
+    =& \begin{cases}
+        \sigma ^2 \frac{d}{n - d - 1} &\text{ if } n \geq d + 2 \\
+        +\infty &\text{ if } n = d \text{ or } n = d+1 \\
+    \end{cases} 
+\end{align*}
+
+\paragraph[]{When $d \geq n$ (over-parametrized regime)} The kernel matrix $\mathbb{X}\mathbb{X}^T \in \mathbb{R}^{n \times n}$ is a.s. invertible. There exist plenty of ERM, we are going to focus on a solution in particular : the minimum $\ell^2 $ norm interpolator (limit iterate of (S)GD strategies! )
+
+In this case \begin{align*}
+    \hat{\theta } &= \mathbb{X}^\dag Y = \mathbb{X}^T (\mathbb{X} \mathbb{X}^T)^{-1} Y \\
+    &= \mathbb{X}^T (\mathbb{X}\mathbb{X}^T)^{-1} \mathbb{X} \theta^\ast + \mathbb{X}^T (\mathbb{X}\mathbb{X}^T)^{-1} \varepsilon 
+\end{align*}
+
+The expected risk can be computed 
+\begin{align*}
+    \mathbb{E}_{\mathcal{D}_n}[\mathcal{R}(\hat{\theta }) - \mathcal{R}(\theta ^\star )] 
+        &= \mathbb{E}_{\mathcal{D}_n} [ \left\| \hat{\theta } - \theta ^\star  \right\| _2 ^2 ] \\
+        &= \mathbb{E}_{\mathcal{D}_n} [ \left\| \mathbb{X}^T (\mathbb{X}\mathbb{X}^T)^{-1} \mathbb{X} \theta^\ast + \mathbb{X}^T (\mathbb{X}\mathbb{X}^T)^{-1} \varepsilon - \theta ^\star  \right\| _2 ^2 ] \\
+        &= \mathbb{E}_{\mathcal{D}_n} [ \left\| \mathbb{X}^T (\mathbb{X} \mathbb{X}^T)^{-1} \mathbb{X} \theta ^\star - \theta ^\star  \right\| _2 ^2 ] + \mathbb{E}_{\mathcal{D}_n} [ \left\| \mathbb{X}^T (\mathbb{X} \mathbb{X}^T)^{-1} \epsilon  \right\| _2 ^2 ]
+\end{align*}
+We find back two term : bias \& variance
+\begin{itemize}
+    \item Variance 
+    \begin{align*}
+        \mathbb{E}_{\mathcal{D}_n} [ \left\| \mathbb{X}^T (\mathbb{X} \mathbb{X}^T)^{-1} \epsilon  \right\| _2 ^2 ] 
+            &= \mathbb{E}[ \textcolor{red}{Tr(} \epsilon ^T (\mathbb{X} \mathbb{X}^T )^{-1} \mathbb{X} \mathbb{X}^T (\mathbb{X} \mathbb{X}^T)^{-1} \epsilon \textcolor{red}{)} ]
+            &= \sigma ^2 \mathbb{E}[ Tr ((\mathbb{X} \mathbb{X}^T)^{-1})] \\
+            &= \begin{cases}
+                \sigma ^2 \frac{n}{d - n - 1} &\text{ if } d \geq n+2 \\
+                +\infty &\text{ if } d = n \text{ or } d = n+1\\
+            \end{cases} \text{ similarly to previous calculation}
+    \end{align*}
+    \item Bias
+    \begin{align*}
+        \mathbb{E}_{\mathcal{D}_n} [ \left\| \mathbb{X}^T (\mathbb{X} \mathbb{X}^T)^{-1} \mathbb{X} \theta ^\star - \theta ^\star  \right\| _2 ^2 ]
+            &= \mathbb{E}_{\mathcal{D}_n} [ \left\| \underbrace{(\mathbb{X}^T (\mathbb{X} \mathbb{X}^T)^{-1} \mathbb{X} - I)}_{\text{projection matrix on } \ker \mathbb{X} \text{ (up to a sign)}} \theta ^\star  \right\| _2 ^2 ] \\
+            &= \mathbb{E} [ \left\| Proj _{\ker \mathbb{X}} (\theta ^\star ) \right\| _2 ^2 ] \\
+            &= \mathbb{E}[(\theta ^\star )^T(I - \mathbb{X}^T(\mathbb{X}\mathbb{X}^T)^{-1} \mathbb{X}) \theta ^\star ]
+    \end{align*}
+    (projection matrices are independent $P^2 = P$). \\
+    Introduce $\mathcal{R}^{(\ell )}$ to be the rotation such that $\theta ^\ast = \left\| \theta ^\ast  \right\|_2 \mathcal{R}^{(\ell )} e_\ell$ ; i.e. which rotates the $\ell $-th vector of the canonical basis over $\theta ^\ast $.
+
+    \begin{align*}
+        \mathbb{E}[ (\theta ^\star )^T \mathbb{X}^T (\mathbb{X} \mathbb{X}^T)^{-1} \mathbb{X} \theta ^\star ] 
+            &= \left\| \theta ^\star  \right\| _2 ^2 \mathbb{E} [ e_\ell ^T \mathcal{R}^{(\ell ) T} \mathbb{X}^T (\mathbb{X} \mathbb{X}^T)^{-1} \mathbb{X} \mathcal{R}^{(\ell )} e_\ell ] \\
+            &= \left\| \theta ^\star  \right\| _2 ^2 e_\ell \mathbb{E} [ (\mathbb{X} \mathcal{R}^{(\ell )})^T (\mathbb{X} \underbrace{\mathcal{R}^{(\ell )} \mathcal{R}^{(\ell )T}}_{Id} \mathbb{X}^T)^{-1} \mathbb{X} \mathcal{R}^{(\ell )}]e_\ell 
+    \end{align*}
+    $ \mathbb{X} \mathcal{R}^{(\ell )} $ has the same distribution as $ \mathbb{X} $ 
+    \begin{align*}
+        &= \left\| \theta ^\star  \right\| _2 ^2 e_\ell ^T \mathbb{E} [ \mathbb{X}^T (\mathbb{X} \mathbb{X}^T )^{-1} \mathbb{X}] e_\ell \text{ for all } \ell \\
+        &= \frac{\left\| \theta ^\star  \right\| _2 ^2}{d} \sum_{\ell = 1}^{d} e_\ell ^T \mathbb{E} [ \mathbb{X}^T (\mathbb{X} \mathbb{X}^T)^{-1} \mathbb{X} ] e_\ell \\
+        &= \frac{\left\| \theta ^\star  \right\| _2 ^2}{d} Tr (\mathbb{X}^T (\mathbb{X} \mathbb{X}^T)^{-1} \mathbb{X}) \text{( by linearity of the trace)} \\
+        &= \frac{\left\| \theta ^\ast  \right\|^2_2 }{d} \mathbb{E}[Tr(Id_n)] \\
+        &= \frac{\left\| \theta ^\ast  \right\|^2_2 n}{d} \\
+    \text{(bias) } \mathbb{E}_{\mathcal{D}_n} [ \left\| \mathbb{X}^T (\mathbb{X} \mathbb{X}^T)^{-1} \mathbb{X} \theta ^\star - \theta ^\star  \right\| _2 ^2 ] 
+        &= \frac{\left\| \theta ^\star  \right\| _2 ^2 }{d} (d - n)
+    \end{align*}
+\end{itemize}
+
+Overall, 
+\[
+    \mathbb{E}_ {\mathcal{D}_n}[\mathcal{R}(\hat{\theta }) - \mathcal{R}(\theta ^\ast )] = \begin{cases}
+        \sigma ^2 \frac{n}{d-n-1} + \left\| \theta ^\ast  \right\|^2_2 \frac{d-n}{d}  &\text{ if } d \geq n+2\\
+        + \infty  &\text{ o.w}\\
+    \end{cases} 
+.\]
+
+\begin{figure}[H] % photo taken at 16:58
+    \centering
+    % \includegraphics[width=.5\textwidth]{}
+\end{figure}
+
+In the overparameterized regime, the risk does not necessarily explode when $ d \nnearrow$. But this holds for a particular ERM, and not any one !!

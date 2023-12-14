@@ -236,16 +236,16 @@ To focus on the key aspect of the problem, we make some simplifications \begin{e
 
 \textbf{Indeed} let $ G = h \circ F $ and call $ \theta _h $ the corresponding GF 
 \begin{align*}
-    & \theta ^\prime _h (t) &= - \nabla G(\theta _h (t))\\
-    \Leftrightarrow & \theta ^\prime _h &= - \nabla F(\theta _h (t)) h^\prime (F(\theta _h (t))) 
+    & \theta ^\prime _h (t) = - \nabla G(\theta _h (t))\\
+    \Leftrightarrow & \theta ^\prime _h = - \nabla F(\theta _h (t)) h^\prime (F(\theta _h (t))) 
 \end{align*}
-Let $ s(t) := \int_{0}^{t} h^\prime (F(\theta _h (s)))ds $, then 
+Let $ s(t) := \int_{0}^{t} [h^\prime (F(\theta _h (s)))]^{-1}ds $, then 
 \[
-    \frac{d}{dt}\theta (s(t)) = \theta ^\prime (s(t)) s^\prime (t) \underbrace{=}_{(GF)} - \nabla F(\theta (s(t))) \underbrace{s^\prime (t)}_{h^\prime (F (\theta _h (t)))} = \frac{d}{dt}  \theta _h(t) 
+    \frac{d}{dt}\theta _h(s(t)) = \theta _h^\prime (s(t)) s^\prime (t) \underbrace{=}_{(GF)} - \nabla F(\theta_h (s(t))) \frac{h^\prime  (F(\theta _h(t )))}{h^\prime (F (\theta _h (t)))} = \frac{d}{dt}  \theta _h(t) 
 .\]
-which show that the paths $ \{\theta _h (t) \}_{t \geq 0} $ and $ \{\theta (s)\}_{s \geq 0} $  are the same.
+which show that the paths $ \{\theta _h (t) \}_{t \geq 0} $ and $ \{\theta (s)\}_{s \geq 0} $  are the same (up to a reparameterization of time).
 
-Keeping this remark in mind, one can consider 
+Keeping this remark in mind, one can consider (finally we study)
 \[
     F(\theta ) := - \log (\frac{1 }{n } \sum_{i=1 }^{n } \exp (-Y_i X_i^T \theta )) 
 .\]
@@ -257,7 +257,7 @@ We remove the minus sign in the definition of GD as $ -\log $ has a negative der
 
 \paragraph{Separable data \& margin}: When $ (X_i, Y_i) $ is linearly separable 
 \[
-    \gamma := \max _{\left\| \theta  \right\| _2 \leq 1} \min _i Y_i X_i ^T \theta 
+    \gamma := \max _{\left\| \theta  \right\| _2 \leq 1} \underbrace{\min _i Y_i X_i ^T \theta}_{\text{margin}}  
 .\]
 satisfies $ \gamma > 0 $ 
 
