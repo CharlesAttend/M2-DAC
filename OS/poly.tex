@@ -17,6 +17,7 @@
 \usepackage{float} % figure[H]
 
 \usepackage{tikz}
+\usetikzlibrary{shapes.geometric}
 \usepackage{xkeyval}
 
 \hypersetup{
@@ -52,6 +53,7 @@
 \newtheorem*{note}{Note}
 \newtheorem{case}{Case}
 
+\newcommand{\warningsign}{\tikz[baseline=-.75ex] \node[shape=regular polygon, regular polygon sides=3, inner sep=0pt, draw, thick] {\textbf{!}};}
 \newcommand{\ind}{\perp\!\!\!\!\perp} 
 \NewDocumentCommand{\underarrow}{O{=} O{\downarrow} m}{%
   \underset{\makebox[0pt]{\begin{tabular}{@{}c@{}}\ensuremath{#2}\\[0pt]#3\end{tabular}}}{#1}
@@ -76,5 +78,6 @@
 \include{part_poly/cours7}
 \include{part_poly/cours8}
 \include{part_poly/cours9}
+\include{part_poly/cours10}
 
 \end{document}

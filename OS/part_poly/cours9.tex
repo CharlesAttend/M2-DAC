@@ -227,11 +227,11 @@ We find back two term : bias \& variance
     \item Variance 
     \begin{align*}
         \mathbb{E}_{\mathcal{D}_n} [ \left\| \mathbb{X}^T (\mathbb{X} \mathbb{X}^T)^{-1} \epsilon  \right\| _2 ^2 ] 
-            &= \mathbb{E}[ \textcolor{red}{Tr(} \epsilon ^T (\mathbb{X} \mathbb{X}^T )^{-1} \mathbb{X} \mathbb{X}^T (\mathbb{X} \mathbb{X}^T)^{-1} \epsilon \textcolor{red}{)} ]
+            &= \mathbb{E}[ \textcolor{red}{Tr(} \epsilon ^T (\mathbb{X} \mathbb{X}^T )^{-1} \mathbb{X} \mathbb{X}^T (\mathbb{X} \mathbb{X}^T)^{-1} \epsilon \textcolor{red}{)} ] \\
             &= \sigma ^2 \mathbb{E}[ Tr ((\mathbb{X} \mathbb{X}^T)^{-1})] \\
             &= \begin{cases}
                 \sigma ^2 \frac{n}{d - n - 1} &\text{ if } d \geq n+2 \\
-                +\infty &\text{ if } d = n \text{ or } d = n+1\\
+                +\infty &\text{ if } d = n \text{ or } d = n+1 \\
             \end{cases} \text{ similarly to previous calculation}
     \end{align*}
     \item Bias
@@ -274,4 +274,4 @@ Overall,
     % \includegraphics[width=.5\textwidth]{}
 \end{figure}
 
-In the overparameterized regime, the risk does not necessarily explode when $ d \nnearrow$. But this holds for a particular ERM, and not any one !!
+In the overparameterized regime, the risk does not necessarily explode when $ d \nearrow$. But this holds for a particular ERM, and not any one !!

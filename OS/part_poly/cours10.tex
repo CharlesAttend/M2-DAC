@@ -1,0 +1,290 @@
+\underline{Nouveau cours du 15/12} \\
+%Note pour dire que Charles est tout emu : il vient d'apprendre que c'etait le dernier cours!
+
+
+\begin{note}[]
+    In the overparameterized regime, \begin{itemize}
+        \item The bias increases with $ d $ 
+        \begin{align*}
+            \theta ^\star \in \mathbb{R}^d, \hat{\theta } \in \mathbb{R}^d \\
+            \hat{\theta } &= \mathbb{X} ^T (\mathbb{X} \mathbb{X} ^T)^{-1} Y = \mathbb{X} ^\perp Y \\
+                &\in  \text{ row space of } \mathbb{X} \\
+                &\in Im \mathbb{X}^T \text{ of dimension } n
+        \end{align*}
+        Despite an increasing dim $ d $, $ \hat{\theta } $ lives always in a subspace of dim $ n $, explaining why $ \hat{\theta } $ is more biased with $ n $  fixed \& $ d $ increased.
+        \begin{figure}[H] % photo taken at 14:31 approx
+            \centering
+            % \includegraphics[width=.5\textwidth]{}
+        \end{figure}
+
+        \item the variance decreases with $d/n$. This means that the min $\ell ^2$ norm interpolator gets more regularized as $d \nearrow $, in the sense that $\hat{\theta }$ has a decreasing $\ell ^2$-norm when $d \nearrow $. \\
+        \paragraph*{Why?}  Consider a first system $Y= \mathbb{X} \theta $ in dim $d$ and a second "augmented" system $ Y= [\mathbb{X} \tilde{\mathbb{X}}]\theta ^{aug} $ in dim $ d^\prime > d $, obtained by addind columns to $ \mathbb{X} $  and without changing $ Y $. On can compare the $ l^2 $-norms of the min $ l^2 $-norm interpolators 
+        \[
+            \min _{Y = \mathbb{X}\theta } \left\| \theta  \right\| _2 ^2 \text{ VS  \textcolor{red}{$ \geq $} } \min _{Y = [\mathbb{X} \tilde{\mathbb{X}} ] \theta ^{aug}} \left\| \theta ^{aug} \right\| _2 ^2 = \min _{Y = [\mathbb{X} \tilde{\mathbb{X}}] \begin{bmatrix}
+                \theta \\ \tilde{\theta }
+            \end{bmatrix}
+            } \left\| \theta  \right\| _2 ^2 + \left\| \tilde{\theta } \right\| _2 ^2
+        .\]
+        The Solution to the first problem $ \hat{\theta } $ is admissible for the second one : $ \begin{bmatrix}
+            \theta \\ \tilde{\theta }
+        \end{bmatrix} $ 
+    \end{itemize}
+\end{note}
+
+\begin{note}[]
+    When using isotropic features, there is no blessing in terms of risk to go in the overparameterized regime
+\end{note}
+
+\begin{note}[]
+    The double descent phenomenon disappears when using linear model with isotropic inputs with a "well-tuned" ridge regularization.
+\end{note}
+
+
+\chapter{From online learning to bandits}
+In online learning, the performance measure was 
+\[
+    \mathbb{E}[F(\theta _t)] - F^\star 
+.\]
+With $ \mathbb{E} $ over the training data and
+\[
+    F(\theta ) = \mathbb{E}[l(Y, f_\theta (X))]
+.\]
+is the expected test error. 
+\[
+    F^\star = \inf _{\theta \in \mathcal{C}} F(\theta )
+.\]
+
+\paragraph{Possibile extensions}
+\begin{enumerate}
+    \item Regret instead of final performance: the performance could be measured \textbf{along} iterations such as 
+    \[
+        \frac{1}{t}\sum_{s=1}^{t} F(\theta _{s-1}) \text{ VS only considering } F(\theta _t)
+    .\]
+    for example $ F $ could have actual financial losses incurred while learning the parameter. 
+
+    The performance measure becomes a \textbf{regret} one 
+    \[
+        \mathbb{E}[ \frac{1}{t} \sum_{s=1}^{t} F(\theta _{s-1}) - \inf _{\theta \in \mathcal{C}} F(\theta ) ]
+    .\]
+    \warningsign $ \theta _s $ is random \& depending on the past data. \\ This is an unusual normalized regret since we divide by $ t $. Comparaison with stochastic optimisation easier. 
+    \item Adversarial setting : On can consider different functions $ F_s $ or sample $ d $ from different distribution $ s $, with a potential adversarial choice that depends on the past. The regret becomes 
+    \[
+    \mathbb{E}[ \frac{1}{t} \sum_{s=1}^{t} F_s (\theta _{s-1}) - \inf _\theta \frac{1}{t} \sum_{s=1}^{t}F_s(\theta )]
+    .\]
+    where we compare here to the optimal constant predictor ($\theta $).
+    
+    Biblio : \begin{itemize}
+        \item Shalev-Schwartz (2011): Online learning 
+        \item Bubeck \& Cesa bianchi (2012) / Bubeck (2015)
+        \item Hazan (2022)
+        \item LAttimore \& szepesvari (2020)
+    \end{itemize}
+\end{enumerate}
+
+\section{Online optimization}
+Redo all the SGD lecture with 
+\[
+    \mathbb{E}[g_s | \mathcal{F}_{s-1}] = \nabla F_s (\theta _{s-1})
+.\]
+For simplicity $ \left\| g_s \right\| _2 ^2 \leq B ^2 $ a.s.
+
+Study of projected stochastic subgradient descent 
+\[
+    \theta _s = \Pi _\mathcal{C} (\theta _{s-1} - \gamma _s g_s) \qquad \gamma _s = \frac{\text{diam}(\mathcal{C})}{B \sqrt[]{s}}
+.\]
+$\gamma _s > 0$ is supposed deterministic and $\Pi _\mathcal{C}$ is the projection on $\mathcal{C}$
+
+\textbf{Result} 
+\[
+    \frac{1}{t} \sum_{s=1}^{t}\mathbb{E}[ F_s(\theta _{s-1}) ] - \frac{1}{t}\sum_{s=1}^{t} F_s (\theta^\ast ) \leq \frac{B B \text{diam}(\mathcal{C})}{2 \sqrt{t}}
+.\]
+In the strongly cvx case (i.e for all $s$, $F_s \mu$-strongly cvx)
+choosing  $ \gamma _s = 1 / \mu s $ 
+\[
+    \frac{1}{t}\sum_{s=1}^{t}\mathbb{E}F_s(\theta _{s-1}) - \frac{1}{t}\sum_{s=1}^{t}F_s(\theta ^\star ) \leq \frac{B^2}{2 \mu t} (1 + \log t )
+.\]
+
+In both cases, we obtain $\mathbb{E}[\frac{1}{t} \text{ Regret at time }t]$ = o(1)
+
+\section{Bandit algorithms}
+\paragraph*{Broad view :} At each time step $t = 1 \dots T$, 
+\begin{itemize}
+    \item The player choose an action $\theta _t \in \Theta $ (compact decision action)
+    \item The environment chooses a loss function $ f_t : \Theta \to \mathbb{R} $ 
+    \item The player suffers loss $ f_t (\theta _t) $ and observes \begin{itemize}
+        \item [$\rightarrow$] The losses of every actions : $ f_t (\theta ), \forall \theta \in \Theta  $ \textcolor{red}{Full-information feedback}
+        \item [$\rightarrow$] The loss of the chosen action \textbf{only} : $ f_t(\theta _t) $ \textcolor{blue}{Bandit feedback} $ \Leftarrow  $ What we'll look at today
+        % qq chercheurs : Gilles Stolz (Orsay), Emilie Kauffman (Lille), Pierre Gaillard (Grenoble), Alexandra Carpentier (DL)
+    \end{itemize}
+\end{itemize}
+The goal of the player is to minimize his cumulative regret 
+\[
+    R_T = \sum_{t=1}^{T}f_t(\theta _t) - \inf _{\theta \in \Theta } \sum_{t=1}^{T} f_T(\underbrace{\theta }_{\text{constant strategy}})
+.\]
+
+\paragraph*{Setting of K-armed bandits} : $\Theta = \{1,2, \dots ,K\}$. Consider $K$ arms with associated means $\mu ^{(1)}, \dots \mu ^{(K)} \in \mathbb{R}$.
+At time $ t $, we select the arm $ k_t \in \{1, \dots, K\} $, we receive the reward $ X_t ^{(k_t)} $ sampled independantly of all rewards, and of the previous arm choices from a sub-gaussian distribution of mean $ \mu ^{(k)} $ and sub-gaussian param $ \sigma  $. (sub-gaussian distribution are "distribution with tails in exp($-t^2$)". Tail is controlled). \\
+His cumulated reward regret : 
+\[
+    \underbrace{\max _{1 \leq k \leq K} \sum_{t=1}^{T} X^{(k)}_t}_{\tilde{\mathcal{R}}_T} - \sum_{t=1}^{T} X^{(k_T)}_t
+.\]
+
+$1 > \mu ^{(1)} > \mu ^{(2)} > \mu ^{(3)} > \dots > \mu ^{(K)} > 0 $ 
+\[
+    X_t | k_t \sim \mathcal{B}(\mu ^{(k)})
+.\]
+If for all $ t $, I use the dumb strategy 
+\[
+    k_t \sim \mathcal{U}(\{1, \dots, K\})
+.\]
+Then 
+\[
+    \mathbb{E}[ \sum_{t=1}^{T} X_t ^{(k_t)}] = \frac{T}{K}\sum_{k=1}^{K}\mu ^{(k)}
+.\]
+because
+\begin{align*}
+    \mathbb{E}[X_t ^{(k_t})] &= \mathbb{E} [ \mathbb{E}[X_t^{(k_t)} | k_t] ] \\
+        &= \sum_{k} \mu ^{(k)} \mathbb{P}(k_t = k )
+\end{align*}
+Regret is 
+\begin{align*}
+     \\
+    \mathcal{R}_T "&=" T (\mu ^\star = \frac{1}{K} \sum_{k=1}^{K} \mu ^{(k)}) \text{ linear in } T
+\end{align*}
+We need to do better than a linear regret.
+
+By analyzing the regret, the player aims at finding the arm wirh the highest reward $\mu ^{(k)} $ as quickly as possible.
+
+\paragraph{Criterion}: We focus on the expected (pseudo) regret $ \mathcal{R}_T = T \max _{1 \leq k \leq K} \mu^{(k)} - \sum_{t=1}^{T} \underbrace{\mathbb{E}[X^{(k_t)}_t]}_{\mu ^(k_t)}  $
+
+\textbf{Exercise} : Show that $\mathcal{R}_T \leq \mathbb{E}[\tilde{\mathcal{R}}_T]$
+
+\paragraph{Notation}: set 
+\begin{align*}
+    \mu ^\star &= \max _{1 \leq k \leq K} \mu ^{(k)} \text{ (mean of the optimal arm)} \\
+    \Delta ^{(k)} :&= \mu ^\star - \mu ^{(k)} \\
+    n_t^{(k)} &= \text{ number of times that the arm } k \text{ was selected in the first } t \text{iterations}
+\end{align*}
+
+The regret can be rewritten as : 
+\[
+    \mathcal{R}_T = \sum_{k=1}^{K} \Delta^{(k)} \mathbb{E}[n_t^{(k)}]
+.\]
+\begin{proof}[Preuve : ]
+    Indeed, we know that $\mathbb{E}[X_t^{(k_t)}|k_t] = \mu ^{(k_t)} = \sum_{k=1}^{K} \mathbbm{1}_{k_t=k} \mu ^{(k)}$
+    By summing,
+    \begin{align*}
+        \mathcal{R}_T 
+            &= T \mu ^\star - \sum_{t=1}^{T} \sum_{k=1}^{K} \mu ^{(k)} \mathbb{E}[ \mathbbm{1}_{h_t = k}] \\
+            &= T \mu ^\star - \sum_{k=1}^{K} \mu ^{(k)} \mathbb{E}[ \sum_{t=1}^{T} \mathbbm{1}_{k_t = k}] \\
+            &= T \mu ^\star - \sum_{k=1}^{K} \mu ^{(k)} \mathbb{E}[ n_T^{(k)} ] \\
+        \text{But }
+            &\sum_{k=1}^{K} n_T^{(k)} = T, \text{ we get } \\
+        \mathcal{R}_T  
+            &= \sum_{k=1}^{k} (\mu ^\star - \mu ^{(k)}) \mathbb{E}[ n_T^{(k)} ] \\
+            &= \sum_{k=1}^{K} \Delta ^{(k)} \mathbb{E}[ n_T^{(k)} ]
+    \end{align*}
+\end{proof}
+For all algorithms, the natural unbiased estimate of the arm means at time $ t $ are
+\begin{align*}
+    \hat{\mu }_t ^{(k)} &= \frac{1}{n_t ^{(k)}} \sum_{s=1}^{t} X_s^{(k)} \mathbbm{1}_{k_s = k} \\
+    (\hat{\mu }_t ^{(k)} - \mu ^{(k)})^2 \propto \frac{1}{n_t^{(k)}}
+\end{align*}
+
+\subsection{Preliminary algo}
+\paragraph{Pure exploration}
+At each step select a random arm $ k_t \sim \mathcal{Y} ( \{1, \dots, K\}) $ 
+\[
+    \forall k \mathbb{E}[ n_T^{(k)} ] = \frac{T}{K}
+.\]
+Expected regret 
+\[
+    \mathcal{R}_T = \frac{T}{K} \sum_{k=1}^{K}\Delta ^{(k)}
+.\]
+
+\paragraph{Pure exploitation}
+\begin{enumerate}
+    \item For the first $K$ steps, select each arm once
+    \item Only select the arm with the current largest estimate
+\end{enumerate}
+Intuition on the regret : imagine two arms of distribution $ \mathcal{B}(p_1) $ and $ \mathcal{B}(p_2) $ with $ p_2 > p_1 $
+\begin{align*}
+    \mathcal{R}_T 
+        =& T \mu ^\star - \sum_{t=1}^{T}\mathbb{E}[X_t^{(k_t)}] \\
+        =& T \mu ^\star - \mathbb{E}[\mathbbm{1}_{X_1^{(2)} < X_1^{(1)}} \sum_{t=1}^{T} X_t^{(1)} + \mathbbm{1}_{X_1^{(1)} \geq  X_1^{(2)}} \sum_{t=1}^{T} X_t^{(2)}] \\
+        =& T \mu ^\star - \mathbb{P}(X_1^{(2)} < X_1^{(1)}) T \mu ^{(1)} - \mathbb{P}(X_1^{(2)} \geq X_1^{(1)}) T \mu ^{(2)} \\
+        =& T (\mu ^\star - \underbrace{\mathbb{P}(X_1^{(2)} < X_1^{(1)})}_{(1 - \mu ^{(2)}) \mu ^{(1)}}) \mu ^{(1)} - \mathbb{P}(X_1 ^{(2)}) \geq X \mu ^{(2)} \\
+        =& \mathcal{O}(T). \\
+        &\text{Linear regret (because there is a non-zero proba to chose the wrong arm)}
+\end{align*}
+To improve the strategy, one should make a trade off between exploration / exploitation.
+
+\subsection{Explore-then-commit}
+Intermediate idea 
+\begin{enumerate}
+    \item [Step 1] Consider $ mK $ steps to \textbf{explore} each arm $ m $ times, we can build $ K $ estimates $ \hat{\mu }^{(1)}, \dots, \hat{\mu }^{(k)} $, indep. r.v. with means $\mu ^{(1)}, \dots \mu ^{(K)}$ and variances $\sigma ^2 /m$. (Gaussian reward to avoid equality case)
+    \item [Step 2] Select the arm $ k $ with maximal $ \hat{\mu }^{(k)} $ for all the remaining $ T - mK $ times.
+\end{enumerate}
+
+\paragraph{Regret analysis}: For $ T > Km $ [Lattimore \& Szepesvari (2020)]
+\begin{align*}
+    \mathcal{R}_T 
+        &= \textcolor{blue}{\underbrace{\color{black} m \sum_{k=1}^{K} \Delta ^{(k)}}_{\text{Step 1}} } + \textcolor{orange}{\underbrace{\color{black} \sum_{k=1}^{K} \Delta ^{(k)} \mathbb{E}[ \text{\# times the arm } k \text{ was selected in step 2} ]}_{\text{Step 2}} }\\
+        &= m \sum_{k=1}^{K} \Delta ^{(k)} + \sum_{k=1}^{K} \Delta ^{(k)} (F m K) \underbrace{\mathbb{E}[ \mathbbm{1}_{   \hat{\mu }_{mK}^{(k)}  \geq \hat{\mu }_{mK}^{(j)}, \forall j \neq k }  ]}_{ \mathbb{P} (\hat{\mu }_{mK}^{(k)}  \geq \hat{\mu }_{mK}^{(j)}, \forall j \neq k) }
+\end{align*}
+Remark that the event $ \{ \hat{\mu }_{mK}^{(k)} \geq \hat{\mu }_{mK}^{(j)}, \forall k \neq k \} \subseteq \{\hat{\mu }_{mK}^{(k)} \geq \hat{\mu }_{mK}^{(k^\star )} \}$ 
+\begin{align*}
+    \mathcal{R}_T 
+        &\leq m \sum_{k \neq k^\star } \Delta ^{(k)} + (T - mK) \sum_{k=1}^{K} \Delta ^{(k)} \mathbb{P}(\hat{\mu }_{mK}^{(k)} \geq \hat{\mu }_{mK}^{(k^\star )}) \\
+        &\leq m \sum_{k \neq k^\star } \Delta ^{(k)} + (T - mK) \sum_{k=1}^{K} \Delta ^{(k)} \mathbb{P}(\hat{\mu }_{mK}^{(k)} - \hat{\mu }_{mK}^{(k^\star )} + \Delta ^{(k)} \geq \Delta ^{(k)}) \\
+        &\leq \sum_{k \neq k^\star } \Delta ^{(k)} + \underbrace{(T - mK)}_{\leq T} \sum_{k=1}^{K} \Delta ^{(k)} \exp ( - \frac{(\Delta ^{(k)} )^2 m}{4 \sigma ^2})
+\end{align*}
+\begin{itemize}
+    \item If $ m $ is large, the exploration is too long and the first part gives a large regret
+    \item If $ m $ is small, there is a large probability to choose a suboptimal arm during the exploration, and the second term might lead to a large regret 
+\end{itemize}
+
+\paragraph{Which choice for $ m $ ?}
+\begin{itemize}
+    \item [Two arms $ K = 2 $ ] $ \Delta = \Delta ^{(k)} $ for $ k \neq k^\star  $ 
+    \[
+        \mathcal{R}_T \leq m \Delta + T \Delta \exp (\frac{\Delta ^2 m }{2 \sigma ^2})
+    .\]
+    We can optimize this bound in $ m $ 
+    \begin{align*}
+            &derivative (m) = 0 \\
+        \Leftrightarrow
+            & m^\star = \left\lfloor \frac{2 \sigma ^2}{\Delta ^2} \log \frac{T \Delta ^2}{2 \sigma ^2}  \right\rfloor \\
+    \end{align*}
+    \[
+        m ^\star \geq 1 \Leftrightarrow T \geq \frac{2 \sigma ^2}{\Delta ^2} \exp (\frac{\Delta ^2}{\sigma ^2})
+    .\]
+    If $ T \geq \frac{2 \sigma ^2}{\Delta ^2} \exp (\frac{\Delta ^2}{\sigma ^2}), m \geq 1 $, the regret is bounded by 
+    \begin{align*}
+        \mathcal{R}_T 
+            &\leq m^\star \Delta + T \Delta \exp ( - \frac{\Delta ^2 m^\star }{2 \sigma ^2}) \\
+            &\dots \\
+            &\leq 2 \frac{\sigma ^2}{\Delta } (\log \frac{\Delta \sqrt{T} }{\sigma } + \exp \frac{\Delta ^2}{2 \sigma ^2} )
+    \end{align*}
+    
+    We could stop here, and the bound would scale as $\mathcal{O}(\frac{K}{\Delta } \log_{}T )$ such bounds are called distruibution-dependent because they rely on the dist $\mathbb{P}(\mu^{(k)}, \sigma )$ via $\Delta ^{(k)}$. When $\Delta \to 0$, bounds expolodes !!!!
+    To circumvent this issue, we can pursue tne calculations
+    \begin{align*}
+        \mathcal{R}_T &\leq  2 \frac{\sigma ^2}{\Delta }(\frac{\Delta \sqrt[]{T}}{\sigma } + \exp (\frac{\Delta ^2}{2 \sigma ^2}) ) = 2 \sigma \sqrt[]{T} + 2 \frac{\sigma ^2}{\Delta } \exp (\frac{\Delta ^2}{2 \sigma ^2}) \\
+        & \lesssim \text{ cte } \sigma \sqrt[]{T} \qquad \text{"Distribution-free bounds"}
+    \end{align*}
+    
+    \item [More arms] No time xd Ouin ouin T.T
+\end{itemize}
+
+\begin{itemize}
+    \item [$ \checkmark  $ ] One can show this algo will achieve the lower bound (up to constant) for all possibile algo scaling as $ \sqrt{T} $.
+    \item [\texttimes] This \textbf{requires} knowing $ \Delta  $ and $ T $ in advance to select $ m^\star  $ appropriately.
+\end{itemize}
+
+%\subsection{Upper Confidence Bound (UCB) algo}
+Exam
+\begin{itemize}
+    \item Avoir compris le cours, connaitre les caractérisations de la convexité
+    \item Pas d'annale $\rightarrow$ Refaire les preuves et les TD 
+\end{itemize}
