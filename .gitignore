@@ -38,3 +38,6 @@ AMAL/TME/TME8/src/test-1000.pth
 *.pth
 *.model
 *.vocab
+
+RDFIA/TME/Section2/2c/BSR_bsds500.tgz
+RDFIA/TME/Section2/2c/mnistm_data.pkl
