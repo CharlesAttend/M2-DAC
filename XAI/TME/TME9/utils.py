@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 import skfda
+import pandas as pd
 import matplotlib.colors as mcolors
 from sklearn.cluster import KMeans, AgglomerativeClustering, SpectralClustering, DBSCAN
 from sklearn.mixture import GaussianMixture
@@ -138,6 +139,7 @@ def generate_elongated(
 
 
 def plot_data_with_label(X, labels_true=None, cluster_centers=None, *args, **kwargs):
+    df = pd.DataFrame({"x": X[:, 0], "y": X[:, 1]})
     ax = kwargs.get("ax", None)
     if not ax:
         ax = plt.gca()
@@ -147,20 +149,26 @@ def plot_data_with_label(X, labels_true=None, cluster_centers=None, *args, **kwa
         ax.set_title(kwargs["title"])
         kwargs.pop("title")
     if labels_true is not None:
-        kwargs["hue"] = labels_true
-    sns.scatterplot(x=X[:, 0], y=X[:, 1], palette="deep", marker=".", *args, **kwargs)
+        kwargs["hue"] = "Attribued Cluster"
+        df["Attribued Cluster"] = labels_true
+    sns.scatterplot(data=df, x="x", y="y", palette="deep", marker=".", **kwargs)
 
     if cluster_centers is not None:
         kwargs["legend"] = False
         kwargs.pop("hue")
+        d = {
+            "x": cluster_centers[:, 0],
+            "y": cluster_centers[:, 1],
+            "Clusters": list(range(len(cluster_centers))),
+        }
         sns.scatterplot(
-            x=cluster_centers[:, 0],
-            y=cluster_centers[:, 1],
-            hue=list(range(len(cluster_centers))),
+            data=d,
+            x="x",
+            y="y",
+            hue="Clusters",
             palette="deep",
             marker="o",
             s=75,
-            *args,
             **kwargs,
         )
 
@@ -273,7 +281,7 @@ def experim(X, n_clusters, labels_true=None, centers=None, nrow=4, ncol=2, scale
     ##### PAS DE PREDICT
     ax = fig.add_subplot(nrow, ncol, 8)
     plot_data_with_label(X, dbscan.fit_predict(X), title="DBSCAN", ax=ax)
-    
+
     estimators = {
         "gmm": gmm,
         "ac": ac,
@@ -282,7 +290,8 @@ def experim(X, n_clusters, labels_true=None, centers=None, nrow=4, ncol=2, scale
         "fuzzy_cmeans": fuzzy_cmeans,
         "k_means": k_means,
     }
-    return estimators, XX, X_mesh, Y_mesh 
+    return estimators, XX, X_mesh, Y_mesh
+
 
 def plot_3D(XX, X_mesh, Y_mesh, estimator, n_clusters):
     nrow = 1
@@ -293,7 +302,7 @@ def plot_3D(XX, X_mesh, Y_mesh, estimator, n_clusters):
     fd = skfda.FDataGrid(XX, [0, 1])
     Z = estimator.predict_proba(fd)
     for i in range(n_clusters):
-        ax = fig.add_subplot(nrow, ncol, i+1, projection="3d")
+        ax = fig.add_subplot(nrow, ncol, i + 1, projection="3d")
         colors_list = [(*colors[i], 0.1), colors[i]]
         cmap = mcolors.LinearSegmentedColormap.from_list("custom_colormap", colors_list)
         ax.plot_surface(X_mesh, Y_mesh, Z[:, i].reshape(X_mesh.shape), cmap=cmap)
