@@ -9,6 +9,7 @@ from sklearn.mixture import GaussianMixture
 from sklearn.inspection import DecisionBoundaryDisplay
 from sklearn.datasets import make_blobs
 from matplotlib.colors import LogNorm
+from possibilistic_cmeans import PossibilisticCMeans
 
 
 def generate_blobs(
@@ -138,7 +139,7 @@ def generate_elongated(
     return X, X_outliers
 
 
-def plot_data_with_label(X, labels_true=None, cluster_centers=None, *args, **kwargs):
+def plot_data_with_label(X, labels_true=None, cluster_centers=None, **kwargs):
     df = pd.DataFrame({"x": X[:, 0], "y": X[:, 1]})
     ax = kwargs.get("ax", None)
     if not ax:
@@ -150,23 +151,23 @@ def plot_data_with_label(X, labels_true=None, cluster_centers=None, *args, **kwa
         kwargs.pop("title")
     if labels_true is not None:
         kwargs["hue"] = "Attribued Cluster"
+        kwargs["palette"] = "deep"
         df["Attribued Cluster"] = labels_true
-    sns.scatterplot(data=df, x="x", y="y", palette="deep", marker=".", **kwargs)
+    sns.scatterplot(data=df, x="x", y="y", marker=".", **kwargs)
 
     if cluster_centers is not None:
         kwargs["legend"] = False
-        kwargs.pop("hue")
+        kwargs["palette"] = "deep"
         d = {
             "x": cluster_centers[:, 0],
             "y": cluster_centers[:, 1],
             "Clusters": list(range(len(cluster_centers))),
         }
+        kwargs["hue"] = "Clusters"
         sns.scatterplot(
             data=d,
             x="x",
             y="y",
-            hue="Clusters",
-            palette="deep",
             marker="o",
             s=75,
             **kwargs,
@@ -196,6 +197,8 @@ def experim(X, n_clusters, labels_true=None, centers=None, nrow=4, ncol=2, scale
         n_clusters=n_clusters, random_state=0
     )
     fuzzy_cmeans.fit(fd)
+
+    p_cmeans = PossibilisticCMeans(n_clusters=n_clusters)
 
     k_means = KMeans(n_clusters=n_clusters, n_init="auto", random_state=0)
     k_means.fit(X)
@@ -233,9 +236,8 @@ def experim(X, n_clusters, labels_true=None, centers=None, nrow=4, ncol=2, scale
     fcm_labels = fcm_membership_degree.argmax(axis=1)
     plot_data_with_label(
         X,
-        fcm_labels,
-        fcm_cluster_centers,
-        fcm_membership_degree,
+        labels_true=fcm_labels,
+        cluster_centers=fcm_cluster_centers,
         title="Fuzzy C-Means",
         ax=ax,
         legend=False,
@@ -250,7 +252,16 @@ def experim(X, n_clusters, labels_true=None, centers=None, nrow=4, ncol=2, scale
 
     ## C-Mean possibiliste
     ax = fig.add_subplot(nrow, ncol, 4)
-    ax.set_title("Posibilist C-Mean")
+    pcm_cluster_centers, pcm_membership_degree = p_cmeans.fit_predict(X)
+    pcm_labels = pcm_membership_degree.argmax(axis=1)
+    plot_data_with_label(
+        X,
+        labels_true=pcm_labels,
+        cluster_centers=pcm_cluster_centers,
+        title="Possibilistic C-Means",
+        ax=ax,
+        legend=False,
+    )
 
     ## GMM
     ax = fig.add_subplot(nrow, ncol, 5)
@@ -295,7 +306,7 @@ def experim(X, n_clusters, labels_true=None, centers=None, nrow=4, ncol=2, scale
 
 def plot_3D(XX, X_mesh, Y_mesh, estimator, n_clusters):
     nrow = 1
-    ncol = 3
+    ncol = n_clusters
     scale = 5
     colors = sns.color_palette("deep", n_colors=n_clusters)
     fig = plt.figure(figsize=(3 * nrow * scale, 8 * ncol * scale))
@@ -306,3 +317,4 @@ def plot_3D(XX, X_mesh, Y_mesh, estimator, n_clusters):
         colors_list = [(*colors[i], 0.1), colors[i]]
         cmap = mcolors.LinearSegmentedColormap.from_list("custom_colormap", colors_list)
         ax.plot_surface(X_mesh, Y_mesh, Z[:, i].reshape(X_mesh.shape), cmap=cmap)
+        ax.set_title(f"Densité de probabilité\npour le cluster n°{i}")
