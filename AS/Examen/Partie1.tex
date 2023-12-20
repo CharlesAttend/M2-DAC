@@ -33,7 +33,7 @@ Avec cette définition en tête, passons aux hypothèses. Pour tout $ 1 \leq  k 
     Pour un certain $ s \geq 1 $, les entrées de  $ \sqrt{d}V_k $ sont des variables aléatoires symétriques i.i.d., $ s^2 $ sub-gaussiennes, indépendantes de $ d $ et $ L $ et de variance unitaire.
 \end{assumption}
 \begin{note}
-    L'hypothèse \ref{H1} est en pratique satisfaite par toutes les initialisations, en particulier celle par défaut dans les paquets Keras \cite{torchvision2016} et Torch Vision \cite{torchvision2016}.
+    L'hypothèse \ref{H1} est en pratique satisfaite par toutes les initialisations, en particulier celle par défaut dans les paquets Keras \cite{chollet2015keras} et Torch Vision \cite{torchvision2016}.
     % Cette hypothèse permet de .... dans la preuve ... ?? Tant pis :’(
 \end{note}
 
@@ -53,6 +53,13 @@ Avec cette définition en tête, passons aux hypothèses. Pour tout $ 1 \leq  k 
     La deuxième partie de l'hypothèse \ref{H2} vise à limiter les variations excessives dans la norme de $g(h_k, \theta_{k+1})$.
 \end{note}
 
+\begin{lem}[Admis]\label{lem14}
+    Considérons un ResNet [\ref{resnet_equation}] tel que les hypothèses \ref{H1} et \ref{H2} soient satisfaites.
+    \[
+        ((1 + \frac{\alpha _L ^2 }{2 }) ^L - 1) \leq \mathbb{E}( \frac{\left\| h_L - h_0 \right\| ^2 }{\left\| h_0 \right\| ^2}) \leq ((1 + \alpha _L ^2 ) ^L - 1 )
+    .\]
+\end{lem}
+Ce lemme nous servira en particulier dans la preuve de la proposition \ref{prop2}.
 
 \begin{table}[h]
     \centering
@@ -77,7 +84,7 @@ Les propositions et corollaires suivants décriront comment le rapport ${\left\|
 
 
 \begin{proposition}\label{prop2}
-    Considérons un ResNet (\ref{ResNet_equation}) tel que les hypothèses \ref{H1} et \ref{H2} soient satisfaites.
+    Considérons un ResNet [\ref{resnet_equation}] tel que les hypothèses \ref{H1} et \ref{H2} soient satisfaites.
     Si \( L\alpha_L^2 \leq 1 \), alors, pour tout \( \delta \in (0, 1) \), avec une probabilité d'au moins \( 1 - \delta \),
     \[
         \frac{\|h_L - h_0\|^2}{\|h_0\|^2} \leq \frac{2L\alpha_L^2}{\delta}
@@ -85,26 +92,26 @@ Les propositions et corollaires suivants décriront comment le rapport ${\left\|
 \end{proposition}
 La proposition \ref{prop2} par sa borne supérieur petite indique que le réseau se comporte comme une fonction identité dans le cas où $ L \alpha ^2 _L \ll 1 $.
 
-\begin{proof}[\Cref{prop2}]
-    Pour démontrer cette proposition, nous allons utiliser le \cref{lem14} ci-dessous pour obtenir une borne supérieur de départ.
-    \begin{lem}[Admis]\label{lem14}
-        Considérons un ResNet (\ref{ResNet_equation}) vérifiant l'\cref{H1} et l'\cref{H2}. Alors
-        \[
-            ((1 + \frac{\alpha ^2 _L }{2})^L - 1 ) \leq \mathbb{E}( \frac{\left\| h_L - h_0 \right\| ^2}{\left\| h_0 \right\| ^2}) \leq ((1 + \alpha ^2 _L)^L - 1)
-        \]
-    \end{lem}
-    On a donc 
+\begin{proof}[Preuve : ]
+    En se basant sur le lemme \ref{lem14}, on a 
     \[
-        \mathbb{E}( \frac{\left\| h_L - h_0 \right\| ^2}{\left\| h_0 \right\| ^2}) \leq ((1 + \alpha ^2 _L)^L - 1)
+        \mathbb{E}( \frac{\left\| h_L - h_0 \right\| ^2 }{\left\| h_0 \right\| ^2}) \leq ((1 + \alpha _L ^2 ) ^L - 1 )
     .\]
-    Or, pas 
-
+    On sait que $ L \alpha _L ^2 \leq 1 $ (petit) et que $ L $ tend vers de grande valeurs. Dans ce cas, $ (1 + \alpha _L ^2)^L $ est une bonne approximation de $ \exp (L \alpha _L ^2) $ mais reste plus petit ou égal à $ \exp (L \alpha _L ^2) $ par la croissance exponentielle de $ \exp  $. En effet, $ (1 + \alpha _L ^2)^L $ est proche de $ 1 + L \alpha _L ^2 $ par la formule du binôme de Newton, ce qui corespond aux premier termes de la série de Taylor de l'exponentiel. Finalement, on a obtiens
+    \[
+        (1 + \alpha _L ^2)^L -1 \leq \exp (L \alpha _L ^2) - 1
+    .\]
+    $ (1 + \alpha _L ^2)^L -1 \leq \exp (L \alpha _L ^2) - 1 \leq 2 L \alpha _L ^2) $. Ainsi 
+    \[
+        \mathbb{E}( \frac{\left\| h_L - h_0 \right\| ^2 }{\left\| h_0 \right\| ^2}) \leq 2 L \alpha _L ^2
+    .\]
+    
 \end{proof}
 
 
 
 \begin{proposition}[Admise]\label{prop3}
-    Considérons un ResNet (\ref{ResNet_equation}) tel que les hypothèses \ref{H1} et \ref{H2} soient satisfaites.
+    Considérons un ResNet [\ref{resnet_equation}] tel que les hypothèses \ref{H1} et \ref{H2} soient satisfaites.
     \begin{itemize}
         \item[(i)] Supposons que $ d \geq 64 $ et $ \alpha _L ^2 \leq  \frac{2 }{(\sqrt{C } s^4 + 4 \sqrt{C } + 16 s ^4)d} $. Alors, pour tout $ \delta \in (0, 1) $, avec une probabilité d'au moins $ 1 - \delta $,
         \[
@@ -126,7 +133,7 @@ Cette proposition \ref{prop3} peut présenter des hypothèses qui semblent atypi
 
 Les conséquences des propositions \ref{prop2} et \ref{prop3} vont devenir plus clair en fixant $ \alpha _L = 1/L ^\beta $ comme montré dans le corollaire suivant.
 \begin{cor}\label{cor4}
-    Considérons un ResNet (\ref{ResNet_equation}) tel que les hypothèses \ref{H1} et \ref{H2} soient satisfaites, et soit $ \alpha_L = 1/L^\beta $, avec $ \beta > 0 $.
+    Considérons un ResNet [\ref{resnet_equation}] tel que les hypothèses \ref{H1} et \ref{H2} soient satisfaites, et soit $ \alpha_L = 1/L^\beta $, avec $ \beta > 0 $.
     \begin{itemize}
         \item[(i)] Si $ \beta > \frac{1}{2} $, alors
         \[
