@@ -33,7 +33,7 @@ Avec cette définition en tête, passons aux hypothèses. Pour tout $ 1 \leq  k 
     Pour un certain $ s \geq 1 $, les entrées de  $ \sqrt{d}V_k $ sont des variables aléatoires symétriques i.i.d., $ s^2 $ sub-gaussiennes, indépendantes de $ d $ et $ L $ et de variance unitaire.
 \end{assumption}
 \begin{note}
-    L'hypothèse \ref{H1} est en pratique satisfaite par toutes les initialisations, en particulier celle par défaut dans les paquets Keras \cite{torchvision2016} et Torch Vision \cite{torchvision2016}.
+    L'hypothèse \ref{H1} est en pratique satisfaite par toutes les initialisations, en particulier celle par défaut dans les paquets Keras \cite{chollet2015keras} et Torch Vision \cite{torchvision2016}.
     % Cette hypothèse permet de .... dans la preuve ... ??
 \end{note}
 
@@ -53,19 +53,27 @@ Avec cette définition en tête, passons aux hypothèses. Pour tout $ 1 \leq  k 
     La deuxième partie de l'hypothèse \ref{H2} vise à limiter les variations excessives dans la norme de $g(h_k, \theta_{k+1})$.
 \end{note}
 
+\begin{lem}[Admis]\label{lem14}
+    Considérons un ResNet [\ref{resnet_equation}] tel que les hypothèses \ref{H1} et \ref{H2} soient satisfaites.
+    \[
+        ((1 + \frac{\alpha _L ^2 }{2 }) ^L - 1) \leq \mathbb{E}( \frac{\left\| h_L - h_0 \right\| ^2 }{\left\| h_0 \right\| ^2}) \leq ((1 + \alpha _L ^2 ) ^L - 1 )
+    .\]
+\end{lem}
+Ce lemme nous servira en particulier dans la preuve de la proposition \ref{prop2}.
 
-% \begin{table}[h]
-%     \centering
-%     \begin{tabular}{lll}
-%         \hline
-%         \textbf{Nom} & \textbf{Récurrence} & \textbf{Paramètres} \\ \hline
-%         res-1 & \( h_{k+1} = h_k + \alpha_L V_{k+1}\sigma(h_k) \) & \( \theta_{k+1} = \emptyset \) \\
-%         res-2 & \( h_{k+1} = h_k + \alpha_L V_{k+1}\sigma(W_{k+1}h_k) \) & \( \theta_{k+1} = W_{k+1} \) \\
-%         res-3 & \( h_{k+1} = h_k + \alpha_L V_{k+1}\text{ReLU}(W_{k+1}h_k) \) & \( \theta_{k+1} = W_{k+1} \) \\ \hline
-%     \end{tabular}
-%     \caption{Exemples d'architectures ResNet considérées dans l'article. Dans les deux premiers cas, la fonction d'activation \( \sigma \) est telle que, pour tout \( x \in \mathbb{R} \), \( a|x| \leq |\sigma(x)| \leq b|x| \), avec \( \frac{1}{\sqrt{2}} \leq a < b \leq 1 \). Dans les deux derniers cas, \( W_{k+1} \in \mathbb{R}^{d \times d} \).}
-%     \label{tab:resnet_architectures}
-% \end{table}
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{lll}
+        \hline
+        \textbf{Nom} & \textbf{Récurrence} & \textbf{Paramètres} \\ \hline
+        res-1 & \( h_{k+1} = h_k + \alpha_L V_{k+1}\sigma(h_k) \) & \( \theta_{k+1} = \emptyset \) \\
+        res-2 & \( h_{k+1} = h_k + \alpha_L V_{k+1}\sigma(W_{k+1}h_k) \) & \( \theta_{k+1} = W_{k+1} \) \\
+        res-3 & \( h_{k+1} = h_k + \alpha_L V_{k+1}\text{ReLU}(W_{k+1}h_k) \) & \( \theta_{k+1} = W_{k+1} \) \\ \hline
+    \end{tabular}
+    \caption{Exemples d'architectures ResNet considérées dans l'article. Dans les deux premiers cas, la fonction d'activation \( \sigma \) est telle que, pour tout \( x \in \mathbb{R} \), \( a|x| \leq |\sigma(x)| \leq b|x| \), avec \( \frac{1}{\sqrt{2}} \leq a < b \leq 1 \). Dans les deux derniers cas, \( W_{k+1} \in \mathbb{R}^{d \times d} \).}
+    \label{tab:resnet_architectures}
+\end{table}
 
 \section{Limite probabilistique de la norme des états cachés}
 
@@ -76,8 +84,8 @@ Nous appliquerons un raisonnement similaire aux gradients avec la quantité ${\l
 Les propositions et corollaires suivants décriront comment le rapport ${\left\| h_L - h_0 \right\|} / {\left\| h_0 \right\|}$ se comporte en fonction de $L\alpha_L$, en établissant différentes bornes supérieures et inférieures.
 
 
-\begin{proposition}[Admise ? J'ai pas su la démontrer oof]\label{prop2}
-    Considérons un ResNet \cite{torchvision2016} tel que les hypothèses \ref{H1} et \ref{H2} soient satisfaites.
+\begin{proposition}\label{prop2}
+    Considérons un ResNet [\ref{resnet_equation}] tel que les hypothèses \ref{H1} et \ref{H2} soient satisfaites.
     Si \( L\alpha_L^2 \leq 1 \), alors, pour tout \( \delta \in (0, 1) \), avec une probabilité d'au moins \( 1 - \delta \),
     \[
         \frac{\|h_L - h_0\|^2}{\|h_0\|^2} \leq \frac{2L\alpha_L^2}{\delta}
@@ -85,8 +93,26 @@ Les propositions et corollaires suivants décriront comment le rapport ${\left\|
 \end{proposition}
 La proposition \ref{prop2} par sa borne supérieur petite indique que le réseau se comporte comme une fonction identité dans le cas où $ L \alpha ^2 _L \ll 1 $.
 
+\begin{proof}[Preuve : ]
+    En se basant sur le lemme \ref{lem14}, on a 
+    \[
+        \mathbb{E}( \frac{\left\| h_L - h_0 \right\| ^2 }{\left\| h_0 \right\| ^2}) \leq ((1 + \alpha _L ^2 ) ^L - 1 )
+    .\]
+    On sait que $ L \alpha _L ^2 \leq 1 $ (petit) et que $ L $ tend vers de grande valeurs. Dans ce cas, $ (1 + \alpha _L ^2)^L $ est une bonne approximation de $ \exp (L \alpha _L ^2) $ mais reste plus petit ou égal à $ \exp (L \alpha _L ^2) $ par la croissance exponentielle de $ \exp  $. En effet, $ (1 + \alpha _L ^2)^L $ est proche de $ 1 + L \alpha _L ^2 $ par la formule du binôme de Newton, ce qui corespond aux premier termes de la série de Taylor de l'exponentiel. Finalement, on a obtiens
+    \[
+        (1 + \alpha _L ^2)^L -1 \leq \exp (L \alpha _L ^2) - 1
+    .\]
+    $ (1 + \alpha _L ^2)^L -1 \leq \exp (L \alpha _L ^2) - 1 \leq 2 L \alpha _L ^2) $. Ainsi 
+    \[
+        \mathbb{E}( \frac{\left\| h_L - h_0 \right\| ^2 }{\left\| h_0 \right\| ^2}) \leq 2 L \alpha _L ^2
+    .\]
+    
+\end{proof}
+
+
+
 \begin{proposition}[Admise]\label{prop3}
-    Considérons un ResNet \cite{torchvision2016} tel que les hypothèses \ref{H1} et \ref{H2} soient satisfaites.
+    Considérons un ResNet [\ref{resnet_equation}] tel que les hypothèses \ref{H1} et \ref{H2} soient satisfaites.
     \begin{itemize}
         \item[(i)] Supposons que $ d \geq 64 $ et $ \alpha _L ^2 \leq  \frac{2 }{(\sqrt{C } s^4 + 4 \sqrt{C } + 16 s ^4)d} $. Alors, pour tout $ \delta \in (0, 1) $, avec une probabilité d'au moins $ 1 - \delta $,
         \[
@@ -108,7 +134,7 @@ Cette proposition \ref{prop3} peut présenter des hypothèses qui semblent atypi
 
 Les conséquences des propositions \ref{prop2} et \ref{prop3} vont devenir plus clair en fixant $ \alpha _L = 1/L ^\beta $ comme montré dans le corollaire suivant.
 \begin{cor}\label{cor4}
-    Considérons un ResNet \cite{torchvision2016} tel que les hypothèses \ref{H1} et \ref{H2} soient satisfaites, et soit $ \alpha_L = 1/L^\beta $, avec $ \beta > 0 $.
+    Considérons un ResNet [\ref{resnet_equation}] tel que les hypothèses \ref{H1} et \ref{H2} soient satisfaites, et soit $ \alpha_L = 1/L^\beta $, avec $ \beta > 0 $.
     \begin{itemize}
         \item[(i)] Si $ \beta > \frac{1}{2} $, alors
         \[
@@ -161,3 +187,4 @@ En conséquence, fixer $\beta = 1/2$ est la seule manière d'assurer une distrib
     \caption{Illustration du corollaire \ref{cor4}. Évolution de $ \left\| h_L - h_0 \right\| / \left\| h_0 \right\| $ en fonction de $ L $ pour différente valeur de $ \beta  $.}
     \label{fig:cor4}
 \end{figure}
+
