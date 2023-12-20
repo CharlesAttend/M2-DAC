@@ -6,11 +6,11 @@ Dans cette section, notre objectif est d'examiner comment le facteur de mise à 
 \section{Modèle et hypothèses}
 \subsection{Modèle}
 Le modèle est basé sur un ensemble de données composé de $n$ paires $(x_i, y_i)_{1 \leq i \leq n}$ avec $x_i \in \mathbb{R}^{n_{\text{in}}}$ comme vecteur d'entrée et $y_i \in \mathbb{R}^{n_{\text{out}}}$ comme vecteur de sortie à prédire (soit en valeurs continues soit en format \textit{one-hot}). Soit $F_\pi(x) \in \mathbb{R}^{n_{\text{out}}}, x \in \mathbb{R}^{n_{\text{in}}}$ la sortie du ResNet définie par 
-\begin{align*}
-    h_0 &= Ax, \\
+\begin{align}\label{ResNet_equation}
+    h_0 &= Ax, \nonumber\\
     h_{k+1} &= h_k + \alpha_L V_{k+1}g(h_k, \theta_k), \quad 0 \leq k \leq L - 1, \\
-    F_{\pi}(x) &= Bh_L,
-\end{align*}
+    F_{\pi}(x) &= Bh_L, \nonumber
+\end{align}
 où $\pi = (A, B, (\theta_k)_{k \leq L}, (V_k)_{1 \leq k \leq L})$ sont les paramètres du modèle avec $A \in \mathbb{R}^{d \times n_{\text{in}}}, B \in \mathbb{R}^{n_{\text{out}} \times d}, \theta_k \in \mathbb{R}^p$ et $V_k \in \mathbb{R}^{d \times d}$ pour $k = 1, \ldots, L$. La fonction $g : \mathbb{R}^d \times \mathbb{R}^p \to \mathbb{R}^d$ représente le choix de l'architecture d'un bloc du ResNet. Nous nous intéressons principalement à la suite des états cachés $(h_k)_{0 \leq k \leq L}$ et non aux changements de dimension permis par les matrices $A$ et $B$.
 % Un aspect important du modèle \cite{torchvision2016} est que la fonction de couche prend la forme d'une multiplication matrice-vecteur, ce qui sera crucial pour utiliser les résultats de concentration sur des variables aléatoires ??????? Important ????????? 
 Finalement, on définit $l: \mathbb{R}^{n_{\text{out}}} \times \mathbb{R}^{n_{\text{out}}} \to \mathbb{R}_+$ comme la fonction de \textit{loss}, différentiable par rapport à son premier paramètre. Cette \textit{loss} peut être une perte quadratique ou une entropie croisée. L'objectif de l'apprentissage est de trouver le paramètre optimal $\pi$ qui minimise le risque empirique $\mathcal{L}(\pi) = \sum_{i=1}^{n} l(F_\pi(x_i), y_i)$ à travers une descente de gradient stochastique ou l'une de ses variantes.
@@ -34,7 +34,7 @@ Avec cette définition en tête, passons aux hypothèses. Pour tout $ 1 \leq  k 
 \end{assumption}
 \begin{note}
     L'hypothèse \ref{H1} est en pratique satisfaite par toutes les initialisations, en particulier celle par défaut dans les paquets Keras \cite{torchvision2016} et Torch Vision \cite{torchvision2016}.
-    % Cette hypothèse permet de .... dans la preuve ... ??
+    % Cette hypothèse permet de .... dans la preuve ... ?? Tant pis :’(
 \end{note}
 
 \begin{assumption}\label{H2}
@@ -54,18 +54,18 @@ Avec cette définition en tête, passons aux hypothèses. Pour tout $ 1 \leq  k 
 \end{note}
 
 
-% \begin{table}[h]
-%     \centering
-%     \begin{tabular}{lll}
-%         \hline
-%         \textbf{Nom} & \textbf{Récurrence} & \textbf{Paramètres} \\ \hline
-%         res-1 & \( h_{k+1} = h_k + \alpha_L V_{k+1}\sigma(h_k) \) & \( \theta_{k+1} = \emptyset \) \\
-%         res-2 & \( h_{k+1} = h_k + \alpha_L V_{k+1}\sigma(W_{k+1}h_k) \) & \( \theta_{k+1} = W_{k+1} \) \\
-%         res-3 & \( h_{k+1} = h_k + \alpha_L V_{k+1}\text{ReLU}(W_{k+1}h_k) \) & \( \theta_{k+1} = W_{k+1} \) \\ \hline
-%     \end{tabular}
-%     \caption{Exemples d'architectures ResNet considérées dans l'article. Dans les deux premiers cas, la fonction d'activation \( \sigma \) est telle que, pour tout \( x \in \mathbb{R} \), \( a|x| \leq |\sigma(x)| \leq b|x| \), avec \( \frac{1}{\sqrt{2}} \leq a < b \leq 1 \). Dans les deux derniers cas, \( W_{k+1} \in \mathbb{R}^{d \times d} \).}
-%     \label{tab:resnet_architectures}
-% \end{table}
+\begin{table}[h]
+    \centering
+    \begin{tabular}{lll}
+        \hline
+        \textbf{Nom} & \textbf{Récurrence} & \textbf{Paramètres} \\ \hline
+        res-1 & \( h_{k+1} = h_k + \alpha_L V_{k+1}\sigma(h_k) \) & \( \theta_{k+1} = \emptyset \) \\
+        res-2 & \( h_{k+1} = h_k + \alpha_L V_{k+1}\sigma(W_{k+1}h_k) \) & \( \theta_{k+1} = W_{k+1} \) \\
+        res-3 & \( h_{k+1} = h_k + \alpha_L V_{k+1}\text{ReLU}(W_{k+1}h_k) \) & \( \theta_{k+1} = W_{k+1} \) \\ \hline
+    \end{tabular}
+    \caption{Exemples d'architectures ResNet considérées dans l'article. Dans les deux premiers cas, la fonction d'activation \( \sigma \) est telle que, pour tout \( x \in \mathbb{R} \), \( a|x| \leq |\sigma(x)| \leq b|x| \), avec \( \frac{1}{\sqrt{2}} \leq a < b \leq 1 \). Dans les deux derniers cas, \( W_{k+1} \in \mathbb{R}^{d \times d} \).}
+    \label{tab:resnet_architectures}
+\end{table}
 
 \section{Limite probabilistique de la norme des états cachés}
 
@@ -76,8 +76,8 @@ Nous appliquerons un raisonnement similaire aux gradients avec la quantité ${\l
 Les propositions et corollaires suivants décriront comment le rapport ${\left\| h_L - h_0 \right\|} / {\left\| h_0 \right\|}$ se comporte en fonction de $L\alpha_L$, en établissant différentes bornes supérieures et inférieures.
 
 
-\begin{proposition}[Admise ? J'ai pas su la démontrer oof]\label{prop2}
-    Considérons un ResNet \cite{torchvision2016} tel que les hypothèses \ref{H1} et \ref{H2} soient satisfaites.
+\begin{proposition}\label{prop2}
+    Considérons un ResNet (\ref{ResNet_equation}) tel que les hypothèses \ref{H1} et \ref{H2} soient satisfaites.
     Si \( L\alpha_L^2 \leq 1 \), alors, pour tout \( \delta \in (0, 1) \), avec une probabilité d'au moins \( 1 - \delta \),
     \[
         \frac{\|h_L - h_0\|^2}{\|h_0\|^2} \leq \frac{2L\alpha_L^2}{\delta}
@@ -85,8 +85,26 @@ Les propositions et corollaires suivants décriront comment le rapport ${\left\|
 \end{proposition}
 La proposition \ref{prop2} par sa borne supérieur petite indique que le réseau se comporte comme une fonction identité dans le cas où $ L \alpha ^2 _L \ll 1 $.
 
+\begin{proof}[\Cref{prop2}]
+    Pour démontrer cette proposition, nous allons utiliser le \cref{lem14} ci-dessous pour obtenir une borne supérieur de départ.
+    \begin{lem}[Admis]\label{lem14}
+        Considérons un ResNet (\ref{ResNet_equation}) vérifiant l'\cref{H1} et l'\cref{H2}. Alors
+        \[
+            ((1 + \frac{\alpha ^2 _L }{2})^L - 1 ) \leq \mathbb{E}( \frac{\left\| h_L - h_0 \right\| ^2}{\left\| h_0 \right\| ^2}) \leq ((1 + \alpha ^2 _L)^L - 1)
+        \]
+    \end{lem}
+    On a donc 
+    \[
+        \mathbb{E}( \frac{\left\| h_L - h_0 \right\| ^2}{\left\| h_0 \right\| ^2}) \leq ((1 + \alpha ^2 _L)^L - 1)
+    .\]
+    Or, pas 
+
+\end{proof}
+
+
+
 \begin{proposition}[Admise]\label{prop3}
-    Considérons un ResNet \cite{torchvision2016} tel que les hypothèses \ref{H1} et \ref{H2} soient satisfaites.
+    Considérons un ResNet (\ref{ResNet_equation}) tel que les hypothèses \ref{H1} et \ref{H2} soient satisfaites.
     \begin{itemize}
         \item[(i)] Supposons que $ d \geq 64 $ et $ \alpha _L ^2 \leq  \frac{2 }{(\sqrt{C } s^4 + 4 \sqrt{C } + 16 s ^4)d} $. Alors, pour tout $ \delta \in (0, 1) $, avec une probabilité d'au moins $ 1 - \delta $,
         \[
@@ -108,7 +126,7 @@ Cette proposition \ref{prop3} peut présenter des hypothèses qui semblent atypi
 
 Les conséquences des propositions \ref{prop2} et \ref{prop3} vont devenir plus clair en fixant $ \alpha _L = 1/L ^\beta $ comme montré dans le corollaire suivant.
 \begin{cor}\label{cor4}
-    Considérons un ResNet \cite{torchvision2016} tel que les hypothèses \ref{H1} et \ref{H2} soient satisfaites, et soit $ \alpha_L = 1/L^\beta $, avec $ \beta > 0 $.
+    Considérons un ResNet (\ref{ResNet_equation}) tel que les hypothèses \ref{H1} et \ref{H2} soient satisfaites, et soit $ \alpha_L = 1/L^\beta $, avec $ \beta > 0 $.
     \begin{itemize}
         \item[(i)] Si $ \beta > \frac{1}{2} $, alors
         \[
@@ -145,7 +163,7 @@ Le corollaire 4 précise le comportement de notre dernier état caché $\left\| 
 En conséquence, fixer $\beta = 1/2$ est la seule manière d'assurer une distribution adéquate des valeurs de $h_L$.
 
 
-\begin{proof}[Preuve du corollaire \ref{cor4} : ]
+\begin{proof}[Corollaire \ref{cor4}]
     L'affirmation ($ i $) est une conséquence de la Proposition \ref{prop2}. Nous avons $ L \alpha _L ^2 = \frac{L}{L^{2\beta} } = L^{1 - 2 \beta } $, comme $ \beta > 1/2 \Leftrightarrow 1 - 2 \beta < 0 $ nous avons $ L^{1 - 2 \beta } = \frac{1}{L^{2 \beta  -1}} \underset{L\to +\infty}{\longrightarrow} 0 $. Ainsi
     \begin{align*}
         & \frac{\|h_L - h_0\|^2}{\|h_0\|^2} \leq \frac{2L\alpha_L^2}{\delta}.
@@ -155,9 +173,10 @@ En conséquence, fixer $\beta = 1/2$ est la seule manière d'assurer une distrib
     L'affirmation ($ ii $) est une conséquence de la Proposition \ref{prop3}.
 \end{proof}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \includegraphics[width=.95\textwidth]{figs/figure_cor4.pdf}
     \caption{Illustration du corollaire \ref{cor4}. Évolution de $ \left\| h_L - h_0 \right\| / \left\| h_0 \right\| $ en fonction de $ L $ pour différente valeur de $ \beta  $.}
     \label{fig:cor4}
 \end{figure}
+
