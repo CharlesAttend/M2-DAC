@@ -9,7 +9,7 @@ from sklearn.mixture import GaussianMixture
 from sklearn.inspection import DecisionBoundaryDisplay
 from sklearn.datasets import make_blobs
 from matplotlib.colors import LogNorm
-from possibilistic_cmeans import PossibilisticCMeans
+from fuzzy_possibilistic_cmeans import PossibilisticCMeans
 
 
 def generate_blobs(
@@ -199,6 +199,7 @@ def experim(X, n_clusters, labels_true=None, centers=None, nrow=4, ncol=2, scale
     fuzzy_cmeans.fit(fd)
 
     p_cmeans = PossibilisticCMeans(n_clusters=n_clusters)
+    p_cmeans.fit(pd.DataFrame(X))
 
     k_means = KMeans(n_clusters=n_clusters, n_init="auto", random_state=0)
     k_means.fit(X)
@@ -252,16 +253,25 @@ def experim(X, n_clusters, labels_true=None, centers=None, nrow=4, ncol=2, scale
 
     ## C-Mean possibiliste
     ax = fig.add_subplot(nrow, ncol, 4)
-    pcm_cluster_centers, pcm_membership_degree = p_cmeans.fit_predict(X)
+    pcm_cluster_centers, pcm_membership_degree = (
+        p_cmeans.centroids_,
+        p_cmeans.membership_weights_,
+    )
     pcm_labels = pcm_membership_degree.argmax(axis=1)
     plot_data_with_label(
         X,
         labels_true=pcm_labels,
-        cluster_centers=pcm_cluster_centers,
+        cluster_centers=np.flip(pcm_cluster_centers, 0),
         title="Possibilistic C-Means",
         ax=ax,
         legend=False,
     )
+    Z = p_cmeans.predict_proba(pd.DataFrame(XX))
+    r_colors = list(reversed(colors))
+    for i in range(n_clusters):
+        colors_list = [r_colors[i], (*r_colors[i], 0.1)]
+        cmap = mcolors.LinearSegmentedColormap.from_list("custom_colormap", colors_list)
+        ax.contour(X_mesh, Y_mesh, Z[:, i].reshape(X_mesh.shape), cmap=cmap)
 
     ## GMM
     ax = fig.add_subplot(nrow, ncol, 5)

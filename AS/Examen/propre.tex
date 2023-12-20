@@ -6,6 +6,11 @@
 \usepackage{graphicx}
 \usepackage[numbers]{natbib}
 \usepackage{hyperref}
+\usepackage{float}
+\usepackage{cleveref}
+
+\usepackage{todonotes}
+
 \hypersetup{
     colorlinks=true,
     linkcolor=blue,
@@ -22,8 +27,9 @@
 \newtheorem{assumption}{Hypothèse}
 \newtheorem{definition}{Définition}
 \newtheorem{cor}{Corollaire}
+\newtheorem{lem}{Lemme}
 \newtheorem{note}{Note}
-
+    
 \title{Projet d'appentissage statistique\\Facteur de régulation des ResNets profonds}
 \author{SHEN Pingya, VIN Charles}
 \date{\today}
@@ -34,7 +40,7 @@
 \include{Introduction}
 \include{Partie1}
 \include{Partie2}
-
+\include{conclusion}
 
 \bibliographystyle{plain} % We choose the "plain" reference style
 \bibliography{bib} % Entries are in the refs.bib file
