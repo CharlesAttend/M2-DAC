@@ -68,23 +68,58 @@ The output size of the last layer of VGG16 is 1000. It corresponds to the 1000 c
 
 \paragraph{3. \textbf{Bonus}: Apply the network on several images of your choice and comment on the results.}
 
-In \Cref{fig:vgg16}, we present the results of applying our network to four different images: two relatively common pictures of a tuxedo cat and a dog, along with two more whimsical images one might come across on the internet. The first of these whimsical images is a close-up photo of a wombat, and the second is a photomontage featuring a dog.
+In \Cref{fig:vgg16}, we present the results of our network's application to six diverse images, encompassing different scenarios. These include two common images featuring a tuxedo cat and a Shih Tzu dog, along with two whimsical images and two images of Komondor dogs. The whimsical images consist of a close-up of a wombat and a photomontage featuring a dog. The Komondor images, in particular, provide an interesting challenge; one is clearly a dog, while the other's unique coat might humorously resemble a mop.
 
-This figure illustrates how the images are preprocessed to fit our network's architecture. The third row showcases the model's best predictions. Remarkably, the model accurately classifies each image, even successfully identifying the breed for both cat and dogs.
+The network's predictions showcase its ability to recognize certain animal features, yet they also highlight its limitations in classification. It correctly identifies the wombat, cardigan dog, and Komondor without confusing the latter with a mop. However, it misclassifies the Shih Tzu as a Miniature Poodle, with a Lakeland Terrier as a close second, indicating confusion between breeds with similar appearances. The tuxedo cat is inaccurately labeled as an Egyptian Mau, emphasizing the network's difficulty in precise breed identification—a challenge partly attributed to the absence of highly specific categories within ImageNet's 1000 classes. Nevertheless, the tuxedo cat is still classified as a cat.
+
+These outcomes not only identify areas for improvement in the network's classification capabilities but also suggest the potential benefits of transfer learning. The identified errors offer valuable insights for further refining the model, ultimately enhancing its performance in more nuanced and specialized tasks.
+
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics*[width=0.95\textwidth]{predictions.pdf}
+%     \caption{Prediction of VGG16 on few images}
+%     \label{fig:vgg16}
+% \end{figure} % BOBR!!!!!!
 
 \begin{figure}[H]
     \centering
-    \includegraphics*[width=0.95\textwidth]{predictions.pdf}
-    \caption{Prediction of VGG16 on few images}
+    \begin{subfigure}{0.95\textwidth}
+        \includegraphics[width=\textwidth]{original_images}
+        \caption{}
+        \label{subfig:original_images}
+    \end{subfigure}
+    \begin{subfigure}{0.95\textwidth}
+        \includegraphics[width=\textwidth]{transformed_images}
+        \caption{}
+        \label{subfig:transformed_images}
+    \end{subfigure}
+    \begin{subfigure}{0.95\textwidth}
+        \includegraphics[width=\textwidth]{prediction_plots}
+        \caption{}
+        \label{subfig:prediction_plots}
+    \end{subfigure}
+    \caption{Performance evaluation of VGG16 pre-trained on ImageNet: (a) Original images, (b) Transformed images normalized and resized to $224 \times 224$, and (c) Top 5 predicted classes}
     \label{fig:vgg16}
-\end{figure} % BOBR!!!!!!
+\end{figure}
+
 
 \paragraph{4. \textbf{Bonus}: Visualize several activation maps obtained after the first convolutional layer. How can we interpret them?}
-TODO
+Let $A_{ij}$ denote the activation map located at the $i$th row and $j$th column, where $i$ and $j$ are both in the range of $[1, 8]$.
+
+In Figure \ref{fig:activation_cat}, we showcase the 64 feature maps obtained after applying the first convolutional layer of VGG16 to the tuxedo cat image. Furthermore, we include activation maps for the five preceding images in Appendix \Cref{appendix:activation_maps}.
+
+Each activation map corresponds to a unique filter applied to the original image, capturing a diverse array of features. Some maps highlight edges or textures (e.g., $A_{12}$, $A_{13}$, $A_{88}$), while others respond to background elements (e.g., $A_{26}$, $A_{28}$), color contrasts (e.g., $A_{41}$, $A_{62}$), or specific shapes (e.g., $A_{33}$, $A_{65}$) within the image. It is essential to recognize that these initial layers are primarily designed to detect low-level features, which become progressively more abstract and complex in deeper layers.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics*[width=0.95\textwidth]{activation_cat}
+    \caption{Activation maps obtained after the first convolutional layer of VGG16, on the tuxedo cat image}
+    \label{fig:activation_cat}
+\end{figure}
 
 \section{Transfer Learning with VGG16 on 15 Scene}
 
-The concept of transfer learning plays a significant role when it comes to applying pre-trained models to unfamiliar fields. In this section, we'll explore the usage of the VGG16 model, which is well-known for its effectiveness in classifying images. Our focus will be on how established neural network models, originally trained on extensive datasets like ImageNet, can be cleverly repurposed for different yet related tasks. This approach highlights the adaptability of deep learning models and emphasizes the idea that existing knowledge encoded within a trained network can be successfully applied to new areas, a fundamental principle in modern machine learning research.
+The concept of transfer learning plays a significant role when it comes to applying pre-trained models to unfamiliar fields. In this section, our focus will be on how VGG16 can be cleverly repurposed for different yet related tasks. This approach highlights the adaptability of deep learning models and emphasizes the idea that existing knowledge encoded within a trained network can be successfully applied to new areas, a fundamental principle in modern machine learning research.
 
 \subsection{Approach}
 \paragraph{5. $\bigstar$ Why not directly train VGG16 on 15 Scene?}
@@ -109,10 +144,38 @@ For some tasks, the simpler features extracted from the early layers may suffice
 \paragraph{9. The images from 15 Scene are black and white, but VGG16 requires RGB images. How can we get around this problem?}
 Image from 15 scene are black and white so they only have one channel. VGG requires 3 channel RGB images. The easiest workaround is to replicate the single channel of the grayscale image across the three RGB channels. Another solution is to average the weights of the first convolutional layer (which is responsible for the RGB channels) so that it can directly accept grayscale images.
 
+\subsection{Training SVM classifiers}
 \paragraph{10. Rather than training an independent classifier, is it possible to just use the neural network? Explain.}
 Absolutely, it is possible to use the neural network itself instead of training an independent classifier. In the case of models like VGG16, the final classification layer is essentially a neural network. If the classification task is similar to what VGG16 was originally trained for, we can fine-tune this neural network for our specific task. However, if the task is substantially different from the original one, it may not be ideal to retain the pre-trained classifier, as it might not perform well on new classes.
 
 The decision between using the pre-trained neural network or training an independent classifier, such as an SVM, depends on the nature of the task and the available data. Using the pre-trained network can save time and computational resources, but fine-tuning or retraining may be necessary for optimal results on different tasks. Using a simpler classifier like an SVM can be a good compromise, leveraging the deep features extracted by the neural network while providing a more interpretable decision boundary.
 
+\subsection{Going further}
 \paragraph*{11. For every improvement that you test, explain your reasoning and comment on the obtained results.}
 TODO
+
+In the study of transfer learning from VGG16 pretrained on ImageNet for Scene15 classification, the depth of the feature extraction layer emerged as a significant factor. Extracting features after the first fully connected layer (ReLU6) versus the second (ReLU7) offers the same dimensionality (4096 features), yet stopping after the first yields better results. Results are displayed on \Cref{tab:depth_influence}. This suggests that the initial fully connected layers may capture more generalizable features beneficial for the task at hand. Using all three fully connected layers (up to ReLU8) reduces feature dimensionality to 1000 and leads to poorer performance, likely due to over-specialization to ImageNet. 
+
+\begin{table}[!htpb]
+    \centering
+    \begin{tabular}{@{}cccc@{}}
+        \toprule
+        \textbf{Layer Extracted} & \textbf{Feature Dimensionality} & \textbf{Accuracy (Non-Normalized)} & \textbf{Accuracy (Normalized)} \\
+        \midrule \midrule
+        ReLU6 & 4096            & \textbf{0.906}         & \textbf{0.912} \\
+        ReLU7 & 4096            & 0.896                  & 0.896          \\
+        ReLU8 & 1000            & 0.861                  & 0.880          \\
+        \bottomrule
+    \end{tabular}
+    \caption{}
+    \label{tab:depth_influence}
+\end{table}
+
+% - Change the layer at which the features are extracted. What is the importance of the depth of this  layer? What is the representation size and what does this change? : on peut couper soit après le premier FC+Relu (relu6) soit le 2e (relu7), soit le 3e = le dernier (relu8). 1er et 2e, on aura autant de features 4096 donc same representation, mais relu8 on en aura plus que 1000 ce qui réduit la représentation. on obtient des résulats légérement supérieurs en s'arretant après premier FC (expliquer pourquoi) mais des moins bons en utilisant les 3 fc (expliquer pourquoi). expliquer et commenter sur l'importance de la profondeur de ce layer.
+
+% - Tune the parameter C to improve performance. C=1 seems to actually be the best, it yields the best crossval score in a gridsearch, with a score of 0.9119.
+
+% Instead of training an SVM, replace the last layer of VGG16 with a new fully-connected layer and
+% continue to train the network on 15 Scene (with or without propogating the gradients to the rest of
+% the network). ouais, bah ça marche aussi bien que svm, donc voilà quoi, pk se casser le cul à train un nn alors qu'un svm marchera aussi bien.
+
