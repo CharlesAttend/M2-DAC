@@ -14,23 +14,53 @@ In the process of visualizing multiple saliency maps, most of them exhibited con
 
 In \Cref{fig:good_saliency_map}, we observe saliency maps that are generally consistent. When the model makes accurate predictions, we can observe high saliency values on the labeled object, i.e. it highlights only the important pixels. This makes it easy to recognize the images. This holds true for all the images in this figure, except for the fourth one where the model predicted "greenhouse" instead of "lakeside." In this case, the model did not focus on the lake boundaries, which led to the incorrect prediction. Instead, it primarily concentrated on the dark ground and the bright areas of the image, resulting in the "greenhouse" class prediction. 
 
+In \Cref{fig:bad_saliency_map}, we encounter saliency maps that appear inconsistent. Both the first and fourth images are examples where the model's prediction is correct, but the corresponding saliency maps lack informativeness and appear blurry. In contrast, for the second and last images, the model seems to be focusing on the right regions, but it still predicts the wrong class.
+
 \begin{figure}[H]
     \centering
-    \includegraphics[width=.9\textwidth]{good_saliency_map.pdf}
-    \caption{Consistent saliency maps of the predicted class}
+    \begin{subfigure}{0.95\textwidth}
+        \includegraphics[width=\textwidth]{good_images}
+        \caption{}
+        \label{subfig:good_images1}
+    \end{subfigure}
+    \begin{subfigure}{0.95\textwidth}
+        \includegraphics[width=\textwidth]{good_true_class_saliency}
+        \caption{}
+        \label{subfig:good_true_class_saliency}
+    \end{subfigure}
+    \begin{subfigure}{0.95\textwidth}
+        \includegraphics[width=\textwidth]{good_predicted_class_saliency}
+        \caption{}
+        \label{subfig:good_predicted_class_saliency}
+    \end{subfigure}
+    \caption{Illustration of (a) original images depicting the true label and predicted class by SqueezeNet, (b) saliency maps highlighting regions relevant to the true class, and (c) consistent saliency maps highlighting regions relevant to the predicted class.}
     \label{fig:good_saliency_map}
 \end{figure}
 
-Now, in \Cref{fig:bad_saliency_map}, we encounter saliency maps that appear inconsistent. Both the first and fourth images are examples where the model's prediction is correct, but the corresponding saliency maps lack informativeness and appear blurry. In contrast, for the second and last images, the model seems to be focusing on the right regions, but it still predicts the wrong class.
+%  In (a), the images display both the true label and the class predicted by the SqueezeNet model, providing insight into the model's performance. (b) visualizes regions in the images that contribute to the true class prediction, and (c) visualizes regions contributing to the predicted class, offering insights into the model's decision-making process.
 
 \begin{figure}[H]
-    \centering  
-    \includegraphics[width=.9\textwidth]{bad_saliency_map.pdf}
-    \caption{Inconsistent saliency maps of the predicted class}
+    \centering
+    \begin{subfigure}{0.95\textwidth}
+        \includegraphics[width=\textwidth]{bad_images}
+        \caption{}
+        \label{subfig:bad_images}
+    \end{subfigure}
+    \begin{subfigure}{0.95\textwidth}
+        \includegraphics[width=\textwidth]{bad_true_class_saliency}
+        \caption{}
+        \label{subfig:bad_true_class_saliency}
+    \end{subfigure}
+    \begin{subfigure}{0.95\textwidth}
+        \includegraphics[width=\textwidth]{bad_predicted_class_saliency}
+        \caption{}
+        \label{subfig:bad_predicted_class_saliency}
+    \end{subfigure}
+    \caption{Illustration of (a) original images depicting the true label and predicted class by SqueezeNet, (b) saliency maps highlighting regions relevant to the true class, and (c) inconsistent saliency maps highlighting regions relevant to the predicted class.}
     \label{fig:bad_saliency_map}
 \end{figure}
 
-% figure où le modèle misclassify des images?
+% figure où le modèle misclassify des images? nan on le fait déjà là
 
 \paragraph*{2. Discuss the limits of this technique of visualization the impact of different pixels.}
 As we discussed in the previous question, saliency maps can face challenges when dealing with images containing multiple objects or complex scenes. In such scenarios, these maps may become cluttered or unclear, making it challenging to extract the important pixels. They can also suffer from noise or, conversely, overemphasize certain features while downplaying others. This can result in a biased interpretation of the model's focus. Additionnaly, this technique (Vanilla Gradient) suffers from a saturation problem, as highlihted by \cite{shrikumar2019learning}. When ReLU is used, and when the activation goes below zero, it remains capped at zero and no longer change. This saturation issue may explain our previous observations regarding saliency maps. To address this problem, alternatives methods were subsequently introduced, such as SmoothGrad \citep{smilkov2017smoothgrad} and Grad-CAM \citep{Selvaraju_2019}.
@@ -47,19 +77,62 @@ Saliency maps can be used to identify and localize important objects or regions 
 \paragraph*{4. \textbf{Bonus:} Test with a diffrentent network, for example VGG16, and comment.}
 % Guillaume a fait sur un ViT aussi
 We tried the same saliency maps using VGG16. Those are much better! TODO
-% Make a comparaison plot for most of the "bad" saliency map, much better frontier, better classification also, Tibetan mastiff dog much clear frontiere too
+% Make a comparaison plot for most of the "bad" saliency map (ie no more missclassif for example), much better frontier, better classification also, Tibetan mastiff dog much clear frontiere too 
+
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=.9\textwidth]{good_saliency_map_vgg16.pdf}
+%     \caption{Consistent saliency maps of the predicted class}
+%     \label{fig:good_saliency_map_vgg16}
+% \end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=.9\textwidth]{good_saliency_map_vgg16.pdf}
-    \caption{Consistent saliency maps of the predicted class}
+    \begin{subfigure}{0.95\textwidth}
+        \includegraphics[width=\textwidth]{good_images_vgg16}
+        \caption{}
+        \label{subfig:good_images_vgg16}
+    \end{subfigure}
+    \begin{subfigure}{0.95\textwidth}
+        \includegraphics[width=\textwidth]{good_true_class_saliency_vgg16}
+        \caption{}
+        \label{subfig:good_true_class_saliency_vgg16}
+    \end{subfigure}
+    \begin{subfigure}{0.95\textwidth}
+        \includegraphics[width=\textwidth]{good_predicted_class_saliency_vgg16}
+        \caption{}
+        \label{subfig:good_predicted_class_saliency_vgg16}
+    \end{subfigure}
+    \caption{Illustration of (a) original images depicting the true label and predicted class by VGG16, (b) saliency maps highlighting regions relevant to the true class, and (c) consistent saliency maps highlighting regions relevant to the predicted class.}
     \label{fig:good_saliency_map_vgg16}
 \end{figure}
 
+
+% \begin{figure}[H]
+%     \centering  
+%     \includegraphics[width=.9\textwidth]{bad_saliency_map_vgg16.pdf}
+%     \caption{Inconsistent saliency maps of the predicted class}
+%     \label{fig:bad_saliency_map_vgg16}
+% \end{figure}
+
 \begin{figure}[H]
-    \centering  
-    \includegraphics[width=.9\textwidth]{bad_saliency_map_vgg16.pdf}
-    \caption{Inconsistent saliency maps of the predicted class}
+    \centering
+    \begin{subfigure}{0.95\textwidth}
+        \includegraphics[width=\textwidth]{bad_images_vgg16}
+        \caption{}
+        \label{subfig:bad_images_vgg16}
+    \end{subfigure}
+    \begin{subfigure}{0.95\textwidth}
+        \includegraphics[width=\textwidth]{bad_true_class_saliency_vgg16}
+        \caption{}
+        \label{subfig:bad_true_class_saliency_vgg16}
+    \end{subfigure}
+    \begin{subfigure}{0.95\textwidth}
+        \includegraphics[width=\textwidth]{bad_predicted_class_saliency_vgg16}
+        \caption{}
+        \label{subfig:bad_predicted_class_saliency_vgg16}
+    \end{subfigure}
+    \caption{Illustration of (a) original images depicting the true label and predicted class by SqueezeNet, (b) saliency maps highlighting regions relevant to the true class, and (c) consistent saliency maps highlighting regions relevant to the predicted class.}
     \label{fig:bad_saliency_map_vgg16}
 \end{figure}
 
@@ -71,6 +144,8 @@ Here, the goal is to study the vulnerability of CNNs to minor, imperceptible mod
 \paragraph*{5. $ \bigstar $ Show and interpret the obtained results.}
 
 TODO
+
+% une observation à faire c'est : plus un modèle est sûr de sa prédi, plus il faudra faire d'itérations pour le tromper, et vice-versa.
 
 \paragraph*{6. In practice, what consequences can this method have when using convolutional neural networks?}
 
@@ -100,17 +175,19 @@ As a first try of this method, we decided to visualize our prefered animal: a wo
     \centering
     \begin{subfigure}{.5\textwidth}
         \centering
-        \includegraphics[width=.7\linewidth]{SqueezeNet/SqueezeNet_wombat_animated_1000_last_frame.png}
+        \includegraphics[width=.7\linewidth]{SqueezeNet/wombat_animated_1000_last_frame.png}
         \caption{Last iteration}
         \label{fig:class_viz_wombat:png}
     \end{subfigure}%
     \begin{subfigure}{.5\textwidth}
         \centering
-        % \includemedia[width=.7\linewidth, height=.7\linewidth]{}{SqueezeNet/SqueezeNet_wombat_animated_1000.mp4}
-        \caption{\href{figs/2b/SqueezeNet/SqueezeNet_wombat_animated_1000.mp4}{Animation}}
+        % \begin{frame}{}
+        %     \animategraphics[width=.7\linewidth]{10}{SqueezeNet/wombat_animated_1000/frame-}{0}{999}
+        % \end{frame}
+        % \includemedia[width=.7\linewidth, height=.7\linewidth]{}{SqueezeNet/wombat_animated_1000.mp4}
+        \caption{\href{figs/2b/SqueezeNet/wombat_animated_1000.mp4}{Animation}}
         \label{fig:class_viz_wombat:vid}
     \end{subfigure}
-
     \caption{Class visualization: started from random noise, maximising the score from the wombat class. Using default regularization parameters (regularization factor of $10^{-3}$, bluring every ten epoch, learning rate of $5$).}
     \label{fig:class_viz_wombat}
 \end{figure}
@@ -129,24 +206,26 @@ Non-regularized images appear to be overly saturated, making it challenging to d
     \centering
     \begin{subfigure}[t]{.33\textwidth}
         \centering
-        \includegraphics[width=\linewidth]{SqueezeNet/SqueezeNet_bird_animated_reg++_last_frame.png}
-        \caption{With a lot of regularization}
+        \includegraphics[width=\linewidth]{SqueezeNet/bird_animated_reg++_last_frame.png}
+        % \caption{With a lot of regularization}
+        \caption{}
         \label{fig:class_viz_reg:sub1}
     \end{subfigure}%
     \begin{subfigure}[t]{.33\textwidth}
         \centering
-        \includegraphics[width=\linewidth]{SqueezeNet/SqueezeNet_bird_animated_last_frame.png}
-        \caption{With regularization}
+        \includegraphics[width=\linewidth]{SqueezeNet/bird_animated_last_frame.png}
+        % \caption{With regularization}
+        \caption{}
         \label{fig:class_viz_reg:sub2}
     \end{subfigure}%
     \begin{subfigure}[t]{.33\textwidth}
         \centering
-        \includegraphics[width=\linewidth]{SqueezeNet/SqueezeNet_bird_animated_no_reg_last_frame.png}
-        \caption{Without regularization}
+        \includegraphics[width=\linewidth]{SqueezeNet/bird_animated_no_reg_last_frame.png}
+        % \caption{Without regularization}
+        \caption{}
         \label{fig:class_viz_reg:sub3}
     \end{subfigure}
-
-    \caption{Comparaison of the bee eater class visualization using VGG16 with or without regularization (blurring and weight regularization) and starting from a base image of the class.}
+    \caption{Comparaison of the bee eater class visualization using VGG16 (a) with a lot of regularization, (b) with regularization and (c) without regularization and starting from a base image of the class.} % (blurring and weight regularization)
     \label{fig:class_viz_reg}
 \end{figure}
 
@@ -158,30 +237,33 @@ About the number of epoch, our experiment show that we need to make a certain nu
     \centering
     \begin{subfigure}[t]{.25\textwidth}
         \centering
-        \includegraphics[width=\linewidth]{SqueezeNet/SqueezeNet_bird_animated_1000_regpp_blur_100_frame.png}
-        \caption{200 iterations}
+        \includegraphics[width=\linewidth]{SqueezeNet/bird_animated_1000_regpp_blur_100_frame.png}
+        % \caption{200 iterations}
+        \caption{}
         \label{fig:class_viz_iter:sub1}
     \end{subfigure}%
     \begin{subfigure}[t]{.25\textwidth}
         \centering
-        \includegraphics[width=\linewidth]{SqueezeNet/SqueezeNet_bird_animated_1000_regpp_blur_500_frame.png}
-        \caption{500 iterations}
+        \includegraphics[width=\linewidth]{SqueezeNet/bird_animated_1000_regpp_blur_500_frame.png}
+        % \caption{500 iterations}
+        \caption{}
         \label{fig:class_viz_iter:sub2}
     \end{subfigure}%
     \begin{subfigure}[t]{.25\textwidth}
         \centering
-        \includegraphics[width=\linewidth]{SqueezeNet/SqueezeNet_bird_animated_1000_regpp_blur_last_frame.png}
-        \caption{1000 iterations}
+        \includegraphics[width=\linewidth]{SqueezeNet/bird_animated_1000_regpp_blur_last_frame.png}
+        % \caption{1000 iterations}
+        \caption{}
         \label{fig:class_viz_iter:sub3}
     \end{subfigure}%
     \begin{subfigure}[t]{.25\textwidth}
         \centering
-        \includegraphics[width=\linewidth]{SqueezeNet/SqueezeNet_bird_animated_1000_last_frame.png}
-        \caption{1000 iterations, no regularization}
+        \includegraphics[width=\linewidth]{SqueezeNet/bird_animated_1000_last_frame.png}
+        % \caption{1000 iterations, no regularization}
+        \caption{}
         \label{fig:class_viz_iter:sub4}
     \end{subfigure}
-
-    \caption{Same image at different time. The last one is another run but without regularization.}
+    \caption{Same image after (a) 200 iterations, (b) 500 iterations, (c) 1000 iterations and (d) at 1000 iterations but without having performed regularization.}
     \label{fig:class_viz_iter}
 \end{figure}
 
@@ -195,24 +277,28 @@ Starting using an image is a good method, it give a good starting point of the g
     \centering
     \begin{subfigure}{.33\textwidth}
         \centering
-        \includegraphics[width=.7\linewidth]{SqueezeNet/SqueezeNet_bird_animated_reg++_last_frame.png}
-        \caption{Last iteration\\starting from noise}
+        \includegraphics[width=.7\linewidth]{SqueezeNet/bird_animated_reg++_last_frame.png}
+        % \caption{Last iteration\\starting from noise}
+        \caption{}
         \label{fig:class_viz_start_image:png_noise}
     \end{subfigure}%
     \begin{subfigure}{.33\textwidth}
         \centering
-        \includegraphics[width=.7\linewidth]{SqueezeNet/SqueezeNet_bird_animated_same_init_img_reg++_last_frame.png}
-        \caption{Last iteration\\starting from same class}
+        \includegraphics[width=.7\linewidth]{SqueezeNet/bird_animated_same_init_img_reg++_last_frame.png}
+        % \caption{Last iteration\\starting from same class}
+        \caption{}
         \label{fig:class_viz_start_image:png}
     \end{subfigure}%
     \begin{subfigure}{.33\textwidth}
         \centering
-        % \includemedia[width=.7\linewidth, height=.7\linewidth]{}{SqueezeNet/SqueezeNet_bird_animated_same_init_img_reg++.gif}
-        \caption{\href{figs/2b/SqueezeNet\_bird\_animated\_same\_init\_img\_reg++.gif}{Animation} starting from same class.} %(see \textit{SqueezeNet\_bird\_animated\_same\_init\_img\_reg++.gif})}
+        % \begin{frame}{}
+        %     \animategraphics[width=.7\linewidth]{10}{SqueezeNet/bird_animated_same_init_img_reg++/frame-}{0}{199}
+        % \end{frame}
+        % \caption{\href{figs/2b/bird_animated_same_init_img_reg++.gif}{Animation} starting from same class.} %(see \textit{SqueezeNet\_bird\_animated\_same\_init\_img\_reg++.gif})}
         \label{fig:class_viz_start_image:vid}
     \end{subfigure}
-
-    \caption{Class visualization: started from a bee eater image to maximising the score for the bee eater class. All with a strong regularization.}
+    \caption{Class visualization: (a) Last iteration starting from noise, (b) Last iteration starting from the same class, and (c) \href{figs/2b/bird_animated_same_init_img_reg++.gif}{Animation} starting from the same class to maximize the score for the bee eater class, all with strong regularization.}
+    % \caption{Class visualization: started from a bee eater image to maximising the score for the bee eater class. All with a strong regularization.}
     \label{fig:class_viz_start_image}
 \end{figure}
 
@@ -222,17 +308,18 @@ It pretty funny to create some objects from other objects. In \Cref*{fig:class_v
     \centering
     \begin{subfigure}{.5\textwidth}
         \centering
-        \includegraphics[width=.7\linewidth]{SqueezeNet/SqueezeNet_snail_animated_init_img_reg++_last_frame.png}
+        \includegraphics[width=.7\linewidth]{SqueezeNet/snail_animated_init_img_reg++_last_frame.png}
         \caption{Last iteration}
         \label{fig:class_viz_start_image_dif:png}
     \end{subfigure}%
     \begin{subfigure}{.5\textwidth}
         \centering
-        % \includemedia[width=.7\linewidth, height=.7\linewidth]{}{SqueezeNet/SqueezeNet_snail_animated_init_img_reg++.gif} 
-        \caption{\href{figs/2b/SqueezeNet/SqueezeNet_snail_animated_init_img_reg++.gif}{Animation}}
+        % \begin{frame}{}
+        %     \animategraphics[width=.7\linewidth]{10}{SqueezeNet/snail_animated_init_img_reg++/frame-}{0}{499}
+        % \end{frame}
+        \caption{\href{figs/2b/SqueezeNet/snail_animated_init_img_reg++.gif}{Animation}}
         \label{fig:class_viz_start_image_dif:vid}
     \end{subfigure}
-
     \caption{Class visualization: started from a hay image to maximising the score for the snail class. All with a strong regularization.}
     \label{fig:class_viz_start_image_dif}
 \end{figure}

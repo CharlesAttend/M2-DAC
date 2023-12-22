@@ -70,9 +70,7 @@ The output size of the last layer of VGG16 is 1000. It corresponds to the 1000 c
 
 In \Cref{fig:vgg16}, we present the results of our network's application to six diverse images, encompassing different scenarios. These include two common images featuring a tuxedo cat and a Shih Tzu dog, along with two whimsical images and two images of Komondor dogs. The whimsical images consist of a close-up of a wombat and a photomontage featuring a dog. The Komondor images, in particular, provide an interesting challenge; one is clearly a dog, while the other's unique coat might humorously resemble a mop.
 
-The network's predictions showcase its ability to recognize certain animal features, yet they also highlight its limitations in classification. It correctly identifies the wombat, cardigan dog, and Komondor without confusing the latter with a mop. However, it misclassifies the Shih Tzu as a Miniature Poodle, with a Lakeland Terrier as a close second, indicating confusion between breeds with similar appearances. The tuxedo cat is inaccurately labeled as an Egyptian Mau, emphasizing the network's difficulty in precise breed identification—a challenge partly attributed to the absence of highly specific categories within ImageNet's 1000 classes. Nevertheless, the tuxedo cat is still classified as a cat.
-
-These outcomes not only identify areas for improvement in the network's classification capabilities but also suggest the potential benefits of transfer learning. The identified errors offer valuable insights for further refining the model, ultimately enhancing its performance in more nuanced and specialized tasks.
+The network's predictions showcase its ability to recognize certain animal features, yet they also highlight its limitations in classification. It correctly identifies the wombat, cardigan dog, and Komondor without confusing the latter with a mop. However, it misclassifies the Shih Tzu as a Miniature Poodle, with a Lakeland Terrier as a close second, indicating confusion between breeds with similar appearances. The tuxedo cat is inaccurately labeled as an Egyptian Mau, emphasizing the network's difficulty in precise breed identification—a challenge partly attributed to the absence of highly specific categories within ImageNet's 1000 classes. Nevertheless, the tuxedo cat is still classified as a cat. These outcomes not only identify areas for improvement in the network's classification capabilities but also suggest the potential benefits of transfer learning. The identified errors offer valuable insights for further refining the model.
 
 % \begin{figure}[H]
 %     \centering
@@ -156,7 +154,7 @@ TODO
 
 In the study of transfer learning from VGG16 pretrained on ImageNet for Scene15 classification, the depth of the feature extraction layer emerged as a significant factor. Extracting features after the first fully connected layer (ReLU6) versus the second (ReLU7) offers the same dimensionality (4096 features), yet stopping after the first yields better results. Results are displayed on \Cref{tab:depth_influence}. This suggests that the initial fully connected layers may capture more generalizable features beneficial for the task at hand. Using all three fully connected layers (up to ReLU8) reduces feature dimensionality to 1000 and leads to poorer performance, likely due to over-specialization to ImageNet. 
 
-\begin{table}[!htpb]
+\begin{table}[H]
     \centering
     \begin{tabular}{@{}cccc@{}}
         \toprule
