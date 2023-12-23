@@ -1,0 +1,49 @@
+Exercice 1: Création et enregistrement d'un modèle avec MLflow
+
+Étape 1: Installer MLflow
+installez MLflow en utilisant pip 
+retirer l'env de conda
+et créer un env sous pip
+
+Étape 2: Entraîner un modèle simple
+Entraînez un modèle de régression linéaire simple à l'aide de scikit-learn. 
+Utilisez les données du jeu de données Diabetes disponible dans scikit-learn. 
+Divisez les données en ensembles d'apprentissage et de test (80% / 20%) et entraînez votre modèle sur l'ensemble d'apprentissage.
+
+Étape 3: Suivi des expériences avec MLflow
+Créez une nouvelle expérience MLflow Tracking Server localement et suivez la métrique MSE lors de l'exécution de plusieurs fois l'expérience précédente avec différents paramètres tels que random_state. 
+Pour démarrer le serveur tracking, exécutez la commande de mlflow server dans un terminal distinct avant de commencer l'exercice
+
+intégrez le suivi MLflow dans votre code
+
+Explorez le résultat dans la fenêtre du navigateur web via :
+ https://mlflow$i.isir.upmc.fr/ avec  i in {0..25}
+
+Exercice 2: Modèles stockés dans le registre MLflow
+Étape 1: Sauvegardez votre modèle dans le Registre MLflow 
+
+Étape 2: Chargez votre modèle depuis le Registre MLflow
+Chargez ensuite votre modèle depuis le Registre MLflow et effectuez une prévision rapide.
+
+Exercice 3: Projet MLflow avec GitHub Actions
+Dans cet exercice, nous allons configurer un pipeline CI/CD pour notre projet MLflow à l'aide de GitHub Actions. Nous apprendrons également comment automatiquement enregistrer nos meilleurs modèles dans le registre MLflow après chaque entrainement.
+
+Étape 1: Configuration de GitHub Actions
+Configurez un nouveau workflow GitHub Actions en créant un fichier nommé .github/workflows/main.yml dans votre repository.
+
+Étape 2: Intégration de MLflow dans GitHub Actions
+Ajoutez ces étapes à votre fichier .github/workflows/main.yml pour inclure l'entrainement et l'enregistrement des modèles dans le Registre MLflow.
+
+
+Étape 3: Automatisation de l'enregistrement du meilleur modèle
+Utilisez la bibliothèque optuna pour optimiser automatiquement les hyperparamètres et sélectionner le meilleur modèle basé sur la validation croisée. Après l'optimisation, enregistrez le modèle final dans le Registre MLflow.
+
+
+
+Exercice 4: Visualisation MLflow UI dans Jupyter Notebook
+Dans cet exercice, nous verrons comment afficher l'interface utilisateur MLflow directement dans un notebook Jupyter.
+
+Étape 1: Lancez un notebook Jupyter avec MLflow
+Lancez un conteneur Docker pour exécuter Jupyter Notebook avec MLflow préinstallé.
+
+
