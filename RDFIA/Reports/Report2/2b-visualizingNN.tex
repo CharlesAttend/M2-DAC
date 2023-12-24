@@ -74,11 +74,14 @@ Saliency maps can be used to identify and localize important objects or regions 
 
 %Feature Engineering and Selection: By identifying which parts of an input are most salient to a model's decision, saliency maps can inform feature engineering and selection in machine learning. This can be particularly useful in fine-tuning models by focusing on the most relevant features. ??????
 
-\paragraph*{4. \textbf{Bonus:} Test with a diffrentent network, for example VGG16, and comment.}
+\paragraph*{4. \textbf{Bonus:} Test with a diffrentent network, for example VGG16, and comment.} \label{paragraph:bonus_VGG}
 % Guillaume a fait sur un ViT aussi
-We tried the same saliency maps using VGG16. Those are much better! TODO
 % Make a comparaison plot for most of the "bad" saliency map (ie no more missclassif for example), much better frontier, better classification also, Tibetan mastiff dog much clear frontiere too 
+We tried the same saliency maps using VGG16. Those are much better! VGG being better to classify images (no error this time in our examples) than SqueezeNet, this lead to less noise and better object frontier in saliency maps.
 
+In our experimentation with VGG16, we observed notable improvements in the quality of the generated saliency maps compared to those produced with SqueezeNet. We think that VGG16's superior image classification capabilities contributed to reduced noise and more precise object boundaries in the saliency maps.
+
+This outcome highlights the impact of the choice of neural network architecture on the effectiveness of saliency map generation. VGG16's strong performance in image classification results in more reliable and visually coherent saliency maps, making it a favorable choice for tasks that rely on accurate attention mapping within images.
 % \begin{figure}[H]
 %     \centering
 %     \includegraphics[width=.9\textwidth]{good_saliency_map_vgg16.pdf}
@@ -195,12 +198,12 @@ As a first try of this method, we decided to visualize our prefered animal: a wo
 \paragraph*{9. Try to vary the number of iterations and the learning rate as well as the regularization weight.}
 While examining some of our animations, we observed the occurrence of blurring every 10 steps.
 
-To improve class visualization, it appears that regularization plays a crucial role. In \Cref*{fig:class_viz_reg}, we experimented with disabling image blurring and weight regularization on VGG16. Although we initially used a different model to achieve better visuals, all experiments were subsequently conducted on both SqueezeNet and VGG16.
+To improve class visualization, it appears that regularization plays a crucial role. In \Cref*{fig:class_viz_reg}, we experimented with disabling image blurring and weight regularization on SqueezeNet.% Although we initially used a different model to achieve better visuals, all experiments were subsequently conducted on both SqueezeNet and VGG16.
 
 % Non regulated images seem to be more saturated everywhere, preventing to clearly see the represented class. We suspect that without regularization, the gradient saturate \textbf{everypixel} that could ever had participate to a correct gorilla prediction. By promoting pixel which the model has already engaged the transformation and keeping this direction,regularization permit the arrival of real class image.
 
 % Pas giga clair maybe 
-Non-regularized images appear to be overly saturated, making it challenging to discern the represented class clearly. Our suspicion is that without regularization, gradients become saturated in \textbf{every pixel} that could have contributed to a correct prediction of ''bee eater''. By encouraging pixels that the model has already engaged in transformations and maintaining their direction, regularization facilitates the emergence of the true class image.
+Non-regularized images appear to be overly saturated, making it challenging to discern the represented class clearly. Our suspicion is that without regularization, gradients become saturated in \textbf{every pixel} that could have contributed to a correct prediction of the ''bee eater'' class. By encouraging pixels that the model has already engaged in transformations and maintaining their direction, regularization facilitates the emergence of the true class image.
 
 \begin{figure}[H]
     \centering
@@ -225,11 +228,11 @@ Non-regularized images appear to be overly saturated, making it challenging to d
         \caption{}
         \label{fig:class_viz_reg:sub3}
     \end{subfigure}
-    \caption{Comparaison of the bee eater class visualization using VGG16 (a) with a lot of regularization, (b) with regularization and (c) without regularization and starting from a base image of the class.} % (blurring and weight regularization)
+    \caption{Comparaison of the bee eater class visualization using SqueezeNet (a) with strong regularizations, (b) with normal regularizations and (c) without regularizations.} % (blurring and weight regularization) % and starting from a base image of the class.
     \label{fig:class_viz_reg}
 \end{figure}
 
-% préciser les valeurs de régu ?
+% préciser les valeurs de régu ? => Complexe car c'est un combo, un peu chaint à écrire, bluering everimage + 1e-2, ça me semble pas important en vrais
 
 About the number of epoch, our experiment show that we need to make a certain number of epoch to let the visualization converge, thus getting better images.
 
@@ -263,28 +266,27 @@ About the number of epoch, our experiment show that we need to make a certain nu
         \caption{}
         \label{fig:class_viz_iter:sub4}
     \end{subfigure}
-    \caption{Same image after (a) 200 iterations, (b) 500 iterations, (c) 1000 iterations and (d) at 1000 iterations but without having performed regularization.}
+    \caption{Comparaison of the bee eater class visualization using SqueezeNet with strong regularizations (a) 200 iterations, (b) 500 iterations, (c) 1000 iterations and (d) at 1000 iterations but without having performed regularization.}
     \label{fig:class_viz_iter}
 \end{figure}
-
-About the learning rate, TODO % TODO
+About the learning rate, TODO
 
 \paragraph*{10. Try to use an image from ImageNet as the source image instead of a random image. You can use the real class as the target class. Comment on the interest of doing this.}
 
-Starting using an image is a good method, it give a good starting point of the gradient to create visualization and not going everywhere like when not using regularization.
+Initiating the process with an image from ImageNet is a valuable approach. It provides a meaningful starting point for gradient-based visualization, ensuring that the initial gradients are directed towards relevant features and patterns within the image. It prevents the initial gradients from scattering or diverging in various directions, potentially resulting in a more focused and interpretable visualization.
 
 \begin{figure}[H]
     \centering
     \begin{subfigure}{.33\textwidth}
         \centering
-        \includegraphics[width=.7\linewidth]{SqueezeNet/bird_animated_reg++_last_frame.png}
+        \includegraphics[width=\linewidth]{SqueezeNet/bird_animated_reg++_last_frame.png}
         % \caption{Last iteration\\starting from noise}
         \caption{}
         \label{fig:class_viz_start_image:png_noise}
     \end{subfigure}%
     \begin{subfigure}{.33\textwidth}
         \centering
-        \includegraphics[width=.7\linewidth]{SqueezeNet/bird_animated_same_init_img_reg++_last_frame.png}
+        \includegraphics[width=\linewidth]{SqueezeNet/bird_animated_same_init_img_reg++_last_frame.png}
         % \caption{Last iteration\\starting from same class}
         \caption{}
         \label{fig:class_viz_start_image:png}
@@ -294,15 +296,15 @@ Starting using an image is a good method, it give a good starting point of the g
         % \begin{frame}{}
         %     \animategraphics[width=.7\linewidth]{10}{SqueezeNet/bird_animated_same_init_img_reg++/frame-}{0}{199}
         % \end{frame}
-        % \caption{\href{figs/2b/bird_animated_same_init_img_reg++.gif}{Animation} starting from same class.} %(see \textit{SqueezeNet\_bird\_animated\_same\_init\_img\_reg++.gif})}
+        \caption{\href{figs/2b/bird_animated_same_init_img_reg++.gif}{Animation} starting from same class.} %(see \textit{SqueezeNet\_bird\_animated\_same\_init\_img\_reg++.gif})}
         \label{fig:class_viz_start_image:vid}
     \end{subfigure}
-    \caption{Class visualization: (a) Last iteration starting from noise, (b) Last iteration starting from the same class, and (c) \href{figs/2b/bird_animated_same_init_img_reg++.gif}{Animation} starting from the same class to maximize the score for the bee eater class, all with strong regularization.}
+    \caption{Class visualization using SqueezeNet: (a) Last iteration starting from noise, (b) Last iteration starting from the same class, and (c) \href{figs/2b/bird_animated_same_init_img_reg++.gif}{Animation} starting from the same class to maximize the score for the bee eater class, all with strong regularization.}
     % \caption{Class visualization: started from a bee eater image to maximising the score for the bee eater class. All with a strong regularization.}
     \label{fig:class_viz_start_image}
 \end{figure}
 
-It pretty funny to create some objects from other objects. In \Cref*{fig:class_viz_start_image_dif} we started from a image of hays to do a snail class visualization.
+It pretty funny to create some objects from other objects. In \Cref{fig:class_viz_start_image_dif} we started from a image of hays to do a snail class visualization.
 
 \begin{figure}[H]
     \centering
@@ -320,12 +322,86 @@ It pretty funny to create some objects from other objects. In \Cref*{fig:class_v
         \caption{\href{figs/2b/SqueezeNet/snail_animated_init_img_reg++.gif}{Animation}}
         \label{fig:class_viz_start_image_dif:vid}
     \end{subfigure}
-    \caption{Class visualization: started from a hay image to maximising the score for the snail class. All with a strong regularization.}
+    \caption{Class visualization using SqueezeNet with strong regularizations: started from a hay image to maximising the score for the snail class.}
     \label{fig:class_viz_start_image_dif}
 \end{figure}
 
 \paragraph*{11. \textbf{Bonus:} Test with another network, VGG16, for example, and comment on the results.}
-We did the all same experiment using VGG16 this time. Visualization are much better because of the overall better performance of VGG16 as we saw in . % Maybe ref la figure saliency map avec VGG16 où il se trompe pas
-TODO
+We conducted identical experiments using VGG16 this time. Visualizations are often superior due to VGG16's overall improved performance, as previously discussed in \Cref{paragraph:bonus_VGG}. Specifically, we found the hay to snail animation in \Cref{fig:class_viz_start_image_dif_VGG:vid} to be more appealing. However, there are instances where regularization proves to be more challenging, as observed in \Cref{fig:class_viz_iter_vgg} or \ref{fig:class_viz_wombat_VGG}.
 
-% Parfois plus délicat de faire des bonnes visualizations, mais le résultat est clairement plus clair, on voit que le réseau est plus performant que l'autre 
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        \includegraphics[width=.7\linewidth]{VGG/VGG_snail_animated_init_img_reg++_last_frame.png}
+        \caption{Last iteration}
+        \label{fig:class_viz_start_image_dif_VGG:png}
+    \end{subfigure}%
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        % \begin{frame}{}
+        %     \animategraphics[width=.7\linewidth]{10}{VGG/VGG_snail_animated_init_img_reg++/frame-}{0}{499}
+        % \end{frame}
+        \caption{\href{figs/2b/VGG/VGG_snail_animated_init_img_reg++.gif}{Animation}}
+        \label{fig:class_viz_start_image_dif_VGG:vid}
+    \end{subfigure}
+    \caption{Class visualization using VGG with strong regularizations: started from a hay image to maximising the score for the snail class.}
+    \label{fig:class_viz_start_image_dif_VGG}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[t]{.25\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{VGG/VGG_bird_animated_1000_regpp_blur_100_frame.png}
+        % \caption{200 iterations}
+        \caption{}
+        \label{fig:class_viz_iter_vgg:sub1}
+    \end{subfigure}%
+    \begin{subfigure}[t]{.25\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{VGG/VGG_bird_animated_1000_regpp_blur_500_frame.png}
+        % \caption{500 iterations}
+        \caption{}
+        \label{fig:class_viz_iter_vgg:sub2}
+    \end{subfigure}%
+    \begin{subfigure}[t]{.25\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{VGG/VGG_bird_animated_1000_regpp_blur_last_frame.png}
+        % \caption{1000 iterations}
+        \caption{}
+        \label{fig:class_viz_iter_vgg:sub3}
+    \end{subfigure}%
+    \begin{subfigure}[t]{.25\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{VGG/VGG_bird_animated_1000_last_frame.png}
+        % \caption{1000 iterations, no regularization}
+        \caption{}
+        \label{fig:class_viz_iter_vgg:sub4}
+    \end{subfigure}
+    \caption{Comparaison of the bee eater class visualization using VGG with strong regularizations (a) 200 iterations, (b) 500 iterations, (c) 1000 iterations and (d) at 1000 iterations but without having performed regularization.}
+    \label{fig:class_viz_iter_vgg}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{.32\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{SqueezeNet/wombat_animated_1000_last_frame.png}
+        \caption{}
+    \end{subfigure}%
+    \begin{subfigure}{.32\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{VGG/VGG_wombat_animated_1000_last_frame.png}
+        \caption{}
+    \end{subfigure}%
+    \begin{subfigure}{.32\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{VGG/VGG_wombat_animated_1000_regpp_blur_last_frame.png}
+        \caption{}
+    \end{subfigure}
+    \caption{Class visualization of Wombat using VGG TODO}
+    \label{fig:class_viz_wombat_VGG}
+    %TODO Ici j'trouve les figures plus mitigé qu'avec squeeze net, j'ai envie de mettre celle de squeeze net pour une comparaison plus directe 
+\end{figure}
+
