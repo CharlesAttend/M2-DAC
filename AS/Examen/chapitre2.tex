@@ -42,14 +42,14 @@ processus stochastiques. Dans ce modèle, nous aurons besoin de les hypothèses 
 Pour chaque $0 \leqslant k \leqslant L-1$, les processus stochastique $\mathcal{V}$ et $\Theta$ sont presque sûrement Lipschitziens continus et bornés.
 \end{assumption}
 
-Plus précisément, il existe presque sûrement $K_{\mathscr{V}}, K_{\Theta}, C_{\mathscr{V}}, C_{\Theta}>0,tel que, pour tous s, t \in[0,1]$
+Plus précisément, il existe presque sûrement $K_{\mathscr{V}}, K_{\Theta}, C_{\mathscr{V}}, C_{\Theta}>0,tel que, pour tous s, t \in [0,1]$
 
 $$
 \left\|\mathscr{V}_t-\mathscr{V}_s\right\| \leqslant K_{\mathscr{V}}|t-s|, \quad\left\|\Theta_t-\Theta_s\right\| \leqslant K_{\Theta}|t-s|, \quad\left\|\mathscr{V}_t\right\| \leqslant C_{\mathscr{V}}, \quad\left\|\Theta_t\right\| \leqslant C_{\Theta} .
 $$
 
 \begin{assumption}\label{H6}
- La fonction g est Lipschitzienne continue sur les ensembles compacts, dans le sens où pour tout compact $\mathscr{P} \subseteq \mathbb{R}^p$, il existe $K_{\mathscr{P}} > 0$  tel que, pour tous $h, h^{\prime} \in \mathbb{R}^d, \theta \in \mathscr{P}$,
+La fonction g est Lipschitzienne continue sur les ensembles compacts, dans le sens où pour tout compact $\mathscr{P} \subseteq \mathbb{R}^p$, il existe $K_{\mathscr{P}} > 0$  tel que, pour tous $h, h^{\prime} \in \mathbb{R}^d, \theta \in \mathscr{P}$,
 $$
 \left\|g(h, \theta)-g\left(h^{\prime}, \theta\right)\right\| \leqslant K_{\mathscr{P}}\left\|h-h^{\prime}\right\|,
 $$
@@ -159,7 +159,7 @@ où la sortie du réseau est désormais fonction de la valeur finale de H, c'est
 Le lien entre le ResNet discret (2.4) et le SDE (2.5) est formalisé dans la proposition suivante.
 
 \begin{proposition}\label
- Considérons le modèle res-1, où les entrées de $V_{k+1}$ sont i.i.d. Variables aléatoires gaussiennes $\mathcal{N}(0,2 / d)$. Supposons que la fonction d'activation $\sigma$ soit continue de Lipschitz. Alors le SDE (2.5) a une unique solution $H$ et, pour tout $0 \leqslant k \leqslant L$,
+Considérons le modèle res-1, où les entrées de $V_{k+1}$ sont i.i.d. Variables aléatoires gaussiennes $\mathcal{N}(0,2 / d)$. Supposons que la fonction d'activation $\sigma$ soit continue de Lipschitz. Alors le SDE (2.5) a une unique solution $H$ et, pour tout $0 \leqslant k \leqslant L$,
 $$
 \mathbb{E}\left(\left\|H_{k / L}-h_k\right\|\right) \leqslant \frac{c}{\sqrt{L}}
 $$
@@ -201,7 +201,7 @@ $$
 $$
 \end{proof}
 
-Lorsque le facteur d'échelle $\bets$ est fixé à 1/2, cela produit non seulement une dynamique non triviale à l'initialisation, mais correspond également à un modèle de diffusion simple dans le modèle en temps continu. Ce point montre que les réseaux de neurones très profonds sont en fait équivalents à la solution de SDE lors de l’utilisation d’une initialisation de poids indépendante et identiquement distribuée (i.i.d.).
+Lorsque le facteur d'échelle $\beta$ est fixé à 1/2, cela produit non seulement une dynamique non triviale à l'initialisation, mais correspond également à un modèle de diffusion simple dans le modèle en temps continu. Ce point montre que les réseaux de neurones très profonds sont en fait équivalents à la solution de SDE lors de l’utilisation d’une initialisation de poids indépendante et identiquement distribuée (i.i.d.).
 
 \section{Conclusion}
 La plupart des fonctions d'activation classiques (telles que ReLU) satisfont à l'exigence continue de Lipschitz. Cela indique que ces fonctions ont certaines limites en termes de taux de changement, ce qui est important pour la stabilité et la prévisibilité du réseau.
@@ -215,7 +215,7 @@ La plupart des fonctions d'activation classiques (telles que ReLU) satisfont à 
 
 Dans l'ensemble, le choix d'utiliser SDE ou ODE dépend de la nature des poids dans le modèle (iid ou non-iid) et du comportement du réseau que nous souhaitons capturer (stochastique ou déterministe).
 
-Ce modèle est intéressant dans la mesure où le mouvement brownien （SDE） est ($\frac{1}{2}-\epsilon$)-Holder, un processus stochastique continu lipschitz (ODE) est 1-Holder.
+Ce modèle est intéressant dans la mesure où le mouvement brownien (SDE) est ($\frac{1}{2}-\epsilon$)-Holder, un processus stochastique continu lipschitz (ODE) est 1-Holder.
 
 Il est important de noter que le choix de la mise à l'échelle d'un ResNet semble être étroitement lié à la régularité des poids en fonction de la couche. Plus précisément, dans tous les régimes, le facteur d'échelle critique entre l'explosion et l'identité semble être étroitement lié à la régularité des poids en fonction de la couche. Ces résultats ont une interprétation naturelle en termes de régularité (Holder) du processus stochastique en temps continu sous-jacent.
 
