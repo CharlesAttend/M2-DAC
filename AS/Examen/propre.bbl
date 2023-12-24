@@ -1,5 +1,10 @@
 \begin{thebibliography}{1}
 
+\bibitem{chollet2015keras}
+Fran\c{c}ois Chollet et~al.
+\newblock Keras.
+\newblock \url{https://keras.io}, 2015.
+
 \bibitem{torchvision2016}
 TorchVision maintainers and contributors.
 \newblock Torchvision: Pytorch's computer vision library.

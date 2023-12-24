@@ -1,10 +1,10 @@
-\chapter*{Le facteur $\alpha_L$ à l'initialisation}
+\chapter{Le facteur $\alpha_L$ à l'initialisation}
 
 Dans cette section, notre objectif est d'examiner comment le facteur de mise à l'échelle $\alpha_L$ affecte la stabilité des ResNets lors de leur initialisation, en supposant que les poids sont des variables aléatoires indépendantes et identiquement distribuées (i.i.d.). Nous analyserons la modélisation, l'initialisation des paramètres et les hypothèses nécessaires à cette démarche.
 % Faire un horizon de la partie "related works" en creusant plus loin ? 
 
 \section{Modèle et hypothèses}
-\subsection{Modèle}
+\subsection*{Modèle}
 Le modèle est basé sur un ensemble de données composé de $n$ paires $(x_i, y_i)_{1 \leq i \leq n}$ avec $x_i \in \mathbb{R}^{n_{\text{in}}}$ comme vecteur d'entrée et $y_i \in \mathbb{R}^{n_{\text{out}}}$ comme vecteur de sortie à prédire (soit en valeurs continues soit en format \textit{one-hot}). Soit $F_\pi(x) \in \mathbb{R}^{n_{\text{out}}}, x \in \mathbb{R}^{n_{\text{in}}}$ la sortie du ResNet définie par 
 \begin{align}\label{ResNet_equation}
     h_0 &= Ax, \nonumber\\
@@ -30,10 +30,10 @@ Durant ce cours, nous nous concentrerons particulièrement sur trois architectur
     \label{tab:resnet_architectures}
 \end{table}
 
-\subsection{Initialisation des paramètres} 
+\subsection*{Initialisation des paramètres} 
 Nous rappelons que $\theta_k \in \mathbb{R}^p$ et $V_k \in \mathbb{R}^{d \times d}$ sont les paramètres des couches cachées de notre modèle pour tout $k \in \llbracket 1, L \rrbracket$. Ces paramètres sont choisis à l'initialisation comme la réalisation de variables aléatoires i.i.d., généralement suivant une distribution uniforme ou gaussienne. Cette initialisation est indépendante de $L$ et donc du modèle représenté par $g$, permettant de considérer plusieurs architectures différentes dans notre étude. Nous examinerons également d'autres approches dépendantes du modèle pour étudier le choix de $\alpha_L$ (par exemple, Yang et Schoenholz, 2017 ou Wang et al., 2022 \cite{torchvision2016}).
 
-\subsection{Hypothèses}
+\subsection*{Hypothèses}
 Pour notre première hypothèse, nous avons besoin de la définition suivante :
 \begin{definition}[Variable aléatoire $s^2$ sub-gaussienne]
     En théorie des probabilités, une distribution $s^2$ sub-gaussienne est une distribution de probabilité caractérisée par une décroissance rapide des queues de distribution. Bien qu'il existe de nombreuses définitions et propriétés, nous retiendrons dans ce cours la suivante : soit $X$ une variable aléatoire réelle,
@@ -167,7 +167,7 @@ Les conséquences des propositions \ref{prop2} et \ref{prop3} vont devenir plus 
         \]
     \end{itemize}
 \end{cor}
-Le corollaire 4 clarifie le comportement de notre dernier état caché $ \left\| h_L \right\|  $  en fonction de $ \beta  $. 
+Le corollaire 4 clarifie le comportement de notre dernier état caché $ \left\| h_L \right\|  $ en fonction de $ \beta  $. 
 \begin{itemize}
     \item Lorsque $ \beta > 1/2 $, la distance entre $ h_L $ et $ h_0 $ converge vers zéro lorsque $ L $ tend vers l'infinie. Indiquant un réseau aggisant essentiellement comme une fonction identité.
     \item Lorsque $ \beta < 1/2 $, la norme de $ h_L $ explose.
@@ -185,13 +185,19 @@ En conséquence, fixer $\beta = 1/2$ est la seule manière d'assurer une distrib
 
 
 \begin{proof}[\Cref{cor4}]
-    L'affirmation ($ i $) est une conséquence de la Proposition \ref{prop2}. Nous avons $ L \alpha _L ^2 = \frac{L}{L^{2\beta} } = L^{1 - 2 \beta } $, comme $ \beta > 1/2 \Leftrightarrow 1 - 2 \beta < 0 $ nous avons $ L^{1 - 2 \beta } = \frac{1}{L^{2 \beta  -1}} \underset{L\to +\infty}{\longrightarrow} 0 $. Ainsi
-    \begin{align*}
-        & \frac{\|h_L - h_0\|^2}{\|h_0\|^2} \leq \frac{2L\alpha_L^2}{\delta}.
-        \overunderset{\mathbb{P}}{L\to +\infty}{\longrightarrow} 0 
-    \end{align*}
+    L'affirmation ($ i $) est une conséquence de la Proposition \ref{prop2}.
+    % Tentative de preuve......
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % Nous avons $ L \alpha _L ^2 = \frac{L}{L^{2\beta} } = L^{1 - 2 \beta } $, comme $ \beta > 1/2 \Leftrightarrow 1 - 2 \beta < 0 $ nous avons $ L^{1 - 2 \beta } = \frac{1}{L^{2 \beta  -1}} \underset{L\to +\infty}{\longrightarrow} 0 $. Ainsi
+    % \begin{align*}
+    %     & \frac{\|h_L - h_0\|^2}{\|h_0\|^2} \leq \frac{2L\alpha_L^2}{\delta}.
+    %     \overunderset{\mathbb{P}}{L\to +\infty}{\longrightarrow} 0 
+    % \end{align*}
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    L'affirmation ($ ii $) est une conséquence de la \Cref{prop3}. En effet, cette dernière est valide les conditions $ d \geq 64 $ et $ \alpha _L \leq \frac{2}{(\sqrt{C} s^4 + 4 \sqrt{C} + 16s^4)d} $. La majoration d'$ \alpha _L $ est automatiquement satisfaite pour $ L $ assez grand. Quant à la contrainte sur $ d $, elle peut être, dans notre cas, relaché à $ d \geq 9 $ en observant la preuve de la \Cref{prop3} non décrite ici.
 
-    L'affirmation ($ ii $) est une conséquence de la Proposition \ref{prop3}.
+    Pour prouver l'affirmation $ (iii) $, nous utilisons l'union des deux affirmations ce la \Cref{prop3}.
+    % TODO better sentences
 \end{proof}
 
 \begin{figure}[H]
