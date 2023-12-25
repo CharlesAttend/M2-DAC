@@ -1,11 +1,11 @@
-\section{Limite probabilistique des gradients}
+\section{Limite probabilistique des gradients}\label{lim_proba_grad}
 
-Dans la section précédente, nous avons étudié le comportement de la sortie du réseau pour des valeurs élevées de $L$. Cependant, cette analyse ne nous renseigne pas sur le comportement du gradient du coût $p_k = \frac{\partial \mathcal{L}}{\partial h_k} \in \mathbb{R}^d$ durant la rétropropagation, une donnée cruciale pour évaluer la capacité d'entraînement du réseau à l'initialisation. Par conséquent, cette section se consacrera à l'étude des variations de $\left\| p_0 - p_L \right\| / \left\| p_L \right\|$, toujours dans un contexte où la profondeur du réseau $L$ est grande. Il est important de noter que, en raison de la nature de la rétropropagation, notre attention se porte désormais sur $p_0$ plutôt que sur $p_L$. Nous définissons donc la séquence $(p_k)_{0 \leq k \leq L}$ comme suit :
+Dans la section précédente, nous avons étudié le comportement de la sortie du réseau pour des valeurs élevées de $L$. Cependant, cette analyse ne nous renseigne pas sur le comportement du gradient du coût $p_k = \frac{\partial \mathscr{L}}{\partial h_k} \in \mathbb{R}^d$ durant la rétropropagation, qui est pourtant une donnée cruciale pour évaluer la capacité d'entraînement du réseau à l'initialisation. Par conséquent, cette section se consacrera à l'étude des variations de $\left\| p_0 - p_L \right\| / \left\| p_L \right\|$, toujours dans un contexte où la profondeur du réseau $L$ est grande. Il est important de noter que, en raison de la nature de la rétropropagation, notre attention se porte désormais sur $p_0$ plutôt que sur $p_L$. Nous définissons donc la séquence $(p_k)_{0 \leq k \leq L}$ comme suit :
 \begin{align*}
     \qquad & p_k = p_{k+1} + \alpha _L \frac{\partial g(h_k, \theta _{k+1}) ^T}{\partial h}  V_{k+1}^T p_{k+1} \\
     % \Leftrightarrow & \left\| p_k \right\| ^2 = \left\| p_{k+1} \right\| ^2 + \alpha _L ^2 \left\| \frac{\partial g(h_k, \theta _{k+1}) ^T}{\partial h} V_{k+1}^T p_{k+1} \right\| ^2 + 2 \alpha _L \left\langle p_{k+1}, \frac{\partial g(h_k, \theta _{k+1}) ^T}{\partial h}  V_{k+1}^T p_{k+1} \right\rangle 
 \end{align*}
-Bien que cette récurrence soit similaire à celle des états cachés (\ref{ResNet_equation}), nous ne pouvons pas appliquer les mêmes techniques de preuve utilisées pour les états cachés. Cette différence s'explique par la dépendance de $\frac{\partial g(h_k, \theta_{k+1})}{\partial h}$ à $h_k$, et donc à $\theta_1, V_1, \dots, \theta_k, V_k$. Supposer l'indépendance de ces deux quantités serait une hypothèse assez forte, non vérifiée par de nombreuses architectures, comme notre modèle \textit{res-1}. Ainsi, nous adopterons une autre approche, basée sur la dérivation automatique. Cette méthode nécessite des hypothèses moins contraignantes, mais les résultats obtenus seront exprimés en termes d'espérance plutôt qu'avec une forte probabilité.
+Bien que cette récurrence soit similaire à celle des états cachés (\cref{ResNet_equation}), nous ne pouvons pas appliquer les mêmes techniques de preuve utilisées pour les états cachés. Cette différence s'explique par la dépendance de $\frac{\partial g(h_k, \theta_{k+1})}{\partial h}$ à $h_k$, et donc à $\theta_1, V_1, \dots, \theta_k, V_k$. Supposer l'indépendance de ces deux quantités serait une hypothèse assez forte, non vérifiée par de nombreuses architectures, comme notre modèle \texttt{res-1}. Ainsi, nous adopterons une autre approche, basée sur la dérivation automatique. Cette méthode nécessite des hypothèses moins contraignantes, mais les résultats obtenus seront exprimés en termes d'espérance plutôt qu'avec une forte probabilité.
 
 Soit $z \in \mathbb{R}^d$. Pour tout $0 \leq i, j \leq L$, définissons $\frac{\partial h_j}{\partial h_i} \in \mathbb{R}^{d \times d}$ comme la matrice Jacobienne de $h_j$ par rapport à $h_i$. Pour rappel, l'élément en position $(m, n)$ de la Jacobienne représente la dérivée de la $m$-ème coordonnée de $h_j$ par rapport à la $n$-ème coordonnée de $h_i$. Définissons ensuite $q_k(z) = \frac{\partial h_k}{\partial h_0} z$. En appliquant la règle de la chaîne, nous obtenons
 \begin{equation}\label{eq:9}
@@ -17,7 +17,7 @@ Nous observons une récurrence similaire à celle présentée dans l'\Cref{resne
 \end{equation}
 avec $ I_d $ la matrice identité sur $ \mathbb{R}^d $. On retrouve la seconde égalité comme conséquence de 
 \[
-    p_0^T = \left(\frac{\partial \mathcal{L}}{\partial h_0} \right)^T, z = (\frac{\partial \mathcal{L}}{\partial h_0} )^T \frac{\partial h_L}{\partial h_0} z = p_L^T  q_L(z)
+    p_0^T = \left(\frac{\partial \mathscr{L}}{\partial h_0} \right)^T, z = (\frac{\partial \mathscr{L}}{\partial h_0} )^T \frac{\partial h_L}{\partial h_0} z = p_L^T  q_L(z)
 .\]
 En résumé, la récurrence énoncée dans l'équation (\ref{eq:9}) va nous permettre de déterminer les bornes de $\left\| q_L(z) \right\|$. Ces résultats pourront ensuite être transposés à $\left\| p_0 \right\| / \left\| p_L \right\|$ en utilisant l'\Cref{eq:10}. Pour ce faire, il nous faudra établir certaines hypothèses sur le rapport $p_L / \left\| p_L \right\|$.
 
@@ -40,10 +40,10 @@ L'hypothèse suivante est l'équivalent pour les gradients de ce qui est énonc�
 
 L'\Cref{H4} s'applique à toutes les architectures répertoriées dans la \Cref{tab:resnet_architectures}, comme le démontre la proposition suivante.
 \begin{proposition}\label{prop5}
-    Soit les réseaux \textit{res-1}, \textit{res-2} et \textit{res-3} définit dans la \Cref{tab:resnet_architectures}. Supposons l'\Cref{H1} satisfaite et $ \sigma  $ dérivable presque partout avec $ a \leq \sigma ^\prime \leq b $. Alors
+    Soit les réseaux \texttt{res-1}, \texttt{res-2} et \texttt{res-3} définit dans la \Cref{tab:resnet_architectures}. Supposons l'\Cref{H1} satisfaite et $ \sigma  $ dérivable presque partout avec $ a \leq \sigma ^\prime \leq b $. Alors
     \begin{itemize}
-        \item [(i)] L'\Cref{H4} est valide pour \textit{res-1}
-        \item [(ii)] L'\Cref{H4} est valide pour \textit{res-2} et \textit{res-3} dès lors que les entrées de $ \sqrt{d} W_{k+1}, 0 \leq k \leq L-1 $ sont des variables aléatoires de variance unitaire, i.i.d, symétriques et indépendante de $ d $ et $ L $.
+        \item [(i)] L'\Cref{H4} est valide pour \texttt{res-1}
+        \item [(ii)] L'\Cref{H4} est valide pour \texttt{res-2} et \texttt{res-3} dès lors que les entrées de $ \sqrt{d} W_{k+1}, 0 \leq k \leq L-1 $ sont des variables aléatoires de variance unitaire, i.i.d, symétriques et indépendante de $ d $ et $ L $.
     \end{itemize}
 \end{proposition}
 

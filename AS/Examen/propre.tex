@@ -4,18 +4,20 @@
 \usepackage{amsmath, amsfonts, amssymb, systeme}
 \usepackage{stmaryrd}
 \usepackage{graphicx}
-\usepackage[numbers]{natbib}
+\usepackage[round]{natbib}
 \usepackage{hyperref}
 \usepackage{float}
 \usepackage{cleveref}
 \usepackage{mathrsfs}
 \usepackage{todonotes}
+\usepackage{nicefrac}
 
 \hypersetup{
     colorlinks=true,
     linkcolor=blue,
     filecolor=magenta,      
     urlcolor=cyan,
+    citecolor=blue,
     pdftitle={AS Projet ResNet},
     % pdfpagemode=FullScreen,
 }
@@ -44,7 +46,7 @@
 \include{chapitre2}
 \include{conclusion}
 
-\bibliographystyle{plain} % We choose the "plain" reference style
+\bibliographystyle{plainnat} % We choose the "plain" reference style
 \bibliography{bib} % Entries are in the refs.bib file
 
 \end{document}
