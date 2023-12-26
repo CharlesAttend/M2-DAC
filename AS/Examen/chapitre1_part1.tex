@@ -3,13 +3,13 @@ Dans cette section, notre objectif est d'examiner comment le facteur de mise à 
 
 \section{Modèle et hypothèses}
 \subsection*{Modèle}
-Le modèle repose sur un ensemble de données composé de $n$ paires $(x_i, y_i)_{1 \leq i \leq n}$, où chaque $x_i \in \mathbb{R}^{n_{\text{in}}}$ représente un vecteur d'entrée et chaque $y_i \in \mathbb{R}^{n_{\text{out}}}$ un vecteur de sortie à prédire. Ces sorties peuvent être sous forme de valeurs continues ou codées en format \textit{one-hot}. Soit $F_\pi(x) \in \mathbb{R}^{n_{\text{out}}}, x \in \mathbb{R}^{n_{\text{in}}}$ la sortie du ResNet définie par 
+Le modèle repose sur un ensemble de données composé de $n$ paires $(x_i, y_i)_{1 \leqslant i \leqslant n}$, où chaque $x_i \in \mathbb{R}^{n_{\text{in}}}$ représente un vecteur d'entrée et chaque $y_i \in \mathbb{R}^{n_{\text{out}}}$ un vecteur de sortie à prédire. Ces sorties peuvent être sous forme de valeurs continues ou codées en format \textit{one-hot}. Soit $F_\pi(x) \in \mathbb{R}^{n_{\text{out}}}, x \in \mathbb{R}^{n_{\text{in}}}$ la sortie du ResNet définie par 
 \begin{align}\label{ResNet_equation}
     h_0 &= Ax, \nonumber\\
-    h_{k+1} &= h_k + \alpha_L V_{k+1}g(h_k, \theta_k), \quad 0 \leq k \leq L - 1, \\
+    h_{k+1} &= h_k + \alpha_L V_{k+1}g(h_k, \theta_k), \quad 0 \leqslant k \leqslant L - 1, \\
     F_{\pi}(x) &= Bh_L, \nonumber
 \end{align}
-où $\pi = (A, B, (\theta_k)_{k \leq L}, (V_k)_{1 \leq k \leq L})$ sont les paramètres du modèle avec $A \in \mathbb{R}^{d \times n_{\text{in}}}, B \in \mathbb{R}^{n_{\text{out}} \times d}, \theta_k \in \mathbb{R}^p$ et $V_k \in \mathbb{R}^{d \times d}$ pour $k = 1, \ldots, L$. La fonction $g : \mathbb{R}^d \times \mathbb{R}^p \to \mathbb{R}^d$ représente le choix de l'architecture d'un bloc du ResNet. Nous nous intéressons principalement à la suite des états cachés $(h_k)_{0 \leq k \leq L}$ et non aux changements de dimension permis par les matrices $A$ et $B$.
+où $\pi = (A, B, (\theta_k)_{k \leqslant L}, (V_k)_{1 \leqslant k \leqslant L})$ sont les paramètres du modèle avec $A \in \mathbb{R}^{d \times n_{\text{in}}}, B \in \mathbb{R}^{n_{\text{out}} \times d}, \theta_k \in \mathbb{R}^p$ et $V_k \in \mathbb{R}^{d \times d}$ pour $k = 1, \ldots, L$. La fonction $g : \mathbb{R}^d \times \mathbb{R}^p \to \mathbb{R}^d$ représente le choix de l'architecture d'un bloc du ResNet. Nous nous intéressons principalement à la suite des états cachés $(h_k)_{0 \leqslant k \leqslant L}$ et non aux changements de dimension permis par les matrices $A$ et $B$.
 % Un aspect important du modèle \cite{torchvision2016} est que la fonction de couche prend la forme d'une multiplication matrice-vecteur, ce qui sera crucial pour utiliser les résultats de concentration sur des variables aléatoires ??????? Important ????????? 
 Finalement, on définit $l: \mathbb{R}^{n_{\text{out}}} \times \mathbb{R}^{n_{\text{out}}} \to \mathbb{R}_+$ comme la fonction de coût, différentiable par rapport à son premier paramètre. Ce coût peut être une perte quadratique ou une entropie croisée. L'objectif de l'apprentissage est de trouver le paramètre optimal $\pi$ qui minimise le risque empirique $\mathscr{L}(\pi) = \sum_{i=1}^{n} l(F_\pi(x_i), y_i)$ à travers une descente de gradient stochastique ou l'une de ses variantes.
 
@@ -24,7 +24,7 @@ Durant ce cours, nous nous focaliserons spécifiquement sur trois architectures 
         res-2 & \( h_{k+1} = h_k + \alpha_L V_{k+1}\sigma(W_{k+1}h_k) \) & \( \theta_{k+1} = W_{k+1} \) \\
         res-3 & \( h_{k+1} = h_k + \alpha_L V_{k+1}\text{ReLU}(W_{k+1}h_k) \) & \( \theta_{k+1} = W_{k+1} \) \\ \hline
     \end{tabular}
-    \caption{Exemples d'architectures ResNet considérées dans l'article. Dans les deux premiers cas, la fonction d'activation \( \sigma \) est telle que, pour tout \( x \in \mathbb{R} \), \( a|x| \leq |\sigma(x)| \leq b|x| \), avec \( \nicefrac{1}{\sqrt{2}} \leq a < b \leq 1 \). Dans les deux derniers cas, \( W_{k+1} \in \mathbb{R}^{d \times d} \).}
+    \caption{Exemples d'architectures ResNet considérées dans l'article. Dans les deux premiers cas, la fonction d'activation \( \sigma \) est telle que, pour tout \( x \in \mathbb{R} \), \( a|x| \leqslant |\sigma(x)| \leqslant b|x| \), avec \( \nicefrac{1}{\sqrt{2}} \leqslant a < b \leqslant 1 \). Dans les deux derniers cas, \( W_{k+1} \in \mathbb{R}^{d \times d} \).}
     \label{tab:resnet_architectures}
 \end{table}
 
@@ -36,24 +36,24 @@ Pour notre étude, certaines hypothèses concernant le choix de l'architecture e
 \begin{definition}[Variable aléatoire $s^2$ sub-gaussienne]
     En théorie des probabilités, une distribution $s^2$ sub-gaussienne est une distribution de probabilité caractérisée par une décroissance rapide des queues de distribution. Bien qu'il existe de nombreuses définitions et propriétés, nous retiendrons dans ce cours la suivante : soit $X$ une variable aléatoire réelle,
     \[
-        \forall \lambda \in \mathbb{R}, \mathbb{E}(\exp(\lambda X)) \leq \exp\left(\frac{\lambda^2 s^2}{2}\right).
+        \forall \lambda \in \mathbb{R}, \mathbb{E}(\exp(\lambda X)) \leqslant \exp\left(\frac{\lambda^2 s^2}{2}\right).
     \]
     De manière informelle, les queues d'une distribution sub-gaussienne sont dominées par celles d'une distribution gaussienne, c'est-à-dire qu'elles décroissent au moins aussi rapidement.
 \end{definition}
 
-Avec cette définition en tête, passons maintenant aux hypothèses. Pour tout $ 1 \leq  k \leq L  $
+Avec cette définition en tête, passons maintenant aux hypothèses. Pour tout $ 1 \leqslant  k \leqslant L  $
 \begin{assumption}\label{H1}
-    Pour un certain $ s \geq 1 $, les entrées de  $ \sqrt{d}V_k $ sont des variables aléatoires symétriques i.i.d., $ s^2 $ sub-gaussiennes, indépendantes de $ d $ et $ L $ et de variance unitaire.
+    Pour un certain $ s \geqslant 1 $, les entrées de  $ \sqrt{d}V_k $ sont des variables aléatoires symétriques i.i.d., $ s^2 $ sub-gaussiennes, indépendantes de $ d $ et $ L $ et de variance unitaire.
 \end{assumption}
     
 \begin{assumption}\label{H2}
     Pour un certain $ C > 0 $, indépendant de $ d $ et $ L $, et pour tout $ h \in \mathbb{R}^D  $ 
     \[
-        \frac{\left\| h \right\| ^2}{2 } \leq  \mathbb{E}( \left\|  g(h, \theta _ k ) \right\| ^2 ) \leq \left\| h \right\| ^2
+        \frac{\left\| h \right\| ^2}{2 } \leqslant  \mathbb{E}( \left\|  g(h, \theta _ k ) \right\| ^2 ) \leqslant \left\| h \right\| ^2
     .\]
     and
     \[
-        \mathbb{E } (\left\| g(h, \theta _k)  \right\| ^8 ) \leq C \left\| h  \right\| ^8
+        \mathbb{E } (\left\| g(h, \theta _k)  \right\| ^8 ) \leqslant C \left\| h  \right\| ^8
     .\]
 \end{assumption}
 
@@ -68,14 +68,14 @@ Avec cette définition en tête, passons maintenant aux hypothèses. Pour tout $
 \begin{proposition}[Admis]\label{prop1}
     Soit les modèles \texttt{res-1}, \texttt{res-2}, \texttt{res-3} décrit dans la \Cref{tab:resnet_architectures}, on a \begin{itemize}
         \item [(i)] L'\Cref{H2} est valide pour l'architecture \texttt{res-1}.
-        \item [(ii)] L'\Cref{H2} est valide pour les architectures \texttt{res-2} et \texttt{res-3} dès lors que les entrées de $ \sqrt{d}W_{k+1}, 0 \leq k \leq L-1 $ sont des variables aléatoire de variance unitaire, i.i.d., symétriques, sub-gaussienne et indépendante de $ d $ et $ L $.
+        \item [(ii)] L'\Cref{H2} est valide pour les architectures \texttt{res-2} et \texttt{res-3} dès lors que les entrées de $ \sqrt{d}W_{k+1}, 0 \leqslant k \leqslant L-1 $ sont des variables aléatoire de variance unitaire, i.i.d., symétriques, sub-gaussienne et indépendante de $ d $ et $ L $.
     \end{itemize}
 \end{proposition}
 
 \begin{lem}[Admis]\label{lem14}
     Considérons un ResNet (\ref{resnet_equation}) tel que les Hypothèses \ref{H1} et \ref{H2} soient satisfaites. Alors
     \[
-        ((1 + \frac{\alpha _L ^2 }{2 }) ^L - 1) \leq \mathbb{E}( \frac{\left\| h_L - h_0 \right\| ^2 }{\left\| h_0 \right\| ^2}) \leq ((1 + \alpha _L ^2 ) ^L - 1 )
+        ((1 + \frac{\alpha _L ^2 }{2 }) ^L - 1) \leqslant \mathbb{E}( \frac{\left\| h_L - h_0 \right\| ^2 }{\left\| h_0 \right\| ^2}) \leqslant ((1 + \alpha _L ^2 ) ^L - 1 )
     .\]
 \end{lem}
 Ce lemme nous servira en particulier dans la preuve de la \Cref{prop2}.
@@ -92,9 +92,9 @@ Les propositions et corollaires suivants décriront comment le rapport ${\left\|
 
 \begin{proposition}\label{prop2}
     Considérons un ResNet (\ref{resnet_equation}) tel que les hypothèses \ref{H1} et \ref{H2} soient satisfaites.
-    Si \( L\alpha_L^2 \leq 1 \), alors, pour tout \( \delta \in (0, 1) \), avec une probabilité d'au moins \( 1 - \delta \),
+    Si \( L\alpha_L^2 \leqslant 1 \), alors, pour tout \( \delta \in (0, 1) \), avec une probabilité d'au moins \( 1 - \delta \),
     \[
-        \frac{\|h_L - h_0\|^2}{\|h_0\|^2} \leq \frac{2L\alpha_L^2}{\delta}
+        \frac{\|h_L - h_0\|^2}{\|h_0\|^2} \leqslant \frac{2L\alpha_L^2}{\delta}
     .\]
 \end{proposition}
 La proposition \ref{prop2} par sa borne supérieur petite indique que le réseau se comporte comme une fonction identité dans le cas où $ L \alpha ^2 _L \ll 1 $.
@@ -102,19 +102,19 @@ La proposition \ref{prop2} par sa borne supérieur petite indique que le réseau
 \begin{proof}[\Cref{prop2}]
     En se basant sur le \Cref{lem14}, on a 
     \[
-        \mathbb{E}( \frac{\left\| h_L - h_0 \right\| ^2 }{\left\| h_0 \right\| ^2}) \leq ((1 + \alpha _L ^2 ) ^L - 1 )
+        \mathbb{E}( \frac{\left\| h_L - h_0 \right\| ^2 }{\left\| h_0 \right\| ^2}) \leqslant ((1 + \alpha _L ^2 ) ^L - 1 )
     .\]
-    Considérons le cas où $L \alpha_L^2 \leq 1$ (valeur faible) et $L$ tend vers de grandes valeurs. Dans ce contexte, $(1 + \alpha_L^2)^L$ est une bonne approximation de $\exp(L \alpha_L^2)$ par définition, tout en restant inférieur ou égal à celui-ci en raison de la croissance exponentielle de $\exp$. En effet, $(1 + \alpha_L^2)^L$ se rapproche de $1 + L \alpha_L^2$ selon la formule du binôme de Newton, et correspond aux premiers termes du développement en série de Taylor de l'exponentielle. Finalement, on a obtiens
+    Considérons le cas où $L \alpha_L^2 \leqslant 1$ (valeur faible) et $L$ tend vers de grandes valeurs. Dans ce contexte, $(1 + \alpha_L^2)^L$ est une bonne approximation de $\exp(L \alpha_L^2)$ par définition, tout en restant inférieur ou égal à celui-ci en raison de la croissance exponentielle de $\exp$. En effet, $(1 + \alpha_L^2)^L$ se rapproche de $1 + L \alpha_L^2$ selon la formule du binôme de Newton, et correspond aux premiers termes du développement en série de Taylor de l'exponentielle. Finalement, on a obtiens
     \[
-        (1 + \alpha _L ^2)^L -1 \leq \exp (L \alpha _L ^2) - 1
+        (1 + \alpha _L ^2)^L -1 \leqslant \exp (L \alpha _L ^2) - 1
     .\]
     En poursuivant avec le développement de Taylor, nous obtenons une majoration plus précise.
     \[
-        (1 + \alpha _L ^2)^L -1 \leq \exp (L \alpha _L ^2) - 1) \leq L \alpha _L ^2 \leq 2 L \alpha _L ^2
+        (1 + \alpha _L ^2)^L -1 \leqslant \exp (L \alpha _L ^2) - 1) \leqslant L \alpha _L ^2 \leqslant 2 L \alpha _L ^2
     .\]
     Ainsi on obtient 
     \[
-        \mathbb{E}( \frac{\left\| h_L - h_0 \right\| ^2 }{\left\| h_0 \right\| ^2}) \leq 2 L \alpha _L ^2
+        \mathbb{E}( \frac{\left\| h_L - h_0 \right\| ^2 }{\left\| h_0 \right\| ^2}) \leqslant 2 L \alpha _L ^2
     .\]
     En appliquant l'inégalité de Markov, nous parvenons au résultat souhaité de la \cref{prop2}.
 \end{proof}
@@ -124,15 +124,15 @@ La proposition \ref{prop2} par sa borne supérieur petite indique que le réseau
 \begin{proposition}[Admise]\label{prop3}
     Considérons un ResNet (\ref{resnet_equation}) tel que les hypothèses \ref{H1} et \ref{H2} soient satisfaites.
     \begin{itemize}
-        \item[(i)] Supposons que $ d \geq 64 $ et $ \alpha _L ^2 \leq  \frac{2}{ (\sqrt{C} s^4 + 4 \sqrt{C} + 16 s ^4) d } $. Alors, pour tout $ \delta \in (0, 1) $, avec une probabilité d'au moins $ 1 - \delta $,
+        \item[(i)] Supposons que $ d \geqslant 64 $ et $ \alpha _L ^2 \leqslant  \frac{2}{ (\sqrt{C} s^4 + 4 \sqrt{C} + 16 s ^4) d } $. Alors, pour tout $ \delta \in (0, 1) $, avec une probabilité d'au moins $ 1 - \delta $,
         \[
             \frac{\|h_L - h_0\|^2}{\|h_0\|^2} > \exp\left(\frac{3L\alpha_L^2}{8} - \sqrt{\frac{11L\alpha_L^2}{d\delta}}\right) - 1,
         \]
         à condition que
         \[
-            2L \exp\left(-\frac{d}{64\alpha_L^2s^2}\right) \leq \frac{\delta}{11}.
+            2L \exp\left(-\frac{d}{64\alpha_L^2s^2}\right) \leqslant \frac{\delta}{11}.
         \]
-        \item[(ii)] Supposons que $ \alpha_L^2 \leq \frac{1}{\sqrt{C}(d + 128s^4)} $. Alors, pour tout $ \delta \in (0, 1)$, avec une probabilité d'au moins $1 - \delta $,
+        \item[(ii)] Supposons que $ \alpha_L^2 \leqslant \frac{1}{\sqrt{C}(d + 128s^4)} $. Alors, pour tout $ \delta \in (0, 1)$, avec une probabilité d'au moins $1 - \delta $,
         \[
             \frac{\|h_L - h_0\|^2}{\|h_0\|^2} < \exp\left(L\alpha_L^2 + \sqrt{\frac{5L\alpha_L^2}{d\delta}}\right) + 1.
         \]
@@ -140,7 +140,7 @@ La proposition \ref{prop2} par sa borne supérieur petite indique que le réseau
 \end{proposition}
 La \Cref{prop3} aborde les deux cas restants : $L \alpha_L^2 \gg 1$ et $L \alpha_L^2 \approx 1$. Dans la partie \textit{(i)}, la borne inférieure indique une explosion très probable du gradient lorsque $L \alpha_L^2 \gg 1$. La partie \textit{(ii)} traite du cas où $L \alpha_L^2 \approx 1$, avec une borne supérieure qui, en combinaison avec celle de \textit{(i)}, suggère que $h_L$ fluctue aléatoirement autour de $h_0$, borné des deux côtés.
 
-La \Cref{prop3} peut présenter des hypothèses qui semblent atypiques, mais elles sont en réalité souvent vérifiées dans la majorité des ResNets profonds. En effet, il est courant de trouver des ResNets avec une profondeur $L \geq 100$, pour lesquels on définit généralement $\alpha_L = \nicefrac{1}{L^\beta}$ avec $\beta > 0$. De plus, la dimension des états cachés atteint fréquemment des valeurs telles que $d \geq 100$.
+La \Cref{prop3} peut présenter des hypothèses qui semblent atypiques, mais elles sont en réalité souvent vérifiées dans la majorité des ResNets profonds. En effet, il est courant de trouver des ResNets avec une profondeur $L \geqslant 100$, pour lesquels on définit généralement $\alpha_L = \nicefrac{1}{L^\beta}$ avec $\beta > 0$. De plus, la dimension des états cachés atteint fréquemment des valeurs telles que $d \geqslant 100$.
 
 Les conséquences des Propositions \ref{prop2} et \ref{prop3} vont devenir plus clair en fixant $ \alpha _L = 1/L ^\beta $ comme montré dans le corollaire suivant.
 \begin{cor}\label{cor4}
@@ -150,17 +150,17 @@ Les conséquences des Propositions \ref{prop2} et \ref{prop3} vont devenir plus 
         \[
             \frac{\|h_L - h_0\|}{\|h_0\|} \xrightarrow[L \to \infty]{\mathbb{P}} 0.
         \]
-        \item[(ii)] Si $ \beta < \nicefrac{1}{2}$ et $d \geq 9 $, alors
+        \item[(ii)] Si $ \beta < \nicefrac{1}{2}$ et $d \geqslant 9 $, alors
         \[
             \frac{\|h_L - h_0\|}{\|h_0\|} \xrightarrow[L \to \infty]{\mathbb{P}} \infty.
         \]
-        \item[(iii)] Si $ \beta = \nicefrac{1}{2} $, $ d \geq 64$, $L \geq (\frac{1}{2}\sqrt{C}s^4 + 2\sqrt{C} + 8s^4)d + 96\sqrt{C} s^4 $, alors, pour tout $ \delta \in (0, 1) $, avec une probabilité d'au moins $ 1 - \delta $,
+        \item[(iii)] Si $ \beta = \nicefrac{1}{2} $, $ d \geqslant 64$, $L \geqslant (\frac{1}{2}\sqrt{C}s^4 + 2\sqrt{C} + 8s^4)d + 96\sqrt{C} s^4 $, alors, pour tout $ \delta \in (0, 1) $, avec une probabilité d'au moins $ 1 - \delta $,
         \[
             \exp\left(\frac{3}{8} - \sqrt{\frac{22}{d\delta}}\right) - 1 < \frac{\|h_L - h_0\|^2}{\|h_0\|^2} < \exp\left(1 + \sqrt{\frac{10}{d\delta}}\right) + 1,
         \]
         à condition que
         \[
-            2L \exp\left(-\frac{Ld}{64s^2}\right) \leq \frac{\delta}{11}.
+            2L \exp\left(-\frac{Ld}{64s^2}\right) \leqslant \frac{\delta}{11}.
         \]
     \end{itemize}
 \end{cor}
@@ -170,15 +170,15 @@ Les conséquences des Propositions \ref{prop2} et \ref{prop3} vont devenir plus 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Nous avons $ L \alpha _L ^2 = \frac{L}{L^{2\beta} } = L^{1 - 2 \beta } $, comme $ \beta > 1/2 \Leftrightarrow 1 - 2 \beta < 0 $ nous avons $ L^{1 - 2 \beta } = \frac{1}{L^{2 \beta  -1}} \underset{L\to +\infty}{\longrightarrow} 0 $. Ainsi
     % \begin{align*}
-    %     & \frac{\|h_L - h_0\|^2}{\|h_0\|^2} \leq \frac{2L\alpha_L^2}{\delta}.
+    %     & \frac{\|h_L - h_0\|^2}{\|h_0\|^2} \leqslant \frac{2L\alpha_L^2}{\delta}.
     %     \overunderset{\mathbb{P}}{L\to +\infty}{\longrightarrow} 0 
     % \end{align*}
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     \begin{itemize}
         \item L'affirmation \textit{(i)} est une conséquence de la \Cref{prop2}.
         \item L'affirmation \textit{(ii)} est une conséquence de la \Cref{prop3}. En effet, cette dernière est valide sous deux conditions vérifiées dans notre cas : \begin{itemize}
-            \item La contrainte $ d \geq 64 $ peut être, dans notre cas, relaché à $ d \geq 9 $ en observant la preuve de la \Cref{prop3} non décrite ici.
-            \item La majoration $ \alpha _L \leq \frac{2}{(\sqrt{C} s^4 + 4 \sqrt{C} + 16s^4)d} $ est automatiquement satisfaite pour $ L $ assez grand.
+            \item La contrainte $ d \geqslant 64 $ peut être, dans notre cas, relaché à $ d \geqslant 9 $ en observant la preuve de la \Cref{prop3} non décrite ici.
+            \item La majoration $ \alpha _L \leqslant \frac{2}{(\sqrt{C} s^4 + 4 \sqrt{C} + 16s^4)d} $ est automatiquement satisfaite pour $ L $ assez grand.
         \end{itemize}
         \item Pour prouver l'affirmation \textit{(iii)}, nous utilisons l'union des deux affirmations de la \Cref{prop3}.
     \end{itemize}
