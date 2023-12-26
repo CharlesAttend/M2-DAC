@@ -27,7 +27,6 @@ En poussant l'espacement entre les couches du réseau à une valeur infinitésim
 
 Ici, les couches de réseaux neuronaux traditionnelles sont considérées comme des échantillons discrets d'un système dynamique en temps continu.
 
-
 \subsection{Convergence vers une EDO}
 Il est nécessaire de se poser la question de savoir si l'utilisation de méthodes de répartition de poids alternatives lors de l'initialisation et de la mise à l'échelle pourrait conduire à une équation différentielle ordinaire neuronale conventionnelle. Nous supposons que les poids $(V_k)_{1\leqslant k \leqslant L }$ et $(\theta_k)_{1\leqslant k \leqslant L }$ sont des discrétisations de fonctions lisses $\mathcal{V}:[0,1] \to \mathcal{R}^{d \times d}$ et $\Theta:[0,1] \to \mathcal{R}^{p}$. On considère alors l'itération générale avant avec $\alpha_L = \frac{1}{L}$, soit:
 \begin{equation}\label{eq13}
@@ -37,7 +36,7 @@ avec $V_k = \mathcal{V}_{k/L}$ et $\theta_k = \Theta_{k/L}$.
 Combiner avec l'idée d'EDO neuronale précédente, on considère $(V_k)_{1\leqslant k \leqslant L }$ et $(\theta_k)_{1\leqslant k \leqslant L }$ sont variables aléatoires en mettant $(\mathcal{V}_t)_{t \in [0,1]}$ et $(\Theta_t)_{t \in [0,1]}$ sont les temps continus processus stochastiques. Dans ce modèle, nous aurons besoin des hypothèses suivantes. Ces hypothèses constituent la base d'une dérivation théorique ultérieure et garantissent que les outils et méthodes mathématiques utilisés sont adaptés à l'analyse des modèles neuronale. 
 
 \begin{assumption}\label{H5}
-Pour chaque $0 \leqslant k \leqslant L-1$, les processus stochastique $\mathcal{V}$ et $\Theta$ sont presque sûrement Lipschitziens continus et bornés.
+    Pour chaque $0 \leqslant k \leqslant L-1$, les processus stochastique $\mathcal{V}$ et $\Theta$ sont presque sûrement Lipschitziens continus et bornés.
 \end{assumption}
 
 Plus précisément, il existe presque sûrement $K_{\mathscr{V}}, K_{\Theta}, C_{\mathscr{V}}, C_{\Theta}>0$, tel que, pour tous $s, t \in [0,1]$
@@ -52,28 +51,28 @@ Plus précisément, il existe presque sûrement $K_{\mathscr{V}}, K_{\Theta}, C_
 \begin{assumption}\label{H6}
 La fonction $g$ est Lipschitzienne continue sur les ensembles compacts, dans le sens où pour tout compact $\mathscr{P} \subseteq \mathbb{R}^p$, il existe $K_{\mathscr{P}} > 0$  tel que, pour tous $h, h^{\prime} \in \mathbb{R}^d, \theta \in \mathscr{P}$,
 $$
-\left\|g(h, \theta)-g\left(h^{\prime}, \theta\right)\right\| \leqslant K_{\mathscr{P}}\left\|h-h^{\prime}\right\|,
+    \left\|g(h, \theta)-g\left(h^{\prime}, \theta\right)\right\| \leqslant K_{\mathscr{P}}\left\|h-h^{\prime}\right\|,
 $$
 et pour tous compact $\mathscr{D} \subseteq \mathbb{R}^d$, il existe $K_{\mathscr{D}, \mathscr{P}}>0$ tel que, pour tous $h \in \mathscr{D}, \theta, \theta^{\prime} \in \mathscr{P}$,
 $$
-\left\|g(h, \theta)-g\left(h, \theta^{\prime}\right)\right\| \leqslant K_{\mathscr{D}, \mathscr{P}}\left\|\theta-\theta^{\prime}\right\| .
+    \left\|g(h, \theta)-g\left(h, \theta^{\prime}\right)\right\| \leqslant K_{\mathscr{D}, \mathscr{P}}\left\|\theta-\theta^{\prime}\right\| .
 $$
 \end{assumption}
 
 
 Sous les \Cref{H5} et \ref{H6}, la récurrence \ref{eq13} converge presque sûrement vers l'EDO neuronale donnée par
 \begin{equation}\label{eq14}
-H_0=A x, \quad d H_t=\mathscr{V}_t g\left(H_t, \Theta_t\right) d t, \quad t \in[0,1]
+    H_0=A x, \quad d H_t=\mathscr{V}_t g\left(H_t, \Theta_t\right) d t, \quad t \in[0,1]
 \end{equation}
 comme la proposition ci-dessous.
 
 \begin{proposition}\label{prop11}
-Considérons le modèle (\ref{eq13}) tel que les \Cref{H5} et \ref{H6} sont satisfaites. Alors l'EDO (\ref{eq14}) a une solution unique $H$, et, presque sûrement, il existe un $c > 0$
-tel que, pour tout $0 \leqslant k \leqslant L$,
+    Considérons le modèle (\ref{eq13}) tel que les \Cref{H5} et \ref{H6} sont satisfaites. Alors l'EDO (\ref{eq14}) a une solution unique $H$, et, presque sûrement, il existe un $c > 0$
+    tel que, pour tout $0 \leqslant k \leqslant L$,
 
-\begin{equation}  
-\left\|H_{k / L}-h_k\right\| \leqslant \frac{c}{L}
-\end{equation}
+    \begin{equation}  
+    \left\|H_{k / L}-h_k\right\| \leqslant \frac{c}{L}
+    \end{equation}
 \end{proposition}
 
 En supposant que les poids du réseau sont des discrétisations d'une fonction lisse (\Cref{H5}), il est possible d'obtenir des résultats de stabilité, en fonction de la valeur de $\beta$.
@@ -96,27 +95,27 @@ Nous montrons ci-dessous que $\beta$ est une valeur critique, en examinant les �
 \end{proposition}
 
 \begin{proof}[\Cref{prop12}]
-En appliquant l'\Cref{H6}, nous pouvons aisément déterminer l'existence de constantes $C_1$ et $C_2$, dont les valeurs dépendent des réalisations de $\mathscr{V}$ et $\Theta$, telles que
-$$
-    \left\|h_{k+1}\right\| \leqslant\left(1+C_1 \alpha_L\right)\left\|h_k\right\|+C_2 \alpha_L
-$$
-Par récurrence,
-$$
-    \left\|h_{k+1}\right\| \leqslant\left(1+C_1 \alpha_L\right)^k\left(\left\|h_0\right\|+\frac{C_2}{C_1}\right) .
-$$
-Puis, en utilisant $\alpha_L \leqslant 1 / L$,
-$$
-    \left\|h_{k+1}\right\| \leqslant \exp \left(C_1\right)\left(\left\|h_0\right\|+\frac{C_2}{C_1}\right) .
-$$
-Car $g$ est lipschitzien continu en ensemble compact, il est délimité sur chaque boule de $\mathbb{R}^d \times \mathbb{R}^p$. Le résultat est alors une conséquence de l'identité
-$$
-    h_L-h_0=\alpha_L \sum_{k=0}^{L-1} V_{k+1} g\left(h_k, \theta_{k+1}\right)
-$$
-puisque nous avons montré que chaque terme de la somme est borné par une constante $C_3>0$, indépendante de $L$ et $k$. Nous avons donc 
-$$
-    \left\|h_L-h_0\right\| \leqslant C_3 L \alpha_L=C_3 L^{1-\beta},
-$$
-donnant les résultats en fonction de la valeur de $\beta$.
+    En appliquant l'\Cref{H6}, nous pouvons aisément déterminer l'existence de constantes $C_1$ et $C_2$, dont les valeurs dépendent des réalisations de $\mathscr{V}$ et $\Theta$, telles que
+    $$
+        \left\|h_{k+1}\right\| \leqslant\left(1+C_1 \alpha_L\right)\left\|h_k\right\|+C_2 \alpha_L
+    $$
+    Par récurrence,
+    $$
+        \left\|h_{k+1}\right\| \leqslant\left(1+C_1 \alpha_L\right)^k\left(\left\|h_0\right\|+\frac{C_2}{C_1}\right) .
+    $$
+    Puis, en utilisant $\alpha_L \leqslant 1 / L$,
+    $$
+        \left\|h_{k+1}\right\| \leqslant \exp \left(C_1\right)\left(\left\|h_0\right\|+\frac{C_2}{C_1}\right) .
+    $$
+    Car $g$ est lipschitzien continu en ensemble compact, il est délimité sur chaque boule de $\mathbb{R}^d \times \mathbb{R}^p$. Le résultat est alors une conséquence de l'identité
+    $$
+        h_L-h_0=\alpha_L \sum_{k=0}^{L-1} V_{k+1} g\left(h_k, \theta_{k+1}\right)
+    $$
+    puisque nous avons montré que chaque terme de la somme est borné par une constante $C_3>0$, indépendante de $L$ et $k$. Nous avons donc 
+    $$
+        \left\|h_L-h_0\right\| \leqslant C_3 L \alpha_L=C_3 L^{1-\beta},
+    $$
+    donnant les résultats en fonction de la valeur de $\beta$.
 \end{proof}
 
 \begin{proposition}\label{prop13}
@@ -125,7 +124,6 @@ donnant les résultats en fonction de la valeur de $\beta$.
         \max_{k}\frac{||h_k-h_0||}{||h_0||} \xrightarrow{L \to \infty } \infty
     .\]
 \end{proposition}
-
 Dans ce contexte, nous pouvons observer expérimentalement une évolution du comportement de la sortie et des gradients lorsque la valeur de L augmente, similaire à celle explorée dans la section précédente. Cependant, le point remarquable est que la séparation se produit pour $\beta = 1$ ici.
 
 \section{Équation différentielle stochastique}
@@ -162,11 +160,11 @@ cat $V_{k+1}$ a même distribution de $V_{k+1}^{\top}$. On peut obtenir que $\{k
 où la sortie du réseau est désormais fonction de la valeur finale de $H$, c'est-à-dire $H1$. Le lien entre le ResNet discret (\ref{eq11}) et l'EDS (\ref{eq12}) est formalisé dans la proposition suivante.
 
 \begin{proposition}\label{prop10}
-Considérons le modèle \texttt{res-1}, où les entrées de $V_{k+1}$ sont des variables aléatoires i.i.d., gaussiennes $\mathcal{N}(0,2 / d)$. Supposons que la fonction d'activation $\sigma$ soit lipschitzienne. Alors l'EDS (\ref{eq12}) a une unique solution $H$ et, pour tout $0 \leqslant k \leqslant L$,
-$$
-    \mathbb{E}\left(\left\|H_{k / L}-h_k\right\|\right) \leqslant \frac{c}{\sqrt{L}},
-$$
-pour un $c>0$.
+    Considérons le modèle \texttt{res-1}, où les entrées de $V_{k+1}$ sont des variables aléatoires i.i.d., gaussiennes $\mathcal{N}(0,2 / d)$. Supposons que la fonction d'activation $\sigma$ soit lipschitzienne. Alors l'EDS (\ref{eq12}) a une unique solution $H$ et, pour tout $0 \leqslant k \leqslant L$,
+    $$
+        \mathbb{E}\left(\left\|H_{k / L}-h_k\right\|\right) \leqslant \frac{c}{\sqrt{L}},
+    $$
+    pour un $c>0$.
 \end{proposition}
 
 \begin{proof}[\Cref{prop10}]
