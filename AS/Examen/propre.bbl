@@ -1,4 +1,4 @@
-\begin{thebibliography}{5}
+\begin{thebibliography}{6}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -15,6 +15,14 @@ Kaiming He, Xiangyu Zhang, Shaoqing Ren, and Jian Sun.
 \newblock Deep residual learning for image recognition.
 \newblock In \emph{2016 IEEE Conference on Computer Vision and Pattern Recognition (CVPR)}, pages 770--778, 2016.
 \newblock \doi{10.1109/CVPR.2016.90}.
+
+\bibitem[Kloeden and Platen(1992)]{stochasticEqSolution}
+Peter~E. Kloeden and Eckhard Platen.
+\newblock \emph{{Stochastic Differential Equations}}.
+\newblock Springer, 1992.
+\newblock ISBN 978-3-662-12616-5.
+\newblock \doi{10.1007/978-3-662-12616-5}.
+\newblock URL \url{http://dx.doi.org/10.1007/978-3-662-12616-5\_4}.
 
 \bibitem[maintainers and contributors(2016)]{torchvision2016}
 TorchVision maintainers and contributors.
