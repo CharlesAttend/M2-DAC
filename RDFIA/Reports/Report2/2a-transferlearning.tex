@@ -104,9 +104,9 @@ The network's predictions showcase its ability to recognize certain animal featu
 \paragraph{4. \textbf{Bonus}: Visualize several activation maps obtained after the first convolutional layer. How can we interpret them?}
 Let $A_{ij}$ denote the activation map located at the $i$th row and $j$th column, where $i$ and $j$ are both in the range of $[1, 8]$.
 
-In Figure \ref{fig:activation_cat}, we showcase the 64 feature maps obtained after applying the first convolutional layer of VGG16 to the tuxedo cat image. Furthermore, we include activation maps for the five preceding images in Appendix \Cref{appendix:activation_maps}.
+In \Cref{fig:activation_cat}, we showcase the 64 feature maps obtained after applying the first convolutional layer of VGG16 to the tuxedo cat image. Furthermore, we include activation maps for the five preceding images in Appendix \Cref{appendix:activation_maps}.
 
-Each activation map corresponds to a unique filter applied to the original image, capturing a diverse array of features. Some maps highlight edges or textures (e.g., $A_{12}$, $A_{13}$, $A_{88}$), while others respond to background elements (e.g., $A_{26}$, $A_{28}$), color contrasts (e.g., $A_{41}$, $A_{62}$), or specific shapes (e.g., $A_{33}$, $A_{65}$) within the image. It is essential to recognize that these initial layers are primarily designed to detect low-level features, which become progressively more abstract and complex in deeper layers.
+Each activation map corresponds to a unique filter applied to the original image, capturing a diverse array of features. Some maps highlight edges or textures (e.g., $A_{12}$, $A_{13}$, $A_{88}$), while others respond to background elements (e.g., $A_{26}$, $A_{28}$), color contrasts (e.g., $A_{41}$, $A_{62}$), or specific shapes (e.g., $A_{33}$, $A_{65}$) within the image. It is important to note that these initial layers are primarily designed to detect low-level features, which become progressively more abstract and complex in deeper layers. Additionally, these maps consistently serve specific purposes regardless of the input image, indicating a dedicated function for each activation map. Thus, our interpretation stays true for the images in Appendix \Cref{appendix:activation_maps}.
 
 \begin{figure}[H]
     \centering
@@ -122,8 +122,6 @@ The concept of transfer learning plays a significant role when it comes to apply
 \subsection{Approach}
 \paragraph{5. $\bigstar$ Why not directly train VGG16 on 15 Scene?}
 The 15 Scene dataset is quite small compared to the massive ImageNet dataset that VGG16 was originally trained on. VGG16 requires a lot of data to generalize well and to avoid overfitting. Moreover, training such a model from scratch is computationally expensive and time-consuming.
-
-% VGG from scratch, pas assez de donnée pour le gros model, risque fort d'overfitting 
 
 \paragraph{6. $\bigstar$ How can pre-training on ImageNet help classification for 15 Scene?}
 ImageNet is a vast and diverse dataset, containing millions of images distributed across numerous categories. A model pre-trained on this dataset acquires a broad spectrum of features, ranging from basic edge and texture detection to intricate patterns. These acquired features provide a robust initial foundation for extracting meaningful information from the 15 Scene images, even when the particular scenes or objects present in the 15 Scene dataset differ from those in ImageNet. This approach offers several advantages, especially considering the relatively small size of our dataset. It helps address issues related to insufficient training data, such as overfitting. Additionally, it speeds up the training process because the model only needs fine-tuning of the previously learned features to adapt to the specific characteristics of the new dataset, eliminating the need to start the learning process from scratch.
@@ -150,9 +148,8 @@ The decision between using the pre-trained neural network or training an indepen
 
 \subsection{Going further}
 \paragraph*{11. For every improvement that you test, explain your reasoning and comment on the obtained results.}
-TODO
 
-In the study of transfer learning from VGG16 pretrained on ImageNet for Scene15 classification, the depth of the feature extraction layer emerged as a significant factor. Extracting features after the first fully connected layer (ReLU6) versus the second (ReLU7) offers the same dimensionality (4096 features), yet stopping after the first yields better results. Results are displayed on \Cref{tab:depth_influence}. This suggests that the initial fully connected layers may capture more generalizable features beneficial for the task at hand. Using all three fully connected layers (up to ReLU8) reduces feature dimensionality to 1000 and leads to poorer performance, likely due to over-specialization to ImageNet. 
+In the study of transfer learning from VGG16 pretrained on ImageNet for Scene15 classification, the depth of the feature extraction layer emerged as a significant factor. Extracting features after the first fully connected layer (ReLU6) versus the second (ReLU7) offers the same dimensionality (4096 features), yet stopping after the first yields better results. Results are displayed on \Cref{tab:depth_influence}. This suggests that the initial fully connected layers may capture more generalizable features beneficial for the task at hand. Using all three fully connected layers (up to ReLU8) reduces feature dimensionality to 1000 and leads to poorer performance, likely due to over-specialization to ImageNet.
 
 \begin{table}[H]
     \centering
@@ -160,20 +157,85 @@ In the study of transfer learning from VGG16 pretrained on ImageNet for Scene15 
         \toprule
         \textbf{Layer Extracted} & \textbf{Feature Dimensionality} & \textbf{Accuracy (Non-Normalized)} & \textbf{Accuracy (Normalized)} \\
         \midrule \midrule
-        ReLU6 & 4096            & \textbf{0.906}         & \textbf{0.912} \\
-        ReLU7 & 4096            & 0.896                  & 0.896          \\
-        ReLU8 & 1000            & 0.861                  & 0.880          \\
+        ReLU6                    & 4096                            & \textbf{0.906}                     & \textbf{0.912}                 \\
+        ReLU7                    & 4096                            & 0.896                              & 0.896                          \\
+        ReLU8                    & 1000                            & 0.861                              & 0.880                          \\
         \bottomrule
     \end{tabular}
-    \caption{}
+    \caption{Performance comparison based on the depth of feature extraction in VGG16, indicating accuracy for features extracted at ReLU6, ReLU7, and ReLU8 using an SVM with $C$ = 1, and whether or not the data were normalized.}
     \label{tab:depth_influence}
 \end{table}
 
-% - Change the layer at which the features are extracted. What is the importance of the depth of this  layer? What is the representation size and what does this change? : on peut couper soit après le premier FC+Relu (relu6) soit le 2e (relu7), soit le 3e = le dernier (relu8). 1er et 2e, on aura autant de features 4096 donc same representation, mais relu8 on en aura plus que 1000 ce qui réduit la représentation. on obtient des résulats légérement supérieurs en s'arretant après premier FC (expliquer pourquoi) mais des moins bons en utilisant les 3 fc (expliquer pourquoi). expliquer et commenter sur l'importance de la profondeur de ce layer.
+Additionally, the choice of feature extraction layer, whether it be the first fully-connected layer, second, or third, did not have a discernible impact on the time required for feature extraction or the time taken to train a SVM. We conducted a grid search over 5-fold cross-validation to fine-tune the SVM parameters and present the results in \Cref{tab:svm_tuned}. The variation in the optimal $C$ values across different layers (ReLU6, ReLU7, ReLU8) sheds light on key aspects of feature complexity and generalizability. Higher $C$ values suggest the need for stronger regularization, possibly due to the features being more intricate and specialized towards the ImageNet dataset, hence less adaptable to the Scene15 dataset.
 
-% - Tune the parameter C to improve performance. C=1 seems to actually be the best, it yields the best crossval score in a gridsearch, with a score of 0.9119.
+\begin{table}[H]
+    \centering
+    \begin{tabular}{@{}cccc@{}}
+        \toprule
+        \textbf{Layer Extracted} & \textbf{Best $C$ value} & \textbf{Cross-validation score} & \textbf{Accuracy} \\
+        \midrule \midrule
+        ReLU6                    & 10                     & \textbf{0.920}                  & \textbf{0.910}    \\
+        ReLU7                    & 100                     & 0.905                           & 0.899             \\
+        ReLU8                    & 5                       & 0.894                           & 0.888             \\
+        \bottomrule
+    \end{tabular}
+    \caption{Tuning results for SVM using features extracted from different layers of VGG16, highlighting the best $C$ value, cross-validation score, and accuracy, using normalized data.}
+    \label{tab:svm_tuned}
+\end{table}
 
-% Instead of training an SVM, replace the last layer of VGG16 with a new fully-connected layer and
-% continue to train the network on 15 Scene (with or without propogating the gradients to the rest of
-% the network). ouais, bah ça marche aussi bien que svm, donc voilà quoi, pk se casser le cul à train un nn alors qu'un svm marchera aussi bien.
+We also explored the effectiveness of employing a custom Multi-Layer Perceptron (MLP) as an alternative to using a SVM for classification. The architecture of our MLP is outlined in Table \ref{tab:mlp_architecture}. The motivation behind this approach was to examine whether a neural network, capable of end-to-end learning, could outperform the conventional method of SVM classification when working with features extracted from VGG16. This experiment was carried out in two variations: one where the MLP served as a standalone classifier for the extracted features, and another where the MLP was integrated into a modified VGG16, functioning as the final layers, with the flexibility of either freezing or fine-tuning the earlier layers.
 
+The experiment yielded two key outcomes: the standalone MLP achieved an accuracy of 0.8958, while the MLP integrated into VGG16 achieved an accuracy of 0.8938, both after 20 epochs. These results, though slightly lower than those obtained with an SVM, suggest that the more complex end-to-end learning approach of a neural network does not necessarily lead to superior performance compared to using a simpler model like SVM on pre-extracted features. This observation reinforces the notion that in certain transfer learning scenarios, particularly when the extracted features are already robust, simpler models can be equally, if not more, effective than their more complex counterparts, while being much more computationally efficient.
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{@{}lll@{}}
+        \toprule
+        \textbf{Layer Type}                           & \textbf{Output Size} & \textbf{Parameters}                   \\ \midrule
+        Linear                                        & 1024                 & 4096 $\times$ 1024 + 1024 = 4,195,328 \\
+        ReLU                                          & -                    & -                                     \\
+        Dropout                                       & -                    & rate = 0.2                            \\
+        Linear                                        & 512                  & 1024 $\times$ 512 + 512 = 524,800     \\
+        ReLU                                          & -                    & -                                     \\
+        Dropout                                       & -                    & rate = 0.2                            \\
+        Linear                                        & 15                   & 512 $\times$ 15 + 15 = 7695           \\
+        \midrule
+        \multicolumn{2}{l}{\textbf{Total parameters}} & 4,727,823                                                    \\
+        \bottomrule
+    \end{tabular}
+    \caption{Architecture of the Multi-Layer Perceptron (MLP) used in the VGG16 modification.}
+    \label{tab:mlp_architecture}
+\end{table}
+
+Lastly, we explored alternative architectures for transfer learning, extending our considerations beyond VGG16 to leverage the advancements made in pre-trained networks since 2014. Our focus shifted to attention-based models, particularly Vision Transformers, renowned for their superior performance on ImageNet. In our experiments, we chose the \texttt{vit\_b\_16} model, celebrated for its efficient parameter utilization (with 37.43\% fewer parameters compared to VGG16) and improved accuracy (a 9.48\% boost in top-1 accuracy compared to VGG16).  In our initial analysis, we evaluated the performance of this model using the first six images and observed a noticeable increase in the model's assertiveness in its predictions. For instance, the model exhibited significantly higher confidence in correctly identifying a wombat as a wombat, with a confidence level of 97.48\% for the fine-tuned weights compared to 38.42\% in VGG16. Results are available in Appendix \Cref{appendix:vit}, presented in \Cref{fig:vit_scratch} and \Cref{fig:vit_refined}.
+
+
+Feature extraction occurred after the encoder, specifically at the linear layer of the classifier. Notably, we evaluated weights refined via end-to-end fine-tuning (IMAGENET1K\_SWAG\_E2E\_V1) against those trained from scratch (IMAGENET1K\_V1). Our findings are presented in \Cref{tab:vit_transferlearning} and \Cref{tab:vit_svm_tuned}. It's worth noting that tuning the SVM with Vision Transformer features led to superior results when compared to the tuned SVM trained using VGG16 features, resulting in a significant 2.1\% increase in accuracy. As expected, the utilization of IMAGENET1K\_SWAG\_E2E\_V1 weights naturally provided the best performance, owing to their superior performance on ImageNet-1K. Additionally, it's important to mention that the feature extraction process for Vision Transformers did indeed take a bit longer. Specifically, Vision Transformers processed at a rate ranging from 6 to 12 batches per second, while VGG ranged from 15 to 20 batches per second.
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{@{}cccc@{}}
+        \toprule
+        \textbf{Weights}  & \textbf{Accuracy (Non-Normalized)} & \textbf{Accuracy (Normalized)} \\
+        \midrule \midrule
+        IMAGENET1K\_V1            & 0.911                              & 0.918             \\
+        IMAGENET1K\_SWAG\_E2E\_V1 & \textbf{0.917}                     & \textbf{0.925}    \\
+        \bottomrule
+    \end{tabular}
+    \caption{Performance comparison based on the weights used for Vision Transformer, using an SVM with $C$~=~1, and whether or not the data were normalized.}
+    \label{tab:vit_transferlearning}
+\end{table}
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{@{}cccc@{}}
+        \toprule
+        \textbf{Weights} & \textbf{Best $C$ value} & \textbf{Cross-validation score} & \textbf{Accuracy (Normalized)} \\
+        \midrule \midrule
+        IMAGENET1K\_V1           & 1                       & 0.921                           & 0.918             \\
+        IMAGENET1K\_SWAG\_E2E\_V1  & 5                       & \textbf{0.944}                  & \textbf{0.931}    \\
+        \bottomrule
+    \end{tabular}
+    \caption{Tuning results for SVM using different sets of weights for Vision Transformer, highlighting the best $C$ value, cross-validation score, and accuracy, using normalized data.}
+    \label{tab:vit_svm_tuned}
+\end{table}
