@@ -5,11 +5,16 @@ This exploration focuses on domain adaptation to tackle the task of applying mod
 
 \paragraph*{1. If you keep the network with the three parts (green, blue, pink) but didn't use the GRL, what would happen?}
 
-Without the GRL, the domain classifier would become proficient at distinguishing between source and target domains, counteracting the aim of domain adaptation. This would lead to a more domain-specific model rather than a domain-generalized one.
+The gradient of the domain classifier is directed in a way that aids it in distinguishing between features from the source and target domains. In the absence of the Gradient Reversal Layer (GRL), the gradient would be propagated to the feature extractor, encouraging it to assist the domain classifier in distinguishing between source and target domain features. This would result in a model that becomes more domain-specific rather than domain-generalized, as it would enable the domain classifier to excel at discriminating between source and target domains, contradicting the goal of domain adaptation.
+
+To address this issue, we employ a simple technique: we reverse the sign of the gradient, causing it to move in the opposite direction. This reversal helps the feature extractor generate domain-agnostic features, aligning with the objective of achieving domain adaptation.
+
 
 \paragraph*{2. Why does the performance on the source dataset may degrade a bit?}
 
-The minor performance decrease on the source dataset result from the model adapting to features common to both domains, slightly reducing its specificity for the source domain.
+During our experimentation, we saw the source domain accuracy go from 99.07\% to 98.64\% and the target domain accuracy going from 53.52\% to 78.85\%. The minor performance decrease on the source dataset result from the model adapting to features common to both domains, slightly reducing its specificity for the source domain.
+
+After 100 epochs, we a achived a target domain accuracy of 80\%, keeping the source domain accuracy at 98.5\%. The domain discriminator had an accuracy of 49\%.
 
 \paragraph*{3. Discuss the influence of the value of the negative number used to reverse the gradient in the GRL.}
 
@@ -20,3 +25,4 @@ The gradient reversal value balances learning domain-specific features and gener
 Pseudo-labeling involves generating labels for the target domain using the model's predictions. These labels are then used for further training, helping the model adapt to the target domain by leveraging its existing knowledge and narrowing the domain gap.
 
 % TODO: Ultra court, faut que je repasse sur le TME, peut-être mettre une figure qui montre qu'on classifie bien colorMNIST + ajouter la visualisation des espaces latents?
+
