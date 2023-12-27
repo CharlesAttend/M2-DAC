@@ -327,7 +327,7 @@ It pretty funny to create some objects from other objects. In \Cref{fig:class_vi
 \end{figure}
 
 \paragraph*{11. \textbf{Bonus:} Test with another network, VGG16, for example, and comment on the results.}
-We conducted identical experiments using VGG16 this time. Visualizations are often superior due to VGG16's overall improved performance, as previously discussed in \Cref{paragraph:bonus_VGG}. Specifically, we found the hay to snail animation in \Cref{fig:class_viz_start_image_dif_VGG:vid} to be more appealing. However, there are instances where regularization proves to be more challenging, as observed in \Cref{fig:class_viz_iter_vgg} or \ref{fig:class_viz_wombat_VGG}.
+We conducted identical experiments using VGG16 this time. Visualizations are often superior due to VGG16's overall improved performance, as previously discussed in \Cref{paragraph:bonus_VGG}. Specifically, we found the hay to snail animation in \Cref{fig:class_viz_start_image_dif_VGG:vid} to be more appealing. However, there are instances where regularization proves to be more challenging, as observed in \Cref{fig:class_viz_iter_vgg} or when comparing \ref{fig:class_viz_wombat_VGG:b} and \ref{fig:class_viz_wombat_VGG:c}.
 
 \begin{figure}[H]
     \centering
@@ -389,18 +389,21 @@ We conducted identical experiments using VGG16 this time. Visualizations are oft
         \centering
         \includegraphics[width=\linewidth]{SqueezeNet/wombat_animated_1000_last_frame.png}
         \caption{}
+        \label{fig:class_viz_wombat_VGG:a}
     \end{subfigure}%
     \begin{subfigure}{.32\textwidth}
         \centering
         \includegraphics[width=\linewidth]{VGG/VGG_wombat_animated_1000_last_frame.png}
         \caption{}
+        \label{fig:class_viz_wombat_VGG:b}
     \end{subfigure}%
     \begin{subfigure}{.32\textwidth}
         \centering
         \includegraphics[width=\linewidth]{VGG/VGG_wombat_animated_1000_regpp_blur_last_frame.png}
         \caption{}
+        \label{fig:class_viz_wombat_VGG:c}
     \end{subfigure}
-    \caption{Class visualization of Wombat using VGG TODO}
+    \caption{Class visualization of Wombat. (a) Using SqueezeNet, here for comparaison ; (b) Using VGG with default regularizations ; (c) Using VGG with strong regularization.}
     \label{fig:class_viz_wombat_VGG}
     %TODO Ici j'trouve les figures plus mitigé qu'avec squeeze net, j'ai envie de mettre celle de squeeze net pour une comparaison plus directe 
 \end{figure}
