@@ -70,18 +70,19 @@ As with most explanation methods, interpreting saliency maps can be subjective, 
 It's important to note that saliency maps tend to highlight correlations rather than establishing causation. They reveal areas where the model directed its attention but do not necessarily imply that these areas directly influenced the model's decision.
 
 \paragraph*{3. Can this technique be used for a different purpose than interpreting the network?}
-Saliency maps can be used to identify and localize important objects or regions in an image. This can be particularly useful in applications like automated image tagging or initial steps of object detection. This can also  help to create more effective augmented images by applying transformations (like rotations, scaling, cropping) that preserve these key areas. This technique is primarily suited for image data. Its utility is limited in non-visual domains or for models that integrate multiple types of data (like text and images).
+
+Saliency maps can be used to identify and localize important objects or regions in an image. They can find applications in image segmentation, for instance in applications like automated image tagging or initial steps of object detection. This can also help to create more effective augmented images by applying transformations (like rotations, scaling, cropping) that preserve these key areas. This technique is primarily suited for image data. Its utility is limited in non-visual domains or for models that integrate multiple types of data (like text and images).
 
 %Feature Engineering and Selection: By identifying which parts of an input are most salient to a model's decision, saliency maps can inform feature engineering and selection in machine learning. This can be particularly useful in fine-tuning models by focusing on the most relevant features. ??????
 
 \paragraph*{4. \textbf{Bonus:} Test with a diffrentent network, for example VGG16, and comment.} \label{paragraph:bonus_VGG}
 % Guillaume a fait sur un ViT aussi
 % Make a comparaison plot for most of the "bad" saliency map (ie no more missclassif for example), much better frontier, better classification also, Tibetan mastiff dog much clear frontiere too 
-We tried the same saliency maps using VGG16. Those are much better! VGG being better to classify images (no error this time in our examples) than SqueezeNet, this lead to less noise and better object frontier in saliency maps.
 
-In our experimentation with VGG16, we observed notable improvements in the quality of the generated saliency maps compared to those produced with SqueezeNet. We think that VGG16's superior image classification capabilities contributed to reduced noise and more precise object boundaries in the saliency maps.
+We generated saliency maps using VGG16 on the same examples. Notably, we observed that there were no misclassifications due to VGG16's superior image classification capabilities. Consequently, the saliency maps are much better! They exhibited notable improvements, featuring reduced noise and more precise object boundaries compared to those produced with SqueezeNet.
 
 This outcome highlights the impact of the choice of neural network architecture on the effectiveness of saliency map generation. VGG16's strong performance in image classification results in more reliable and visually coherent saliency maps, making it a favorable choice for tasks that rely on accurate attention mapping within images.
+
 % \begin{figure}[H]
 %     \centering
 %     \includegraphics[width=.9\textwidth]{good_saliency_map_vgg16.pdf}
@@ -110,7 +111,6 @@ This outcome highlights the impact of the choice of neural network architecture 
     \label{fig:good_saliency_map_vgg16}
 \end{figure}
 
-
 % \begin{figure}[H]
 %     \centering  
 %     \includegraphics[width=.9\textwidth]{bad_saliency_map_vgg16.pdf}
@@ -135,7 +135,7 @@ This outcome highlights the impact of the choice of neural network architecture 
         \caption{}
         \label{subfig:bad_predicted_class_saliency_vgg16}
     \end{subfigure}
-    \caption{Illustration of (a) original images depicting the true label and predicted class by SqueezeNet, (b) saliency maps highlighting regions relevant to the true class, and (c) consistent saliency maps highlighting regions relevant to the predicted class.}
+    \caption{Illustration of (a) original images depicting the true label and predicted class by VGG16, (b) saliency maps highlighting regions relevant to the true class, and (c) consistent saliency maps highlighting regions relevant to the predicted class.}
     \label{fig:bad_saliency_map_vgg16}
 \end{figure}
 
