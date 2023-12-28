@@ -65,7 +65,9 @@ TODO
 
 \paragraph*{7. Could we remove the vector $y$ from the input of the discriminator (so having $cD(x)$ instead of $cD(x, y)$)?}
 
-% bah si on fait ça on se retrouve dans le cas d'un GAN normal ?
+Removing the vector $y$ from the input of the discriminator in a conditional cGAN would significantly alter the network's nature and functionality. The discriminator's role would be reduced to assessing the realism of the images, without the capability to evaluate whether the generated images meet the specified conditions. Consequently, it would be unable to determine whether a generated digit image corresponds to the provided digit label. On the other hand, the generator would still receive $y$ as input. However, with the discriminator no longer enforcing condition compliance, there would be less motivation for the generator to produce images that conform to the specific conditions. This could lead the network towards generating generic, realistic images that may not necessarily align with the intended conditional attributes.
+
+As a result, the model would be proficient at generating realistic images but would lack the capacity to ensure that these images align with specific conditions.
 
 \paragraph*{8. Was your training more or less successful than the unconditional case? Why?}
 
