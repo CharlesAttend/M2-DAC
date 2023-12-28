@@ -1,41 +1,67 @@
 \chapter{Generative Adversarial Networks}
 \graphicspath{{figs/2de/}}
 
-% TODO: intro
+This exploration delves into the realm of generative models, specifically focusing on Generative Adversarial Networks (GANs) and their conditional variants. GANs have emerged as a groundbreaking concept in unsupervised learning that revolutionized image generation and manipulation. The objective is not only to comprehend the technical mechanisms of GANs but also to recognize their profound impact on image generation, editing, and completion. This exploration also highlights how these models are reshaping our approach to generative tasks within the field of machine learning in a broader context.
 
 \section{Generative Adversarial Networks}
 
-% TODO: intro
+This section presents Generative Adversarial Networks (GANs), a deep learning framework that employs two neural networks, a generator, and a discriminator, in a competitive setup. It offers fundamental insights into how these networks collaborate to produce synthetic data instances that closely resemble real data. The focus is on understanding the architecture, the training procedure, and the core principles, laying the foundation for their various applications in areas such as image generation, style transfer, and beyond.
 
 \subsection{General principles}
 
 \begin{align}
-    \min_{G} &\max_{D} \mathbb{E}_{x^* \sim \text{Data}} \left[ \log D(x^*) \right] + \mathbb{E}_{z \sim P(z)} \left[ \log (1 - D(G(z))) \right] \label{eq:minimax} \\
+    \min_{G} &\max_{D} \mathbb{E}_{x^* \sim \mathcal{D}\text{ata}} \left[ \log D(x^*) \right] + \mathbb{E}_{z \sim P(z)} \left[ \log (1 - D(G(z))) \right] \label{eq:minimax} \\
     &\max_{G} \mathbb{E}_{z \sim P(z)} \left[ \log D(G(z)) \right] \label{eq:G_maximization} \\
-    &\max_{D} \mathbb{E}_{x^* \sim \text{Data}} \left[ \log D(x^*) \right] + \mathbb{E}_{z \sim P(z)} \left[ \log (1 - D(G(z))) \right] \label{eq:D_maximization}
+    &\max_{D} \mathbb{E}_{x^* \sim \mathcal{D}\text{ata}} \left[ \log D(x^*) \right] + \mathbb{E}_{z \sim P(z)} \left[ \log (1 - D(G(z))) \right] \label{eq:D_maximization}
 \end{align}
     
 \paragraph*{1. Interpret the equations \ref{eq:G_maximization} and \ref{eq:D_maximization}. What would happen if we only used one of the two?}
 
+\Cref{eq:G_maximization} describes the goal of the generator $G$ in a GAN. The generator aims to produce images $\tilde{x} = G(z)$ that are indistinguishable from real images by the discriminator. The objective function for the generator maximizes the probability of the discriminator incorrectly classifying these generated images as real. In other words, the generator is trained to "fool" the discriminator. A higher value of $D(G(z))$ implies that the discriminator is more likely to mistake the generated image for a real one, indicating a better performance of the generator.
+
+\Cref{eq:D_maximization} describes the goal of the discriminator $D$ in a GAN. The discriminator's role is to distinguish between real images $x^*$ from the dataset and fake images $\tilde{x}$ produced by the generator. The objective function for the discriminator is to maximize the sum of two terms: the probability of correctly identifying real images as real, and the probability of correctly identifying generated images as fake. The first term $\left(\mathbb{E}_{x^* \sim \mathcal{D}\text{ata}} \left[ \log D(x^*) \right]\right)$ encourages the discriminator to correctly classify real images as real, while the second term $\left(\mathbb{E}_{z \sim P(z)} \left[ \log (1 - D(G(z))) \right]\right)$ pushes it to correctly identify the synthetic images as fake.
+
+If we only used the generator's objective function (\ref{eq:G_maximization}) without the discriminator, the generator would not have a reliable way to measure how good its generated images are. It would lack the feedback mechanism that the discriminator provides, leading to poor-quality image generation. Conversely, if we only used the discriminator's objective function (\ref{eq:D_maximization}) without the generator, the discriminator would only learn to distinguish real images from a static set of fake images. It would not adapt to improving fake images, making it less effective over time as it would not be challenged by increasingly realistic fake images. A GAN relies entirely on the interplay between the generator and discriminator: the generator improves by trying to fool the discriminator, while the discriminator becomes better at distinguishing real from fake images, leading to a dynamic and effective learning process.
+
 \paragraph*{2. Ideally, what should the generator $G$ transform the distribution $P(z)$ to?}
-We want the generator to approximate the distribution of the $Data$.
+
+Ideally, the generator $ G $ in a GAN should transform the input noise distribution $ P(z) $ into a distribution that closely resembles the real data distribution $ P(X) $.
+
+In a GAN, $ z $ is a vector sampled from a predefined noise distribution $ P(z) $, which is typically a uniform or normal distribution. The role of the generator $ G $ is to map this noise vector $ z $ into a data point $ \tilde{x} = G(z) $ that appears to have been drawn from the distribution of real data $ P(X) $. The success of the generator is measured by how indistinguishable its output $ \tilde{x} $ is from real data points when evaluated by the discriminator.
+
+The end goal is for the distribution of the generated data $ P_G(X) $ (where $ X $ is generated by $ G(z) $ for $ z \sim P(z) $) to be as close as possible to the real data distribution $ P(X) $. When this happens, the discriminator should find it increasingly difficult to tell apart real data from the generated data, ideally reaching a point where it performs no better than random guessing, resulting in equilibrium, i.e. $\forall x, \, D(x) = 1/2$. This signifies that the generator has effectively learned to produce data that mimics the real data distribution. 
+
+% We want the generator to approximate the distribution of the $Data$.
+
 \paragraph*{3. Remark that the equation \ref{eq:G_maximization} is not directly derived from the equation \ref{eq:minimax}. This is justified by the authors to obtain more stable training and avoid the saturation of gradients. What should the ''true'' equation be here?}
+
+In the concept of a GAN, the generator's goal is ideally defined as minimizing the likelihood that the discriminator correctly identifies its outputs as fake. Mathematically, this gives us the following ''true'' equation:
+
+\[
+\min_{G} \mathbb{E}_{z \sim P(z)} \left[ \log (1 - D(G(z))) \right]
+\]
+
+This objective aims for the generator to produce images that the discriminator will classify as fake (i.e., it tries to minimize the probability of the discriminator being correct). 
 
 \subsection{Architecture of the networks}
 
 \paragraph*{4. Comment on the training of of the GAN with the default settings (progress of the generations, the loss, stability, image diversity, etc.)}
 
+TODO
+
 \paragraph*{5. Comment on the diverse experiences that you have performed with the suggestions above. In particular, comment on the stability on training, the losses, the diversity of generated images, etc.}
+
+TODO
 
 \section{Conditional Generative Adversarial Networks}
 
-% TODO: intro
+This section delves into Conditional Generative Adversarial Networks (cGANs), an advanced variant of GANs. We explore how cGANs extend the GAN framework by introducing conditional variables, enabling more control over the generated outputs. We examine how this added layer of control allows for targeted image generation, enhancing the utility of GANs in tasks like image-to-image translation and targeted style transfer. The focus is on understanding the structural differences from standard GANs and the implications of these changes in practical applications.
 
 \subsection{cDCGAN Architectures for MNIST}
 
-% TODO: intro
-
 \paragraph*{6. Comment on your experiences with the conditional DCGAN.}
+
+TODO
 
 \paragraph*{7. Could we remove the vector $y$ from the input of the discriminator (so having $cD(x)$ instead of $cD(x, y)$)?}
 
@@ -43,5 +69,8 @@ We want the generator to approximate the distribution of the $Data$.
 
 \paragraph*{8. Was your training more or less successful than the unconditional case? Why?}
 
+TODO
+
 \paragraph*{9. Test the code at the end. Each column corresponds to a unique noise vector $z$. What could $z$ be interpreted as here?}
 
+TODO
