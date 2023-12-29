@@ -81,3 +81,212 @@
     \caption{Performance evaluation of VisionTransformer pre-trained on ImageNet (IMAGENET1K\_SWAG\_E2E\_V1 weights): (a) Original images, (b) Transformed images normalized and resized to $224 \times 224$, and (c) Top 5 predicted classes}
     \label{fig:vit_refined}
 \end{figure}
+
+\section{Generative Adversarial Networks}
+\graphicspath{{figs/2de/}}
+
+\subsection{Influence of laerning rate} \label{appendix:gan_lr}
+
+\begin{figure}[H]
+    \centering
+
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{lr/lossD.png}
+        \caption{}
+        \label{subfig:lr/lossD}
+    \end{subfigure}%
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{lr/lossG.png}
+        \caption{}
+        \label{subfig:lr/lossG}
+    \end{subfigure}
+
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{lr/D_G_z.png}
+        \caption{}
+        \label{subfig:lr/D_G_z}
+    \end{subfigure}%
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{lr/D_x.png}
+        \caption{}
+        \label{subfig:lr/D_x}
+    \end{subfigure}
+
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{lr/epochs.png}
+        \caption{}
+        \label{subfig:lr/epochs}
+    \end{subfigure}%
+
+    \caption{Training curves: (a) $loss(D)$, (b) $loss(G)$, (c) $D(G(z))$, (d) $D(x)$ and (e) the number of epochs by the number of iterations.}
+    \label{fig:lr_losses}
+\end{figure}
+
+\subsection{Influence of $ngf$ and $ndf$} \label{appendix:ngf_ndf}
+
+\begin{figure}[H]
+    \centering
+
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{ngf/8/lossD.png}
+        \caption{}
+        \label{subfig:ngf/8/lossD}
+    \end{subfigure}%
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{ngf/8/lossG.png}
+        \caption{}
+        \label{subfig:ngf/8/lossG}
+    \end{subfigure}
+
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{ngf/8/D_G_z.png}
+        \caption{}
+        \label{subfig:ngf/8/D_G_z}
+    \end{subfigure}%
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{ngf/8/D_x.png}
+        \caption{}
+        \label{subfig:ngf/8/D_x}
+    \end{subfigure}
+
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{ngf/8/epochs.png}
+        \caption{}
+        \label{subfig:ngf/8/epochs}
+    \end{subfigure}%
+
+    \caption{Training curves for $ngf=8$: (a) $loss(D)$, (b) $loss(G)$, (c) $D(G(z))$, (d) $D(x)$ and (e) the number of epochs by the number of iterations.}
+    \label{fig:ngf/8_losses}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{ngf/128/lossD.png}
+        \caption{}
+        \label{subfig:ngf/128/lossD}
+    \end{subfigure}%
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{ngf/128/lossG.png}
+        \caption{}
+        \label{subfig:ngf/128/lossG}
+    \end{subfigure}
+
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{ngf/128/D_G_z.png}
+        \caption{}
+        \label{subfig:ngf/128/D_G_z}
+    \end{subfigure}%
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{ngf/128/D_x.png}
+        \caption{}
+        \label{subfig:ngf/128/D_x}
+    \end{subfigure}
+
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{ngf/128/epochs.png}
+        \caption{}
+        \label{subfig:ngf/128/epochs}
+    \end{subfigure}%
+
+    \caption{Training curves for $ngf=128$: (a) $loss(D)$, (b) $loss(G)$, (c) $D(G(z))$, (d) $D(x)$ and (e) the number of epochs by the number of iterations.}
+    \label{fig:ngf/128_losses}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{ndf/8/lossD.png}
+        \caption{}
+        \label{subfig:ndf/8/lossD}
+    \end{subfigure}%
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{ndf/8/lossG.png}
+        \caption{}
+        \label{subfig:ndf/8/lossG}
+    \end{subfigure}
+
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{ndf/8/D_G_z.png}
+        \caption{}
+        \label{subfig:ndf/8/D_G_z}
+    \end{subfigure}%
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{ndf/8/D_x.png}
+        \caption{}
+        \label{subfig:ndf/8/D_x}
+    \end{subfigure}
+
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{ndf/8/epochs.png}
+        \caption{}
+        \label{subfig:ndf/8/epochs}
+    \end{subfigure}%
+
+    \caption{Training curves for $ndf=8$: (a) $loss(D)$, (b) $loss(G)$, (c) $D(G(z))$, (d) $D(x)$ and (e) the number of epochs by the number of iterations.}
+    \label{fig:ndf/8_losses}
+\end{figure}
+
+
+\begin{figure}[H]
+    \centering
+
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{ndf/128/lossD.png}
+        \caption{}
+        \label{subfig:ndf/128/lossD}
+    \end{subfigure}%
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{ndf/128/lossG.png}
+        \caption{}
+        \label{subfig:ndf/128/lossG}
+    \end{subfigure}
+
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{ndf/128/D_G_z.png}
+        \caption{}
+        \label{subfig:ndf/128/D_G_z}
+    \end{subfigure}%
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{ndf/128/D_x.png}
+        \caption{}
+        \label{subfig:ndf/128/D_x}
+    \end{subfigure}
+
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{ndf/128/epochs.png}
+        \caption{}
+        \label{subfig:ndf/128/epochs}
+    \end{subfigure}%
+
+    \caption{Training curves for $ndf=128$: (a) $loss(D)$, (b) $loss(G)$, (c) $D(G(z))$, (d) $D(x)$ and (e) the number of epochs by the number of iterations.}
+    \label{fig:ndf/128_losses}
+\end{figure}
+

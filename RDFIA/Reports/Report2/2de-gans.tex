@@ -49,21 +49,56 @@ In our GAN training, we observed a notable progression in the quality of generat
 
 While the generator does improve image quality over time, the generated results still appear noticeably synthetic and limited in diversity, primarily resembling digits such as 0, 3, 7, and 8. This observation raises concerns about a potential mode collapse issue, where the generator learns to produce only a subset of possible outputs that are sufficient to deceive the discriminator but lacks overall diversity.
 
-For a detailed reference, please consult the training curves in \Cref{fig:longer_epochs_losses}, where the 5-epoch mark corresponds to 2300 steps, and review the generated images after 5 epochs in \Cref{fig:default}.
+For a detailed reference, please consult the training curves in \Cref{fig:longer_epochs_losses}, where the 5-epoch mark corresponds to 2300 steps, and review the generated images in \Cref{fig:GAN_default}.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.2\textwidth]{default.png}
-    \label{fig:default}
-    \caption{Generated images after 5 epochs, using the default settings.}
+
+    \begin{subfigure}{0.2\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{GAN/fake_sample_epoch_0001.png}
+        \caption{}
+        \label{subfig:GAN/fake_sample_epoch_0001}
+    \end{subfigure}%
+    \begin{subfigure}{0.2\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{GAN/fake_sample_epoch_0002.png}
+        \caption{}
+        \label{subfig:GAN/fake_sample_epoch_0002}
+    \end{subfigure}%
+    \begin{subfigure}{0.2\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{GAN/fake_sample_epoch_0003.png}
+        \caption{}
+        \label{subfig:GAN/fake_sample_epoch_0003}
+    \end{subfigure}%
+    \begin{subfigure}{0.2\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{GAN/fake_sample_epoch_0004.png}
+        \caption{}
+        \label{subfig:GAN/fake_sample_epoch_0004}
+    \end{subfigure}%
+    \begin{subfigure}{0.2\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{GAN/fake_sample_epoch_0005.png}
+        \caption{}
+        \label{subfig:GAN/fake_sample_epoch_0005}
+    \end{subfigure}
+
+    
+
+    \caption{Generated digits from a GAN during training using default settings after (a) 1 epoch, (b) 2 epochs, (c) 3 epochs, (d) 4 epochs and (e) 5 epochs.}
+    \label{fig:GAN_default}
 \end{figure}
+
+
 
 \newpage
 \paragraph*{5. Comment on the diverse experiences that you have performed with the suggestions above. In particular, comment on the stability on training, the losses, the diversity of generated images, etc.}
 
 To conduct our experiments, we developed a PyTorch-Ignite framework, which is included alongside this report for reference. This framework played a crucial role in ensuring the reproducibility and traceability of our experiments. It's worth noting that the curves presented in our results represent the number of total iterations, calculated as the number of epochs multiplied by the batch size. Consequently, it's normal to observe peaks in the curves, which indicate the start of a new epoch during training.
 
-\paragraph*{Longer epochs}
+\paragraph*{Longer epochs.}
 In our experiments, we initially extended the training to 30 epochs. In deep learning, it's a common practice that more epochs can contribute to improved stability. Beyond the 10th epoch, we noticed consistent convergence in subsequent epochs. Further analysis of the training curves, depicted in \Cref{fig:longer_epochs_losses}, revealed that the discriminator's output, $D(x)$, approached 1, and the discriminator's output for generated images, $D(G(z))$, approached 0. This essentially means that the discriminator perfectly distinguished real images from fake images, indicating that the discriminator was winning the adversarial game, while the generator was losing, which is not the outcome we are looking for. 
 
 This situation prompted an intriguing observation when observing the generation process during training, as shown in \Cref{fig:longer_epochs}. We observed the evolution of the background in these images. Originally black, it gradually developed a form of noise. This phenomenon can be attributed to the generator's struggle to produce better digits. When it cannot improve the quality of the digits, it starts generating noise as a way to produce something different. If we were to continue training for even longer, we might end up with completely noisy images. 
@@ -152,7 +187,7 @@ In conclusion, it's important to note that as training progresses, the discrimin
 
 
 
-\paragraph*{Influence of $n_z$}
+\paragraph*{Influence of $n_z$.}
 We conducted an investigation to explore the impact of varying the size of the noise vector ($n_z$), a parameter that plays a role in determining the diversity and complexity of the generated images. The results of this experiment are presented in \Cref{fig:nz}.
 
 Analyzing only the losses and the discriminator's output values, there doesn't appear to be a significant difference between the various values of $n_z$. This suggests that the impact of $n_z$ on the training process may not be fully reflected in these metrics alone.
@@ -196,8 +231,8 @@ However, when we consider the generated images themselves, we observe more signi
     \label{fig:nz}
 \end{figure}
 
-\paragraph*{Influence of weight initialization}
-Upon switching to PyTorch's default weight initialization, we observed higher error rates throughout the training process. Additionally, the quality of the generated images was less convincing when using the default weight initialization compared to the results obtained with the optimized parameters. This outcome highlights the significant impact of customized weight initialization in GANs, as it affects both the training efficiency and the overall quality of the generated images.
+\paragraph*{Influence of weight initialization.}
+Upon switching to PyTorch's default weight initialization, we observed that the discriminator managed to distinguish between fake and real images in just 6 epochs, as evidenced by the curves in \Cref{fig:init_losses}. Thus, the quality of the generated images was less convincing when using the default weight initialization compared to the results obtained with the optimized parameters. This outcome highlights the significant impact of customized weight initialization in GANs, as it affects both the training efficiency and the overall quality of the generated images.
 
 \begin{figure}[H]
     \centering
@@ -225,13 +260,99 @@ Upon switching to PyTorch's default weight initialization, we observed higher er
     \label{fig:init}
 \end{figure}
 
-% we then changed the weights to use the default ones of pytorch. notably, the gan takes a bit longer to converge 11 epoch and the errors are highers. moreover, the generated images are less convincing that the ones generated using optimized paramers.
+\begin{figure}[H]
+    \centering
 
-\paragraph*{Influence of $ngf$ and $ndf$}
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{init/lossD.png}
+        \caption{}
+        \label{subfig:init/lossD}
+    \end{subfigure}%
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{init/lossG.png}
+        \caption{}
+        \label{subfig:init/lossG}
+    \end{subfigure}
 
-% in searching to generate better images, we modified $ngf$ , as Changing the number of generator or discriminator filters can affect the quality and detail of generated images. it lead in a heavier training time. mopreover, the images generated were much clearer. [comment on the losses and errors with the image i provide]
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{init/D_G_z.png}
+        \caption{}
+        \label{subfig:init/D_G_z}
+    \end{subfigure}%
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{init/D_x.png}
+        \caption{}
+        \label{subfig:init/D_x}
+    \end{subfigure}
 
-\paragraph*{Trying CIFAR-10 dataset}
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{init/epochs.png}
+        \caption{}
+        \label{subfig:init/epochs}
+    \end{subfigure}%
+
+    \caption{Training curves: (a) $loss(D)$, (b) $loss(G)$, (c) $D(G(z))$, (d) $D(x)$ and (e) the number of epochs by the number of iterations.}
+    \label{fig:init_losses}
+\end{figure}
+
+\paragraph*{Influence of the learning rate.} We experimented with different combinations of learning rates and $\beta_1$ values in the Adam optimizer for both the discriminator and the generator. Specifically, we tried:
+
+\begin{itemize}
+    \item Higher learning rate (0.001) for discriminator only.
+    \item Higher learning rate (0.001) for discriminator only with a higher $\beta_1$ (0.9).
+    \item Higher learning rate (0.001) with a higher $\beta_1$ (0.9) for both.
+    \item Recommended learning rate with a higher $\beta_1$ (0.9) for both.
+\end{itemize}
+
+However, our observations align with the findings of the authors, suggesting that increasing the learning rate and $\beta_1$ in Adam can make the GAN learn too quickly, which can negatively impact training stability and the quality of generated images. The training curves can be found in Appendix \Cref{appendix:gan_lr}. 
+
+\paragraph*{Influence of $ngf$ and $ndf$.}
+
+When we increased the value of $ndf$ to 128 while keeping $ngf$ at 32, the discriminator consistently detected which image was real and which image was fake, regardless of the generator's efforts. Conversely, when we reduced $ndf$ to 8 and left $ngf$ at 32, we found ourselves in a situation where we were always close to equilibrium after the first epoch.
+
+However, when we increased $ngf$ to 128 while keeping $ndf$ at 32, it did not help the generator generate better images. The discriminator still gained an advantage and "won" the game after 6 epochs. Similarly, when we reduced $ngf$ to 8 and left $ndf$ at 32, the discriminator consistently came out on top.
+
+Interestingly, despite these differences in training dynamics, when looking at the generated images, there doesn't seem to be much discernible distinction to the human eye. We have provided generated images after 10 epochs for reference in \Cref{fig:ndf_ngf_images}. 
+The learning curves can be found in Appendix \Cref{appendix:ngf_ndf}.
+
+\begin{figure}[H]
+    \centering
+
+    \begin{subfigure}{0.2\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{ngf/8/fake_sample_epoch_0010.png}
+        \caption{}
+        \label{subfig:ngf/8/fake_sample_epoch_0010.png}
+    \end{subfigure}%
+    \begin{subfigure}{0.2\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{ngf/128/fake_sample_epoch_0010.png}
+        \caption{}
+        \label{subfig:ngf/128/fake_sample_epoch_0010}
+    \end{subfigure}%
+    \begin{subfigure}{0.2\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{ndf/8/fake_sample_epoch_0010.png}
+        \caption{}
+        \label{subfig:ndf/8/fake_sample_epoch_0010}
+    \end{subfigure}%
+    \begin{subfigure}{0.2\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{ndf/128/fake_sample_epoch_0010.png}
+        \caption{}
+        \label{subfig:ndf/128/fake_sample_epoch_0010}
+    \end{subfigure}%
+
+    \caption{Generated digits after 10 epochs with (a) $ngf = 8$, (b) $ ngf = 128 $, (c) $ ndf = 8 $ (d) $ndf=128$ .}
+    \label{fig:ndf_ngf_images}
+\end{figure}
+
+\paragraph*{Trying CIFAR-10 dataset.}
 
 Unfortunately, due to Google Drive limitations, we were unable to perform experiments using CelebA. Instead, we conducted experiments on CIFAR-10, a dataset of more complex images. We trained a GAN over 15 epochs on $32 \times 32$ generated images. It's important to note that the generated images won't match the beauty of those in the dataset due to the reduced resolution. However, this experiment yielded interesting results.
 
@@ -309,7 +430,7 @@ One notable observation is that the generator had difficulty distinguishing the 
     \label{fig:cifar10_32_images}
 \end{figure}
 
-\paragraph*{Generating higher resolution images on CIFAR-10}
+\paragraph*{Generating higher resolution images on CIFAR-10.}
 
 To challenge our GAN further and explore its capabilities with higher resolution imagery, we extended our scope from generating $32 \times 32$ CIFAR-10 images to $64 \times 64$ images. This transition necessitated an additional block in our models to accommodate the increased detail and scale, resulting in longer training durations due to the greater complexity of handling larger image sizes.
 
@@ -420,9 +541,7 @@ This section delves into Conditional Generative Adversarial Networks (cGANs), an
 
 \paragraph*{6. Comment on your experiences with the conditional DCGAN.}
 
-Our experience with the conditional DCGAN showed a marked improvement in training stability compared to the unconditional model. Notably, both the generator and discriminator exhibited convergence towards similar values in their respective loss functions within just 5 epochs. This rapid convergence is indicative of a balanced and effective training dynamic. The discriminator maintained slightly more stability than the generator, which is expected as the generator undertook the more complex task of image creation. 
-
-Impressively, the network produced highly recognizable and differentiated images, which underscores the efficacy of conditioning the model, as displayed in \Cref{fig:cDCGAN_default}. This outcome suggests that incorporating conditional variables into the GAN architecture significantly enhances the model's ability to learn and generate targeted, high-quality images rapidly. However, it's worth noting that training takes much longer than a non-conditional GAN, which is a trade-off for the improved stability and control over image generation.
+Our experience with the conditional DCGAN showed a marked improvement in training stability compared to the unconditional model. Impressively, the network produced highly recognizable and differentiated images, which underscores the efficacy of conditioning the model, as displayed in \Cref{fig:cDCGAN_default}. This outcome suggests that incorporating conditional variables into the GAN architecture significantly enhances the model's ability to learn and generate targeted, high-quality images rapidly. However, it's worth noting that training takes much longer than a non-conditional GAN, which is a trade-off for the improved stability and control over image generation.
 
 \begin{figure}[H]
     \centering
@@ -458,13 +577,73 @@ Impressively, the network produced highly recognizable and differentiated images
         \label{subfig:cDCGAN/fake_sample_epoch_0005}
     \end{subfigure}
 
-    
-
     \caption{Generated digits from a cDCGAN during training using default settings after (a) 1 epoch, (b) 2 epochs, (c) 3 epochs, (d) 4 epochs and (e) 5 epochs.}
     \label{fig:cDCGAN_default}
 \end{figure}
 
-% ça marche bien ?
+Nonetheless, similar to previous GAN experiments, the conditional DCGAN encountered challenges when trained for longer epochs. Extending training to 30 epochs resulted in the same issues discussed in our previous experiments. Training curves are provided in \Cref{fig:cDCGAN_curves}, and some generated images in \Cref{fig:cDCGAN_longer} reveal that the cDCGAN introduced noise in an attempt to outperform the discriminator.
+
+Nevertheless, it suffers from the same problems as talked before, notably when using longer epochs. Using 30 epoches led into the same problems discussed in our previous experiments. Training curves can be found in \Cref{fig:cDCGAN_curves}, and in \Cref{fig:cDCGAN_longer}, we present some generated images that demonstrate the incorporation of noise, as previously described.
+
+\begin{figure}[H]
+    \centering
+
+    \begin{subfigure}{0.2\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{cDCGAN/fake_sample_epoch_0025.png}
+        \caption{}
+        \label{subfig:cDCGAN/fake_sample_epoch_0025}
+    \end{subfigure}%
+    \begin{subfigure}{0.2\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{cDCGAN/fake_sample_epoch_0030.png}
+        \caption{}
+        \label{subfig:cDCGAN/fake_sample_epoch_0030}
+    \end{subfigure}%
+
+    \caption{Generated digits from a cDCGAN during training using default settings after (a) 25 epoch and (b) 30 epochs.}
+    \label{fig:cDCGAN_longer}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{cDCGAN/lossD.png}
+        \caption{}
+        \label{subfig:cDCGAN/lossD}
+    \end{subfigure}%
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{cDCGAN/lossG.png}
+        \caption{}
+        \label{subfig:cDCGAN/lossG}
+    \end{subfigure}
+
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{cDCGAN/D_G_z.png}
+        \caption{}
+        \label{subfig:cDCGAN/D_G_z}
+    \end{subfigure}%
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{cDCGAN/D_x.png}
+        \caption{}
+        \label{subfig:cDCGAN/D_x}
+    \end{subfigure}
+
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{cDCGAN/epochs.png}
+        \caption{}
+        \label{subfig:cDCGAN/epochs}
+    \end{subfigure}%
+
+    \caption{Training curves: (a) $loss(D)$, (b) $loss(G)$, (c) $D(G(z))$, (d) $D(x)$ and (e) the number of epochs by the number of iterations.}
+    \label{fig:cDCGAN_curves}
+\end{figure}
 
 \paragraph*{7. Could we remove the vector $y$ from the input of the discriminator (so having $cD(x)$ instead of $cD(x, y)$)?}
 
