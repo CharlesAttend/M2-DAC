@@ -45,13 +45,31 @@ This objective aims for the generator to produce images that the discriminator w
 
 \subsection{Architecture of the networks}
 
-\paragraph*{4. Comment on the training of of the GAN with the default settings (progress of the generations, the loss, stability, image diversity, etc.)}
+\paragraph*{4. Comment on the training of of the GAN with the default settings (progress of the generations, the loss, stability, image diversity, etc.).}
 
-TODO
+In the observed GAN experiments, as training progresses, the generated images increasingly resemble digits. However, the loss values exhibit significant instability, oscillating across epochs, which is a common trait in GAN training, indicating their tendency not to converge in practice. While the generator does improve image quality over time, the generated results still appear noticeably synthetic and limited in diversity, primarily resembling digits such as 0, 3, 7, and 8. This observation raises concerns about a potential mode collapse issue, where the generator learns to produce only a subset of possible outputs that are sufficient to deceive the discriminator but lacks overall diversity.
+
+% j'ai l'impression de pas dire assez
 
 \paragraph*{5. Comment on the diverse experiences that you have performed with the suggestions above. In particular, comment on the stability on training, the losses, the diversity of generated images, etc.}
 
-TODO
+In our experiments, we initially extended the training to 30 epochs. In deep learning, it's a common practice that more epochs can contribute to improved stability, and this was indeed the case in our study. Beyond the 10th epoch, we noticed consistent convergence in subsequent epochs, which resulted in enhanced quality in the generated images.
+
+An intriguing observation was the evolution of the background in these images. Originally black, it gradually developed a form of noise. This change can be attributed to the network's increasing ability to capture and incorporate subtle variations present in the dataset. It indicates the network's growing sophistication in learning complex features. This unexpected transformation in the background texture suggests a more nuanced understanding of the data manifold by the network as the training progressed.
+
+We proceeded to examine the influence of varying the size of the noise vector ($n_z$), a parameter that affects the diversity and complexity of the generated images. Decreasing $n_z$ led to a reduction in diversity among the generated outputs. Conversely, increasing $n_z$ amplified diversity but also introduced complexity to the training process. For these experiments, we kept the number of epochs constant at 5. However, it's noteworthy that, under these conditions, the quality of the generated images was suboptimal when using a large value for $n_z$.
+
+Upon switching to PyTorch's default weight initialization, we observed a delay in the convergence of the GAN, with convergence now occurring around the 11th epoch, compared to the earlier setting. This delay was accompanied by higher error rates throughout the training process. Additionally, the quality of the generated images was notably less convincing when using the default weight initialization compared to the results obtained with the optimized parameters. This outcome highlights the significant impact of customized weight initialization in GANs, as it evidently affects both the training efficiency and the overall quality of the generated images.
+
+% images + mieux commenter les loss ? c'est dur à interpréter PTDR
+
+% the first thought was of course increasing the number of epochs. indeed, in common deep learning problems, increasing number of epochs is synonym of enhanced stability. in our case, it did increase stability, where we see convergence in each of the epochs after reaching the 10th epoch. nit does results in better generated images. one interesting fact is that it also started changing the background, instead of a black background we have some noise?? [why ?]
+
+% then we invesigated the impact of changing $n_z$. Changing the size of the noise vector (nz) affects the variety and complexity of generated images. it is a important parameter. A smaller nz might lead to less diverse outputs, while a larger nz could increase diversity but may also increase training complexity. but here we cannot conclude much, probably bc mnist is a simple dataset ?
+
+% we then changed the weights to use the default ones of pytorch. notably, the gan takes a bit longer to converge 11 epoch and the errors are highers. moreover, the generated images are less convincing that the ones generated using optimized paramers.
+
+% in searching to generate better images, we modified $ngf$ , as Changing the number of generator or discriminator filters can affect the quality and detail of generated images. it lead in a heavier training time. mopreover, the images generated were much clearer. [comment on the losses and errors with the image i provide]
 
 \section{Conditional Generative Adversarial Networks}
 
@@ -61,7 +79,9 @@ This section delves into Conditional Generative Adversarial Networks (cGANs), an
 
 \paragraph*{6. Comment on your experiences with the conditional DCGAN.}
 
-TODO
+TODO 
+
+% ça marche bien ?
 
 \paragraph*{7. Could we remove the vector $y$ from the input of the discriminator (so having $cD(x)$ instead of $cD(x, y)$)?}
 
@@ -72,6 +92,8 @@ As a result, the model would be proficient at generating realistic images but wo
 \paragraph*{8. Was your training more or less successful than the unconditional case? Why?}
 
 TODO
+
+% more successful bc thanks to y we now have a gan that produces an image for EACH image, avoiding mode collapse?
 
 \paragraph*{9. Test the code at the end. Each column corresponds to a unique noise vector $z$. What could $z$ be interpreted as here?}
 
