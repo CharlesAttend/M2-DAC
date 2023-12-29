@@ -87,6 +87,17 @@ Removing the vector $y$ from the input of the discriminator in a conditional cGA
 
 As a result, the model would be proficient at generating realistic images but would lack the capacity to ensure that these images align with specific conditions.
 
+In our experiment, we modified the code to employ an unconditional discriminator while keeping a conditional generator. Our observations supported our hypotheses: because the discriminator lacks conditioning, the generator is not compelled to align with specific conditional inputs. Consequently, the latent space is not effectively conditioned, leading to a lack of consistent correspondence between specific conditions and the generated images. This was evident as the digits appeared to 'move' positions during training, as the discriminator did not impose any particular condition. 
+
+The resulting images in \Cref{fig:cgan_mnist}, although generated, did not conform to the conditional constraints we had defined.  Additionally, we observed mode collapse, where each digit is only associated once, meaning that certain digits were not being adequately represented in the generated samples, leading to a lack of diversity in the output. This underscores the critical role of a conditional discriminator in a cGAN framework, as it ensures that the generated images align with the specified conditions and helps prevent mode collapse by encouraging diversity in the generated samples.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.5\textwidth]{cgan_mnist}
+    \caption{Generated digits from a a conditional GAN trained for 10 epochs with the removal of the vector $y$ from the input of the discriminator.}
+    \label{fig:cgan_mnist}
+\end{figure}
+
 \paragraph*{8. Was your training more or less successful than the unconditional case? Why?}
 
 TODO
@@ -95,4 +106,13 @@ TODO
 
 \paragraph*{9. Test the code at the end. Each column corresponds to a unique noise vector $z$. What could $z$ be interpreted as here?}
 
-TODO
+In this context, the noise vector $z$ can be interpreted as the source of randomness or variability that the generator $G$ utilizes to produce different outputs. Each column in \Cref{fig:impact_of_z} corresponds to a unique $z$, and since $z$ is repeated for each class, it serves as a means to generate variations of images across different classes.
+
+Essentially, $z$ acts as a seed for the generative process. Different seeds are expected to yield different images, and with the repetition of $z$ across classes, it's used to generate diverse variations of images corresponding to each class label provided in $y_s$. In summary, $z$ introduces the stochastic element that, in conjunction with class labels, enables the generator to create a variety of images within the specified classes.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.8\textwidth]{impact_of_z}
+    \caption{Influence of a unique noise vector $z$ on our cGAN's generated images.}
+    \label{fig:impact_of_z}
+\end{figure}
