@@ -146,7 +146,34 @@ Here, the goal is to study the vulnerability of CNNs to minor, imperceptible mod
 
 \paragraph*{5. $ \bigstar $ Show and interpret the obtained results.}
 
-TODO
+In the part of the pratical, we created adversarail example. We apply imperceptible, slight and carefully calculated modifications to the input image such that it is misclassified by a neural network. This is done by applying gradient backpropagation to find out how to tweak the pixel values of the original image so as to change the network's prediction. The adjustments are made according to the gradient of the loss with respect to the input image, and the process iteratively continues until the image is misclassified.
+
+Our results are presented in \Cref{fig:adv_exmp}. The right column present original image, before any intervention, the left column the modified misclassified image, and in the middle column, the magnified difference (10x) between them. Despite the visual similarity of the two images on either side, the neural network classifies them as two different breeds due to the small, calculated changes that showed in the center image.
+
+Interpreting this result, it's clear that even minimal changes that are imperceptible or nearly imperceptible to humans can lead to misclassification by an AI. This demonstrates the fragility of neural networks to adversarial attacks and underscores the importance of understanding and defending against such manipulations, especially in applications where security and reliability are crucial.
+
+\begin{figure}[p]
+    \centering
+    \begin{subfigure}[b]{\textwidth}
+        \centering
+        \includegraphics[width=.95\linewidth]{figs_propre2/adv_exmp.pdf}
+        \label{fig:adv_exmp:sub1}
+    \end{subfigure}
+    
+    \begin{subfigure}[b]{\textwidth}
+        \centering
+        \includegraphics[width=.95\linewidth]{figs_propre2/adv_exmp2.pdf}
+        \label{fig:adv_exmp:sub2}
+    \end{subfigure}
+
+    \begin{subfigure}[b]{\textwidth}
+        \centering
+        \includegraphics[width=.95\linewidth]{figs_propre2/adv_exmp3.pdf}
+        \label{fig:adv_exmp:sub3}
+    \end{subfigure}
+    \caption{Adversarial examples. The right column displays the original image, the middle column shows the magnified difference added to the original image to deceive the model, and the left column presents the image that successfully fools the model.}
+    \label{fig:adv_exmp}
+\end{figure}
 
 % une observation à faire c'est : plus un modèle est sûr de sa prédi, plus il faudra faire d'itérations pour le tromper, et vice-versa.
 
