@@ -6,35 +6,35 @@
 \begin{figure}[H]
     \centering
     \includegraphics*[width=0.95\textwidth]{activation_dog}
-    \caption{Activation maps obtanied after the first convolutional layer, on the Shih Tzu dog image}
+    \caption{Activation maps obtanied after the first convolutional layer, on the Shih Tzu dog image.}
     \label{fig:activation_dog}
 \end{figure} 
 
 \begin{figure}[H]
     \centering
     \includegraphics*[width=0.95\textwidth]{activation_komondor}
-    \caption{Activation maps obtanied after the first convolutional layer, on the Komondor dog image}
+    \caption{Activation maps obtanied after the first convolutional layer, on the Komondor dog image.}
     \label{fig:activation_komondor}
 \end{figure} 
 
 \begin{figure}[H]
     \centering
     \includegraphics*[width=0.95\textwidth]{activation_komondor_or_mop}
-    \caption{Activation maps obtanied after the first convolutional layer, on the "Komondor or mop?" image}
+    \caption{Activation maps obtanied after the first convolutional layer, on the "Komondor or mop?" image.}
     \label{fig:activation_komondor_or_mop}
 \end{figure} 
 
 \begin{figure}[H]
     \centering
     \includegraphics*[width=0.95\textwidth]{activation_wombat}
-    \caption{Activation maps obtanied after the first convolutional layer, on the wombat image}
+    \caption{Activation maps obtanied after the first convolutional layer, on the wombat image.}
     \label{fig:activation_wombat}
 \end{figure} 
 
 \begin{figure}[H]
     \centering
     \includegraphics*[width=0.95\textwidth]{activation_dog_meme}
-    \caption{Activation maps obtanied after the first convolutional layer, on the dog (meme) image}
+    \caption{Activation maps obtanied after the first convolutional layer, on the dog (meme) image.}
     \label{fig:activation_dog_meme}
 \end{figure} 
 
@@ -57,7 +57,7 @@
         \caption{}
         \label{subfig:prediction_plots_vit}
     \end{subfigure}
-    \caption{Performance evaluation of VisionTransformer pre-trained on ImageNet (IMAGENET1K\_V1 weights): (a) Original images, (b) Transformed images normalized and resized to $224 \times 224$, and (c) Top 5 predicted classes}
+    \caption{Performance evaluation of VisionTransformer pre-trained on ImageNet (IMAGENET1K\_V1 weights): (a) Original images, (b) Transformed images normalized and resized to $224 \times 224$, and (c) Top 5 predicted classes.}
     \label{fig:vit_scratch}
 \end{figure}
 
@@ -78,14 +78,98 @@
         \caption{}
         \label{subfig:prediction_plots_vit_bis}
     \end{subfigure}
-    \caption{Performance evaluation of VisionTransformer pre-trained on ImageNet (IMAGENET1K\_SWAG\_E2E\_V1 weights): (a) Original images, (b) Transformed images normalized and resized to $224 \times 224$, and (c) Top 5 predicted classes}
+    \caption{Performance evaluation of VisionTransformer pre-trained on ImageNet (IMAGENET1K\_SWAG\_E2E\_V1 weights): (a) Original images, (b) Transformed images normalized and resized to $224 \times 224$, and (c) Top 5 predicted classes.}
     \label{fig:vit_refined}
 \end{figure}
 
 \section{Generative Adversarial Networks}
 \graphicspath{{figs/2de/}}
 
-\subsection{Influence of laerning rate} \label{appendix:gan_lr}
+\subsection{Longer epochs} \label{appendix:longer_epochs}
+
+\begin{figure}[H]
+    \centering
+
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{longer_epochs/lossD.png}
+        \caption{}
+        \label{subfig:longer_epochs/lossD}
+    \end{subfigure}%
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{longer_epochs/lossG.png}
+        \caption{}
+        \label{subfig:longer_epochs/lossG}
+    \end{subfigure}
+
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{longer_epochs/D_G_z.png}
+        \caption{}
+        \label{subfig:longer_epochs/D_G_z}
+    \end{subfigure}%
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{longer_epochs/D_x.png}
+        \caption{}
+        \label{subfig:longer_epochs/D_x}
+    \end{subfigure}
+
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{longer_epochs/epochs.png}
+        \caption{}
+        \label{subfig:longer_epochs/epochs}
+    \end{subfigure}%
+
+    \caption{Training curves: (a) $loss(D)$, (b) $loss(G)$, (c) $D(G(z))$, (d) $D(x)$ and (e) the number of epochs by the number of iterations.}
+    \label{fig:longer_epochs_losses}
+\end{figure}
+
+\subsection{Influence of weight initialization.} \label{appendix:init}
+
+\begin{figure}[H]
+    \centering
+
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{init/lossD.png}
+        \caption{}
+        \label{subfig:init/lossD}
+    \end{subfigure}%
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{init/lossG.png}
+        \caption{}
+        \label{subfig:init/lossG}
+    \end{subfigure}
+
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{init/D_G_z.png}
+        \caption{}
+        \label{subfig:init/D_G_z}
+    \end{subfigure}%
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{init/D_x.png}
+        \caption{}
+        \label{subfig:init/D_x}
+    \end{subfigure}
+
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{init/epochs.png}
+        \caption{}
+        \label{subfig:init/epochs}
+    \end{subfigure}%
+
+    \caption{Training curves: (a) $loss(D)$, (b) $loss(G)$, (c) $D(G(z))$, (d) $D(x)$ and (e) the number of epochs by the number of iterations.}
+    \label{fig:init_losses}
+\end{figure}
+
+\subsection{Influence of learning rate} \label{appendix:gan_lr}
 
 \begin{figure}[H]
     \centering
@@ -290,3 +374,128 @@
     \label{fig:ndf/128_losses}
 \end{figure}
 
+\subsection{Trying CIFAR-10 dataset.} \label{appendix:cifar10_32}
+
+\begin{figure}[H]
+    \centering
+
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{cifar10/32/lossD.png}
+        \caption{}
+        \label{subfig:cifar10/32/lossD}
+    \end{subfigure}%
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{cifar10/32/lossG.png}
+        \caption{}
+        \label{subfig:cifar10/32/lossG}
+    \end{subfigure}
+
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{cifar10/32/D_G_z.png}
+        \caption{}
+        \label{subfig:cifar10/32/D_G_z}
+    \end{subfigure}%
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{cifar10/32/D_x.png}
+        \caption{}
+        \label{subfig:cifar10/32/D_x}
+    \end{subfigure}
+
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{cifar10/32/epochs.png}
+        \caption{}
+        \label{subfig:cifar10/32/epochs}
+    \end{subfigure}%
+
+    \caption{Training curves: (a) $loss(D)$, (b) $loss(G)$, (c) $D(G(z))$, (d) $D(x)$ and (e) the number of epochs by the number of iterations.}
+    \label{fig:cifar10_32_curves}
+\end{figure}
+
+\subsection{Generating higher resolution images on CIFAR-10.} \label{appendix:cifar10_64}
+
+\begin{figure}[H]
+    \centering
+
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{cifar10/64_nz100/lossD.png}
+        \caption{}
+        \label{subfig:cifar10/64_nz100/lossD}
+    \end{subfigure}%
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{cifar10/64_nz100/lossG.png}
+        \caption{}
+        \label{subfig:cifar10/64_nz100/lossG}
+    \end{subfigure}
+
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{cifar10/64_nz100/D_G_z.png}
+        \caption{}
+        \label{subfig:cifar10/64_nz100/D_G_z}
+    \end{subfigure}%
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{cifar10/64_nz100/D_x.png}
+        \caption{}
+        \label{subfig:cifar10/64_nz100/D_x}
+    \end{subfigure}
+
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{cifar10/64_nz100/epochs.png}
+        \caption{}
+        \label{subfig:cifar10/64_nz100/epochs}
+    \end{subfigure}%
+
+    \caption{Training curves: (a) $loss(D)$, (b) $loss(G)$, (c) $D(G(z))$, (d) $D(x)$ and (e) the number of epochs by the number of iterations.}
+    \label{fig:cifar10_64_nz100_curves}
+\end{figure}
+
+\subsection{Conditional GAN.} \label{appendix:cDCGAN}
+
+\begin{figure}[H]
+    \centering
+
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{cDCGAN/lossD.png}
+        \caption{}
+        \label{subfig:cDCGAN/lossD}
+    \end{subfigure}%
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{cDCGAN/lossG.png}
+        \caption{}
+        \label{subfig:cDCGAN/lossG}
+    \end{subfigure}
+
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{cDCGAN/D_G_z.png}
+        \caption{}
+        \label{subfig:cDCGAN/D_G_z}
+    \end{subfigure}%
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{cDCGAN/D_x.png}
+        \caption{}
+        \label{subfig:cDCGAN/D_x}
+    \end{subfigure}
+
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.95\linewidth]{cDCGAN/epochs.png}
+        \caption{}
+        \label{subfig:cDCGAN/epochs}
+    \end{subfigure}%
+
+    \caption{Training curves: (a) $loss(D)$, (b) $loss(G)$, (c) $D(G(z))$, (d) $D(x)$ and (e) the number of epochs by the number of iterations.}
+    \label{fig:cDCGAN_curves}
+\end{figure}
