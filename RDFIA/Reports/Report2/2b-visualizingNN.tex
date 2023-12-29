@@ -146,46 +146,70 @@ Here, the goal is to study the vulnerability of CNNs to minor, imperceptible mod
 
 \paragraph*{5. $ \bigstar $ Show and interpret the obtained results.}
 
-In the part of the pratical, we created adversarail example. We apply imperceptible, slight and carefully calculated modifications to the input image such that it is misclassified by a neural network. This is done by applying gradient backpropagation to find out how to tweak the pixel values of the original image so as to change the network's prediction. The adjustments are made according to the gradient of the loss with respect to the input image, and the process iteratively continues until the image is misclassified.
+In the part of the pratical, we created adversarial examples. We apply imperceptible, slight and carefully calculated modifications to the input image such that it is misclassified by a neural network. This is done by applying gradient backpropagation to find out how to tweak the pixel values of the original image so as to change the network's prediction. The adjustments are made according to the gradient of the loss with respect to the input image, and the process iteratively continues until the image is misclassified.
 
-Our results are presented in \Cref{fig:adv_exmp}. The right column present original image, before any intervention, the left column the modified misclassified image, and in the middle column, the magnified difference (10x) between them. Despite the visual similarity of the two images on either side, the neural network classifies them as two different breeds due to the small, calculated changes that showed in the center image.
+Our results are presented in \Cref{fig:adv_exmp}. The right column present original image, before any intervention, the left column the modified misclassified image, and in the middle column, the magnified difference (10x) between them. Despite the visual similarity of the two images on either side, the neural network classifies them as two different breeds due to the small, calculated changes that showed in the center image. Without magnification, these changes are imperceptible to our human eyes, underscoring the minimal nature of the alterations and yet how significantly they can impact a neural network's classification.
 
-Interpreting this result, it's clear that even minimal changes that are imperceptible or nearly imperceptible to humans can lead to misclassification by an AI. This demonstrates the fragility of neural networks to adversarial attacks and underscores the importance of understanding and defending against such manipulations, especially in applications where security and reliability are crucial.
-
-Adversarial examples and techniques have practical applications beyond academic interest, particularly in enhancing privacy and countering mass surveillance. For instance, \href{https://www.capable.design}{Cap\_able's Manifesto Collection} is a clothing line that uses patterns designed to shield facial recognition technologies. These garments are not recognized by models such as Yolo, instead causing misidentifications as various animals or inanimate objects. This line of clothing opens up a discussion on privacy and the protection of individuals from the misuse of biometric recognition cameras, offering a way to defend against unlawful intrusion into personal data and safeguard fundamental rights in public spaces.
+Furthermore, it's worth noting that in many cases, adversarial examples tend to focus on the main object that determines the image's classification, as evident in Figures \ref{fig:adv_exmp:sub1}, \ref{fig:adv_exmp:sub2}, and \ref{fig:adv_exmp:sub3}. This aligns with the concept of saliency maps. However, it's important to acknowledge that this isn't always the case. In some instances, successful adversarial examples may require alterations to the background to effectively deceive the model, as demonstrated in Figures \ref{fig:quail_burrito}, \ref{fig:dog_photocopier}, and \ref{fig:pirate_fireboat}. Notably, to deceive the pirate ship as a wombat, we only needed to focus on the ship itself. But to trick the pirate ship into classifying as a fireboat, it was necessary to fool both the boat and the background. This illustrates the nuanced nature of crafting adversarial examples and the need to consider various factors to achieve misclassification.
 
 \begin{figure}[H]
     \centering
-    \begin{subfigure}[b]{\textwidth}
-        \centering
-        \includegraphics[width=.95\linewidth]{figs_propre2/adv_exmp.pdf}
-        \label{fig:adv_exmp:sub1}
-    \end{subfigure}
     
-    \begin{subfigure}[b]{\textwidth}
+    % First pair: a and b
+    \begin{subfigure}{0.45\textwidth}
         \centering
-        \includegraphics[width=.95\linewidth]{figs_propre2/adv_exmp2.pdf}
-        \label{fig:adv_exmp:sub2}
+        \includegraphics[width=\linewidth]{figs_propre2/adv_exmp.pdf}
+        \caption{}
+        \label{fig:adv_exmp:sub1}
+    \end{subfigure}%
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figs_propre2/quail_burrito}
+        \caption{}
+        \label{fig:quail_burrito}
     \end{subfigure}
 
-    \begin{subfigure}[b]{\textwidth}
+    % Second pair: c and d
+    \begin{subfigure}{0.45\textwidth}
         \centering
-        \includegraphics[width=.95\linewidth]{figs_propre2/adv_exmp3.pdf}
-        \label{fig:adv_exmp:sub3}
+        \includegraphics[width=\linewidth]{figs_propre2/adv_exmp2.pdf}
+        \caption{}
+        \label{fig:adv_exmp:sub2}
+    \end{subfigure}%
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figs_propre2/dog_photocopier}
+        \caption{}
+        \label{fig:dog_photocopier}
     \end{subfigure}
-    \caption{Adversarial examples. The right column displays the original image, the middle column shows the magnified difference added to the original image to deceive the model, and the left column presents the image that successfully fools the model.}
+
+    % Third pair: e and f
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figs_propre2/adv_exmp3.pdf}
+        \caption{}
+        \label{fig:adv_exmp:sub3}
+    \end{subfigure}%
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figs_propre2/pirate_fireboat}
+        \caption{}
+        \label{fig:pirate_fireboat}
+    \end{subfigure}
+
+    \caption{Adversarial examples. The left column displays the original image, the middle column shows the magnified difference added to the original image to deceive the model, and the right column presents the image that successfully fools the model.}
     \label{fig:adv_exmp}
 \end{figure}
 
-% une observation à faire c'est : plus un modèle est sûr de sa prédi, plus il faudra faire d'itérations pour le tromper, et vice-versa.
-
 \paragraph*{6. In practice, what consequences can this method have when using convolutional neural networks?}
 
-For example, consider the ability to trick a model into misclassifying a banana as a toaster using a printable label, as demonstrated by \cite{brown2018adversarial}. While this may seem like a playful experiment, it raises significant concerns when applied to critical domains like autonomous vehicles or medical imaging. 
+Adversarial techniques have practical applications beyond academic interest. For example, consider the ability to trick a model into misclassifying a banana as a toaster using a printable label, as demonstrated by \cite{brown2018adversarial}. While this may seem like a playful experiment, it raises significant concerns when applied to critical domains like autonomous vehicles or medical imaging. 
 
 Although our method requires access to model parameters, \cite{athalye2018synthesizing} has shown that it's possible to perform an adversarial attack without such access, known as a black-box attack. Consequently, an attacker could potentially deceive autonomous vehicles into making hazardous decisions, such as veering into another lane or perceiving non-existent information—incidents that have already occurred. 
 
 This method has the potential to be exploited by malicious individuals to intentionally mislead a model, particularly as machine learning models become increasingly integrated into systems. As a result, this topic becomes a serious concern in the realm of cybersecurity, leading to an arms race between attackers and defenders to safeguard against such vulnerabilities.
+
+Moreover, these techniques can be employed to enhance privacy and counteract mass surveillance. As an example, \href{https://www.capable.design}{Cap\_able's Manifesto Collection} is a clothing line that uses patterns designed to shield facial recognition technologies. These garments are not recognized by models such as Yolo, instead causing misidentifications as various animals or inanimate objects. This line of clothing opens up a discussion on privacy and the protection of individuals from the misuse of biometric recognition cameras, offering a way to defend against unlawful intrusion into personal data and safeguard fundamental rights in public spaces. 
 
 \paragraph*{7. \textbf{Bonus:} Discuss the limits of this naive way to construct adversarial images. Can you propose some alternative or modiﬁed ways? (You can base these on recent research)}
 
