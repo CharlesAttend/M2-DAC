@@ -172,7 +172,11 @@ This section aims to generate images that highlight the type of patterns detecte
 \paragraph*{8. $ \bigstar $ Show and interpret the obtained results.}
 Class visualization is a technique aimed at understanding what features or patterns a CNN has learned to recognize for a specific class. It involves generating an input image that maximally activates a class score in the network. Here, we've done this by iteratively modifying an initial random image to increase the activation of the desired class through gradient ascent on the class score with respect to the input image.
 
-As a first try of this method, we decided to visualize our prefered animal: a wombat. \Cref{fig:class_viz_wombat} present a class visualization for a wombat after 1000 epochs and using the default regularization parameters in the given implementation (regularization factor of $10^{-3}$, bluring every ten epoch, learning rate of $5$). 
+As a first try of this method, we decided to visualize our prefered animal: a wombat. \Cref{fig:class_viz_wombat} present a class visualization for a wombat after 1000 epochs and using the default regularization parameters in the given implementation (regularization factor of $10^{-3}$, bluring every ten epoch, learning rate of $5$). While examining some of our animations, we observed the occurrence of blurring every 10 steps.
+
+Interpretation: The reason the figure appears as it does, featuring multiple, somewhat distorted wombats and a somewhat psychedelic color scheme, is because the features that the network has learned to identify wombats may not precisely align with human perception.
+
+The distortions and repetitions are artifacts of the process. The network is not trained to maintain the global coherence of the wombat's shape but rather to accentuate the specific features—such as fur texture, eye or nose shape—that it has associated with wombats. These features are then amplified to the extent that they activate the 'wombat' classification neurons as strongly as possible.
 
 \begin{figure}[H]
     \centering
@@ -196,72 +200,109 @@ As a first try of this method, we decided to visualize our prefered animal: a wo
 \end{figure}
 
 \paragraph*{9. Try to vary the number of iterations and the learning rate as well as the regularization weight.}
-While examining some of our animations, we observed the occurrence of blurring every 10 steps.
+To improve class visualization, it appears that regularization and blurring plays a crucial role. In the following figure, we experimented with modifiying the learning rate, the image blurring frequency and the weight regularization on SqueezeNet.% Although we initially used a different model to achieve better visuals, all experiments were subsequently conducted on both SqueezeNet and VGG16.
 
-To improve class visualization, it appears that regularization plays a crucial role. In \Cref*{fig:class_viz_reg}, we experimented with disabling image blurring and weight regularization on SqueezeNet.% Although we initially used a different model to achieve better visuals, all experiments were subsequently conducted on both SqueezeNet and VGG16.
+As a baseline for comparison with upcoming experiments, \Cref{fig:class_viz_baseline} represents the class visualization of the "bee eater" class using the default parameters from the practical implementation, which include a learning rate of $5$, a regularization of $1e^{-3}$, and applying blurring every ten epochs.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.35\textwidth]{figs_propre2/SqueezeNet/SqueezeNet_bird_animated_last_frame.png}
+    \caption{Baseline class visualization for the "bee eater" class, provided here for comparison, was generated using a learning rate of $5$, a regularization strength of $1e^{-3}$, and blurring applied every ten epochs.}
+    \label{fig:class_viz_baseline}
+\end{figure}%
 
-% Non regulated images seem to be more saturated everywhere, preventing to clearly see the represented class. We suspect that without regularization, the gradient saturate \textbf{everypixel} that could ever had participate to a correct gorilla prediction. By promoting pixel which the model has already engaged the transformation and keeping this direction,regularization permit the arrival of real class image.
+%%% L2 REG %%%
+In our first experiment, we explore the impact of the l2-regularization parameter. As a reminder, the default regularization factor is set to $1e^{-3}$. \Cref{fig:class_viz_reg} presents the results obtained using a $1e^{-5}$ regularization factor for 200 epochs and $1e^{-2}$ regularization factors for 200 and 2000 epochs.
 
-% Pas giga clair maybe 
-Non-regularized images appear to be overly saturated, making it challenging to discern the represented class clearly. Our suspicion is that without regularization, gradients become saturated in \textbf{every pixel} that could have contributed to a correct prediction of the ''bee eater'' class. By encouraging pixels that the model has already engaged in transformations and maintaining their direction, regularization facilitates the emergence of the true class image.
+Non-regularized images appear to be overly saturated and noisy, even away from bird figures, making it challenging to discern the represented class clearly. Our suspicion is that without regularization, the image become saturated in \textbf{every pixel} that could have contributed to a correct prediction of the ''bee eater'' class to maximise the class score.
+
+Conversely, when over-regularization is applied, the resulting images appear to have "lighter" class visualizations, even after 2000 epochs. However, the noise in these images remains low and consistent, and the boundaries of the birds are clear and distinguishable. On the downside, the birds themselves appear to be less colorful in these images. By constraining pixel values, we encourage the model to make judicious decisions about which pixels to modify, creating better frontiers.
 
 \begin{figure}[H]
     \centering
     \begin{subfigure}[t]{.33\textwidth}
         \centering
-        \includegraphics[width=\linewidth]{SqueezeNet/bird_animated_reg++_last_frame.png}
-        % \caption{With a lot of regularization}
+        \includegraphics[width=\linewidth]{figs_propre2/SqueezeNet/SqueezeNet_bird_animated_reg_5_last_frame.png}
         \caption{}
         \label{fig:class_viz_reg:sub1}
     \end{subfigure}%
     \begin{subfigure}[t]{.33\textwidth}
         \centering
-        \includegraphics[width=\linewidth]{SqueezeNet/bird_animated_last_frame.png}
-        % \caption{With regularization}
+        \includegraphics[width=\linewidth]{figs_propre2/SqueezeNet/SqueezeNet_bird_animated_reg_2_last_frame.png}
         \caption{}
         \label{fig:class_viz_reg:sub2}
     \end{subfigure}%
     \begin{subfigure}[t]{.33\textwidth}
         \centering
-        \includegraphics[width=\linewidth]{SqueezeNet/bird_animated_no_reg_last_frame.png}
-        % \caption{Without regularization}
+        \includegraphics[width=\linewidth]{figs_propre2/SqueezeNet/SqueezeNet_bird_animated_2000_reg_2_last_frame.png}
         \caption{}
         \label{fig:class_viz_reg:sub3}
     \end{subfigure}
-    \caption{Comparaison of the bee eater class visualization using SqueezeNet (a) with strong regularizations, (b) with normal regularizations and (c) without regularizations.} % (blurring and weight regularization) % and starting from a base image of the class.
+    \caption{Comparaison of the bee eater class visualization using SqueezeNet (a) using low regularization ($ 1e^{-5} $), (b) using high regularization ($ 1e^{-2} $). (c) using high regularization ($ 1e^{-2} $) on 2000 epochs} % (blurring and weight regularization) % and starting from a base image of the class.
     \label{fig:class_viz_reg}
 \end{figure}
 
-% préciser les valeurs de régu ? => Complexe car c'est un combo, un peu chaint à écrire, bluering everimage + 1e-2, ça me semble pas important en vrai
 
-About the number of epoch, our experiment show that we need to make a certain number of epoch to let the visualization converge, thus getting better images.
+%%% BLUERING %%%
+In our second experiment, we focus on modifying the blurring frequency. In the baseline (\Cref{fig:class_viz_baseline}), blurring occurs every ten steps. In \Cref{fig:class_viz_blur}, we explore two variations: blurring every two steps and no blurring at all. The first image represents the baseline (blur every ten epochs), provided here for quick comparison.
+
+The second image, where blurring happens every two steps, showcases birds that are considerably more detailed and clear in our assessment. In contrast to the last image, there are no peculiar patterns extending around the birds.
+
+Blurring appears to prevent the extension of repeated patterns around the visualization. By encouraging pixels that the model has already engaged in transformations and maintaining their direction, blurring facilitates the emergence of a more genuine and detailed class image.
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[t]{.33\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figs_propre2/SqueezeNet/SqueezeNet_bird_animated_last_frame.png}
+        \caption{}
+        \label{fig:class_viz_blur:sub1}
+    \end{subfigure}%
+    \begin{subfigure}[t]{.33\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figs_propre2/SqueezeNet/SqueezeNet_bird_animated_blur++_last_frame.png}
+        \caption{}
+        \label{fig:class_viz_blur:sub2}
+    \end{subfigure}%
+    \begin{subfigure}[t]{.33\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figs_propre2/SqueezeNet/SqueezeNet_bird_animated_no_blur_last_frame.png}
+        \caption{}
+        \label{fig:class_viz_blur:sub3}
+    \end{subfigure}
+    \caption{Comparison of the bee eater class visualization using SqueezeNet: (a) Blurring every ten steps (baseline, provided here for easier comparison). (b) Blurring every two steps. (c) Without blurring.} % (blurring and weight regularization) % and starting from a base image of the class.
+    \label{fig:class_viz_blur}
+\end{figure}
+
+%%% Epoch number %%%
+
+Regarding the number of epochs, our experiments indicate that a certain number of epochs are needed for the visualization to converge and produce better images. However, it's important to note that as the process continues, the images can become saturated or reach a point where further training may not significantly improve the results. This suggests that there's a trade-off between the number of epochs for convergence and the risk of overfitting or saturation in the generated images.
 
 \begin{figure}[H]
     \centering
     \begin{subfigure}[t]{.25\textwidth}
         \centering
-        \includegraphics[width=\linewidth]{SqueezeNet/bird_animated_1000_regpp_blur_100_frame.png}
+        \includegraphics[width=\linewidth]{figs_propre2/SqueezeNet/SqueezeNet_bird_animated_1000_blur_100_frame.png}
         % \caption{200 iterations}
         \caption{}
         \label{fig:class_viz_iter:sub1}
     \end{subfigure}%
     \begin{subfigure}[t]{.25\textwidth}
         \centering
-        \includegraphics[width=\linewidth]{SqueezeNet/bird_animated_1000_regpp_blur_500_frame.png}
+        \includegraphics[width=\linewidth]{figs_propre2/SqueezeNet/SqueezeNet_bird_animated_1000_blur_500_frame.png}
         % \caption{500 iterations}
         \caption{}
         \label{fig:class_viz_iter:sub2}
     \end{subfigure}%
     \begin{subfigure}[t]{.25\textwidth}
         \centering
-        \includegraphics[width=\linewidth]{SqueezeNet/bird_animated_1000_regpp_blur_last_frame.png}
+        \includegraphics[width=\linewidth]{figs_propre2/SqueezeNet/SqueezeNet_bird_animated_1000_blur_last_frame.png}
         % \caption{1000 iterations}
         \caption{}
         \label{fig:class_viz_iter:sub3}
     \end{subfigure}%
     \begin{subfigure}[t]{.25\textwidth}
         \centering
-        \includegraphics[width=\linewidth]{SqueezeNet/bird_animated_1000_last_frame.png}
+        \includegraphics[width=\linewidth]{figs_propre2/SqueezeNet/SqueezeNet_bird_animated_1000_last_frame.png}
         % \caption{1000 iterations, no regularization}
         \caption{}
         \label{fig:class_viz_iter:sub4}
@@ -269,7 +310,39 @@ About the number of epoch, our experiment show that we need to make a certain nu
     \caption{Comparaison of the bee eater class visualization using SqueezeNet with strong regularizations (a) 200 iterations, (b) 500 iterations, (c) 1000 iterations and (d) 1000 iterations without applying regularization.}
     \label{fig:class_viz_iter}
 \end{figure}
-About the learning rate, TODO
+
+%%% Learning Rate %%%
+About the learning rate, we know from previous courses that it permit a better exploration of loss landscape but modifiy the convergence speed.
+
+We conducted experiments with two variations of the learning rate: 1. Increasing it by a factor of two (from 5 in the baseline to 10). 2. Reducing it by a factor of ten (from 5 in the baseline to 0.5). It's worth noting that reducing the learning rate makes the convergence significantly slower. To compensate for this, we also tried the reduced learning rate setting with 2000 iterations. Results are presented in \Cref{fig:class_viz_lr}.
+
+Using a high learning rate results in images that appear rushed, with a significant amount of noise, and the birds are nearly indistinguishable. On the other hand, with a low learning rate, especially at 2000 steps, the birds seem to merge with the background noise, and patterns appear larger and lighter.
+
+Our observation suggests that a lower learning rate allows for better convergence toward a global minimum, but it may also lead to the model getting trapped in a local minimum, resulting in the dreamlike aspect of the image.
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[t]{.33\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figs_propre2/SqueezeNet/SqueezeNet_bird_animated_lr_10_last_frame.png}
+        \caption{}
+        \label{fig:class_viz_lr:sub1}
+    \end{subfigure}%
+    \begin{subfigure}[t]{.33\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figs_propre2/SqueezeNet/SqueezeNet_bird_animated_lr_0.5_last_frame.png}
+        \caption{}
+        \label{fig:class_viz_lr:sub2}
+    \end{subfigure}%
+    \begin{subfigure}[t]{.33\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figs_propre2/SqueezeNet/SqueezeNet_bird_animated_2000_lr_0.5_last_frame.png}
+        \caption{}
+        \label{fig:class_viz_lr:sub3}
+    \end{subfigure}
+    \caption{Comparaison of the bee eater class visualization using SqueezeNet (a) } % (blurring and weight regularization) % and starting from a base image of the class.
+    \label{fig:class_viz_lr}
+\end{figure}
 
 \paragraph*{10. Try to use an image from ImageNet as the source image instead of a random image. You can use the real class as the target class. Comment on the interest of doing this.}
 
@@ -299,8 +372,7 @@ Initiating the process with an image from ImageNet is a valuable approach. It pr
         \caption{\href{figs/2b/bird_animated_same_init_img_reg++.gif}{Animation} starting from same class.} %(see \textit{SqueezeNet\_bird\_animated\_same\_init\_img\_reg++.gif})}
         \label{fig:class_viz_start_image:vid}
     \end{subfigure}
-    \caption{Class visualization using SqueezeNet: (a) Last iteration starting from noise, (b) Last iteration starting from the same class, and (c) \href{figs/2b/bird_animated_same_init_img_reg++.gif}{Animation} starting from the same class to maximize the score for the bee eater class, all with strong regularization.}
-    % \caption{Class visualization: started from a bee eater image to maximising the score for the bee eater class. All with a strong regularization.}
+    \caption{Class visualization using SqueezeNet: (a) Last iteration starting from noise, (b) Last iteration starting from the same class, and (c) \href{figs/2b/bird_animated_same_init_img_reg++.gif}{Animation} starting from the same class to maximize the score for the bee eater class, all with high blurring frequency (2) and a sligthly lower regularization ($ 1e^{-5} $ ).}
     \label{fig:class_viz_start_image}
 \end{figure}
 
@@ -308,16 +380,22 @@ It pretty funny to create some objects from other objects. In \Cref{fig:class_vi
 
 \begin{figure}[H]
     \centering
-    \begin{subfigure}{.5\textwidth}
+    \begin{subfigure}{.33\textwidth}
         \centering
-        \includegraphics[width=.7\linewidth]{SqueezeNet/snail_animated_init_img_reg++_last_frame.png}
+        \includegraphics[width=\linewidth]{figs_propre2/hays.png}
+        \caption{Original image}
+        \label{fig:class_viz_start_image_dif:baseimage}
+    \end{subfigure}%
+    \begin{subfigure}{.33\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{SqueezeNet/snail_animated_init_img_reg++_last_frame.png}
         \caption{Last iteration}
         \label{fig:class_viz_start_image_dif:png}
     \end{subfigure}%
-    \begin{subfigure}{.5\textwidth}
+    \begin{subfigure}{.33\textwidth}
         \centering
         % \begin{frame}{}
-        %     \animategraphics[width=.7\linewidth]{10}{SqueezeNet/snail_animated_init_img_reg++/frame-}{0}{499}
+        %     \animategraphics[width=\linewidth]{10}{SqueezeNet/snail_animated_init_img_reg++/frame-}{0}{499}
         % \end{frame}
         \caption{\href{figs/2b/SqueezeNet/snail_animated_init_img_reg++.gif}{Animation}}
         \label{fig:class_viz_start_image_dif:vid}
@@ -345,7 +423,7 @@ We conducted identical experiments using VGG16 this time. Visualizations are oft
         \caption{\href{figs/2b/VGG/VGG_snail_animated_init_img_reg++.gif}{Animation}}
         \label{fig:class_viz_start_image_dif_VGG:vid}
     \end{subfigure}
-    \caption{Class visualization using VGG with strong regularizations: started from a hay image to maximising the score for the snail class.}
+    \caption{Class visualization using VGG with high blurring frequency (2) and a sligthly lower regularization ($ 1e^{-5} $ ): started from a hay image to maximising the score for the snail class.}
     \label{fig:class_viz_start_image_dif_VGG}
 \end{figure}
 
@@ -379,7 +457,7 @@ We conducted identical experiments using VGG16 this time. Visualizations are oft
         \caption{}
         \label{fig:class_viz_iter_vgg:sub4}
     \end{subfigure}
-    \caption{Comparaison of the bee eater class visualization using VGG with strong regularizations (a) 200 iterations, (b) 500 iterations, (c) 1000 iterations and (d) at 1000 iterations but without having performed regularization.}
+    \caption{Comparaison of the bee eater class visualization using VGG with with high blurring frequency (2) and a sligthly lower regularization ($ 1e^{-5} $ ) (a) 200 iterations, (b) 500 iterations, (c) 1000 iterations and (d) at 1000 iterations but without having performed regularization.}
     \label{fig:class_viz_iter_vgg}
 \end{figure}
 
@@ -403,7 +481,7 @@ We conducted identical experiments using VGG16 this time. Visualizations are oft
         \caption{}
         \label{fig:class_viz_wombat_VGG:c}
     \end{subfigure}
-    \caption{Class visualization of Wombat. (a) Using SqueezeNet for comparison; (b) Using VGG with default regularizations; (c) Using VGG with strong regularization.}
+    \caption{Class visualization of Wombat. (a) Using SqueezeNet for comparison with default parameters; (b) Using VGG with default parameters; (c) Using VGG with high blurring frequency (2) and a sligthly lower regularization ($ 1e^{-5} $ ).}
     \label{fig:class_viz_wombat_VGG}
     %TODO Ici j'trouve les figures plus mitigé qu'avec squeeze net, j'ai envie de mettre celle de squeeze net pour une comparaison plus directe 
 \end{figure}
