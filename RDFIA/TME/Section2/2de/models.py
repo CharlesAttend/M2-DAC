@@ -40,6 +40,15 @@ class Generator(nn.Module):
             get_upscaling_block(ngf, nchannels, 4, 2, 1, last_layer=True),
         )
 
+        # self.model = nn.Sequential(
+        #     get_upscaling_block(nz, ngf * 8, 4, 1, 0),
+        #     get_upscaling_block(ngf * 8, ngf * 4, 4, 2, 1),
+        #     get_upscaling_block(ngf * 4, ngf * 2, 4, 2, 1),
+        #     get_upscaling_block(ngf * 2, ngf, 4, 2, 1),
+        #     get_upscaling_block(ngf, nchannels, 4, 2, 1, last_layer=True),
+        # )
+
+
     def forward(self, z):
         x = z.unsqueeze(2).unsqueeze(2)  # give spatial dimensions to z
         return self.model(x)
@@ -81,6 +90,16 @@ class Discriminator(nn.Module):
             get_downscaling_block(ndf * 2, ndf * 4, 4, 2, 1),
             get_downscaling_block(ndf * 4, 1, 4, 1, 0, is_last=True),
         )
+
+        # self.model = nn.Sequential(
+        #     get_downscaling_block(nchannels, ndf, 4, 2, 1),
+        #     get_downscaling_block(ndf, ndf * 2, 4, 2, 1),
+        #     get_downscaling_block(ndf * 2, ndf * 4, 4, 2, 1),
+        #     get_downscaling_block(ndf * 4, ndf * 8, 4, 2, 1),
+        #     get_downscaling_block(
+        #         ndf * 8, 1, 4, 1, 0, is_last=True, use_batch_norm=False
+        #     ),
+        # )
 
     def forward(self, x):
         return self.model(x).squeeze(1).squeeze(1)  # remove spatial dimensions

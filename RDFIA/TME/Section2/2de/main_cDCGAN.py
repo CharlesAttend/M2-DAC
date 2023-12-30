@@ -10,10 +10,10 @@ import torchvision.utils as vutils
 from data import setup_data
 from ignite.engine import Events
 from ignite.utils import manual_seed
-from models import Discriminator, Generator
+from models import ConditionalDiscriminator, ConditionalGenerator
 from omegaconf import DictConfig
 from torch import nn, optim
-from trainers import setup_evaluator, setup_trainer
+from trainers_cDCGAN import setup_evaluator, setup_trainer
 from utils import (
     log_metrics,
     save_config,
@@ -58,16 +58,20 @@ def run(local_rank: int, config: Any):
     device = idist.device()
 
     fixed_noise = torch.randn(
-        config.batch_size // idist.get_world_size(),
+        100, # config.batch_size // idist.get_world_size(),
         config.nz,
         device=device,
     )
 
+    fixed_labels = torch.arange(0, 10).expand(size=(10, 10)).flatten().to(device)
+    fixed_y = torch.nn.functional.one_hot(fixed_labels).float().to(device)
+
     # networks
-    model_g = Generator(nz=config.nz, ngf=config.ngf, nchannels=num_channels)
+    
+    model_g = ConditionalGenerator(nz=config.nz, nc=config.nc, ngf=config.ngf)
     model_g.apply(weights_init)
     model_g = idist.auto_model(model_g)
-    model_d = Discriminator(ndf=config.ndf, nchannels=num_channels)
+    model_d = ConditionalDiscriminator(ndf=config.ndf, nc=config.nc, nchannels=num_channels)
     model_d.apply(weights_init)
     model_d = idist.auto_model(model_d)
 
@@ -129,9 +133,9 @@ def run(local_rank: int, config: Any):
     # adding handlers using `trainer.on` decorator API
     @trainer.on(Events.EPOCH_COMPLETED)
     def save_fake_example(engine):
-        fake = model_g(fixed_noise)
+        fake = model_g(fixed_noise, fixed_y)
         path = config.output_dir / FAKE_IMG_FNAME.format(engine.state.epoch)
-        vutils.save_image(fake.detach(), path, normalize=True)
+        vutils.save_image(fake.detach(), path, normalize=True, nrow=10)
         img = exp_logger._wandb.Image(str(path), caption=FAKE_IMG_FNAME.format(engine.state.epoch))
         exp_logger.log({"example": img})
 
@@ -170,7 +174,7 @@ def run(local_rank: int, config: Any):
 
 
 # main entrypoint
-@hydra.main(version_base=None, config_path="./exp_configs", config_name="base")
+@hydra.main(version_base=None, config_path="./exp_configs", config_name="cDCGAN")
 def main(cfg: DictConfig):
     config = setup_config(cfg)
     with idist.Parallel(config.backend) as p:

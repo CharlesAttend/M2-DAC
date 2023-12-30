@@ -24,6 +24,26 @@ def setup_data(config: Any):
         transform=mytransform,
     )
 
+    # dataset_train = torchvision.datasets.CIFAR10(
+    #     root=config.data_path, download=True, train=True, transform=mytransform
+    # )
+    # dataset_eval = torchvision.datasets.CIFAR10(
+    #     root=config.data_path,
+    #     train=False,
+    #     download=True,
+    #     transform=mytransform,
+    # )
+
+    # dataset_train = torchvision.datasets.CelebA(
+    #     root=config.data_path, download=True, split="train", transform=mytransform
+    # )
+    # dataset_eval = torchvision.datasets.MNIST(
+    #     root=config.data_path,
+    #     split="test",
+    #     download=True,
+    #     transform=mytransform,
+    # )
+
     dataloader_train = idist.auto_dataloader(
         dataset_train,
         batch_size=config.batch_size,
@@ -37,4 +57,5 @@ def setup_data(config: Any):
         num_workers=config.num_workers,
     )
     nc = 1  # num channels
+    # nc = 3  # CelebA, CIFA10 num channels
     return dataloader_train, dataloader_eval, nc

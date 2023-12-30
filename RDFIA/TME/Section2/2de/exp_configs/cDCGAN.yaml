@@ -1,4 +1,4 @@
-name: basic
+name: cDCGAN
 
 seed: 42
 data_path: . # input data path
@@ -8,6 +8,7 @@ output_dir: ./logs
 nz: 100
 ngf: 32
 ndf: 32
+nc: 10
 
 nchannel: 1
 lr_d: 0.0002
@@ -18,7 +19,7 @@ lr: 0.0001 # learning rate
 
 eval_batch_size: 128 # evaluation batch size
 num_workers: 4
-max_epochs: 10
+max_epochs: 30
 use_amp: false # use AMP (Automatic Mixed Precision)
 debug: false
 train_epoch_length: null
