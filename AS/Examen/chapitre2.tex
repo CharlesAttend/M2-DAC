@@ -1,21 +1,24 @@
 \chapter{Équation différentielle ordinaire et stochastique}
-L'interprétation en temps continu des ResNets fournit un cadre puissant pour comprendre leur comportement, notamment dans le contexte d'architectures d'apprentissage profond comportant un grand nombre de couches.
+L'interprétation en temps continu des ResNets fournit un cadre puissant pour comprendre leur comportement, notamment dans le contexte où ils comportent un grand nombre de couches.
 
-L'une des principales conclusions est la similarité formelle entre les ResNets mis à l'échelle et les équations différentielles. Comme la profondeur \(L\) tend vers l'infini, le comportement des ResNets peut être approché par un processus continu. Ceci est mathématiquement exprimé comme une transition des mises à jour discrètes par couche dans ResNets vers un système dynamique en temps continu. Plus précisément, l'évolution des états cachés dans un ResNet peut être considérée comme une discrétisation d'une équation différentielle, ce qui constitue une réalisation profonde pour comprendre ce type de modèles d'apprentissage profond.
+L'une des principales conclusions est la similarité formelle entre les ResNets mis à l'échelle par $ \alpha _L $  et les équations différentielles. Lorsque la profondeur \(L\) tend vers l'infini, le comportement des ResNets peut être approché par un processus continu. Ceci est mathématiquement exprimé comme une transition des mises à jour discrètes par couche dans ResNets vers un système dynamique en temps continu. Plus précisément, l'évolution des états cachés dans un réseau ResNet peut être interprétée comme la discrétisation d'une équation différentielle. Cette perspective offre une compréhension approfondie et significative des mécanismes sous-jacents à ces modèles d'apprentissage profond.
+
 
 \section{Équation différentielle ordinaire}
-Une équation différentielle ordinaire (EDO) est une équation différentielle dans laquelle la fonction inconnue est fonction d'une variable et les dérivées de l'équation dépendent uniquement de cette variable. Formellement, EDO peut être exprimé comme $\frac{dy}{dk}=f(k,y)$ où $y$ est fonction de $k$.
-Le but de la résolution d'une équation différentielle du premier ordre est de trouver une fonction $y$ qui satisfait l'équation. Cependant, nous ne pouvons pas calculer directement $y$
-. Au lieu de cela, nous savons comment la fonction $y$ change avec le temps $k$, ce qui est représenté par la dérivée $\frac{dy}{dk}$.
+Une équation différentielle ordinaire (EDO) est une équation différentielle dans laquelle la fonction inconnue est fonction d'une variable et les dérivées de l'équation dépendent uniquement de cette variable. Formellement, une EDO peut être exprimé comme
+\[
+    \frac{dy}{dk}=f(k,y)
+.\]
+où $y$ est fonction de $k$. Le but de la résolution d'une équation différentielle du premier ordre est de trouver une fonction $y$ qui satisfait l'équation. Cependant, nous ne pouvons pas calculer directement $y$. Au lieu de cela, nous savons comment la fonction $y$ change avec le temps $k$, ce qui est représenté par la dérivée $\frac{dy}{dk}$.
 
 \subsection{EDO neuronale}
-Dans l'apprentissage profond, en particulier lors de la conception de structures de réseau, les équations différentielles ordinaires (EDO) peuvent être utilisées pour décrire les changements dynamiques continus entre les différentes couches du réseau ou les fonctions d'activation.
+Dans l'apprentissage profond, en particulier lors de la conception de structures de réseau, les EDO peuvent être utilisées pour décrire les changements dynamiques continus entre les différentes couches du réseau . Dans cette section, nous allons voir que la structure d'une EDO présente des similitudes frappantes avec la formalisation d'un réseau ResNet. 
 
-La motivation des équations différentielles régulières divines\todo{divines ?} vient de ResNet. ResNet possède généralement une couche non linéaire avec des connexions résiduelles. Nous pouvons résumer cela en une fonction qui représente une fonction non linéaire, une matrice de poids, un biais et une connexion résiduelle.
+Un ResNet typique intègre une couche non linéaire complétée par des connexions résiduelles. Cette architecture peut être conceptualisée sous forme d'une récurrence, incluant une fonction non linéaire $f$, un ensemble de paramètres $\theta_k$, et une connexion résiduelle définie par $h_k$.
 \begin{equation}
     h_{k+1} = h_k + f(h_k, \theta_{k+1})
 \end{equation}
-En poussant l'espacement entre les couches du réseau à une valeur infinitésimale, nous pouvons convertir ResNet en un réseau neuronal continu, ce qui est exactement ce que fait l'EDO neuronale. En faisant cela, nous pouvons comparer les couches discrètes de ResNet à sa représentation continue de réseau neuronal. Nous pouvons voir que le taux de changement de l'état sous-jacent dans un réseau neuronal continu est déterminé par une fonction non linéaire, et cette fonction ne change pas dans le temps, un peu comme la forme d'une EDO.
+En diminuant progressivement l'espacement entre les couches jusqu'à une valeur infinitésimale, ResNet peut être envisagé comme un réseau neuronal continu, qui peut également être formulé en tant qu'EDO :
 \begin{align*}
     &h_{k+1} = h_k + f(h_k, \theta_{k+1}) \\
     \Leftrightarrow \quad &  h_{k+1} - h_k = f(h_k, \theta_{k+1}) \\
@@ -24,19 +27,22 @@ En poussant l'espacement entre les couches du réseau à une valeur infinitésim
     \Leftrightarrow \quad & \lim_{\Delta \to 0} \frac{h_{k+\Delta} - h_k}{\Delta}_{|\Delta=1} = f(h_k, \theta, k) \\
     \Leftrightarrow \quad & \frac{dh(k)}{dt} = f(h_k, \theta, k) \\
 \end{align*}
+Ainsi, les couches discrètes du ResNet peuvent être comparées à une représentation continue dans un réseau neuronal. Le taux de changement de l'état sous-jacent dans un tel réseau est régulé par une fonction non linéaire, similaire dans sa nature à une EDO.
 
-Ici, les couches de réseaux neuronaux traditionnelles sont considérées comme des échantillons discrets d'un système dynamique en temps continu.
+Dans ce cadre, les couches des réseaux neuronaux traditionnels sont interprétées comme des échantillons discrets d'un système dynamique opérant en temps continu.
 
-\subsection{Convergence vers une EDO}
-Il est nécessaire de se poser la question de savoir si l'utilisation de méthodes de répartition de poids alternatives lors de l'initialisation et de la mise à l'échelle pourrait conduire à une équation différentielle ordinaire neuronale conventionnelle. Nous supposons que les poids $(V_k)_{1\leqslant k \leqslant L }$ et $(\theta_k)_{1\leqslant k \leqslant L }$ sont des discrétisations de fonctions lisses $\mathcal{V}:[0,1] \to \mathcal{R}^{d \times d}$ et $\Theta:[0,1] \to \mathcal{R}^{p}$. On considère alors l'itération générale avant avec $\alpha_L = \frac{1}{L}$, soit:
+\subsection{Convergence vers une EDO} % 3.2
+Avant de poursuivre, il est essentiel de se demander si l'initialisation des poids et la mise à l'échelle avec $\beta = \nicefrac{1}{2}$, comme mentionné dans le chapitre précédent, mènent effectivement à une équation différentielle ordinaire (EDO) conventionnelle.
+
+On suppose que les poids $(V_k)_{1\leqslant k \leqslant L }$ et $(\theta_k)_{1\leqslant k \leqslant L }$ sont des discrétisations de fonctions lisses $\mathscr{V}:[0,1] \to \mathbb{R}^{d \times d}$ et $\Theta:[0,1] \to \mathbb{R}^{p}$. On considère alors l'itération générale \ref*{eq13} avec $\alpha_L = \frac{1}{L}$, tel que:
 \begin{equation}\label{eq13}
     h_0 = Ax,\ h_{k+1} = h_k + \frac{1}{L}V_{k+1}g(h_k,\theta_{k+1}),\ 0 \leqslant k \leqslant L-1
 \end{equation}
-avec $V_k = \mathcal{V}_{k/L}$ et $\theta_k = \Theta_{k/L}$.
-Combiner avec l'idée d'EDO neuronale précédente, on considère $(V_k)_{1\leqslant k \leqslant L }$ et $(\theta_k)_{1\leqslant k \leqslant L }$ sont variables aléatoires en mettant $(\mathcal{V}_t)_{t \in [0,1]}$ et $(\Theta_t)_{t \in [0,1]}$ sont les temps continus processus stochastiques. Dans ce modèle, nous aurons besoin des hypothèses suivantes. Ces hypothèses constituent la base d'une dérivation théorique ultérieure et garantissent que les outils et méthodes mathématiques utilisés sont adaptés à l'analyse des modèles neuronale. 
+avec $V_k = \mathscr{V}_{k/L}$ et $\theta_k = \Theta_{k/L}$.
+Pour traiter $(V_k)_{1\leqslant k \leqslant L}$ et $(\theta_k)_{1\leqslant k \leqslant L}$ en tant que variables aléatoires, il est indispensable de définir $(\mathscr{V}_t)_{t \in [0,1]}$ et $(\Theta_t)_{t \in [0,1]}$ comme des processus stochastiques continus. Dans ce cadre, certaines hypothèses sont requises. Ces dernières forment le socle de notre démarche théorique et assurent l'adéquation des outils et méthodes mathématiques pour l'analyse de modèles neuronaux.
 
 \begin{assumption}\label{H5}
-    Pour chaque $0 \leqslant k \leqslant L-1$, les processus stochastique $\mathcal{V}$ et $\Theta$ sont presque sûrement Lipschitziens continus et bornés.
+    Pour chaque $0 \leqslant k \leqslant L-1$, les processus stochastique $\mathscr{V}$ et $\Theta$ sont presque sûrement Lipschitziens continus et bornés.
 \end{assumption}
 
 Plus précisément, il existe presque sûrement $K_{\mathscr{V}}, K_{\Theta}, C_{\mathscr{V}}, C_{\Theta}>0$, tel que, pour tous $s, t \in [0,1]$
