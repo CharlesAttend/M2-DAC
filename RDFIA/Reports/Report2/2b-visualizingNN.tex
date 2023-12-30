@@ -244,7 +244,7 @@ The distortions and repetitions are artifacts of the process. The network is not
         \centering
         \begin{frame}{}
             \animategraphics[width=.7\linewidth]{10}{SqueezeNet/wombat_animated_1000/frame-}{0}{999}
-        \end{frame}
+        \end{frame}%
         \caption{\href{gifs/SqueezeNet_wombat_animated_1000.mp4}{Animation}}
         \label{fig:class_viz_wombat:vid}
     \end{subfigure}
@@ -421,8 +421,8 @@ Initiating the process with an image from ImageNet is a valuable approach. It pr
         \centering
         \begin{frame}{}
             \animategraphics[width=\linewidth]{10}{SqueezeNet/bird_animated_same_init_img_reg++/frame-}{0}{199}
-        \end{frame}
-        \caption{} %(see \textit{SqueezeNet\_bird\_animated\_same\_init\_img\_reg++.gif})}
+        \end{frame}%
+        \caption{}
         \label{fig:class_viz_start_image:vid}
     \end{subfigure}
     \caption{Class visualization using SqueezeNet: (a) Last iteration starting from noise, (b) Last iteration starting from the same class, and (c) \href{gifs/SqueezeNet_bird_animated_same_init_img_reg++.mp4}{Animation} starting from the same class to maximize the score for the bee eater class, all with high blurring frequency (2) and a sligthly lower regularization ($ 1e^{-5} $ ).}
@@ -449,7 +449,7 @@ It pretty funny to create some objects from other objects. In \Cref{fig:class_vi
         \centering
         \begin{frame}{}
             \animategraphics[width=\linewidth]{10}{SqueezeNet/snail_animated_init_img_reg++/frame-}{0}{499}
-        \end{frame}
+        \end{frame}%
         \caption{\href{gifs/SqueezeNet_snail_animated_init_img_reg++.mp4}{Animation}}
         \label{fig:class_viz_start_image_dif:vid}
     \end{subfigure}
@@ -472,7 +472,7 @@ We conducted identical experiments using VGG16 this time. Visualizations are oft
         \centering
         \begin{frame}{}
             \animategraphics[width=.7\linewidth]{10}{VGG/snail_animated_init_img_reg++/frame-}{0}{199}
-        \end{frame}
+        \end{frame}%
         \caption{\href{gifs/VGG_snail_animated_init_img_reg++.mp4}{Animation}}
         \label{fig:class_viz_start_image_dif_VGG:vid}
     \end{subfigure}
