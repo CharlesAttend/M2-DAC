@@ -1,0 +1,107 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[a4paper, margin=2.5cm]{geometry}
+\usepackage{graphicx}
+\usepackage[french]{babel}
+
+\usepackage[default,scale=0.95]{opensans}
+\usepackage[T1]{fontenc}
+\usepackage{amssymb} %math
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{systeme}
+
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    pdftitle={Overleaf Example},
+    % pdfpagemode=FullScreen,
+    }
+\urlstyle{same} %\href{url}{Text}
+
+\theoremstyle{plain}% default
+\newtheorem{thm}{Théorème}[section]
+\newtheorem{lem}[thm]{Lemme}
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem*{cor}{Corollaire}
+%\newtheorem*{KL}{Klein’s Lemma}
+
+\theoremstyle{definition}
+\newtheorem{defn}{Définition}[section]
+\newtheorem{exmp}{Exemple}[section]
+% \newtheorem{xca}[exmp]{Exercise}
+
+\theoremstyle{remark}
+\newtheorem*{rem}{Remarque}
+\newtheorem*{note}{Note}
+%\newtheorem{case}{Case}
+
+
+
+\title{Fiche}
+\author{Charles Vin}
+\date{Date}
+
+\begin{document}
+\maketitle
+
+\section{Formule et définition}
+\begin{itemize}
+    \item Produit scalaire : $ \left\langle x, y \right\rangle = x^T y = \sum x_i y_i $ 
+    \item Norme : $ \left\| x \right\| = \sqrt{\left\langle x,x \right\rangle } $ 
+    \item Identité remarquable: $ \left\| a + b \right\| = \left\| a \right\| + \left\| b \right\| + 2 \left\langle a,b \right\rangle  $ 
+    \item Inégalité de Cauchy : $ \left| \left\langle x,y \right\rangle  \right| \leq \left\| x \right\| \left\| y \right\|   $ 
+    \item k-lipschitzienne : $ \left| f(x) - f(y) \right| \leq k \left| x - y \right|  $ Bouger dans l'espace d'arriver fait bouger $ k $ fois plus dans l'espace de départ.
+    \item L-Smooth: = gradient Lipschitz$ \forall \theta , \theta ^\prime, \left\| \nabla F(\theta ) - \nabla F(\theta ^\prime ) \right\| \leq  L \left\| \theta - \theta ^\prime  \right\| $ 
+    \item Bilinéarité du produit scalaire: 
+    \item Co-coercivity: $ \frac{1}{L} \left\| \nabla F(\theta ) - \nabla F(\theta ^\prime ) \right\| ^2 _2 \leq  \langle  \nabla F(\theta ) - \nabla F(\theta ^\prime ), \theta  - \theta ^\prime \rangle$ 
+    \item Inégalité triangulaire : $ \left\| x + y \right\| \leq \left\| x \right\| + \left\| y \right\|  $ 
+    \item GD : $ \theta _{t+1} = \theta _t - \gamma \nabla F(\theta _t) $ 
+    \item Polyak-Ruppert averaging : $ \bar{\theta }_T = \frac{1}{T} \sum_{t=1}^{T}\theta _t $ 
+    \item Sub gradient : $ f(x) - f(x_0) \geq \left\langle v, (x - x_0) \right\rangle  $ 
+\end{itemize}
+
+\section{Technique de preuve}
+\begin{itemize}
+    \item Penser au $ \pm  $ pour faire apparaitre un terme voulu
+    \item $ \nabla F(\theta ^\infty ) \approx \nabla F(\theta ^\star ) = 0 $ 
+    \item Trick de l'intégrale \begin{align*}
+        F(x - \gamma y) - F(x) &= F(x - \gamma y) - F(\theta - 0 \times y) \\
+        &= \left[ F(x - \tau y) \right]_0 ^\gamma \\
+        &= \int_{0}^{\gamma } ... 
+    \end{align*}
+    \item Si on a des inéagalités avec du $ \theta _1 $ et des sommes, potentiel somme d'inégalités
+\end{itemize}
+
+\section{Théorèmes importants}
+\begin{lem}[Descent lemma]
+    Assume that $ F $  is L-Smooth. Therefore $ \forall \theta , \theta ^\prime \in  $ domain of $ F $ 
+    \[
+        F(\theta ^\prime ) \leq  F(\theta ) + \langle \nabla F(\theta ) , \theta ^\prime  - \theta \rangle + \frac{L}{2} \left\| \theta ^\prime  - \theta  \right\| 
+    .\]
+\end{lem}
+
+\paragraph*{HEAVYBALL}[Polyak, 64]
+\begin{align*}
+    \beta _k &= \theta _k + (1 - \alpha _k) (\theta _k - \theta _{k-1}) \\
+    \theta _{k+1} &= \beta _k - \gamma \nabla F(\theta _k)
+\end{align*}
+
+\paragraph*{NESTEROV ALGO}[83]
+\begin{align*}
+    \beta _k &= \theta _k + (1 - \alpha _k) (\theta _k - \theta _{k-1}) \\
+    \theta _{k+1} &= \beta _k - \gamma \nabla F(\beta _k)
+\end{align*}
+
+\section{Gros gros plan du cours}
+\begin{itemize}
+    \item Basic of deterministic optim
+    \begin{itemize}
+        \item GD when L-Smooth
+        \item GD when not L-Smooth
+    \end{itemize}
+\end{itemize}
+\end{document}
