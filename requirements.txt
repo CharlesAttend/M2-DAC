@@ -1,32 +1,26 @@
-# base for TP
-datamaestro
+conllu
 datamaestro-image
 datamaestro-ml
 datamaestro-text
-ir_datasets
-git+https://github.com/allenai/ir_datasets.git
-conllu
-matplotlib
-numpy
-opencv-python
-pandas
-Pillow
-pylance
-scikit-learn
-scipy
-seaborn
-sympy
-tensorboard
-timm
-torch
-torchaudio
-torchmetrics
-torchvision
-tqdm
-
-# Personal
-black
+dice-ml
+hydra-core
 icecream
+imblearn
+ipykernel
+ipywidgets
+git+https://github.com/allenai/ir_datasets.git
+kaggle
+mlflow
+opencv-python
+pip-chill # for creating clean requirement.txt
+pynput
+pyqt6-webengine
+pyside6
+pytorch-ignite
+pytorch-lightning
+ruff # better linter/formater
+scikit-fda
+seaborn
+torch-tb-profiler
+torchaudio
 wandb
-papermill
-
