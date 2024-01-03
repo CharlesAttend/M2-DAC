@@ -38,9 +38,9 @@ L'hypothèse suivante est l'équivalent pour les gradients de ce qui est énonc�
     .\]
 \end{assumption}
 
-L'\Cref{H4} s'applique à toutes les architectures répertoriées dans la \Cref{tab:resnet_architectures}, comme le démontre la proposition suivante.
+L'\Cref{H4} s'applique à toutes les architectures répertoriées dans la \Cref{tab:resnetArchitectures}, comme le démontre la proposition suivante.
 \begin{proposition}\label{prop5}
-    Soit les réseaux \texttt{res-1}, \texttt{res-2} et \texttt{res-3} définit dans la \Cref{tab:resnet_architectures}. Supposons l'\Cref{H1} satisfaite et $ \sigma  $ dérivable presque partout avec $ a \leqslant \sigma ^\prime \leqslant b $. Alors
+    Soit les réseaux \texttt{res-1}, \texttt{res-2} et \texttt{res-3} définit dans la \Cref{tab:resnetArchitectures}. Supposons l'\Cref{H1} satisfaite et $ \sigma  $ dérivable presque partout avec $ a \leqslant \sigma ^\prime \leqslant b $. Alors
     \begin{itemize}
         \item [(i)] L'\Cref{H4} est valide pour \texttt{res-1}
         \item [(ii)] L'\Cref{H4} est valide pour \texttt{res-2} et \texttt{res-3} dès lors que les entrées de $ \sqrt{d} W_{k+1}, 0 \leqslant k \leqslant L-1 $ sont des variables aléatoires de variance unitaire, i.i.d, symétriques et indépendante de $ d $ et $ L $.
@@ -50,14 +50,14 @@ L'\Cref{H4} s'applique à toutes les architectures répertoriées dans la \Cref{
 Les propositions \Cref{prop6} et \ref{prop7} sont les homologues des \Cref{prop2} et \ref{prop3} pour l'analyse du gradient du coût à l'initialisation.
 
 \begin{proposition}\label{prop6}
-    Soit un ResNet (\ref{tab:resnet_architectures}) tel que les \Cref{H1} à \ref{H4} sont satisfaites. Si $ L \alpha _L ^2 \leqslant 1 $ alors, pour tout $ \delta \in (0,1) $ avec une probabilité d'au moins $ 1 - \delta  $ 
+    Soit un ResNet (\ref{tab:resnetArchitectures}) tel que les \Cref{H1} à \ref{H4} sont satisfaites. Si $ L \alpha _L ^2 \leqslant 1 $ alors, pour tout $ \delta \in (0,1) $ avec une probabilité d'au moins $ 1 - \delta  $ 
     \[
         \frac{\left\| p_0 - p_L \right\| ^2 }{\left\| p_l \right\| ^2 } \leqslant \frac{2 L \alpha _L ^2}{\delta }
     .\]
 \end{proposition}
 
 \begin{proposition}\label{prop7}
-    Soit un ResNet (\ref{tab:resnet_architectures}) tel que les \Cref{H1} à \ref{H4} sont satisfaites. Alors 
+    Soit un ResNet (\ref{tab:resnetArchitectures}) tel que les \Cref{H1} à \ref{H4} sont satisfaites. Alors 
     \[
         (1 + \frac{1}{2} \alpha _L ^2)^L - 1 \leqslant \mathbb{E}\left( \frac{\left\| p_0 - p_L \right\| ^2 }{\left\| p_l \right\| ^2 } \right) \leqslant (1 + \alpha _L ^2)^L - 1
     .\]
@@ -66,7 +66,7 @@ Les propositions \Cref{prop6} et \ref{prop7} sont les homologues des \Cref{prop2
 De façon similaire au \Cref{cor4}, le \Cref{cor8} est déduit à partir des \Cref{prop6} et \ref{prop7}.
 
 \begin{cor}\label{cor8}
-    Soit un ResNet (\ref{tab:resnet_architectures}) tel que les Hypothèses 1 à 4 sont satisfaites. En posant $ \alpha _L = 1 / L^\beta $ avec $ B > 0 $, on obtient 
+    Soit un ResNet (\ref{tab:resnetArchitectures}) tel que les Hypothèses 1 à 4 sont satisfaites. En posant $ \alpha _L = 1 / L^\beta $ avec $ B > 0 $, on obtient 
     \begin{enumerate}
         \item [(i)] Si $ \beta > 1/2 $, alors 
         \[
@@ -81,12 +81,12 @@ De façon similaire au \Cref{cor4}, le \Cref{cor8} est déduit à partir des \Cr
             \exp (\frac{1}{2}) - 1 \leqslant \mathbb{E}\left(\frac{\left\| p_0 - p_L \right\| ^2 }{\left\| p_l \right\| ^2 }\right) \leqslant \exp (4) - 1
         .\]
     \end{enumerate}
-    Ce corrolaire est illustré dans la \Cref{fig:cor8}.\todo{export la figure du pdf avec Windows}
+    Ce corrolaire est illustré dans la \Cref{fig:cor8}.
 \end{cor}
 
 \begin{figure}[H]
     \centering
-    % \includegraphics[width=.95\textwidth]{figs/figure_cor8.pdf}
+    \includegraphics[width=.95\textwidth]{figs/figure_cor8.pdf}
     \caption{Illustration du corollaire \ref{cor8}. Évolution de $ \left\| p_0 - p_L \right\| / \left\| p_L \right\| $ en fonction de $ L $ pour différente valeur de $ \beta  $.}
     \label{fig:cor8}
 \end{figure}

@@ -13,7 +13,7 @@ où $\pi = (A, B, (\theta_k)_{k \leqslant L}, (V_k)_{1 \leqslant k \leqslant L})
 % Un aspect important du modèle \cite{torchvision2016} est que la fonction de couche prend la forme d'une multiplication matrice-vecteur, ce qui sera crucial pour utiliser les résultats de concentration sur des variables aléatoires ??????? Important ????????? 
 Finalement, on définit $l: \mathbb{R}^{n_{\text{out}}} \times \mathbb{R}^{n_{\text{out}}} \to \mathbb{R}_+$ comme la fonction de coût, différentiable par rapport à son premier paramètre. Ce coût peut être une perte quadratique ou une entropie croisée. L'objectif de l'apprentissage est de trouver le paramètre optimal $\pi$ qui minimise le risque empirique $\mathscr{L}(\pi) = \sum_{i=1}^{n} l(F_\pi(x_i), y_i)$ à travers une descente de gradient stochastique ou l'une de ses variantes.
 
-Durant ce cours, nous nous focaliserons spécifiquement sur trois architectures classiques de ResNet, détaillées dans la \Cref{tab:resnet_architectures} ci-dessous. Il serait également pertinent d'explorer une quatrième architecture, qui intégrerait plusieurs couches linéaires ou convolutives.
+Durant ce cours, nous nous focaliserons spécifiquement sur trois architectures classiques de ResNet, détaillées dans la \Cref{tab:resnetArchitectures} ci-dessous. Il serait également pertinent d'explorer une quatrième architecture, qui intégrerait plusieurs couches linéaires ou convolutives.
 
 \begin{table}[H]
     \centering
@@ -25,7 +25,7 @@ Durant ce cours, nous nous focaliserons spécifiquement sur trois architectures 
         res-3 & \( h_{k+1} = h_k + \alpha_L V_{k+1}\text{ReLU}(W_{k+1}h_k) \) & \( \theta_{k+1} = W_{k+1} \) \\ \hline
     \end{tabular}
     \caption{Exemples d'architectures ResNet considérées dans l'article. Dans les deux premiers cas, la fonction d'activation \( \sigma \) est telle que, pour tout \( x \in \mathbb{R} \), \( a|x| \leqslant |\sigma(x)| \leqslant b|x| \), avec \( \nicefrac{1}{\sqrt{2}} \leqslant a < b \leqslant 1 \). Dans les deux derniers cas, \( W_{k+1} \in \mathbb{R}^{d \times d} \).}
-    \label{tab:resnet_architectures}
+    \label{tab:resnetArchitectures}
 \end{table}
 
 \subsection*{Initialisation des paramètres}
@@ -66,7 +66,7 @@ Avec cette définition en tête, passons maintenant aux hypothèses. Pour tout $
 \end{note}
 
 \begin{proposition}[Admis]\label{prop1}
-    Soit les modèles \texttt{res-1}, \texttt{res-2}, \texttt{res-3} décrit dans la \Cref{tab:resnet_architectures}, on a \begin{itemize}
+    Soit les modèles \texttt{res-1}, \texttt{res-2}, \texttt{res-3} décrit dans la \Cref{tab:resnetArchitectures}, on a \begin{itemize}
         \item [(i)] L'\Cref{H2} est valide pour l'architecture \texttt{res-1}.
         \item [(ii)] L'\Cref{H2} est valide pour les architectures \texttt{res-2} et \texttt{res-3} dès lors que les entrées de $ \sqrt{d}W_{k+1}, 0 \leqslant k \leqslant L-1 $ sont des variables aléatoire de variance unitaire, i.i.d., symétriques, sub-gaussienne et indépendante de $ d $ et $ L $.
     \end{itemize}

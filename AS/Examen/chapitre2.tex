@@ -34,28 +34,26 @@ Dans ce cadre, les couches des réseaux neuronaux traditionnels sont interprét�
 \subsection{Convergence vers une EDO} % 3.2
 Avant de poursuivre, il est essentiel de se demander si l'initialisation des poids et la mise à l'échelle avec $\beta = \nicefrac{1}{2}$, comme mentionné dans le chapitre précédent, mènent effectivement à une équation différentielle ordinaire (EDO) conventionnelle.
 
-On suppose que les poids $(V_k)_{1\leqslant k \leqslant L }$ et $(\theta_k)_{1\leqslant k \leqslant L }$ sont des discrétisations de fonctions lisses $\mathscr{V}:[0,1] \to \mathbb{R}^{d \times d}$ et $\Theta:[0,1] \to \mathbb{R}^{p}$. On considère alors l'itération générale \ref*{eq13} avec $\alpha_L = \frac{1}{L}$, tel que:
+On suppose que les poids $(V_k)_{1\leqslant k \leqslant L }$ et $(\theta_k)_{1\leqslant k \leqslant L }$ sont des discrétisations de fonctions lisses $\mathscr{V}:[0,1] \to \mathbb{R}^{d \times d}$ et $\Theta:[0,1] \to \mathbb{R}^{p}$. On considère alors l'itération générale \ref*{eq13} avec $\alpha_L = \nicefrac{1}{L}$, tel que:
 \begin{equation}\label{eq13}
-    h_0 = Ax,\ h_{k+1} = h_k + \frac{1}{L}V_{k+1}g(h_k,\theta_{k+1}),\ 0 \leqslant k \leqslant L-1
+    h_0 = Ax,\ h_{k+1} = h_k + \frac{1}{L}V_{k+1}g(h_k,\theta_{k+1}),\quad \ 0 \leqslant k \leqslant L-1
 \end{equation}
 avec $V_k = \mathscr{V}_{k/L}$ et $\theta_k = \Theta_{k/L}$.
 Pour traiter $(V_k)_{1\leqslant k \leqslant L}$ et $(\theta_k)_{1\leqslant k \leqslant L}$ en tant que variables aléatoires, il est indispensable de définir $(\mathscr{V}_t)_{t \in [0,1]}$ et $(\Theta_t)_{t \in [0,1]}$ comme des processus stochastiques continus. Dans ce cadre, certaines hypothèses sont requises. Ces dernières forment le socle de notre démarche théorique et assurent l'adéquation des outils et méthodes mathématiques pour l'analyse de modèles neuronaux.
 
 \begin{assumption}\label{H5}
-    Pour chaque $0 \leqslant k \leqslant L-1$, les processus stochastique $\mathscr{V}$ et $\Theta$ sont presque sûrement Lipschitziens continus et bornés.
+    Pour chaque $0 \leqslant k \leqslant L-1$, les processus stochastique $\mathscr{V}$ et $\Theta$ sont presque sûrement Lipschitziens et bornés. \\
+    Plus précisément, il existe presque sûrement $K_{\mathscr{V}}, K_{\Theta}, C_{\mathscr{V}}, C_{\Theta}>0$, tel que, pour tous $s, t \in [0,1]$
+    \begin{align*}
+        \left\|\mathscr{V}_t-\mathscr{V}_s\right\| &\leqslant K_{\mathscr{V}}|t-s| 
+        &&\left\|\mathscr{V}_t\right\| \leqslant C_{\mathscr{V}} \\
+        \left\|\Theta_t-\Theta_s\right\| &\leqslant K_{\Theta}|t-s| 
+        &&\left\|\Theta_t\right\| \leqslant C_{\Theta}
+    \end{align*}
 \end{assumption}
 
-Plus précisément, il existe presque sûrement $K_{\mathscr{V}}, K_{\Theta}, C_{\mathscr{V}}, C_{\Theta}>0$, tel que, pour tous $s, t \in [0,1]$
-
-\begin{align*}
-    \left\|\mathscr{V}_t-\mathscr{V}_s\right\| &\leqslant K_{\mathscr{V}}|t-s| 
-    &&\left\|\mathscr{V}_t\right\| \leqslant C_{\mathscr{V}} \\
-    \left\|\Theta_t-\Theta_s\right\| &\leqslant K_{\Theta}|t-s| 
-    &&\left\|\Theta_t\right\| \leqslant C_{\Theta}
-\end{align*}
-
 \begin{assumption}\label{H6}
-La fonction $g$ est Lipschitzienne continue sur les ensembles compacts, dans le sens où pour tout compact $\mathscr{P} \subseteq \mathbb{R}^p$, il existe $K_{\mathscr{P}} > 0$  tel que, pour tous $h, h^{\prime} \in \mathbb{R}^d, \theta \in \mathscr{P}$,
+La fonction $g$ est Lipschitzienne sur les ensembles compacts, dans le sens où pour tout compact $\mathscr{P} \subseteq \mathbb{R}^p$, il existe $K_{\mathscr{P}} > 0$  tel que, pour tous $h, h^{\prime} \in \mathbb{R}^d, \theta \in \mathscr{P}$,
 $$
     \left\|g(h, \theta)-g\left(h^{\prime}, \theta\right)\right\| \leqslant K_{\mathscr{P}}\left\|h-h^{\prime}\right\|,
 $$
@@ -70,17 +68,15 @@ Sous les \Cref{H5} et \ref{H6}, la récurrence \ref{eq13} converge presque sûre
 \begin{equation}\label{eq14}
     H_0=A x, \quad d H_t=\mathscr{V}_t g\left(H_t, \Theta_t\right) d t, \quad t \in[0,1]
 \end{equation}
-comme la proposition ci-dessous.
+comme le montre la proposition ci-dessous.
 
 \begin{proposition}\label{prop11}
-    Considérons le modèle (\ref{eq13}) tel que les \Cref{H5} et \ref{H6} sont satisfaites. Alors l'EDO (\ref{eq14}) a une solution unique $H$, et, presque sûrement, il existe un $c > 0$
-    tel que, pour tout $0 \leqslant k \leqslant L$,
-
-    \begin{equation}  
-    \left\|H_{k / L}-h_k\right\| \leqslant \frac{c}{L}
-    \end{equation}
+    Considérons le modèle (\ref{eq13}) tel que les \Cref{H5} et \ref{H6} sont satisfaites. Alors l'EDO (\ref{eq14}) a une solution unique $H$, et, presque sûrement, il existe un $c > 0$ tel que, pour tout $0 \leqslant k \leqslant L$,
+    \[
+        \left\|H_{k / L}-h_k\right\| \leqslant \frac{c}{L}
+    .\]
 \end{proposition}
-
+\subsection{Stabilité et mise à l'échelle}
 En supposant que les poids du réseau sont des discrétisations d'une fonction lisse (\Cref{H5}), il est possible d'obtenir des résultats de stabilité, en fonction de la valeur de $\beta$.
 
 Nous montrons ci-dessous que $\beta$ est une valeur critique, en examinant les états cachés. Nous avons la proposition suivant.
@@ -92,11 +88,11 @@ Nous montrons ci-dessous que $\beta$ est une valeur critique, en examinant les �
             \[
                 \frac{\left\| h_L - h_0 \right\| }{\left\| h_0 \right\| } \xrightarrow{L \to \infty } 0 
             .\]
-        \item [(ii)] Si $\beta = 1 $, alors presque sûrement,il existe un $c > 0$ tel que
+        \item [(ii)] Si $\beta = 1 $, alors presque sûrement, il existe un $c > 0$ tel que
             \[
                 \frac{\left\| h_L - h_0 \right\| }{\left\| h_0 \right\| } \leqslant c
             .\]
-        \item [(iii)] Si $\beta < 1 $, Le cas de l'explosion est plus délicat à traiter, nous n'en discuteros pas ici.
+        \item [(iii)] Le cas de l'explosion (lorsque $ \beta < 1) $ est plus délicat à traiter, nous n'en discuterons pas ici.
     \end{itemize}
 \end{proposition}
 
@@ -113,7 +109,7 @@ Nous montrons ci-dessous que $\beta$ est une valeur critique, en examinant les �
     $$
         \left\|h_{k+1}\right\| \leqslant \exp \left(C_1\right)\left(\left\|h_0\right\|+\frac{C_2}{C_1}\right) .
     $$
-    Car $g$ est lipschitzien continu en ensemble compact, il est délimité sur chaque boule de $\mathbb{R}^d \times \mathbb{R}^p$. Le résultat est alors une conséquence de l'identité
+    Car $g$ est lipschitzien sur un ensemble compact, il est délimité sur chaque boule de $\mathbb{R}^d \times \mathbb{R}^p$. Le résultat est alors une conséquence de l'identité suivante
     $$
         h_L-h_0=\alpha_L \sum_{k=0}^{L-1} V_{k+1} g\left(h_k, \theta_{k+1}\right)
     $$
@@ -125,12 +121,12 @@ Nous montrons ci-dessous que $\beta$ est une valeur critique, en examinant les �
 \end{proof}
 
 \begin{proposition}\label{prop13}
-    Considèrons le modèle \texttt{res-1} ($h_{k+1} = h_k +\alpha_{L}V_{k+1}\sigma(h_k) $), en prenant $\sigma$ comme fonction d'identité. Supposons que l'\Cref{H5} soit satisfaite et que $\mathcal{V} _0 ^T$ ait une valeur propre positive. Soit $\alpha_L = \frac{1}{L^{\beta}}$, avec $\beta \in (0,1)$. Alors, 
+    Considèrons le modèle \texttt{res-1} ($h_{k+1} = h_k +\alpha_{L}V_{k+1}\sigma(h_k) $), en prenant $\sigma$ comme fonction d'identité. Supposons que l'\Cref{H5} soit satisfaite et que $\mathscr{V} _0 ^T$ ait une valeur propre positive. Soit $\alpha_L = \nicefrac{1}{L^{\beta}}$, avec $\beta \in (0,1)$. Alors, 
     \[
         \max_{k}\frac{||h_k-h_0||}{||h_0||} \xrightarrow{L \to \infty } \infty
     .\]
 \end{proposition}
-Dans ce contexte, nous pouvons observer expérimentalement une évolution du comportement de la sortie et des gradients lorsque la valeur de L augmente, similaire à celle explorée dans la section précédente. Cependant, le point remarquable est que la séparation se produit pour $\beta = 1$ ici.
+Dans ce cadre, nous pouvons observer expérimentalement que, à mesure que la valeur de $L$ augmente, la sortie et les gradients du réseau évoluent d'une manière similaire à celle décrite dans la section précédente (\Cref{fig:cor4} et \ref{fig:cor8}). Toutefois, il est important de noter que, dans ce cas, la séparation des comportements se manifeste pour $\beta = 1$, et non pour $\beta = \nicefrac{1}{2}$, contrairement aux prédictions des \Cref{prop12} et \ref{prop13}.
 
 \section{Équation différentielle stochastique}
 Les équations différentielles stochastiques (EDS) étendent les équations différentielles ordinaires (EDO) en incluant un terme aléatoire, souvent utilisé pour modéliser l'impact de processus aléatoires ou de bruit. Formellement, une EDS s'exprime sous la forme $dy = f(k,y)dk + g(k,y)dB$, où $B$ représente un mouvement brownien ou un processus de Wiener.
@@ -141,36 +137,42 @@ En apprentissage profond, les EDS trouvent des applications pratiques pour simul
 Les EDS neuronales se distinguent des EDO neuronales par l'intégration d'un aspect aléatoire, ce qui permet une meilleure gestion de l'incertitude et du bruit dans les données. Le mouvement brownien, $B$ est un modèle mathématique pour décrire le chemin d'une marche aléatoire. Dans le contexte des réseaux de neurones profonds, il peut modéliser les fluctuations aléatoires, telles que les variations dans les mises à jour de poids ou les valeurs d'activation, avec un impact particulièrement marqué dans les architectures multicouches où ces fluctuations peuvent s'accumuler.
 
 \begin{definition}
-Le mouvement brownien unidimensionnel $(B_t)_{t \geqslant 0} $ est un processus stochastique continu,avec des incréments indépendants, dépendant du temps $t$ et vérifiant : $B_0 = 0$ et pour tous $0 \leqslant s \le t \leqslant 1, B_t - B_s \sim \mathcal{N}(0,t-s)$.
+Un mouvement brownien unidimensionnel $(B_t)_{t \geqslant 0} $ est un processus stochastique continu,avec des incréments indépendants, dépendant du temps $t$ et vérifiant : $B_0 = 0$ et pour tous $0 \leqslant s \le t \leqslant 1, B_t - B_s \sim \mathcal{N}(0,t-s)$.
+\[
+    B_0 = 0
+.\]
+\[
+    B_t - B_s \sim \mathcal{N}(0,t-s)\quad \forall 0 \leqslant s \le t \leqslant 1
+.\]
 \end{definition}
 
-L'un des principaux messages du Chapitre \ref{chap2} est que l'initialisation standard avec les paramètres i.i.d. conduit à un modèle non dégénéré pour les grandes valeurs de L seulement lorsque $L\alpha_L^2 \approx 1$. C'est à dire pour $\beta = 1/2$ avec $\alpha_L=\frac{1}{L^{\beta}}$.
+L'un des principaux messages du Chapitre \ref{chap2} est que l'initialisation standard avec les paramètres i.i.d. conduit à un modèle non dégénéré pour les grandes valeurs de $L$ seulement lorsque $L\alpha_L^2 \approx 1$. C'est à dire pour $\beta = \nicefrac{1}{2}$ avec $\alpha_L=\nicefrac{1}{L^{\beta}}$ (\Cref{prop2} et \ref{prop3}).
 
-(Par les propositions et corollaires d'avance). De manière remarquable, il convient de noter que ce régime correspond à la discrétisation d'une EDS dans la limite du temps continu. Pour étayer cette affirmation, prenons en compte, à des fins de simplification, le modèle ResNet \texttt{res-1} discret :
+De manière remarquable, il convient de noter que ce régime correspond à la discrétisation d'une EDS dans la limite du temps continu. Pour étayer cette affirmation, prenons en compte, à des fins de simplification, le modèle ResNet \texttt{res-1} discret :
 \begin{equation}\label{eq11}
     h_{k+1} = h_k + \frac{1}{\sqrt{L}}V_{k+1}\sigma(h_k) , 0 \leqslant k \leqslant L-1 
 \end{equation}
-où les entrées de $V_{k+1}$ sont supposées être i.i.d et suivant une loi normale $\mathcal{N}(0,2/d)$.
-Maintenant, on pose $\mathbf{B}:[0,1] \rightarrow \mathbb{R}^{d \times d}$ comme un movement brownien de dimension $ (d \times d) $, ainsi on retrouve $\left(B_{i j}\right)_{1 \leqslant i, j \leqslant d}$ comme un mouvement brownien unidimensionnel. Maintenant, pour tous $0 \leqslant k \leqslant L-1$ et tous $1 \leqslant i, j \leqslant d$, on a
+où les entrées de $V_{k+1}$ sont supposées être i.i.d et suivant une loi normale $\mathcal{N}(0, \nicefrac{2}{d})$.
+On pose maintenant $\mathbf{B}:[0,1] \rightarrow \mathbb{R}^{d \times d}$ movement brownien de dimension $ (d \times d) $, ainsi $\left(B_{i j}\right)_{1 \leqslant i, j \leqslant d}$ sont des mouvements browniens unidimensionnels. Maintenant, pour tous $0 \leqslant k \leqslant L-1$ et tous $1 \leqslant i, j \leqslant d$, on a
 $$
     \mathbf{B}_{(k+1) / L, i, j}-\mathbf{B}_{k / L, i, j} \sim \mathcal{N}\left(0, \frac{1}{L}\right).
 $$
-et les incréments pour différentes valeurs de $(i, j, k)$ sont indépendants. En conséquence, l'\Cref{eq11} est équivalente en distribution à la récurrence
+et les incréments pour différentes valeurs de $(i, j, k)$ sont indépendants. En conséquence, l'\Cref{eq11} est équivalente en distribution à la récurrence suivante
 $$
     h_{k+1}^{\top}=h_k^{\top}+\sqrt{\frac{2}{d}} \sigma\left(h_k^{\top}\right)\left(\mathbf{B}_{(k+1) / L}-\mathbf{B}_{k / L}\right), \quad 0 \leqslant k \leqslant L-1 .
 $$
-cat $V_{k+1}$ a même distribution de $V_{k+1}^{\top}$. On peut obtenir que $\{k / L, 0 \leqslant k \leqslant L\}$ 
+car $V_{k+1}$ a même distribution de $V_{k+1}^{\top}$. On peut obtenir que pour le cadrillage $\{k / L, 0 \leqslant k \leqslant L\}$ on a
 \begin{equation}\label{eq12}
     d H_t^{\top}=\sqrt{\frac{2}{d}} \sigma\left(H_t^{\top}\right) d \mathbf{B}_t, \quad t \in[0,1]
 \end{equation}
-où la sortie du réseau est désormais fonction de la valeur finale de $H$, c'est-à-dire $H1$. Le lien entre le ResNet discret (\ref{eq11}) et l'EDS (\ref{eq12}) est formalisé dans la proposition suivante.
+où la sortie du réseau est désormais fonction de la valeur finale de $H$, c'est-à-dire $H_1$. Le lien entre le ResNet discret (\ref{eq11}) et l'EDS (\ref{eq12}) est formalisé dans la proposition suivante.
 
 \begin{proposition}\label{prop10}
-    Considérons le modèle \texttt{res-1}, où les entrées de $V_{k+1}$ sont des variables aléatoires i.i.d., gaussiennes $\mathcal{N}(0,2 / d)$. Supposons que la fonction d'activation $\sigma$ soit lipschitzienne. Alors l'EDS (\ref{eq12}) a une unique solution $H$ et, pour tout $0 \leqslant k \leqslant L$,
+    Considérons le modèle \texttt{res-1}, où les entrées de $V_{k+1}$ sont des variables aléatoires i.i.d., gaussiennes $\mathcal{N}(0, \nicefrac{2}{d})$. Supposons que la fonction d'activation $\sigma$ soit lipschitzienne. Alors l'EDS (\ref{eq12}) a une unique solution $H$ et, pour tout $0 \leqslant k \leqslant L$,
     $$
         \mathbb{E}\left(\left\|H_{k / L}-h_k\right\|\right) \leqslant \frac{c}{\sqrt{L}},
     $$
-    pour un $c>0$.
+    pour un $c>0$ quelconque.
 \end{proposition}
 
 \begin{proof}[\Cref{prop10}]
@@ -178,19 +180,19 @@ où la sortie du réseau est désormais fonction de la valeur finale de $H$, c'e
     $$
     d H_t^{\top}=\sqrt{\frac{d}{2}} \sigma\left(H_t^{\top}\right) d B_t
     $$
-    Supposons $a(h, t)=0$ et $b(h, t)=\sqrt{\frac{d}{2}} \sigma(h)$,On doit vérifier les hypothèses suivantes:
+    Supposons $a(h, t)=0$ et $b(h, t)=\sqrt{\frac{d}{2}} \sigma(h)$, on doit vérifier les hypothèses suivantes:
     \begin{itemize}
-        \item [$\left(H_1\right)$] Les fonctions $a(\cdot, \cdot)$ et $b(\cdot, \cdot)$ sont jointe mesurables en $\mathbb{R}^d \times[0,1]$.
-        \item [$\left(H_2\right)$] Il existe un constante  $C_1>0$ tel que, pour tous $x, y \in \mathbb{R}^d, t \in[0,1]$,
+        \item [$\left(H_1\right)$] Les fonctions $a(\cdot, \cdot)$ et $b(\cdot, \cdot)$ sont conjointement mesurables en $\mathbb{R}^d \times[0,1]$.
+        \item [$\left(H_2\right)$] Il existe une constante  $C_1>0$ tel que, pour tous $x, y \in \mathbb{R}^d, t \in[0,1]$,
         $$
             \|a(x, t)-a(y, t)\|+\|b(x, t)-b(y, t)\| \leqslant C_1\|x-y\| .
         $$
-        \item [$\left(H_3\right)$] Il existe un constante $C_2>0$ tel que, pour tous $x \in \mathbb{R}^d, t \in[0,1]$,
+        \item [$\left(H_3\right)$] Il existe une constante $C_2>0$ tel que, pour tous $x \in \mathbb{R}^d, t \in[0,1]$,
         $$
             \|a(x, t)\|+\|b(x, t)\| \leqslant C_2(1+\|x\|).
         $$
         \item [$\left(H_4\right)$] $\mathbb{E}\left(\mid H_0 \|^2\right)<\infty$.
-        \item [$\left(H_5\right)$] Il existe un constante $C_3>0$ tel que, pour tous $x \in \mathbb{R}^d, s, t \in[0,1]$,
+        \item [$\left(H_5\right)$] Il existe une constante $C_3>0$ tel que, pour tous $x \in \mathbb{R}^d, s, t \in[0,1]$,
         $$
         \|a(x, t)-a(x, s)\|+\|b(x, t)-b(x, s)\| \leqslant C_3(1+\|x\|)|t-s|^{1 / 2} .
         $$
@@ -209,14 +211,15 @@ Fixer le facteur d'échelle $\beta$ à $\nicefrac{1}{2}$ ne se limite pas à gé
 La plupart des fonctions d'activation classiques (telles que ReLU) sont lipschitzienne. Cela indique que ces fonctions ont certaines limites en termes de taux de changement, ce qui est important pour la stabilité et la prévisibilité du réseau.
 
 \begin{enumerate}
-    \item Lorsque le facteur d'échelle $\beta = 1 $ ($\alpha$ = $\frac{1}{L}$) et que l'initialisation des poids n'est pas i.i.d., le modèle correspondant tend vers une EDO.
-    Parce que les poids ne sont pas identifiés, le comportement du réseau est plus déterministe et peut être affecté par une stratégie d'initialisation ou une distribution de poids spécifique. Dans ce cas, il est approprié d'utiliser des EDO pour simuler le comportement du réseau, car les EDO fournissent un moyen d'analyser les systèmes dynamiques dans un cadre déterministe.
-    \item Lorsque le facteur d'échelle $\beta = 1/2 $ ($\alpha$ = $\frac{1}{\sqrt{L}}$) et que l'initialisation des poids est i.i.d., le modèle correspondant tend vers une EDS.
+    \item Lorsque le facteur d'échelle $\beta = 1 $ ($\alpha$ = $\nicefrac{1}{L}$) et que l'initialisation des poids n'est pas i.i.d., le modèle correspondant tend vers une EDO.
+    Dans ce contexte, où les poids ne sont pas uniformément distribués, le comportement du réseau est plus déterministe et peut être affecté par une stratégie d'initialisation particulière ou une distribution de poids spécifique. Dans ce cas, il est pertinent d'utiliser des EDO pour simuler le comportement du réseau, car elles fournissent un moyen d'analyser les systèmes dynamiques dans un cadre déterministe.
+    \item Lorsque le facteur d'échelle $\beta = 1/2 $ ($\alpha$ = $\nicefrac{1}{\sqrt{L}}$) et que l'initialisation des poids est i.i.d., le modèle correspondant tend vers une EDS.
 \end{enumerate}
 Dans l'ensemble, le choix d'utiliser les EDS ou les EDO dépend de la nature des poids dans le modèle (i.i.d. ou non-i.i.d.) et du comportement du réseau que nous souhaitons capturer (stochastique ou déterministe).
 
-Ce modèle est intéressant dans la mesure où le mouvement brownien des EDS est ($\frac{1}{2}-\epsilon$)-Holder, le processus stochastique lipschitzien des EDO est $1$-Holder.
+% On parle pas de ça
+% Ce modèle est intéressant dans la mesure où le mouvement brownien des EDS est ($\frac{1}{2}-\epsilon$)-Holder, le processus stochastique lipschitzien des EDO est $1$-Holder.
 
-Il est important de noter que le choix de la mise à l'échelle d'un ResNet semble être étroitement lié à la régularité des poids en fonction de la couche. Plus précisément, dans tous les régimes, le facteur d'échelle critique entre l'explosion et l'identité semble être étroitement lié à la régularité des poids en fonction de la couche. Ces résultats ont une interprétation naturelle en termes de régularité (Holder) du processus stochastique en temps continu sous-jacent.
+% Il est important de noter que le choix de la mise à l'échelle d'un ResNet semble être étroitement lié à la régularité des poids en fonction de la couche. Plus précisément, dans tous les régimes, le facteur d'échelle critique entre l'explosion et l'identité semble être étroitement lié à la régularité des poids en fonction de la couche. Ces résultats ont une interprétation naturelle en termes de régularité (Holder) du processus stochastique en temps continu sous-jacent.
 
-Ces modèles en temps continu, à la fois équations différentielles ordinaires (EDO) et équations différentielles stochastiques (EDS), offrent un cadre exhaustif pour l'analyse et l'interprétation du comportement des réseaux de neurones résiduels (ResNets) profonds. Ils établissent ainsi un lien entre les architectures de deep learning discrètes et la théorie approfondie des équations différentielles.
+% Ces modèles en temps continu, à la fois EDO et EDS, offrent un cadre exhaustif pour l'analyse et l'interprétation du comportement des ResNets profonds. Ils établissent ainsi un lien entre les architectures de deep learning discrètes et la théorie approfondie des équations différentielles.
