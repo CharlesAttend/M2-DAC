@@ -62,6 +62,9 @@
     \item GD : $ \theta _{t+1} = \theta _t - \gamma \nabla F(\theta _t) $ 
     \item Polyak-Ruppert averaging : $ \bar{\theta }_T = \frac{1}{T} \sum_{t=1}^{T}\theta _t $ 
     \item Sub gradient : $ f(x) - f(x_0) \geq \left\langle v, (x - x_0) \right\rangle  $ 
+    \item KKT : 
+    \item $ \frac{d}{dt} \left\| f(t) \right\| = \frac{\left\langle f(t) , f^\prime (t) \right\rangle }{\left\| f(t) \right\| } $ 
+    \item $ \frac{d}{dt} \left\| f(t) \right\| ^2 = 2 \left\langle f(t) , f^\prime (t) \right\rangle $
 \end{itemize}
 
 \section{Technique de preuve}
@@ -74,6 +77,11 @@
         &= \int_{0}^{\gamma } ... 
     \end{align*}
     \item Si on a des inéagalités avec du $ \theta _1 $ et des sommes, potentiel somme d'inégalités
+    \item On utilise souvent la cocoercivity du gradient avec $ \nabla F(\theta ^\star ) = 0 $ 
+    \[
+        \left\| \nabla F(\theta _t) \right\| \leq L \left\langle \nabla F(\theta _t), \theta _t - \theta ^\star  \right\rangle 
+    .\]
+     
 \end{itemize}
 
 \section{Théorèmes importants}
@@ -102,6 +110,11 @@
     \begin{itemize}
         \item GD when L-Smooth
         \item GD when not L-Smooth
+    \end{itemize}
+    \item SGD \begin{itemize}
+        \item Tourne autour de la solution ($ Var(\nabla F_i(\theta ^\star )) = 1/3 $ ) 
+        \item Polyak averaging fix ça 
+        \item Vanishing step size 
     \end{itemize}
 \end{itemize}
 \end{document}
