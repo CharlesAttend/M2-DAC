@@ -64,14 +64,14 @@ $$
 \end{assumption}
 
 
-Sous les \Cref{H5} et \ref{H6}, la récurrence \ref{eq13} converge presque sûrement vers l'EDO neuronale donnée par
+Sous les \Cref{H5,H6}, la récurrence \ref{eq13} converge presque sûrement vers l'EDO neuronale donnée par
 \begin{equation}\label{eq14}
     H_0=A x, \quad d H_t=\mathscr{V}_t g\left(H_t, \Theta_t\right) d t, \quad t \in[0,1]
 \end{equation}
 comme le montre la proposition ci-dessous.
 
 \begin{proposition}\label{prop11}
-    Considérons le modèle (\ref{eq13}) tel que les \Cref{H5} et \ref{H6} sont satisfaites. Alors l'EDO (\ref{eq14}) a une solution unique $H$, et, presque sûrement, il existe un $c > 0$ tel que, pour tout $0 \leqslant k \leqslant L$,
+    Considérons le modèle (\ref{eq13}) tel que les \Cref{H5,H6} sont satisfaites. Alors l'EDO (\ref{eq14}) a une solution unique $H$, et, presque sûrement, il existe un $c > 0$ tel que, pour tout $0 \leqslant k \leqslant L$,
     \[
         \left\|H_{k / L}-h_k\right\| \leqslant \frac{c}{L}
     .\]
@@ -82,7 +82,7 @@ En supposant que les poids du réseau sont des discrétisations d'une fonction l
 Nous montrons ci-dessous que $\beta$ est une valeur critique, en examinant les états cachés. Nous avons la proposition suivant.
 
 \begin{proposition}\label{prop12}
-    Sous les hypothèses \ref{H5} et \ref{H6}, soit $\alpha_L = \frac{1}{L^{\beta}}$, avec $\beta >0 $.
+    Sous les \Cref{H5,H6}, soit $\alpha_L = \frac{1}{L^{\beta}}$, avec $\beta >0 $.
     \begin{itemize}
         \item [(i)] Si $\beta > 1 $, alors presque sûrement, 
             \[
@@ -126,7 +126,7 @@ Nous montrons ci-dessous que $\beta$ est une valeur critique, en examinant les �
         \max_{k}\frac{||h_k-h_0||}{||h_0||} \xrightarrow{L \to \infty } \infty
     .\]
 \end{proposition}
-Dans ce cadre, nous pouvons observer expérimentalement que, à mesure que la valeur de $L$ augmente, la sortie et les gradients du réseau évoluent d'une manière similaire à celle décrite dans la section précédente (\Cref{fig:cor4} et \ref{fig:cor8}). Toutefois, il est important de noter que, dans ce cas, la séparation des comportements se manifeste pour $\beta = 1$, et non pour $\beta = \nicefrac{1}{2}$, contrairement aux prédictions des \Cref{prop12} et \ref{prop13}.
+Dans ce cadre, nous pouvons observer expérimentalement que, à mesure que la valeur de $L$ augmente, la sortie et les gradients du réseau évoluent d'une manière similaire à celle décrite dans la section précédente (\Cref{fig:cor4,fig:cor8}). Toutefois, il est important de noter que, dans ce cas, la séparation des comportements se manifeste pour $\beta = 1$, et non pour $\beta = \nicefrac{1}{2}$, contrairement aux prédictions des \Cref{prop12,prop13}.
 
 \section{Équation différentielle stochastique}
 Les équations différentielles stochastiques (EDS) étendent les équations différentielles ordinaires (EDO) en incluant un terme aléatoire, souvent utilisé pour modéliser l'impact de processus aléatoires ou de bruit. Formellement, une EDS s'exprime sous la forme $dy = f(k,y)dk + g(k,y)dB$, où $B$ représente un mouvement brownien ou un processus de Wiener.
@@ -146,7 +146,7 @@ Un mouvement brownien unidimensionnel $(B_t)_{t \geqslant 0} $ est un processus 
 .\]
 \end{definition}
 
-L'un des principaux messages du Chapitre \ref{chap2} est que l'initialisation standard avec les paramètres i.i.d. conduit à un modèle non dégénéré pour les grandes valeurs de $L$ seulement lorsque $L\alpha_L^2 \approx 1$. C'est à dire pour $\beta = \nicefrac{1}{2}$ avec $\alpha_L=\nicefrac{1}{L^{\beta}}$ (\Cref{prop2} et \ref{prop3}).
+L'un des principaux messages du Chapitre \ref{chap2} est que l'initialisation standard avec les paramètres i.i.d. conduit à un modèle non dégénéré pour les grandes valeurs de $L$ seulement lorsque $L\alpha_L^2 \approx 1$. C'est à dire pour $\beta = \nicefrac{1}{2}$ avec $\alpha_L=\nicefrac{1}{L^{\beta}}$ (\Cref{prop2,prop3}).
 
 De manière remarquable, il convient de noter que ce régime correspond à la discrétisation d'une EDS dans la limite du temps continu. Pour étayer cette affirmation, prenons en compte, à des fins de simplification, le modèle ResNet \texttt{res-1} discret :
 \begin{equation}\label{eq11}

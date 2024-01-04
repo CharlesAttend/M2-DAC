@@ -5,7 +5,7 @@ Dans la section précédente, nous avons étudié le comportement de la sortie d
     \qquad & p_k = p_{k+1} + \alpha _L \frac{\partial g(h_k, \theta _{k+1}) ^T}{\partial h}  V_{k+1}^T p_{k+1} \\
     % \Leftrightarrow & \left\| p_k \right\| ^2 = \left\| p_{k+1} \right\| ^2 + \alpha _L ^2 \left\| \frac{\partial g(h_k, \theta _{k+1}) ^T}{\partial h} V_{k+1}^T p_{k+1} \right\| ^2 + 2 \alpha _L \left\langle p_{k+1}, \frac{\partial g(h_k, \theta _{k+1}) ^T}{\partial h}  V_{k+1}^T p_{k+1} \right\rangle 
 \end{align*}
-Bien que cette récurrence soit similaire à celle des états cachés (\cref{ResNet_equation}), nous ne pouvons pas appliquer les mêmes techniques de preuve utilisées précédement. Cette différence s'explique par la dépendance de $\frac{\partial g(h_k, \theta_{k+1})}{\partial h}$ à $h_k$, et donc à $\theta_1, V_1, \dots, \theta_k, V_k$. Supposer l'indépendance de ces deux quantités serait une hypothèse assez forte, non vérifiée par de nombreuses architectures, comme notre modèle \texttt{res-1}. Ainsi, nous adopterons une autre approche, basée sur la dérivation automatique. Cette méthode nécessite des hypothèses moins contraignantes, mais les résultats obtenus seront exprimés en termes d'espérance plutôt qu'avec une forte probabilité.
+Bien que cette récurrence soit similaire à celle des états cachés (\cref{resnet_equation}), nous ne pouvons pas appliquer les mêmes techniques de preuve utilisées précédement. Cette différence s'explique par la dépendance de $\frac{\partial g(h_k, \theta_{k+1})}{\partial h}$ à $h_k$, et donc à $\theta_1, V_1, \dots, \theta_k, V_k$. Supposer l'indépendance de ces deux quantités serait une hypothèse assez forte, non vérifiée par de nombreuses architectures, comme notre modèle \texttt{res-1}. Ainsi, nous adopterons une autre approche, basée sur la dérivation automatique. Cette méthode nécessite des hypothèses moins contraignantes, mais les résultats obtenus seront exprimés en termes d'espérance plutôt qu'avec une forte probabilité.
 
 Soit $z \in \mathbb{R}^d$. Pour tout $0 \leqslant i, j \leqslant L$, définissons $\frac{\partial h_j}{\partial h_i} \in \mathbb{R}^{d \times d}$ comme la matrice Jacobienne de $h_j$ par rapport à $h_i$. Pour rappel, l'élément en position $(m, n)$ de la Jacobienne représente la dérivée de la $m$-ème coordonnée de $h_j$ par rapport à la $n$-ème coordonnée de $h_i$. Soit $q_k(z) = \frac{\partial h_k}{\partial h_0} z$, en appliquant la règle de la chaîne, nous obtenons
 \begin{equation}\label{eq:9}
@@ -36,15 +36,15 @@ L'hypothèse suivante est l'équivalent pour les gradients de ce qui est énonc�
         \frac{\left\| q_k \right\| ^2}{2} \leqslant \mathbb{E}\left(\left\| \frac{\partial g(h_k, \theta _{k+1})}{\partial h} q_k  \right\| ^2 | h_k, q_k \right) \leqslant \left\| q_k \right\| ^2
     .\]
 \end{assumption}
-L'\Cref{H4} s'applique à toutes les architectures répertoriées dans la \Cref{tab:resnetArchitectures}, comme le démontre la proposition suivante.
+L'\Cref{H4} s'applique à toutes les architectures répertoriées dans le \Cref{tab:resnetArchitectures}, comme le démontre la proposition suivante.
 \begin{proposition}\label{prop5}
-    Soit les réseaux \texttt{res-1}, \texttt{res-2} et \texttt{res-3} définit dans la \Cref{tab:resnetArchitectures}. Supposons l'\Cref{H1} satisfaite et $ \sigma  $ dérivable presque partout avec $ a \leqslant \sigma ^\prime \leqslant b $. Alors
+    Soit les réseaux \texttt{res-1}, \texttt{res-2} et \texttt{res-3} définit dans le \Cref{tab:resnetArchitectures}. Supposons l'\Cref{H1} satisfaite et $ \sigma  $ dérivable presque partout avec $ a \leqslant \sigma ^\prime \leqslant b $. Alors
     \begin{itemize}
         \item [(i)] L'\Cref{H4} est valide pour \texttt{res-1}
         \item [(ii)] L'\Cref{H4} est valide pour \texttt{res-2} et \texttt{res-3} dès lors que les entrées de $ \sqrt{d} W_{k+1}, 0 \leqslant k \leqslant L-1 $ sont des variables aléatoires de variance unitaire, i.i.d, symétriques et indépendante de $ d $ et $ L $.
     \end{itemize}
 \end{proposition}
-Les propositions \Cref{prop6} et \ref{prop7} sont les homologues des \Cref{prop2} et \ref{prop3} pour l'analyse du gradient du coût à l'initialisation.
+Les propositions \Cref{prop6,prop7} sont les homologues des \Cref{prop2,prop3} pour l'analyse du gradient du coût à l'initialisation.
 \begin{proposition}\label{prop6}
     Soit un ResNet (\ref{tab:resnetArchitectures}) tel que les \Cref{H1} à \ref{H4} sont satisfaites. Si $ L \alpha _L ^2 \leqslant 1 $ alors, pour tout $ \delta \in (0,1) $ avec une probabilité d'au moins $ 1 - \delta  $ 
     \[
@@ -59,7 +59,7 @@ Les propositions \Cref{prop6} et \ref{prop7} sont les homologues des \Cref{prop2
     .\]
 \end{proposition}
 
-De façon similaire au \Cref{cor4}, le \Cref{cor8} est déduit à partir des \Cref{prop6} et \ref{prop7}.
+De façon similaire au \Cref{cor4}, le \Cref{cor8} est déduit à partir des \Cref{prop6,prop7}.
 
 \begin{cor}\label{cor8}
     Soit un ResNet (\ref{tab:resnetArchitectures}) tel que les Hypothèses 1 à 4 sont satisfaites. En posant $ \alpha _L = 1 / L^\beta $ avec $ B > 0 $, on obtient 
@@ -74,7 +74,7 @@ De façon similaire au \Cref{cor4}, le \Cref{cor8} est déduit à partir des \Cr
         .\]
         \item [(iii)] Si $ \beta = 1/2 $ alors
         \[
-            \exp (\frac{1}{2}) - 1 \leqslant \mathbb{E}\left(\frac{\left\| p_0 - p_L \right\| ^2 }{\left\| p_l \right\| ^2 }\right) \leqslant \exp (4) - 1
+            \exp \left(\frac{1}{2}\right) - 1 \leqslant \mathbb{E}\left(\frac{\left\| p_0 - p_L \right\| ^2 }{\left\| p_l \right\| ^2 }\right) \leqslant \exp (4) - 1
         .\]
     \end{enumerate}
     Ce corrolaire est illustré dans la \Cref{fig:cor8}.
@@ -83,7 +83,7 @@ De façon similaire au \Cref{cor4}, le \Cref{cor8} est déduit à partir des \Cr
 \begin{figure}[H]
     \centering
     \includegraphics[width=.95\textwidth]{figs/figure_cor8.pdf}
-    \caption{Illustration du corollaire \ref{cor8}. Évolution de $ \left\| p_0 - p_L \right\| / \left\| p_L \right\| $ en fonction de $ L $ pour différente valeur de $ \beta  $.}
+    \caption{Illustration du \Cref{cor8}. Évolution de $ \left\| p_0 - p_L \right\| / \left\| p_L \right\| $ en fonction de $ L $ pour différente valeur de $ \beta  $.}
     \label{fig:cor8}
 \end{figure}
 

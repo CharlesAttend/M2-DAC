@@ -4,7 +4,7 @@ Dans cette section, notre objectif est d'examiner comment le facteur de mise à 
 \section{Modèle et hypothèses}
 \subsection*{Modèle}
 Le modèle repose sur un ensemble de données composé de $n$ paires $(x_i, y_i)_{1 \leqslant i \leqslant n}$, où chaque $x_i \in \mathbb{R}^{n_{\text{in}}}$ représente un vecteur d'entrée et chaque $y_i \in \mathbb{R}^{n_{\text{out}}}$ un vecteur de sortie à prédire. Ces sorties peuvent être sous forme de valeurs continues ou codées en format \textit{one-hot}. Soit $F_\pi(x) \in \mathbb{R}^{n_{\text{out}}}, x \in \mathbb{R}^{n_{\text{in}}}$ la sortie du ResNet définie par 
-\begin{align}\label{ResNet_equation}
+\begin{align}\label{resnet_equation}
     h_0 &= Ax, \nonumber\\
     h_{k+1} &= h_k + \alpha_L V_{k+1}g(h_k, \theta_k), \quad 0 \leqslant k \leqslant L - 1, \\
     F_{\pi}(x) &= Bh_L, \nonumber
@@ -13,16 +13,16 @@ où $\pi = (A, B, (\theta_k)_{k \leqslant L}, (V_k)_{1 \leqslant k \leqslant L})
 % Un aspect important du modèle \cite{torchvision2016} est que la fonction de couche prend la forme d'une multiplication matrice-vecteur, ce qui sera crucial pour utiliser les résultats de concentration sur des variables aléatoires ??????? Important ????????? 
 Finalement, on définit $l: \mathbb{R}^{n_{\text{out}}} \times \mathbb{R}^{n_{\text{out}}} \to \mathbb{R}_+$ comme la fonction de coût, différentiable par rapport à son premier paramètre. Ce coût peut être une perte quadratique ou une entropie croisée. L'objectif de l'apprentissage est de trouver le paramètre optimal $\pi$ qui minimise le risque empirique $\mathscr{L}(\pi) = \sum_{i=1}^{n} l(F_\pi(x_i), y_i)$ à travers une descente de gradient stochastique ou l'une de ses variantes.
 
-Durant ce cours, nous nous focaliserons spécifiquement sur trois architectures classiques de ResNet, détaillées dans la \Cref{tab:resnetArchitectures} ci-dessous. Il serait également pertinent d'explorer une quatrième architecture, qui intégrerait plusieurs couches linéaires ou convolutives.
+Durant ce cours, nous nous focaliserons spécifiquement sur trois architectures classiques de ResNet, détaillées dans le \Cref{tab:resnetArchitectures} ci-dessous. Il serait également pertinent d'explorer une quatrième architecture, qui intégrerait plusieurs couches linéaires ou convolutives.
 
 \begin{table}[H]
     \centering
     \begin{tabular}{lll}
         \hline
         \textbf{Nom} & \textbf{Récurrence} & \textbf{Paramètres} \\ \hline
-        res-1 & \( h_{k+1} = h_k + \alpha_L V_{k+1}\sigma(h_k) \) & \( \theta_{k+1} = \emptyset \) \\
-        res-2 & \( h_{k+1} = h_k + \alpha_L V_{k+1}\sigma(W_{k+1}h_k) \) & \( \theta_{k+1} = W_{k+1} \) \\
-        res-3 & \( h_{k+1} = h_k + \alpha_L V_{k+1}\text{ReLU}(W_{k+1}h_k) \) & \( \theta_{k+1} = W_{k+1} \) \\ \hline
+        \texttt{res-1} & \( h_{k+1} = h_k + \alpha_L V_{k+1}\sigma(h_k) \) & \( \theta_{k+1} = \emptyset \) \\
+        \texttt{res-2} & \( h_{k+1} = h_k + \alpha_L V_{k+1}\sigma(W_{k+1}h_k) \) & \( \theta_{k+1} = W_{k+1} \) \\
+        \texttt{res-3} & \( h_{k+1} = h_k + \alpha_L V_{k+1}\text{ReLU}(W_{k+1}h_k) \) & \( \theta_{k+1} = W_{k+1} \) \\ \hline
     \end{tabular}
     \caption{Exemples d'architectures ResNet considérées dans l'article. Dans les deux premiers cas, la fonction d'activation \( \sigma \) est telle que, pour tout \( x \in \mathbb{R} \), \( a|x| \leqslant |\sigma(x)| \leqslant b|x| \), avec \( \nicefrac{1}{\sqrt{2}} \leqslant a < b \leqslant 1 \). Dans les deux derniers cas, \( W_{k+1} \in \mathbb{R}^{d \times d} \).}
     \label{tab:resnetArchitectures}
@@ -48,11 +48,11 @@ Avec cette définition en tête, passons maintenant aux hypothèses. Pour tout $
 \begin{assumption}\label{H2}
     Pour un certain $ C > 0 $, indépendant de $ d $ et $ L $, et pour tout $ h \in \mathbb{R}^D  $ 
     \[
-        \frac{\left\| h \right\| ^2}{2 } \leqslant  \mathbb{E}( \left\|  g(h, \theta _ k ) \right\| ^2 ) \leqslant \left\| h \right\| ^2
+        \frac{\left\| h \right\| ^2}{2 } \leqslant  \mathbb{E}\left( \left\|  g(h, \theta _ k ) \right\| ^2 \right) \leqslant \left\| h \right\| ^2
     .\]
     et
     \[
-        \mathbb{E } (\left\| g(h, \theta _k)  \right\| ^8 ) \leqslant C \left\| h  \right\| ^8
+        \mathbb{E } \left(\left\| g(h, \theta _k)  \right\| ^8 \right) \leqslant C \left\| h  \right\| ^8
     .\]
 \end{assumption}
 
@@ -65,16 +65,17 @@ Avec cette définition en tête, passons maintenant aux hypothèses. Pour tout $
 \end{note}
 
 \begin{proposition}[Admis]\label{prop1}
-    Soient les modèles \texttt{res-1}, \texttt{res-2}, \texttt{res-3} décrit dans la \Cref{tab:resnetArchitectures}, on a \begin{itemize}
+    Soient les modèles \texttt{res-1}, \texttt{res-2}, \texttt{res-3} décrit dans le \Cref{tab:resnetArchitectures}, on a 
+    \begin{itemize}
         \item [(i)] L'\Cref{H2} est valide pour l'architecture \texttt{res-1}.
-        \item [(ii)] L'\Cref{H2} est valide pour les architectures \texttt{res-2} et \texttt{res-3} dès lors que les entrées de $ \sqrt{d}W_{k+1}, 0 \leqslant k \leqslant L-1 $ sont des variables aléatoire de variance unitaire, i.i.d., symétriques, sub-gaussienne et indépendante de $ d $ et $ L $.
+        \item [(ii)] L'\Cref{H2} est valide pour les architectures \texttt{res-2} et \texttt{res-3} dès lors que les entrées de $ \sqrt{d}W_{k+1}, 0 \leqslant k \leqslant L-1 $ sont des variables aléatoires de variance unitaire, i.i.d., symétriques, sub-gaussiennes et indépendantes de $ d $ et $ L $.
     \end{itemize}
 \end{proposition}
 
 \begin{lem}[Admis]\label{lem14}
-    Considérons un ResNet (\ref{resnet_equation}) tel que les Hypothèses \ref{H1} et \ref{H2} soient satisfaites. Alors
+    Considérons un ResNet (\ref{resnet_equation}) tel que les \Cref{H1,H2} soient satisfaites. Alors
     \[
-        ((1 + \frac{\alpha _L ^2 }{2 }) ^L - 1) \leqslant \mathbb{E}( \frac{\left\| h_L - h_0 \right\| ^2 }{\left\| h_0 \right\| ^2}) \leqslant ((1 + \alpha _L ^2 ) ^L - 1 )
+        \left(\left(1 + \frac{\alpha _L ^2 }{2 }\right) ^L - 1\right) \leqslant \mathbb{E}\left( \frac{\left\| h_L - h_0 \right\| ^2 }{\left\| h_0 \right\| ^2} \right) \leqslant \left(\left(1 + \alpha _L ^2 \right) ^L - 1 \right)
     .\]
 \end{lem}
 Ce lemme nous servira en particulier dans la preuve de la \Cref{prop2}.
@@ -90,18 +91,18 @@ Les propositions et corollaires suivants décriront comment le rapport ${\left\|
 
 
 \begin{proposition}\label{prop2}
-    Considérons un ResNet (\ref{resnet_equation}) tel que les hypothèses \ref{H1} et \ref{H2} soient satisfaites.
+    Considérons un ResNet (\ref{resnet_equation}) tel que les \Cref{H1,H2} soient satisfaites.
     Si \( L\alpha_L^2 \leqslant 1 \), alors, pour tout \( \delta \in (0, 1) \), avec une probabilité d'au moins \( 1 - \delta \),
     \[
         \frac{\|h_L - h_0\|^2}{\|h_0\|^2} \leqslant \frac{2L\alpha_L^2}{\delta}
     .\]
 \end{proposition}
-La proposition \ref{prop2} par sa borne supérieur petite indique que le réseau se comporte comme une fonction identité dans le cas où $ L \alpha ^2 _L \ll 1 $.
+La \Cref{prop2} par sa borne supérieur petite indique que le réseau se comporte comme une fonction identité dans le cas où $ L \alpha ^2 _L \ll 1 $.
 
 \begin{proof}[\Cref{prop2}]
     En se basant sur le \Cref{lem14}, on a 
     \[
-        \mathbb{E}( \frac{\left\| h_L - h_0 \right\| ^2 }{\left\| h_0 \right\| ^2}) \leqslant ((1 + \alpha _L ^2 ) ^L - 1 )
+        \mathbb{E}\left( \frac{\left\| h_L - h_0 \right\| ^2 }{\left\| h_0 \right\| ^2}\right) \leqslant \left(\left(1 + \alpha _L ^2 \right) ^L - 1 \right)
     .\]
     Considérons le cas où $L \alpha_L^2 \leqslant 1$ (valeur faible) et $L$ tend vers de grandes valeurs. Dans ce contexte, $(1 + \alpha_L^2)^L$ est une bonne approximation de $\exp(L \alpha_L^2)$ par définition, tout en restant inférieur ou égal à celui-ci en raison de la croissance exponentielle de $\exp$. En effet, $(1 + \alpha_L^2)^L$ se rapproche de $1 + L \alpha_L^2$ selon la formule du binôme de Newton, et correspond aux premiers termes du développement en série de Taylor de l'exponentielle. Finalement, on a obtiens
     \[
@@ -109,11 +110,11 @@ La proposition \ref{prop2} par sa borne supérieur petite indique que le réseau
     .\]
     En poursuivant avec le développement de Taylor, nous obtenons une majoration plus précise.
     \[
-        (1 + \alpha _L ^2)^L -1 \leqslant \exp (L \alpha _L ^2) - 1) \leqslant L \alpha _L ^2 \leqslant 2 L \alpha _L ^2
+        \left(1 + \alpha _L ^2\right)^L -1 \leqslant \exp (L \alpha _L ^2) - 1 \leqslant L \alpha _L ^2 \leqslant 2 L \alpha _L ^2
     .\]
     Ainsi on obtient 
     \[
-        \mathbb{E}( \frac{\left\| h_L - h_0 \right\| ^2 }{\left\| h_0 \right\| ^2}) \leqslant 2 L \alpha _L ^2
+        \mathbb{E}\left( \frac{\left\| h_L - h_0 \right\| ^2 }{\left\| h_0 \right\| ^2}\right) \leqslant 2 L \alpha _L ^2
     .\]
     En appliquant l'inégalité de Markov, nous parvenons au résultat souhaité de la \cref{prop2}.
 \end{proof}
@@ -121,7 +122,7 @@ La proposition \ref{prop2} par sa borne supérieur petite indique que le réseau
 
 
 \begin{proposition}[Admise]\label{prop3}
-    Considérons un ResNet (\ref{resnet_equation}) tel que les hypothèses \ref{H1} et \ref{H2} soient satisfaites.
+    Considérons un ResNet (\ref{resnet_equation}) tel que les \Cref{H1,H2} soient satisfaites.
     \begin{itemize}
         \item[(i)] Supposons que $ d \geqslant 64 $ et $ \alpha _L ^2 \leqslant  \frac{2}{ (\sqrt{C} s^4 + 4 \sqrt{C} + 16 s ^4) d } $. Alors, pour tout $ \delta \in (0, 1) $, avec une probabilité d'au moins $ 1 - \delta $,
         \[
@@ -141,9 +142,9 @@ La \Cref{prop3} aborde les deux cas restants : $L \alpha_L^2 \gg 1$ et $L \alpha
 
 La \Cref{prop3} peut présenter des hypothèses qui semblent atypiques, mais elles sont en réalité souvent vérifiées dans la majorité des ResNets profonds. En effet, il est courant de trouver des ResNets avec une profondeur $L \geqslant 100$, pour lesquels on définit généralement $\alpha_L = \nicefrac{1}{L^\beta}$ avec $\beta > 0$. De plus, la dimension des états cachés atteint fréquemment des valeurs telles que $d \geqslant 100$.
 
-Les conséquences des Propositions \ref{prop2} et \ref{prop3} vont devenir plus clair en fixant $ \alpha _L = 1/L ^\beta $ comme montré dans le corollaire suivant.
+Les conséquences des \Cref{prop2,prop3} vont devenir plus clair en fixant $ \alpha _L = 1/L ^\beta $ comme montré dans le corollaire suivant.
 \begin{cor}\label{cor4}
-    Considérons un ResNet (\ref{resnet_equation}) tel que les hypothèses \ref{H1} et \ref{H2} soient satisfaites. Soit $ \alpha_L = 1/L^\beta $, avec $ \beta > 0 $.
+    Considérons un ResNet (\ref{resnet_equation}) tel que les \Cref{H1,H2} soient satisfaites. Soit $ \alpha_L = 1/L^\beta $, avec $ \beta > 0 $.
     \begin{itemize}
         \item[(i)] Si $ \beta > \nicefrac{1}{2} $, alors
         \[
@@ -182,8 +183,7 @@ Les conséquences des Propositions \ref{prop2} et \ref{prop3} vont devenir plus 
         \item Pour prouver l'affirmation \textit{(iii)}, nous utilisons l'union des deux affirmations de la \Cref{prop3}.
     \end{itemize}
 \end{proof}
-
-Le corollaire 4 précise le comportement de notre dernier état caché $\left\| h_L \right\|$ en fonction de $\beta$.
+Le \Cref{cor4} précise le comportement de notre dernier état caché $\left\| h_L \right\|$ en fonction de $\beta$.
 \begin{itemize}
     \item Lorsque $\beta > \nicefrac{1}{2}$, la distance entre $h_L$ et $h_0$ tend vers zéro lorsque $L$ augmente indéfiniment. Cela indique que le réseau fonctionne essentiellement comme une fonction identité.
     \item Lorsque $\beta < \nicefrac{1}{2}$, la norme de $h_L$ tend à l'explosion avec la valeur de $ L $ .
