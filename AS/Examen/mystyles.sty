@@ -28,8 +28,8 @@
     backgroundcolor=white,
     linecolor=definitionColor,
     outerlinewidth=1pt,
-    leftmargin=10pt,
-    rightmargin=10pt,
+    leftmargin=0pt,
+    rightmargin=0pt,
     topline=false,
     bottomline=false,
     rightline=false,
@@ -40,8 +40,8 @@
     backgroundcolor=white,
     linecolor=assumptionColor,
     outerlinewidth=1pt,
-    leftmargin=10pt,
-    rightmargin=10pt,
+    leftmargin=0pt,
+    rightmargin=0pt,
     topline=false,
     bottomline=false,
     rightline=false,
@@ -52,8 +52,8 @@
     backgroundcolor=white,
     linecolor=propositionColor,
     outerlinewidth=1pt,
-    leftmargin=10pt,
-    rightmargin=10pt,
+    leftmargin=0pt,
+    rightmargin=0pt,
     topline=false,
     bottomline=false,
     rightline=false,
@@ -64,8 +64,8 @@
     backgroundcolor=white,
     linecolor=proofColor,
     outerlinewidth=1pt,
-    leftmargin=10pt,
-    rightmargin=10pt,
+    leftmargin=0pt,
+    rightmargin=0pt,
     topline=false,
     bottomline=false,
     rightline=false,
@@ -76,8 +76,8 @@
     backgroundcolor=white,
     linecolor=corColor,
     outerlinewidth=1pt,
-    leftmargin=10pt,
-    rightmargin=10pt,
+    leftmargin=0pt,
+    rightmargin=0pt,
     topline=false,
     bottomline=false,
     rightline=false,
@@ -88,8 +88,8 @@
     backgroundcolor=white,
     linecolor=lemColor,
     outerlinewidth=1pt,
-    leftmargin=10pt,
-    rightmargin=10pt,
+    leftmargin=0pt,
+    rightmargin=0pt,
     topline=false,
     bottomline=false,
     rightline=false,
@@ -100,8 +100,8 @@
     backgroundcolor=white,
     linecolor=noteColor,
     outerlinewidth=1pt,
-    leftmargin=10pt,
-    rightmargin=10pt,
+    leftmargin=0pt,
+    rightmargin=0pt,
     topline=false,
     bottomline=false,
     rightline=false,
@@ -111,6 +111,16 @@
 
 
 
+% To fix top space in mdframed env broken by asmthm, see https://tex.stackexchange.com/questions/168642/extra-vertical-space-inside-mdframed-theorem-environment
+\newtheoremstyle{definition}% <name>
+{-\topsep}%                 <space above>
+{}%                         <space below>
+{\normalfont}%              <body font>
+{}%                         <indent amount>
+{\bfseries}%                <theorem head font>
+{.}%                        <punctuation after theorem head>
+{.5em}%                     <space after theorem head>
+{}%                         <theorem head spec>
 % \theoremstyle{plain}
 \theoremstyle{definition}
 \newmdtheoremenv[style=assumptionstyle]{assumption}{Hypothèse}
@@ -118,6 +128,7 @@
 \newmdtheoremenv[style=corstyle]{cor}{Corollaire}
 \newmdtheoremenv[style=lemstyle]{lem}{Lemme}
 
+\theoremstyle{definition}
 \newmdtheoremenv[style=definitionstyle]{definition}{Définition}
 \newmdtheoremenv[style=proofstyle]{proof}{Preuve}
 
