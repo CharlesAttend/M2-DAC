@@ -40,7 +40,6 @@ Pour notre étude, certaines hypothèses concernant le choix de l'architecture e
     \]
     De manière informelle, les queues d'une distribution sub-gaussienne sont dominées par celles d'une distribution gaussienne, c'est-à-dire qu'elles décroissent au moins aussi rapidement.
 \end{definition}
-
 Avec cette définition en tête, passons maintenant aux hypothèses. Pour tout $ 1 \leqslant  k \leqslant L  $
 \begin{assumption}\label{H1}
     Pour un certain $ s \geqslant 1 $, les entrées de  $ \sqrt{d}V_k $ sont des variables aléatoires symétriques i.i.d., $ s^2 $ sub-gaussiennes, indépendantes de $ d $ et $ L $ et de variance unitaire.
@@ -51,7 +50,7 @@ Avec cette définition en tête, passons maintenant aux hypothèses. Pour tout $
     \[
         \frac{\left\| h \right\| ^2}{2 } \leqslant  \mathbb{E}( \left\|  g(h, \theta _ k ) \right\| ^2 ) \leqslant \left\| h \right\| ^2
     .\]
-    and
+    et
     \[
         \mathbb{E } (\left\| g(h, \theta _k)  \right\| ^8 ) \leqslant C \left\| h  \right\| ^8
     .\]
@@ -66,7 +65,7 @@ Avec cette définition en tête, passons maintenant aux hypothèses. Pour tout $
 \end{note}
 
 \begin{proposition}[Admis]\label{prop1}
-    Soit les modèles \texttt{res-1}, \texttt{res-2}, \texttt{res-3} décrit dans la \Cref{tab:resnetArchitectures}, on a \begin{itemize}
+    Soient les modèles \texttt{res-1}, \texttt{res-2}, \texttt{res-3} décrit dans la \Cref{tab:resnetArchitectures}, on a \begin{itemize}
         \item [(i)] L'\Cref{H2} est valide pour l'architecture \texttt{res-1}.
         \item [(ii)] L'\Cref{H2} est valide pour les architectures \texttt{res-2} et \texttt{res-3} dès lors que les entrées de $ \sqrt{d}W_{k+1}, 0 \leqslant k \leqslant L-1 $ sont des variables aléatoire de variance unitaire, i.i.d., symétriques, sub-gaussienne et indépendante de $ d $ et $ L $.
     \end{itemize}

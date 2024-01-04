@@ -1,5 +1,6 @@
-\documentclass{report}
+\documentclass[french]{report}
 \usepackage[a4paper, right=2.5cm, left=2.5cm, top=2cm, bottom=2cm]{geometry}
+\usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath, amsfonts, amssymb, systeme}
 \usepackage{stmaryrd}
@@ -7,12 +8,15 @@
 \usepackage[round]{natbib}
 \usepackage{hyperref}
 \usepackage{float}
-% \usepackage[french]{babel}
+\usepackage{babel}
 \usepackage{cleveref}
 \usepackage{mathrsfs}
 \usepackage{todonotes}
 \usepackage{nicefrac}
 
+\usepackage{mystyles}
+% fix le babel en français qui break les ref à cause du `:`
+\shorthandon{:} \addto\extrasfrench{\protected\edef:{\unexpanded\expandafter{:}}} \shorthandoff{:}
 \hypersetup{
     colorlinks=true,
     linkcolor=blue,
@@ -23,29 +27,22 @@
     % pdfpagemode=FullScreen,
 }
 \urlstyle{same} %\href{url}{Text}
-
-\newtheorem{theorem}{Théorème}
-\newtheorem{proof}{Preuve}
-\newtheorem{proposition}{Proposition}
-\newtheorem{assumption}{Hypothèse}
-\newtheorem{definition}{Définition}
-\newtheorem{cor}{Corollaire}
-\newtheorem{lem}{Lemme}
-\newtheorem{note}{Note}
     
 \title{Projet d'appentissage statistique\\Facteur de régulation des ResNets profonds}
 \author{SHEN Pingya, VIN Charles}
 \date{\today}
 
 \begin{document}
+\addto\extrasfrench{\protected\edef:{\unexpanded\expandafter{:}}}
 
 \maketitle
 \tableofcontents
-\include{introduction}
-\include{chapitre1_part1}
-\include{chapitre1_part2}
-\include{chapitre2}
-\include{conclusion}
+
+\include{parts/introduction}
+\include{parts/chapitre1_part1}
+\include{parts/chapitre1_part2}
+\include{parts/chapitre2}
+\include{parts/conclusion}
 
 \bibliographystyle{plainnat} % We choose the "plain" reference style
 \bibliography{bib} % Entries are in the refs.bib file

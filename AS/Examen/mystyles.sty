@@ -1,0 +1,135 @@
+\ProvidesPackage{mystyles}
+\RequirePackage{amsthm}
+\let\proof\relax
+\let\endproof\relax
+\RequirePackage{xcolor}
+\RequirePackage{mdframed}
+\RequirePackage{amsmath}
+
+
+\definecolor{definitionColor}{rgb}{0.12156862745098039, 0.4666666666666667, 0.7058823529411765}
+\definecolor{assumptionColor}{rgb}{1.0, 0.4980392156862745, 0.054901960784313725}
+
+% Same color for this
+\definecolor{propositionColor}{rgb}{0.17254901960784313, 0.6274509803921569, 0.17254901960784313}
+\definecolor{corColor}{rgb}{0.17254901960784313, 0.6274509803921569, 0.17254901960784313}
+\definecolor{lemColor}{rgb}{0.17254901960784313, 0.6274509803921569, 0.17254901960784313}
+
+
+\definecolor{proofColor}{rgb}{0.8392156862745098, 0.15294117647058825, 0.1568627450980392}
+% \definecolor{corColor}{rgb}{0.5803921568627451, 0.403921568627451, 0.7411764705882353}
+% \definecolor{lemColor}{rgb}{0.5490196078431373, 0.33725490196078434, 0.29411764705882354}
+
+% Classic note env
+% \definecolor{noteColor}{rgb}{0.8901960784313725, 0.4666666666666667, 0.7607843137254902}
+
+\definecolor{white}{rgb}{1, 1, 1}
+\mdfdefinestyle{definitionstyle}{
+    backgroundcolor=white,
+    linecolor=definitionColor,
+    outerlinewidth=1pt,
+    leftmargin=10pt,
+    rightmargin=10pt,
+    topline=false,
+    bottomline=false,
+    rightline=false,
+    skipabove=\medskipamount,
+    skipbelow=\medskipamount
+}
+\mdfdefinestyle{assumptionstyle}{
+    backgroundcolor=white,
+    linecolor=assumptionColor,
+    outerlinewidth=1pt,
+    leftmargin=10pt,
+    rightmargin=10pt,
+    topline=false,
+    bottomline=false,
+    rightline=false,
+    skipabove=\medskipamount,
+    skipbelow=\medskipamount
+}
+\mdfdefinestyle{propositionstyle}{
+    backgroundcolor=white,
+    linecolor=propositionColor,
+    outerlinewidth=1pt,
+    leftmargin=10pt,
+    rightmargin=10pt,
+    topline=false,
+    bottomline=false,
+    rightline=false,
+    skipabove=\medskipamount,
+    skipbelow=\medskipamount
+}
+\mdfdefinestyle{proofstyle}{
+    backgroundcolor=white,
+    linecolor=proofColor,
+    outerlinewidth=1pt,
+    leftmargin=10pt,
+    rightmargin=10pt,
+    topline=false,
+    bottomline=false,
+    rightline=false,
+    skipabove=\medskipamount,
+    skipbelow=\medskipamount
+}
+\mdfdefinestyle{corstyle}{
+    backgroundcolor=white,
+    linecolor=corColor,
+    outerlinewidth=1pt,
+    leftmargin=10pt,
+    rightmargin=10pt,
+    topline=false,
+    bottomline=false,
+    rightline=false,
+    skipabove=\medskipamount,
+    skipbelow=\medskipamount
+}
+\mdfdefinestyle{lemstyle}{
+    backgroundcolor=white,
+    linecolor=lemColor,
+    outerlinewidth=1pt,
+    leftmargin=10pt,
+    rightmargin=10pt,
+    topline=false,
+    bottomline=false,
+    rightline=false,
+    skipabove=\medskipamount,
+    skipbelow=\medskipamount
+}
+\mdfdefinestyle{notestyle}{
+    backgroundcolor=white,
+    linecolor=noteColor,
+    outerlinewidth=1pt,
+    leftmargin=10pt,
+    rightmargin=10pt,
+    topline=false,
+    bottomline=false,
+    rightline=false,
+    skipabove=\medskipamount,
+    skipbelow=\medskipamount
+}
+
+
+
+% \theoremstyle{plain}
+\theoremstyle{definition}
+\newmdtheoremenv[style=assumptionstyle]{assumption}{Hypothèse}
+\newmdtheoremenv[style=propositionstyle]{proposition}{Proposition}
+\newmdtheoremenv[style=corstyle]{cor}{Corollaire}
+\newmdtheoremenv[style=lemstyle]{lem}{Lemme}
+
+\newmdtheoremenv[style=definitionstyle]{definition}{Définition}
+\newmdtheoremenv[style=proofstyle]{proof}{Preuve}
+
+\theoremstyle{remark}
+% \newmdtheoremenv[style=notestyle]{note}{Note}
+\newtheorem{note}{Note}
+
+% Cref Name
+\crefname{assumption}{hypothèse}{hypothèses}
+\crefname{proposition}{proposition}{propositions}
+\crefname{cor}{corollaire}{corollaires}
+\crefname{lem}{lemme}{lemmes}
+\crefname{definition}{définition}{définitions}
+\crefname{proof}{preuve}{preuves}
+\crefname{note}{note}{notes}

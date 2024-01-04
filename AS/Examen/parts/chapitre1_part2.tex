@@ -24,12 +24,11 @@ En résumé, la récurrence énoncée dans l'équation (\ref{eq:9}) va nous perm
 \subsection*{Hypothèses}
 
 \begin{assumption}\label{H3}
-    Soit $ b= p_L / \left\| p_L \right\|  $, alors $ \mathbb{E}[b | h_L] = 0 $ et $ \mathbb{E}(b^T b | h_L) = I_d / d $
+    Soit $ b= p_L / \left\| p_L \right\|  $, alors $ \mathbb{E}(b | h_L) = 0 $ et $ \mathbb{E}(b^T b | h_L) = I_d / d $
 \end{assumption}
 \begin{note}
     Cette hypothèse est facilement vérifiée. Par exemple, en considérant $n_{out} = 1$ et en utilisant l'entropie croisée pour une classification binaire, ou bien l'erreur quadratique dans le cadre d'une régression.
 \end{note}
-
 L'hypothèse suivante est l'équivalent pour les gradients de ce qui est énoncé dans \Cref{H2}.
 \begin{assumption}\label{H4}
     On a, presque surement, 
@@ -37,7 +36,6 @@ L'hypothèse suivante est l'équivalent pour les gradients de ce qui est énonc�
         \frac{\left\| q_k \right\| ^2}{2} \leqslant \mathbb{E}\left(\left\| \frac{\partial g(h_k, \theta _{k+1})}{\partial h} q_k  \right\| ^2 | h_k, q_k \right) \leqslant \left\| q_k \right\| ^2
     .\]
 \end{assumption}
-
 L'\Cref{H4} s'applique à toutes les architectures répertoriées dans la \Cref{tab:resnetArchitectures}, comme le démontre la proposition suivante.
 \begin{proposition}\label{prop5}
     Soit les réseaux \texttt{res-1}, \texttt{res-2} et \texttt{res-3} définit dans la \Cref{tab:resnetArchitectures}. Supposons l'\Cref{H1} satisfaite et $ \sigma  $ dérivable presque partout avec $ a \leqslant \sigma ^\prime \leqslant b $. Alors
@@ -46,9 +44,7 @@ L'\Cref{H4} s'applique à toutes les architectures répertoriées dans la \Cref{
         \item [(ii)] L'\Cref{H4} est valide pour \texttt{res-2} et \texttt{res-3} dès lors que les entrées de $ \sqrt{d} W_{k+1}, 0 \leqslant k \leqslant L-1 $ sont des variables aléatoires de variance unitaire, i.i.d, symétriques et indépendante de $ d $ et $ L $.
     \end{itemize}
 \end{proposition}
-
 Les propositions \Cref{prop6} et \ref{prop7} sont les homologues des \Cref{prop2} et \ref{prop3} pour l'analyse du gradient du coût à l'initialisation.
-
 \begin{proposition}\label{prop6}
     Soit un ResNet (\ref{tab:resnetArchitectures}) tel que les \Cref{H1} à \ref{H4} sont satisfaites. Si $ L \alpha _L ^2 \leqslant 1 $ alors, pour tout $ \delta \in (0,1) $ avec une probabilité d'au moins $ 1 - \delta  $ 
     \[
