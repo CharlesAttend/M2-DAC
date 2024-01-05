@@ -56,15 +56,31 @@
     \item Inégalité de Cauchy : $ \left| \left\langle x,y \right\rangle  \right| \leq \left\| x \right\| \left\| y \right\|   $ 
     \item k-lipschitzienne : $ \left| f(x) - f(y) \right| \leq k \left| x - y \right|  $ Bouger dans l'espace d'arriver fait bouger $ k $ fois plus dans l'espace de départ.
     \item L-Smooth: = gradient Lipschitz$ \forall \theta , \theta ^\prime, \left\| \nabla F(\theta ) - \nabla F(\theta ^\prime ) \right\| \leq  L \left\| \theta - \theta ^\prime  \right\| $ 
-    \item Bilinéarité du produit scalaire: 
+    \item Bilinéarité du produit scalaire: \begin{itemize}
+        \item $ k \left\langle x, y \right\rangle = \left\langle kx, y \right\rangle = \left\langle x ,ky \right\rangle  $ 
+        \item $ \left\langle z, x + y \right\rangle = \left\langle z,x \right\rangle + \left\langle x,y \right\rangle  $ 
+    \end{itemize}
     \item Co-coercivity: $ \frac{1}{L} \left\| \nabla F(\theta ) - \nabla F(\theta ^\prime ) \right\| ^2 _2 \leq  \langle  \nabla F(\theta ) - \nabla F(\theta ^\prime ), \theta  - \theta ^\prime \rangle$ 
     \item Inégalité triangulaire : $ \left\| x + y \right\| \leq \left\| x \right\| + \left\| y \right\|  $ 
     \item GD : $ \theta _{t+1} = \theta _t - \gamma \nabla F(\theta _t) $ 
     \item Polyak-Ruppert averaging : $ \bar{\theta }_T = \frac{1}{T} \sum_{t=1}^{T}\theta _t $ 
     \item Sub gradient : $ f(x) - f(x_0) \geq \left\langle v, (x - x_0) \right\rangle  $ 
     \item KKT : 
-    \item $ \frac{d}{dt} \left\| f(t) \right\| = \frac{\left\langle f(t) , f^\prime (t) \right\rangle }{\left\| f(t) \right\| } $ 
-    \item $ \frac{d}{dt} \left\| f(t) \right\| ^2 = 2 \left\langle f(t) , f^\prime (t) \right\rangle $
+    \item Dérivé norme : $ \frac{d}{dt} \left\| f(t) \right\| = \frac{\left\langle f(t) , f^\prime (t) \right\rangle }{\left\| f(t) \right\| } $ 
+    \item Dérivé norme au carré : $ \frac{d}{dt} \left\| f(t) \right\| ^2 = 2 \left\langle f(t) , f^\prime (t) \right\rangle $
+
+    \item Convexity props \begin{itemize}
+        \item Convexity : under chords : $ F(\eta \theta + (1 - \eta ) \theta ^\prime ) \leq  \eta F(\theta ) + (1 - \eta ) F(\theta ^\prime ), \forall \theta , \theta ^\prime , \forall \eta  \in [0, 1] $ 
+        \item Convexity + diff (tangent lie below) $ F(\theta ^\prime ) \geq F(\theta ) + \langle  \nabla F(\theta ) , \theta ^\prime - \theta  \rangle ,  \forall \theta , \theta ^\prime $ 
+        \item Convexity : increasing slopes $ \langle \nabla F(\theta ) - \nabla F(\theta ^\prime ), \theta - \theta ^\prime \rangle \geq 0 $ ($ \nabla F $ is said to be a monotone operator )
+        \item Convexity + $ \mathcal{C}^2 $ : curves upwards $ \forall \theta , Hess_F (\theta ) \succeq 0 $ (SDP)
+    \end{itemize}
+    \item $ \mu \text{-strongly}$ convex, $ \mu > 0 $. \begin{itemize}
+        \item $\mu$-convexity : **well** under chords : $ F(\eta \theta + (1 - \eta ) \theta ^\prime ) \leq  \eta F(\theta ) + (1 - \eta ) F(\theta ^\prime ) - \frac{\eta (1 - \eta ) \mu }{2} \left\| \theta - \theta ^\prime  \right\| ^2 _2 , \forall \theta , \theta ^\prime , \forall \eta  \in [0, 1] $ 
+        \item $\mu$-convexity + diff (tangent lie **well** below) : $ F(\theta ^\prime ) \geq F(\theta ) + < \nabla F(\theta ) , \theta ^\prime - \theta  > + \frac{\mu }{2} \left\| \theta - \theta ^\prime  \right\|^2_2, \forall \theta , \theta ^\prime  $ 
+        \item $\mu$-convexity : **well** increasing slopes : $ \langle \nabla F(\theta ) - \nabla F(\theta ^\prime ), \theta - \theta ^\prime \rangle \geq 0 + \mu \left\| \theta - \theta ^\prime  \right\| _2 ^2  $
+        \item $\mu$-convexity + $ \mathcal{C}^2 $ : curves upwards : $ \forall \theta , Hess_F (\theta ) \succeq \mu Id $ (SDP)
+    \end{itemize}
 \end{itemize}
 
 \section{Technique de preuve}
