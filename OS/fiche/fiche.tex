@@ -60,7 +60,6 @@
         \item $ k \left\langle x, y \right\rangle = \left\langle kx, y \right\rangle = \left\langle x ,ky \right\rangle  $ 
         \item $ \left\langle z, x + y \right\rangle = \left\langle z,x \right\rangle + \left\langle x,y \right\rangle  $ 
     \end{itemize}
-    \item Co-coercivity: $ \frac{1}{L} \left\| \nabla F(\theta ) - \nabla F(\theta ^\prime ) \right\| ^2 _2 \leq  \langle  \nabla F(\theta ) - \nabla F(\theta ^\prime ), \theta  - \theta ^\prime \rangle$ 
     \item Inégalité triangulaire : $ \left\| x + y \right\| \leq \left\| x \right\| + \left\| y \right\|  $ 
     \item GD : $ \theta _{t+1} = \theta _t - \gamma \nabla F(\theta _t) $ 
     \item Polyak-Ruppert averaging : $ \bar{\theta }_T = \frac{1}{T} \sum_{t=1}^{T}\theta _t $ 
@@ -68,7 +67,7 @@
     \item KKT : 
     \item Dérivé norme : $ \frac{d}{dt} \left\| f(t) \right\| = \frac{\left\langle f(t) , f^\prime (t) \right\rangle }{\left\| f(t) \right\| } $ 
     \item Dérivé norme au carré : $ \frac{d}{dt} \left\| f(t) \right\| ^2 = 2 \left\langle f(t) , f^\prime (t) \right\rangle $
-
+    
     \item Convexity props \begin{itemize}
         \item Convexity : under chords : $ F(\eta \theta + (1 - \eta ) \theta ^\prime ) \leq  \eta F(\theta ) + (1 - \eta ) F(\theta ^\prime ), \forall \theta , \theta ^\prime , \forall \eta  \in [0, 1] $ 
         \item Convexity + diff (tangent lie below) $ F(\theta ^\prime ) \geq F(\theta ) + \langle  \nabla F(\theta ) , \theta ^\prime - \theta  \rangle ,  \forall \theta , \theta ^\prime $ 
@@ -81,6 +80,7 @@
         \item $\mu$-convexity : **well** increasing slopes : $ \langle \nabla F(\theta ) - \nabla F(\theta ^\prime ), \theta - \theta ^\prime \rangle \geq 0 + \mu \left\| \theta - \theta ^\prime  \right\| _2 ^2  $
         \item $\mu$-convexity + $ \mathcal{C}^2 $ : curves upwards : $ \forall \theta , Hess_F (\theta ) \succeq \mu Id $ (SDP)
     \end{itemize}
+    \item Co-coercivity = L-Smooth + Convexe : $ \frac{1}{L} \left\| \nabla F(\theta ) - \nabla F(\theta ^\prime ) \right\| ^2 _2 \leq  \langle  \nabla F(\theta ) - \nabla F(\theta ^\prime ), \theta  - \theta ^\prime \rangle$ 
 \end{itemize}
 
 \section{Technique de preuve}
@@ -90,9 +90,10 @@
     \item Trick de l'intégrale \begin{align*}
         F(x - \gamma y) - F(x) &= F(x - \gamma y) - F(\theta - 0 \times y) \\
         &= \left[ F(x - \tau y) \right]_0 ^\gamma \\
-        &= \int_{0}^{\gamma } ... 
+        &= \int_{0}^{\gamma } \left\langle   \right\rangle 
     \end{align*}
-    \item Si on a des inéagalités avec du $ \theta _1 $ et des sommes, potentiel somme d'inégalités
+    % Poser la formule simplement avec f(y) - f(x)²
+    \item Si on a des inégalités avec du $ \theta _1 $ et des sommes, potentiel somme d'inégalités
     \item On utilise souvent la cocoercivity du gradient avec $ \nabla F(\theta ^\star ) = 0 $ 
     \[
         \left\| \nabla F(\theta _t) \right\| \leq L \left\langle \nabla F(\theta _t), \theta _t - \theta ^\star  \right\rangle 
@@ -104,7 +105,7 @@
 \begin{lem}[Descent lemma]
     Assume that $ F $  is L-Smooth. Therefore $ \forall \theta , \theta ^\prime \in  $ domain of $ F $ 
     \[
-        F(\theta ^\prime ) \leq  F(\theta ) + \langle \nabla F(\theta ) , \theta ^\prime  - \theta \rangle + \frac{L}{2} \left\| \theta ^\prime  - \theta  \right\| 
+        F(\theta ^\prime ) \leq  F(\theta ) + \langle \nabla F(\theta ) , \theta ^\prime  - \theta \rangle + \frac{L}{2} \left\| \theta ^\prime  - \theta  \right\| ^2
     .\]
 \end{lem}
 
