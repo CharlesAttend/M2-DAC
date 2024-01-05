@@ -1,17 +1,15 @@
 % rules
-cnf(t,axiom,[-a(X,grippe),fievre(X)]).
-cnf(t,axiom,[-a(X,angine),fievre(X)]).
-cnf(t,axiom,[-a(X,bronchite),fievre(X)]).
-cnf(t,axiom,[-a(X,simplerhume),mieux(X)]).
-cnf(t,axiom,[-a(X,angine),-antibio(X),mieux(X)]).
-cnf(t,axiom,[-a(X,bronchite),-antibio(X),mieux(X)]).
-cnf(t,axiom,[-a(X,bronchite),toux(X)]).
-cnf(t,axiom,[a(X,grippe),diff(grippe,simplerhume)]).
-cnf(t,axiom,[a(X,angine),diff(angine,simplerhume)]).
-cnf(t,axiom,[a(X,bronchite),diff(bronchite,simplerhume)]).
-cnf(t,axiom,[-a(X,Y),diff(Y,simplerhume),a(X,simplerhume)]).
+cnf(a,axiom,[-a(X,grippe),fievre(X)]).
+cnf(b,axiom,[-a(X,angine),fievre(X)]).
+cnf(c,axiom,[-a(X,bronchite),fievre(X)]).
+cnf(d,axiom,[-a(X,simplerhume),mieux(X)]).
+cnf(e,axiom,[-a(X,angine),-antibio(X),mieux(X)]).
+cnf(f,axiom,[-a(X,bronchite),-antibio(X),mieux(X)]).
+cnf(g,axiom,[-a(X,bronchite),toux(X)]).
+cnf(h,axiom,[-a(X,grippe),-a(X,angine),-a(X,bronchite),-a(X,simplerhume)]).
+cnf(i,axiom,[-a(X,Y),diff(Y,simplerhume),a(X,simplerhume)]).
 % facts
-cnf(f,axiom,[toux(p)]).
-cnf(f,axiom,[antibio(p)]).
+cnf(j,axiom,[-toux(p)]).
+cnf(k,axiom,[antibio(p)]).
 
 

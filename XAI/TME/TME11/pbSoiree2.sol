@@ -5,8 +5,7 @@ cnf(t,axiom,[-libre(X),-travail(X)]).
 cnf(t,axiom,[motive(X),-ennui(X),autreRdv(X)]).
 cnf(t,axiom,[motive(X),-vient(Y),-vient(Z),-ami(X,Y),-ami(X,Z),eq(Y,Z)]).
 cnf(t,axiom,[-motive(X),-vient(Y),-deteste(X,Y)]).
-% En général, les faits sont aussi dans le Sigma donc en axiomes.
-% au lieu de top_clause
+% En général, les faits sont aussi dans le Σ donc en axiomes (au lieu de top_clause)
 cnf(f,axiom,[ami(a,c)]).
 cnf(f,axiom,[ami(c,a)]).
 cnf(f,axiom,[ami(a,b)]).
