@@ -1,10 +1,10 @@
 \documentclass{article}
+\usepackage[12pt]{extsizes}
 \usepackage[utf8]{inputenc}
-\usepackage[a4paper, margin=2.5cm]{geometry}
+\usepackage[a4paper, margin=1.25cm]{geometry}
 \usepackage{graphicx}
 \usepackage[french]{babel}
 
-\usepackage[default,scale=0.95]{opensans}
 \usepackage[T1]{fontenc}
 \usepackage{amssymb} %math
 \usepackage{amsmath}
@@ -49,48 +49,74 @@
 \maketitle
 
 \section{Formule et définition}
+\subsection{Base}
 \begin{itemize}
     \item Produit scalaire : $ \left\langle x, y \right\rangle = x^T y = \sum x_i y_i $ 
     \item Norme : $ \left\| x \right\| = \sqrt{\left\langle x,x \right\rangle } $ 
-    \item Identité remarquable: $ \left\| a + b \right\| = \left\| a \right\| + \left\| b \right\| + 2 \left\langle a,b \right\rangle  $ 
-    \item Inégalité de Cauchy : $ \left| \left\langle x,y \right\rangle  \right| \leq \left\| x \right\| \left\| y \right\|   $ 
-    \item k-lipschitzienne : $ \left| f(x) - f(y) \right| \leq k \left| x - y \right|  $ Bouger dans l'espace d'arriver fait bouger $ k $ fois plus dans l'espace de départ.
-    \item L-Smooth: = gradient Lipschitz$ \forall \theta , \theta ^\prime, \left\| \nabla F(\theta ) - \nabla F(\theta ^\prime ) \right\| \leq  L \left\| \theta - \theta ^\prime  \right\| $ 
     \item Bilinéarité du produit scalaire: \begin{itemize}
         \item $ k \left\langle x, y \right\rangle = \left\langle kx, y \right\rangle = \left\langle x ,ky \right\rangle  $ 
         \item $ \left\langle z, x + y \right\rangle = \left\langle z,x \right\rangle + \left\langle x,y \right\rangle  $ 
+        \item $ \left\langle x, y \right\rangle + \left\langle x, z \right\rangle = \left\langle x, y + z \right\rangle  $ 
     \end{itemize}
-    \item Inégalité triangulaire : $ \left\| x + y \right\| \leq \left\| x \right\| + \left\| y \right\|  $ 
-    \item GD : $ \theta _{t+1} = \theta _t - \gamma \nabla F(\theta _t) $ 
-    \item Polyak-Ruppert averaging : $ \bar{\theta }_T = \frac{1}{T} \sum_{t=1}^{T}\theta _t $ 
-    \item Sub gradient : $ f(x) - f(x_0) \geq \left\langle v, (x - x_0) \right\rangle  $ 
-    \item KKT : 
     \item Dérivé norme : $ \frac{d}{dt} \left\| f(t) \right\| = \frac{\left\langle f(t) , f^\prime (t) \right\rangle }{\left\| f(t) \right\| } $ 
     \item Dérivé norme au carré : $ \frac{d}{dt} \left\| f(t) \right\| ^2 = 2 \left\langle f(t) , f^\prime (t) \right\rangle $
-    
+    \item Identité remarquable: $ \left\| a + b \right\|^2 = \left\| a \right\|^2 + \left\| b \right\|^2 + 2 \left\langle a,b \right\rangle  $
+    \item GD : $ \theta _{t+1} = \theta _t - \gamma \nabla F(\theta _t) $ 
+    \item Polyak-Ruppert averaging : $ \bar{\theta }_T = \frac{1}{T} \sum_{t=1}^{T}\theta _t $ 
+    \item KKT : 
+\end{itemize}
+
+\subsection{Inégalité}
+\begin{itemize}
+    \item Inégalité triangulaire : $ \left\| x + y \right\| \leq \left\| x \right\| + \left\| y \right\|  $ 
+    \item Inégalité de Cauchy : $ \left| \left\langle x,y \right\rangle  \right| \leq \left\| x \right\| \left\| y \right\| $ 
+    % \item Sub gradient : $ f(x) - f(x_0) \geq \left\langle v, (x - x_0) \right\rangle  $ 
+\end{itemize}
+
+\subsection{Propriétés importantes}
+\begin{itemize}
     \item Convexity props \begin{itemize}
-        \item Convexity : under chords : $ F(\eta \theta + (1 - \eta ) \theta ^\prime ) \leq  \eta F(\theta ) + (1 - \eta ) F(\theta ^\prime ), \forall \theta , \theta ^\prime , \forall \eta  \in [0, 1] $ 
-        \item Convexity + diff (tangent lie below) $ F(\theta ^\prime ) \geq F(\theta ) + \langle  \nabla F(\theta ) , \theta ^\prime - \theta  \rangle ,  \forall \theta , \theta ^\prime $ 
-        \item Convexity : increasing slopes $ \langle \nabla F(\theta ) - \nabla F(\theta ^\prime ), \theta - \theta ^\prime \rangle \geq 0 $ ($ \nabla F $ is said to be a monotone operator )
-        \item Convexity + $ \mathcal{C}^2 $ : curves upwards $ \forall \theta , Hess_F (\theta ) \succeq 0 $ (SDP)
+        \item Convexity : under chords : $ F(\eta \theta + (1 - \eta ) \theta ^\prime ) \leq  \eta F(\theta ) + (1 - \eta ) F(\theta   ^\prime ) $ 
+        \item Convexity : increasing slopes $ \langle \nabla F(\theta ) - \nabla F(\theta ^\prime ), \theta - \theta ^\prime \rangle \geq 0 $
+        \item Convexity + diff : $ F(\theta ^\prime ) \geq F(\theta ) + \langle  \nabla F(\theta ) , \theta ^\prime - \theta  \rangle \Leftrightarrow F(\theta ^\prime ) - F(\theta ) \geq \left\langle \nabla F(\theta ) , \theta ^\prime - \theta  \right\rangle $ 
+        \item Convexity + $ \mathcal{C}^2 $ : Hessienne SDP $ \forall \theta , Hess_F (\theta ) \succeq 0 $
     \end{itemize}
     \item $ \mu \text{-strongly}$ convex, $ \mu > 0 $. \begin{itemize}
-        \item $\mu$-convexity : **well** under chords : $ F(\eta \theta + (1 - \eta ) \theta ^\prime ) \leq  \eta F(\theta ) + (1 - \eta ) F(\theta ^\prime ) - \frac{\eta (1 - \eta ) \mu }{2} \left\| \theta - \theta ^\prime  \right\| ^2 _2 , \forall \theta , \theta ^\prime , \forall \eta  \in [0, 1] $ 
-        \item $\mu$-convexity + diff (tangent lie **well** below) : $ F(\theta ^\prime ) \geq F(\theta ) + < \nabla F(\theta ) , \theta ^\prime - \theta  > + \frac{\mu }{2} \left\| \theta - \theta ^\prime  \right\|^2_2, \forall \theta , \theta ^\prime  $ 
-        \item $\mu$-convexity : **well** increasing slopes : $ \langle \nabla F(\theta ) - \nabla F(\theta ^\prime ), \theta - \theta ^\prime \rangle \geq 0 + \mu \left\| \theta - \theta ^\prime  \right\| _2 ^2  $
-        \item $\mu$-convexity + $ \mathcal{C}^2 $ : curves upwards : $ \forall \theta , Hess_F (\theta ) \succeq \mu Id $ (SDP)
+        \item $\mu$-convexity : $ F(\eta \theta + (1 - \eta ) \theta ^\prime ) \leq  \eta F(\theta ) + (1 - \eta ) F(\theta ^\prime ) - \frac{\eta (1 - \eta ) \mu }{2} \left\| \theta - \theta ^\prime  \right\| ^2 _2 ,$ 
+        \item $\mu$-convexity + diff : $ F(\theta ^\prime ) \geq F(\theta ) + < \nabla F(\theta ) , \theta ^\prime - \theta  > + \frac{\mu }{2} \left\| \theta - \theta ^\prime  \right\|^2_2,  $ 
+        \item $\mu$-convexity : $ \langle \nabla F(\theta ) - \nabla F(\theta ^\prime ), \theta - \theta ^\prime \rangle \geq 0 + \mu \left\| \theta - \theta ^\prime  \right\| _2 ^2  $
+        \item $\mu$-convexity + $ \mathcal{C}^2 $ : Hessienne SDP $ \forall \theta , Hess_F (\theta ) \succeq \mu Id $ (SDP)
     \end{itemize}
-    \item Co-coercivity = L-Smooth + Convexe : $ \frac{1}{L} \left\| \nabla F(\theta ) - \nabla F(\theta ^\prime ) \right\| ^2 _2 \leq  \langle  \nabla F(\theta ) - \nabla F(\theta ^\prime ), \theta  - \theta ^\prime \rangle$ 
+    \item k-lipschitzienne : $ \left| f(x) - f(y) \right| \leq k \left| x - y \right|  $ Bouger dans l'espace d'arriver fait bouger $ k $ fois plus dans l'espace de départ.
+    \item L-Smooth : = gradient Lipschitz $, \left\| \nabla F(\theta ) - \nabla F(\theta ^\prime ) \right\| \leq  L \left\| \theta - \theta ^\prime  \right\| $ 
+    \item Co-coercivity = L-Smooth + Convexe : \begin{itemize}
+        \item $ \frac{1}{L} \left\| \nabla F(\theta ) - \nabla F(\theta ^\prime ) \right\| ^2 _2 \leq  \langle  \nabla F(\theta ) - \nabla F(\theta ^\prime ), \theta  - \theta ^\prime \rangle \Leftrightarrow $ 
+        \item $\Leftrightarrow \left\| \nabla F(\theta _t) \right\|^2 \leq L \left\langle \nabla F(\theta _t), \theta _t - \theta ^\star  \right\rangle  $ 
+    \end{itemize}
+    \item Descent Lemma : = (Convexity + diff avec un $ \leq  $ ) + le terme L-Smooth
+    \[
+        F(\theta ^\prime ) \leq  F(\theta ) + \langle \nabla F(\theta ) , \theta ^\prime  - \theta \rangle + \frac{L}{2} \left\| \theta ^\prime  - \theta  \right\| ^2
+    .\]
+    
+    \[
+        F(\theta ^\prime ) - F(\theta ) \leq  \langle \nabla F(\theta ) , \theta ^\prime  - \theta \rangle + \frac{L}{2} \left\| \theta ^\prime  - \theta  \right\| ^2
+    .\]
 \end{itemize}
 
 \section{Technique de preuve}
 \begin{itemize}
     \item Penser au $ \pm  $ pour faire apparaitre un terme voulu
     \item $ \nabla F(\theta ^\infty ) \approx \nabla F(\theta ^\star ) = 0 $ 
-    \item Trick de l'intégrale \begin{align*}
+    \item Trick de l'intégrale, souvent suivie d'un $ \pm \nabla F() $ \begin{align*}
         F(x - \gamma y) - F(x) &= F(x - \gamma y) - F(\theta - 0 \times y) \\
         &= \left[ F(x - \tau y) \right]_0 ^\gamma \\
-        &= \int_{0}^{\gamma } \left\langle   \right\rangle 
+        &= \int_{0}^{\gamma } \left\langle -y, \nabla F(x - \tau y) \right\rangle d \tau
+    \end{align*}
+    \begin{align*}
+        F(\theta _{t+1}) - F(\theta _t) 
+        &= F(\theta _t - \gamma \nabla F(\theta _t)) - F(\theta _t) \\
+        &= [F(\theta _t - \tau \nabla F(\theta _t))]^\gamma _{\tau = 0} \\
+        &= -\int_{0}^{\gamma } \left\langle \nabla F(\theta _t), \nabla F(\theta _t - \tau \nabla F(\theta _t)) \right\rangle d \tau \\
     \end{align*}
     % Poser la formule simplement avec f(y) - f(x)²
     \item Si on a des inégalités avec du $ \theta _1 $ et des sommes, potentiel somme d'inégalités
@@ -98,28 +124,7 @@
     \[
         \left\| \nabla F(\theta _t) \right\| \leq L \left\langle \nabla F(\theta _t), \theta _t - \theta ^\star  \right\rangle 
     .\]
-     
 \end{itemize}
-
-\section{Théorèmes importants}
-\begin{lem}[Descent lemma]
-    Assume that $ F $  is L-Smooth. Therefore $ \forall \theta , \theta ^\prime \in  $ domain of $ F $ 
-    \[
-        F(\theta ^\prime ) \leq  F(\theta ) + \langle \nabla F(\theta ) , \theta ^\prime  - \theta \rangle + \frac{L}{2} \left\| \theta ^\prime  - \theta  \right\| ^2
-    .\]
-\end{lem}
-
-\paragraph*{HEAVYBALL}[Polyak, 64]
-\begin{align*}
-    \beta _k &= \theta _k + (1 - \alpha _k) (\theta _k - \theta _{k-1}) \\
-    \theta _{k+1} &= \beta _k - \gamma \nabla F(\theta _k)
-\end{align*}
-
-\paragraph*{NESTEROV ALGO}[83]
-\begin{align*}
-    \beta _k &= \theta _k + (1 - \alpha _k) (\theta _k - \theta _{k-1}) \\
-    \theta _{k+1} &= \beta _k - \gamma \nabla F(\beta _k)
-\end{align*}
 
 \section{Gros gros plan du cours}
 \begin{itemize}
@@ -129,7 +134,7 @@
         \item GD when not L-Smooth
     \end{itemize}
     \item SGD \begin{itemize}
-        \item Tourne autour de la solution ($ Var(\nabla F_i(\theta ^\star )) = 1/3 $ ) 
+        \item Tourne autour de la solution ($ Var(\nabla F_i(\theta ^\star )) = 1/3 $ )
         \item Polyak averaging fix ça 
         \item Vanishing step size 
     \end{itemize}
