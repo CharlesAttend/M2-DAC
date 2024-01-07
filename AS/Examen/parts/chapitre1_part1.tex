@@ -56,15 +56,13 @@ Avec cette définition en tête, passons maintenant aux hypothèses. Pour tout $
     .\]
 \end{assumption}
 
-\begin{note}
-    L'\Cref{H1} est en pratique satisfaite par toutes les initialisations, en particulier celle par défaut dans les paquets Keras \citep{chollet2015keras} et Torch Vision \citep{torchvision2016}.
+L'\Cref{H1} est en pratique satisfaite par toutes les initialisations, en particulier celle par défaut dans les paquets Keras \citep{chollet2015keras} et Torch Vision \citep{torchvision2016}.
 
-    La première partie de l'\Cref{H2} assure que $g(\cdot, \theta_{k+1})$ se comporte en moyenne approximativement comme une isométrie, c'est-à-dire qu'elle préserve les longueurs et les mesures d'angles entre son espace de départ et son espace d'arrivée.
+La première partie de l'\Cref{H2} assure que $g(\cdot, \theta_{k+1})$ se comporte en moyenne approximativement comme une isométrie, c'est-à-dire qu'elle préserve les longueurs et les mesures d'angles entre son espace de départ et son espace d'arrivée.
 
-    La deuxième partie de l'\Cref{H2} vise à limiter les variations excessives de la norme de $g(h_k, \theta_{k+1})$.
-\end{note}
+La deuxième partie de l'\Cref{H2} vise à limiter les variations excessives de la norme de $g(h_k, \theta_{k+1})$.
 
-\begin{proposition}[Admis]\label{prop1}
+\begin{proposition}\label{prop1}
     Soient les modèles \texttt{res-1}, \texttt{res-2}, \texttt{res-3} décrit dans le \Cref{tab:resnetArchitectures}, on a 
     \begin{itemize}
         \item [(i)] L'\Cref{H2} est valide pour l'architecture \texttt{res-1}.
@@ -72,7 +70,7 @@ Avec cette définition en tête, passons maintenant aux hypothèses. Pour tout $
     \end{itemize}
 \end{proposition}
 
-\begin{lem}[Admis]\label{lem14}
+\begin{lem}\label{lem14}
     Considérons un ResNet (\ref{resnet_equation}) tel que les \Cref{H1,H2} soient satisfaites. Alors
     \[
         \left(\left(1 + \frac{\alpha _L ^2 }{2 }\right) ^L - 1\right) \leqslant \mathbb{E}\left( \frac{\left\| h_L - h_0 \right\| ^2 }{\left\| h_0 \right\| ^2} \right) \leqslant \left(\left(1 + \alpha _L ^2 \right) ^L - 1 \right)
@@ -121,7 +119,7 @@ La \Cref{prop2} par sa borne supérieur petite indique que le réseau se comport
 
 
 
-\begin{proposition}[Admise]\label{prop3}
+\begin{proposition}\label{prop3}
     Considérons un ResNet (\ref{resnet_equation}) tel que les \Cref{H1,H2} soient satisfaites.
     \begin{itemize}
         \item[(i)] Supposons que $ d \geqslant 64 $ et $ \alpha _L ^2 \leqslant  \frac{2}{ (\sqrt{C} s^4 + 4 \sqrt{C} + 16 s ^4) d } $. Alors, pour tout $ \delta \in (0, 1) $, avec une probabilité d'au moins $ 1 - \delta $,
