@@ -23,4 +23,5 @@ scikit-fda
 seaborn
 torch-tb-profiler
 torchaudio
+torchvision
 wandb
