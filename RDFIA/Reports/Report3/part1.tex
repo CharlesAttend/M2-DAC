@@ -1,1 +1,78 @@
-\section{}
+\graphicspath{{figs/3a}}
+\chapter{Bayesian Linear Regression}
+
+
+%   ┌──────────────────────────────────────────────────────────────────────────┐
+%   │ Summary                                                                  │
+%   └──────────────────────────────────────────────────────────────────────────┘
+
+
+\section{Linear Basis function model}
+\subsection{Gaussian basis functions}
+\paragraph*{Recall closed form of the posterior distribution in linear case. Then, code and visualize posterior sampling. What can you observe?}
+\[
+    p(\mathbf{w}|\mathbf{X}, \mathbf{Y}) = \mathcal{N}(\mathbf{w}|\boldsymbol{\mu}, \boldsymbol{\Sigma})
+.\]
+
+\[
+    \boldsymbol{\Sigma}^{-1} = \alpha \mathbf{I} + \beta \boldsymbol{\Phi}^T \boldsymbol{\Phi}
+.\]
+
+\[
+    \boldsymbol{\mu} = \beta \boldsymbol{\Sigma} \boldsymbol{\Phi}^T \mathbf{Y}
+.\]
+
+\paragraph*{Recall and code closed form of the predictive distribution in linear case.}
+\[
+    p\left(y|x^*; \mathbf{D}, \alpha, \beta\right) = \mathcal{N}\left(y; \mu^T \boldsymbol{\Phi}(x^*), \frac{1}{\beta} + \boldsymbol{\Phi}(x^*)^T \boldsymbol{\Sigma} \boldsymbol{\Phi}(x^*)\right)
+.\]
+
+\paragraph*{Based on previously defined \texttt{f\_pred()}, predict on the test dataset. Then visualize results using \texttt{plot\_results()} defined at the beginning of the notebook.}
+\begin{figure}[H]
+    \centering
+    % \includegraphics*[width=.80]{imagefile}
+    % \caption{<caption>}
+    % \label{<label>}
+\end{figure}
+
+\paragraph*{Analyse these results. Why predictive variance increases far from training distribution? Prove it analytically in the case where $\alpha=0$ and $\beta=1$.}
+% TODO : continuer la preuve 
+With $\alpha = 0, \beta = 1$, the computation of $\Sigma^{-1}$ become 
+\begin{align*}
+    \Sigma ^{-1} 
+        &= 0*Id_3 + 1* \phi ^T \phi = \phi ^T \phi \\ 
+        &= \begin{pmatrix}
+            1 & \dots & 1 \\
+            x_1 & \dots & x_N \\
+        \end{pmatrix} \begin{pmatrix}
+            1 & x_1 \\
+            \vdots & \vdots 
+            1 & x_N \\
+        \end{pmatrix} \\
+        &= \begin{pmatrix}
+            N & \sum x_i \\
+            \sum x_i & \sum x_i^2
+        \end{pmatrix}
+\end{align*}
+Finally we inverse $ \Phi  $ using the classic formula for $ 2 \times 2 $ matrix 
+\[
+    \Sigma = \frac{1}{\det \Sigma ^{-1}} \begin{pmatrix}
+        \sum x_i^2 & - \sum x_i \\
+        - \sum x_i & N
+    \end{pmatrix}
+.\]
+
+\paragraph*{Bonus: What happens when applying Bayesian Linear Regression on the following dataset?}
+
+\section{Non Linear models}
+
+\subsection{Polynomial basis functions}
+\paragraph*{Code and visualize results on sinusoidal dataset using polynomial basis functions. What can you say about the predictive variance?}
+
+
+\subsection{Gaussian basis functions}
+\paragraph*{Code and visualize results on sinusoidal dataset using Gaussian basis functions. What can you say this time about the predictive variance?}
+
+\paragraph*{Explain why in regions far from training distribution, the predictive variance converges to this value when using localized basis functions such as Gaussians.}
+
+
