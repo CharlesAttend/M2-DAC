@@ -1,10 +1,19 @@
 ---
 marp: true
+header: 
+# footer: Hypothesis-driven Decision Support using Evaluative AI
+paginate: true
 ---
 
-# Introduction
+# <!-- fit --> Explainable AI is Dead, Long Live Explainable AI!
+## <!-- fit --> Hypothesis-driven Decision Support using Evaluative AI
 
 ---
+# <!-- fit -->  Introduction
+<!-- Y'a vraiment une idée de decision support dans le papier je crois  -->
+<!-- Tim miller a l'air de peser un peu, il publie beaucoup mais sur des sujets assez varié  -->
+---
+<!-- header: Introduction -->
 
 # What makes a good decisions
 * Simply : Identify, compare, choose options
@@ -38,39 +47,47 @@ Figure 2
 <!-- This indicates that Evaluative AI could prove useful by not fixating people on particular recommendations, but allowing peo- ple to assess whether evidence supports their hypotheses, rather than trying to understand the DA’s reasoning. -->
 ---
 
+# How current decision support align with humain decision process
 # (Explanable) AI as Decision Support
 ## Giving recommendations with no explanatory information
 * Joue seulement sur la confiance en notre décision finale, de manière binaire : si je suis d'accord j'ai plus confianc , si je ne suis pas d'accord je reréfléchis à ma décision 
 * Mais ne coche aucune des cases du tableau 2
 
 ## Giving recommendations with explanatory information
+* Mis-calibrated trust => Give justifications for decisions, providing evidence to support the decisions, and making models simple and easy to understand
+* Contrastive explaination help to considers other possibilities and make trades offs but only toward the model initial decision
+<!-- What about other XAI method -->
 ## Giving recommendations with an interpretable model
-## Cognitive forcing 
+* Same as before but this time it help to provide understanding of the machine decision
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+## Cognitive forcing  
+* The commonality between these three approaches is that decisions are initially withheld from the deci- sion maker 
+* Withholding recommendations ‘forces’ the decision maker to cognitively engage with the decision and therefore, to consider different options and make trade- offs. 
+*  partially helps to provide new options or to filter out unlikely options by forcing the decision maker to do so
+*  Partially support making trade-offs
+*  Does provide understandings of the machine decisions
 
 ---
-
-# How current decision support align with humain decision process
-
----
-
 # The evaluative AI framework
+* Option: Show the most likely/certain option (perhaps withholding the probabilities) => Not a single recommendation
+* Jugement: The machine provide feedback on humain jugement only. 
+* Trade-offs (option awarness): 
+    * Good decision makers assess an by looking for evidence that support it, but also evidence that **refutes it**.
+    * Evaluative AI explain trade-offs between two sets of option
+    * Evaluative AI provides evidence both for and against each option, irrelevant of the judged likelihood of that option.
+    <!-- * SHAP fait ça  -->
 
 ---
+
+# Example : Diagnosis
+
+---
+
+# Summary
+* Naturellement leur modèle coche toutes les cases de leur tableau
+
+---
+# Long live explainable AI
+# Limits
+# Research agenda
+Reprends et précise des éléments d'avant
