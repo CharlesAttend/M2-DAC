@@ -1,0 +1,253 @@
+% arguelles v2.3.0
+% author: Michele Piazzai
+% contact: michele.piazzai@uc3m.es
+% license: MIT
+
+\documentclass[compress,12pt]{beamer}
+\usepackage{hyperref}
+\usepackage{tikz}
+\usepackage{nicefrac}
+
+\newcommand{\xmark}{%
+\tikz[scale=0.15] {
+    \draw[line width=0.7,line cap=round] (0,0) to [bend left=6] (1,1);
+    \draw[line width=0.7,line cap=round] (0.2,0.95) to [bend right=3] (0.8,0.05);
+}}
+\newcommand{\cmark}{%
+\tikz[scale=0.15] {
+    \draw[line width=0.7,line cap=round] (0.25,0) to [bend left=10] (1,1);
+    \draw[line width=0.8,line cap=round] (0,0.35) to [bend right=1] (0.23,0);
+}}
+% \usepackage{emoji}
+% \setemojifont{TwemojiMozilla}
+
+\usetheme{Arguelles}
+\title{Explainable AI is Dead, Long Live Explainable AI!}
+\subtitle{Hypothesis-driven Decision Support using Evaluative AI}
+\event{}
+\date{}
+\author{Charles Vin}
+\institute{Sorbonne Université - 21216136}
+% \email{charles.vin@outlook.fr}
+% \homepage{charles.vin}
+% \github{username}
+
+\begin{document}
+
+\frame[plain]{\titlepage}
+
+\Section{Introduction}
+\begin{frame}
+      \frametitle{Quick summary}
+      Paradigm Shift in AI Decision Support \\
+      $\rightarrow$ Evaluative AI Concept \\
+      Goals:
+      \begin{itemize}
+            \item Human-centered Approach
+            \item Going Beyond Recommendations
+            \item \textbf{Mitigating Over-Reliance}
+            \item Support for Hypothesis Evaluation
+            \item Machine-in-the-Loop Paradigm
+      \end{itemize}
+\end{frame}
+
+\subsection{Over/Under reliance}
+\begin{frame}
+      \frametitle{Over/Under-reliance}
+      \framesubtitle{Definitions}
+      \begin{itemize}
+            \item \textbf{Over-reliance}: Decision makers accept a machine recommendations, even when it is wrong, but would be rejected if coming from a human. \begin{itemize}
+                  \item \textit{The machine "must be right" because it's a machine}
+            \end{itemize}
+            \item \textbf{Under-reliance}: Machine outputs are consistently rejected, even when it is correct, but would be accepted if coming from a human. 
+      \end{itemize}
+      $ \Rightarrow  $ Problems after deployement: \\ 
+      AI systems ignored OR over-reliance related problems.
+\end{frame}
+
+\begin{frame}
+      \frametitle{Over/Under-reliance}
+      \framesubtitle{Causes}
+      \begin{itemize}
+            \item Over-reliance: Automation bias ;
+            \item Under-reliance: Algorithmic aversion.
+      \end{itemize}
+      When adding XAI tools for more explaination \\
+      $ \Rightarrow $ Confirmation bias (called fixation in the paper).
+\end{frame}
+
+\begin{frame}
+      \frametitle{Over/Under-reliance}
+      \framesubtitle{Solutions}
+      \begin{itemize}
+            \item Cognitive forcing \begin{itemize}
+                  \item Eg. forcing people to give a decision before seeing a recommendation ;
+                  \item Slightly mitigated overreliance, but not enought to lead to a statistically significant differences ;
+                  \item Least prefered method by participant : people not wanting to exert mental energy.
+            \end{itemize}
+            \item Changing the XAI framework % {\fontspec{Symbola}\symbol{"1F914}}
+      \end{itemize}
+\end{frame}
+
+\begin{frame}
+      \frametitle{What makes a good decisions?}
+      % \framesubtitle{Subtitle here}
+      In a simple way: \begin{itemize}
+            \item Identify options
+            \item Compare options
+            \item Choose an option
+      \end{itemize}
+      In a less simple way: the 10 "cardinal decision issue" outlined by Yates and Potworowski \begin{itemize}
+            \item Needs, mode, Investment, Options, Possibilities, Judgements, Value, Trade-offs, Acceptability, Implementation
+      \end{itemize}
+\end{frame}
+
+\begin{frame}
+      \frametitle{What makes a good decisions support system?}
+      \framesubtitle{Summed up}
+      \begin{itemize}
+            \item Options: Help to identify options, well as help to narrow down the list of feasible or realistic options
+            \item Possibilities: Help to to identify possible outcomes 
+            \item Judgement \& Value: Help to judge which outcomes are most likely and what will be the positive and negative impacts
+            \item Trade-offs: Help to make trade-offs on the above criteria for each options
+            \item Understandable: Help to understand how and why the tools works as it does, and when it fails
+      \end{itemize}
+\end{frame}
+
+
+\section{Current XAI}
+
+\begin{frame}[standout]
+      \centering\large
+      Does current decision support align with those criteria?
+\end{frame}
+
+\begin{frame}
+      \frametitle{Giving recommendations with no explanatory information}
+      \begin{columns}[T] % align columns
+            \begin{column}{.75\textwidth}
+                  \begin{figure}[htbp]
+                        \centering
+                        Figure 3
+                  \end{figure}
+                  A model of giving recommendations for decision support. 
+                  
+                  This assumes that decision makers will carefully consider recommendations. However, empirical evidence suggests this is not the case.
+            \end{column}%
+            \hfill%
+            \begin{column}{.25\textwidth}
+                  \scriptsize
+                  \begin{itemize}
+                        \item[\xmark] Options
+                        \item[$ \nicefrac{1}{n} $ ] Possibilities
+                        \item[$ \nicefrac{1}{n} $ ] Judgement \& Value
+                        \item[\xmark] Trade-offs
+                        \item[\xmark] Understandable
+                  \end{itemize}
+            \end{column}%
+      \end{columns}
+\end{frame}
+
+\begin{frame}
+      \frametitle{Giving recommendations with explanatory information}
+      \begin{columns}[T] % align columns
+            \begin{column}{.75\textwidth}
+                  \begin{figure}[htbp]
+                        \centering
+                        Figure 3
+                  \end{figure}
+                  A model of giving recommendations for decision support. 
+                  
+                  This assumes that decision makers will carefully consider recommendations. However, empirical evidence suggests this is not the case.
+            \end{column}%
+            \hfill%
+            \begin{column}{.25\textwidth}
+                  \scriptsize
+                  \begin{itemize}
+                        \item[\xmark] Options
+                        \item[\xmark] Possibilities
+                        \item[\xmark] Judgement \& Value
+                        \item[\xmark] Trade-offs
+                        \item[\xmark] Understandable
+                  \end{itemize}
+            \end{column}%
+      \end{columns}
+\end{frame}
+
+\begin{frame}
+      \frametitle{Giving recommendations with cognitive forcing}
+      \begin{columns}[T] % align columns
+            \begin{column}{.75\textwidth}
+                  \begin{figure}[htbp]
+                        \centering
+                        Figure 3
+                  \end{figure}
+                  A model of giving recommendations for decision support. 
+                  
+                  This assumes that decision makers will carefully consider recommendations. However, empirical evidence suggests this is not the case.
+            \end{column}%
+            \hfill%
+            \begin{column}{.25\textwidth}
+                  \scriptsize
+                  \begin{itemize}
+                        \item[\xmark] Options
+                        \item[\xmark] Possibilities
+                        \item[\xmark] Judgement \& Value
+                        \item[\xmark] Trade-offs
+                        \item[\xmark] Understandable
+                  \end{itemize}
+            \end{column}%
+      \end{columns}
+\end{frame}
+
+
+
+\End
+\begin{frame}
+      \frametitle{Bibliography}
+      Template: \href{https://github.com/piazzai/arguelles}{Here \faGithub} \\
+\end{frame}
+
+
+\section{Template}
+
+\begin{frame}[plain]
+      \frametitle{A plain frame has no headline}
+      \begin{table}
+            \small
+            \begin{tabular}{rl}
+                  \ttfamily\textbackslash Alegreya              & \Alegreya Lorem ipsum dolor sit amet              \\
+                  \ttfamily\textbackslash AlegreyaMedium        & \AlegreyaMedium Lorem ipsum dolor sit amet        \\
+                  \ttfamily\textbackslash AlegreyaExtraBold     & \AlegreyaExtraBold Lorem ipsum dolor sit amet     \\
+                  \ttfamily\textbackslash AlegreyaBlack         & \AlegreyaBlack Lorem ipsum dolor sit amet         \\
+                  \ttfamily\textbackslash AlegreyaSansThin      & \AlegreyaSansThin Lorem ipsum dolor sit amet      \\
+                  \ttfamily\textbackslash AlegreyaSansLight     & \AlegreyaSansLight Lorem ipsum dolor sit amet     \\
+                  \ttfamily\textbackslash AlegreyaSans          & \AlegreyaSans Lorem ipsum dolor sit amet          \\
+                  \ttfamily\textbackslash AlegreyaSansMedium    & \AlegreyaSansMedium Lorem ipsum dolor sit amet    \\
+                  \ttfamily\textbackslash AlegreyaSansExtraBold & \AlegreyaSansExtraBold Lorem ipsum dolor sit amet \\
+                  \ttfamily\textbackslash AlegreyaSansBlack     & \AlegreyaSansBlack Lorem ipsum dolor sit amet
+            \end{tabular}
+      \end{table}
+      \vfill
+      \begin{alert}{Alert!}
+            A \textit{plain} frame does not show the progress bar but still appears in it unless the frame comes after \texttt{\textbackslash End}
+      \end{alert}
+\end{frame}
+
+\begin{frame}[standout]
+      \centering\large
+      A \textbf{\itshape\scshape standout} frame can be used to focus attention
+\end{frame}
+
+\End
+\begin{frame}[plain,standout]
+      \centering
+      In combination with \textit{plain}, \\
+      it makes a nice thank-you slide!
+      \vfill
+      \scalebox{4}{\faGithub} \par\bigskip
+      \url{https://github.com/piazzai/arguelles} \\
+      \url{https://ctan.org/pkg/beamertheme-arguelles}
+\end{frame}
+
+\end{document}
