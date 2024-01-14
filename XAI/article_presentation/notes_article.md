@@ -61,7 +61,7 @@ Figure 2
 * Same as before but this time it help to provide understanding of the machine decision
 
 ## Cognitive forcing  
-* The commonality between these three approaches is that decisions are initially withheld from the deci- sion maker 
+* The commonality between these three approaches is that decisions are initially withheld from the decision maker 
 * Withholding recommendations ‘forces’ the decision maker to cognitively engage with the decision and therefore, to consider different options and make trade- offs. 
 *  partially helps to provide new options or to filter out unlikely options by forcing the decision maker to do so
 *  Partially support making trade-offs
@@ -87,7 +87,26 @@ Figure 2
 * Naturellement leur modèle coche toutes les cases de leur tableau
 
 ---
+
 # Long live explainable AI
+* Application du XAI au delà de l'aide à la décision où les Recommendation drivent approaches sont bien et adapté
+    * Making decision at scale 
+* Il faudra toujours un model recommendation based pour n'importe quelle XAI technique
+* Evaluative AI $ \subset $ XAI
+* Many existing XAI tools are already adapted to Evaluative AI 
+    * Constrastive explanation 
+    * Feature importance (SHAP)
+    * Wieghts of Evidence, case-based reasoning techniques 
+
+---
+
 # Limits
+* First, if people tend to dismiss recommendations and any explainability information, why would they pay attention to evidence?
+    * Evaluative AI give better control, with a process that they will naturally follow (contrairement à l'approche recommendation qui casse ça)
+    * **=> j'aimerai bien une preuve de ça quand même **
+* Cognitive load remain a problem 
+    * Evaluative AI still reduce the quantity of information the decision maker needs (only revelant information are presented)
+    * Still the less prefered solution by decision makers 
+
 # Research agenda
 Reprends et précise des éléments d'avant

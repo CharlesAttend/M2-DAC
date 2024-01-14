@@ -8,6 +8,9 @@
 \usepackage{tikz}
 \usepackage{nicefrac}
 
+\graphicspath{{figs}}
+\newcommand{\emoji}[1]{\includegraphics[height=\fontcharht\font`\B]{emojis/#1.png}}
+
 \newcommand{\xmark}{%
 \tikz[scale=0.15] {
     \draw[line width=0.7,line cap=round] (0,0) to [bend left=6] (1,1);
@@ -26,8 +29,8 @@
 \subtitle{Hypothesis-driven Decision Support using Evaluative AI}
 \event{}
 \date{}
-\author{Charles Vin}
-\institute{Sorbonne Université - 21216136}
+\author{\tiny Charles Vin}
+\institute{\tiny Sorbonne Université - 21216136}
 % \email{charles.vin@outlook.fr}
 % \homepage{charles.vin}
 % \github{username}
@@ -39,7 +42,7 @@
 \Section{Introduction}
 \begin{frame}
       \frametitle{Quick summary}
-      Paradigm Shift in AI Decision Support \\
+      Arg for a Paradigm Shift in (X)AI for Decision Support \\
       $\rightarrow$ Evaluative AI Concept \\
       Goals:
       \begin{itemize}
@@ -61,6 +64,7 @@
             \end{itemize}
             \item \textbf{Under-reliance}: Machine outputs are consistently rejected, even when it is correct, but would be accepted if coming from a human. 
       \end{itemize}
+      See \href{https://en.wikipedia.org/wiki/Automation_bias}{\textit{''Automation bias''}}
       $ \Rightarrow  $ Problems after deployement: \\ 
       AI systems ignored OR over-reliance related problems.
 \end{frame}
@@ -69,24 +73,24 @@
       \frametitle{Over/Under-reliance}
       \framesubtitle{Causes}
       \begin{itemize}
-            \item Over-reliance: Automation bias ;
+            \item Over-reliance:  ;
             \item Under-reliance: Algorithmic aversion.
       \end{itemize}
-      When adding XAI tools for more explaination \\
-      $ \Rightarrow $ Confirmation bias (called fixation in the paper).
+      When adding current XAI tools for more explaination \\
+      $ \Rightarrow $ Confirmation bias (called \textit{fixation} in the paper).
 \end{frame}
 
 \begin{frame}
       \frametitle{Over/Under-reliance}
       \framesubtitle{Solutions}
-      \begin{itemize}
+      \begin{enumerate}
             \item Cognitive forcing \begin{itemize}
                   \item Eg. forcing people to give a decision before seeing a recommendation ;
                   \item Slightly mitigated overreliance, but not enought to lead to a statistically significant differences ;
                   \item Least prefered method by participant : people not wanting to exert mental energy.
             \end{itemize}
-            \item Changing the XAI framework % {\fontspec{Symbola}\symbol{"1F914}}
-      \end{itemize}
+            \item Changing the XAI framework \emoji{smirking-face} \emoji{thinking-face} \emoji{thought-balloon} \emoji{light-bulb}
+      \end{enumerate}
 \end{frame}
 
 \begin{frame}
@@ -108,7 +112,7 @@
       \begin{itemize}
             \item Options: Help to identify options, well as help to narrow down the list of feasible or realistic options
             \item Possibilities: Help to to identify possible outcomes 
-            \item Judgement \& Value: Help to judge which outcomes are most likely and what will be the positive and negative impacts
+            \item Judgement: Help to judge which outcomes are most likely and what will be the positive and negative impacts
             \item Trade-offs: Help to make trade-offs on the above criteria for each options
             \item Understandable: Help to understand how and why the tools works as it does, and when it fails
       \end{itemize}
@@ -128,19 +132,17 @@
             \begin{column}{.75\textwidth}
                   \begin{figure}[htbp]
                         \centering
-                        Figure 3
+                        \includegraphics[width=.9\textwidth]{fig3.pdf}
                   \end{figure}
                   A model of giving recommendations for decision support. 
                   
                   This assumes that decision makers will carefully consider recommendations. However, empirical evidence suggests this is not the case.
             \end{column}%
             \hfill%
-            \begin{column}{.25\textwidth}
-                  \scriptsize
+            \begin{column}{.295\textwidth}
                   \begin{itemize}
                         \item[\xmark] Options
-                        \item[$ \nicefrac{1}{n} $ ] Possibilities
-                        \item[$ \nicefrac{1}{n} $ ] Judgement \& Value
+                        \item[$ \nicefrac{1}{n} $ ] Possibilities \& Judgement
                         \item[\xmark] Trade-offs
                         \item[\xmark] Understandable
                   \end{itemize}
@@ -154,19 +156,18 @@
             \begin{column}{.75\textwidth}
                   \begin{figure}[htbp]
                         \centering
-                        Figure 3
+                        \includegraphics[width=.9\textwidth]{fig4.pdf}
                   \end{figure}
-                  A model of giving recommendations for decision support. 
+                  A model of explainable AI for decision support. 
                   
-                  This assumes that decision makers will carefully consider recommendations. However, empirical evidence suggests this is not the case.
+                  This assumes that the problem of distrust can be mitigates by giving reasons or explanations for decisions. However, empirical evidence suggests people do not pay careful attention to the
+                  reasons/explanations.
             \end{column}%
             \hfill%
-            \begin{column}{.25\textwidth}
-                  \scriptsize
+            \begin{column}{.295\textwidth}
                   \begin{itemize}
                         \item[\xmark] Options
-                        \item[\xmark] Possibilities
-                        \item[\xmark] Judgement \& Value
+                        \item[\xmark] Possibilities \& Judgement
                         \item[\xmark] Trade-offs
                         \item[\xmark] Understandable
                   \end{itemize}
@@ -177,22 +178,24 @@
 \begin{frame}
       \frametitle{Giving recommendations with cognitive forcing}
       \begin{columns}[T] % align columns
-            \begin{column}{.75\textwidth}
+            \begin{column}{.705\textwidth}
                   \begin{figure}[htbp]
                         \centering
-                        Figure 3
+                        \includegraphics[width=.9\textwidth]{fig5.pdf}
+                        \caption{A model of cognitive forcing.}
                   \end{figure}
-                  A model of giving recommendations for decision support. 
-                  
-                  This assumes that decision makers will carefully consider recommendations. However, empirical evidence suggests this is not the case.
+                  \begin{itemize}
+                        \item [] Withholding recommendations \& giving an ''explanation''
+                        \item [$\rightarrow$] forces people to engage
+                        \item [$\rightarrow$] limit over-reliance.
+                        \item [\xmark] still a ''recommend and defend'' approach.
+                  \end{itemize}
             \end{column}%
             \hfill%
-            \begin{column}{.25\textwidth}
-                  \scriptsize
+            \begin{column}{.295\textwidth}
                   \begin{itemize}
                         \item[\xmark] Options
-                        \item[\xmark] Possibilities
-                        \item[\xmark] Judgement \& Value
+                        \item[\xmark] Possibilities \& Judgement
                         \item[\xmark] Trade-offs
                         \item[\xmark] Understandable
                   \end{itemize}
@@ -200,12 +203,113 @@
       \end{columns}
 \end{frame}
 
+\section{Evalative AI}
+\begin{frame}
+      \frametitle{The evaluative AI framework}
+      \begin{columns}[T] % align columns
+            \begin{column}{.5\textwidth}
+                  \begin{figure}[htbp]
+                        \centering
+                        \includegraphics[width=\textwidth]{fig6.pdf}
+                        \caption{A model of Evaluative AI.}
+                  \end{figure}
+            \end{column}%
+            \hfill%
+            \begin{column}{.5\textwidth}
+                  \begin{itemize}
+                        \item Align with decision making processes
+                        \item Keep the decision maker in control
+                        \item Ask users to rely on evidence instead of recommendations.
+                  \end{itemize}
+            \end{column}%
+      \end{columns}
+\end{frame}
+\begin{frame}
+      \frametitle{The evaluative AI framework}
+      \begin{columns}[T] % align columns
+            \begin{column}{.705\textwidth}
+                  \begin{figure}[htbp]
+                        \centering
+                        \includegraphics[width=\textwidth]{exmp.pdf}
+                        \caption{A simple prototype of a diagnostic interface using evaluative AI.}
+                  \end{figure}
+            \end{column}%
+            \hfill%
+            \begin{column}{.295\textwidth}
+                  \begin{itemize}
+                        \item[\cmark] Options
+                        \item[\cmark] Possibilities \& Judgement
+                        \item[\cmark] Trade-offs
+                        \item[\cmark] Understandable
+                  \end{itemize}
+            \end{column}%
+      \end{columns}
+\end{frame}
+\begin{frame}
+      \frametitle{The evaluative AI framework}
+      \framesubtitle{Zoom on properties}
+      \begin{itemize}
+            \item[\cmark] Options \begin{itemize}
+                  \item Show the most likely options (with or without probabilities) ;
+                  \item [$\rightarrow$] Not a single recommendation.
+            \end{itemize}
+            \item[\cmark] Possibilities \& Judgement \begin{itemize}
+                  \item The machine provide feedback on humain jugement only.
+            \end{itemize}
+            \item[\cmark] Trade-offs \begin{itemize}
+                  \item Offer real trade-offs between \textit{any} set of two options ;
+                  \item Evaluative AI provides evidence both for and against each option, irrelevant of the judged likelihood of that option ;
+                  \item [$\rightarrow$] \textit{Option awareness} in the literature.
+            \end{itemize}
+      \end{itemize}
+\end{frame}
+
+\begin{frame}
+      \frametitle{The evaluative AI framework \\ \normalsize Differences with cognitive forcing}
+      \begin{itemize}
+            \item \textbf{Control} Permit to explore hypothesis, not a single recommendation ;
+            \item [$\rightarrow$] Built on the way we makes decision (identify, compare, choose)
+      \end{itemize}
+\end{frame}
+
+\begin{frame}
+      \frametitle{Long live XAI}
+      \begin{itemize}
+            \item Evaluative AI is designed only toward decision making, $ \text{Evaluative AI} \subset \text{XAI} $ ;
+            \item XAI is still needed and more adapted to many situation (eg. making decision at scale) ;
+            \item Recommendation based models : base of any XAI techniques ;
+            \item Many existing XAI tools are already adapted to Evaluative AI \begin{itemize}
+                  \item Constrastive explanation ;
+                  \item Feature importance (eg. SHAP).
+            \end{itemize}
+      \end{itemize}
+\end{frame}
+\begin{frame}
+      \frametitle{Limitation}
+      \begin{itemize}
+            \item Why would people pay attention to evidence this time? \begin{itemize}
+                  \item [$\rightarrow$] Evaluative AI \begin{itemize}
+                        \item Better control ;
+                        \item Process built on the way we makes naturally decision \\
+                        $\rightarrow$ people would naturally follow \\
+                        $ \neq  $ Contrary to recommendation-driven approches ;
+                  \end{itemize}
+                  \item [\xmark] Proof ?
+            \end{itemize}
+            \item Cognitive load remain a problem \begin{itemize}
+                  \item [$\rightarrow$] Evaluative AI still reduce the quantity of information the decision maker needs (only revelant information are presented)
+                  \item [\xmark] Still the less prefered solution by decision makers 
+            \end{itemize}
+      \end{itemize}
+\end{frame}
+
+
 
 
 \End
 \begin{frame}
       \frametitle{Bibliography}
-      Template: \href{https://github.com/piazzai/arguelles}{Here \faGithub} \\
+      Template from \href{https://github.com/piazzai/arguelles}{here \faGithub} \\
 \end{frame}
 
 

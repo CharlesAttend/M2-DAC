@@ -14,26 +14,34 @@ Evaluative AI :
 * **Mitigating Over-Reliance**
 * Support for Hypothesis Evaluation
 
-> Pourquoi j'ai choisi ce papier 
-* La confiance excessive → Problématique
-* Algo mesure du risque de violence conjugale → over-reliance → erreur d'estimation du danger
-* Recrutement ; Prêt banquaire ect
-* Plus généralement : craches boursier instantané
-
-* Echo sciences cognitives licence
-
 ## Over/Under reliance
 ### Définition
 * Expliquer les défininions : 
     * Excès de confiance 
     * Manque de confiance
+* Automation bias : 
+    * Biais assez important, dès que l'humain a un rôle d'observateur sur les décisions des machine et qu'il reste le décideur
+    * Qui a généralement des gros impacts
+    * Plein de facteurs étudiés mais dans le cas du XAI on
 * Problèmes : 
-    * Parlé tout à l'heure 
+    * **Pourquoi j'ai choisi ce papier **
+    * La confiance excessive → Problématique
+        * Au quotidient 
+            * correcteur d'orthographe
+            * Algo mesure du risque de violence conjugale → over-reliance → erreur d'estimation du danger
+            * Recrutement ; Prêt banquaire ect
+            * Plus généralement : craches boursier instantané
+        * Endroit plus sérieux : Unité de soin intensif, aviation, centrale nucléaire
 
+    * Echo sciences cognitives licence
 ### Causes
-* 
 
 ### Solutions
+* Solution 1 : Cognitive forcing 
+    * par exemple, forcer les gens à donenr leur décision avant celle de la machine
+    * pas giga efficace
+    * pas trop apprécié
+* Solution 2 : Un paradigme shift en XAI 🤔😏💡
 
 ## What makes a good decisions?
 * Ce qu'on fait naturellement c'est identifier, comparer, choisir
