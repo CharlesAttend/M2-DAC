@@ -12,8 +12,8 @@
 Evaluative AI :
 * Centrée sur l'humain
 * Au dela des recommandation
-* **Mitigating Over-Reliance**
-* Support for Hypothesis Evaluation
+* **Mitiger l'Excès de confiance dans ces systems de recommandation**
+* En Evaluer les hypothèse du décideur
 
 ## Over/Under reliance
 ### Définition
@@ -24,20 +24,21 @@ Evaluative AI :
 * == Automation bias : 
     * Biais assez important, dès que l'humain a un rôle d'observateur sur les décisions des machine et qu'il reste le décideur
     * Qui a généralement des gros impacts
-    * Plein de facteurs étudiés mais dans le cas du XAI on
 * Problèmes : 
     * **Pourquoi j'ai choisi ce papier **
     * La confiance excessive → Problématique
         * Au quotidient 
             * correcteur d'orthographe
-            * Algo mesure du risque de violence conjugale → over-reliance → erreur d'estimation du danger
+            * Algo mesure du risque de violence conjugale → Excès de confiance  → erreur d'estimation du danger
             * Recrutement ; Prêt banquaire ect
             * Plus généralement : craches boursier instantané
-        * Endroit plus sérieux : Unité de soin intensif, aviation, centrale nucléaire
+        * Enjeux plus sérieux : Unité de soin intensif, aviation, centrale nucléaire
 
-    * Echo sciences cognitives licence
+    * Echo domain sciences cognitives licence
+3:05
+
 ### Causes
-* Manque d'engagement cognitive, l'esprit humain cherche à minimiser l'effort
+* Manque d'engagement cognitif, l'esprit humain cherche à minimiser l'effort
 * Algorithmic aversion : OSEF 
 * + XAI qui explique
     * Une sorte de biais de confirmation sur les explication qu'on vas accepter ou rejeter
@@ -48,26 +49,27 @@ Evaluative AI :
     * pas giga efficace
     * pas trop apprécié
 * Solution 2 : Un paradigme shift en XAI 🤔😏💡
+    * => Avant cela on vas définir des critères plus claire
 
 ## What makes a good decisions?
 * Ce qu'on fait naturellement c'est identifier, comparer, choisir
 * Des gens ont plus réflechis à la chose 
-    * **dans notre cadre **on peut résumé tout ça par ... DIAPO
+    * **dans notre cadre**, pour les system d'aide à la décision, on peut résumé tout ça par ... DIAPO
 
 ## 10 cardinal decision issue
-Bonne décision, besoin de 
+Bon system d'aide à la décision, besoin de 
 * Option:  identifier, lister, réaliste/fesable
 * Jugements & Possibilité : Proba et impact positif / negatif possible pour chaque options
-* Trade-offs: comparer ce qu'on tout ce qu'on a dit au dessus
+* Compromis: comparer ce qu'on tout ce qu'on a dit au dessus
 * Understand: comprendre le systeme d'aide à la décision
 
 # Does current decision support align with those criteria?
 * On vas comparer plusieurs system d'aide à la décision et voir si ils respectent ces critères
-
+5:30
 ## No explanotory information
 * Cas classique d'automatisation des décisions : *décrire un peu*
 * Comme dit précédement, les gens tendent à soit ignorer le system soit accepter des mauvaise décisions
-* Calibration de la confiance uniquement sur :
+* Le décideur : Calibration de la confiance uniquement sur :
     * l'accuracy du model 
     * Son expértise
 * => Novice : se repose sur le systems // expert : utilise leur propre expertise 
@@ -84,10 +86,10 @@ Bonne décision, besoin de
 ## With explanatory information
 * Cette fois ci avec un outil de XAI 
 * Coche plus de case 
-    * N'aide pas à identifier les autres options probables
-    * Jugement et possibilité uniquement autour de la recommandation
     * Avec les outils XAI, on peut comprendre le modèle 
     * et faire des compromis par exemple avec SHAP ou les counterfactual
+    * N'aide pas à identifier les autres options probables
+    * Jugement et possibilité uniquement autour de la recommandation
 * => Mais c'est toujours pour défendre la recommandation
 * Est-ce que c'est quand même utile ?? OUI
     * Pour les même raison que précédement :
@@ -98,17 +100,17 @@ Bonne décision, besoin de
 ## Cognitive forçing
 * Cognitive forcing : décideur donne décision avant machine
 * C'est le cas qui coche le plus de case dans le paradigme actuel mais y'a toujours des problèmes
-    * Force la personne à chercher les autres options
-    * Mais le system est toujours centré sur sa recommandation 
-    * Avec les outils XAI, on peut comprendre le modèle 
+    * décideur voie plus d'option : forcé de les chercher 
+    * Toujours Avec les outils XAI, on peut comprendre le modèle 
     * et faire des compromis par exemple avec SHAP ou les counterfactual
-* A cause du fait que c'est centré autour de la recommandation, on ne fait que partiellement cocher les cases
+* Mais le system est toujours centré sur sa recommandation 
+* dès que centré autour de la recommandation, on ne fait que partiellement cocher les cases
 * => Sortir de ce paradigme de recommandation unique => evaluative AI
 
 # The evaluative AI framework
-* Décrire : boucle, décideur -> HP -> retour system 
+* Décrire : boucle, décideur -> HP -> feedback
 * Le paradigme est inversé : 
-    * c'est la machine qui donne son avis sur la décision du decision maker 
+    * c'est la machine qui donne son avis sur la décision du *decision-maker* 
     * Et non le décision maker qui donne son avis sur la décision de la machine 
 
 ## Properties
@@ -150,22 +152,32 @@ Bonne décision, besoin de
 * Il veut améliorer une petite branche de l'XAI 
     * Evaluative AI $ \subset $ XAI 
 Diapo
-* Application du XAI au delà de l'aide à la décision où les Recommendation drivent approaches sont bien et adapté
+* XAI + approche basé sur la recommendation sont bien et adapté dans certains cas 
     * Making decision at scale 
 * Il faudra toujours un model recommendation based pour n'importe quelle XAI technique
-* Many existing XAI tools are already adapted to Evaluative AI 
+* Outil de XAI existant -> déjà adapté à l'evaluative AI
     * Constrastive explanation 
     * Feature importance (SHAP)
     * Wieghts of Evidence, case-based reasoning techniques 
 
 ## Limits
-Diapo mdr 
+* Pourquoi les gens s'engagerai avec ce system et pas les autres méthode 
+    * Plus de controle 
+    * Proche de la manière dont on fait des décision (identifier, comparer, choisir)
+    * X : pas de preuve de ça dans le papier
+* Méthode qui charge mentalement le décideur 
+    * X: toujours la moins aimé surement 
+    * Mais auteur se défend en disant qu'il y a quand même moins d'info à considérer
 
-## Mes limites 
+## Mes critiques  
 * Les critères sont dur à différencier 
     * Y'en a 10 de base, il en garde 5, 1 n'est jamais remplis, et 2 fusionne en 1 car proche (opinion et possibilité)
     * Des fois c'est dur de s'y retrouver, le tableau résumé est pas forcément accords avec que qui est dit dans le texte, 
 * Quand j'ai été voir la page wikipedia de l'automation bias, elle est assez remplis et l'autheur en parle pas du tout. Y'as pas mal d'autre facteur décrit et j'arrive pas à voir pourquoi y'a pas un mot dessus dans le papier 
     * A la place l'intro parle du résonnement abductif pour appuyer son modèle comme un modèle proche de la manière naturel de la décision
+    * Alors qu'il aurait eu la place car beaucoup de répétition dans son papier
 
-CONCLUSION ???
+# CONCLUSION
+* auteur propose de changer de voix pour XAI et l'aide à la décision 
+* Qu'il faut arreter d'expliquer les recommendation et se focus sur l'utilisateur et ces hypothèses
+* En se rapprochant de la manière dont on prends des décisions 
