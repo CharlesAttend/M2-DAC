@@ -5,8 +5,10 @@
 
 \documentclass[compress,12pt]{beamer}
 \usepackage{hyperref}
+\hypersetup{pdfpagemode=FullScreen}
 \usepackage{tikz}
 \usepackage{nicefrac}
+\usepackage[round]{natbib}
 
 \graphicspath{{figs}}
 \newcommand{\emoji}[1]{\includegraphics[height=\fontcharht\font`\B]{emojis/#1.png}}
@@ -21,13 +23,11 @@
     \draw[line width=0.7,line cap=round] (0.25,0) to [bend left=10] (1,1);
     \draw[line width=0.8,line cap=round] (0,0.35) to [bend right=1] (0.23,0);
 }}
-% \usepackage{emoji}
-% \setemojifont{TwemojiMozilla}
 
 \usetheme{Arguelles}
 \title{Explainable AI is Dead, Long Live Explainable AI!}
 \subtitle{Hypothesis-driven Decision Support using Evaluative AI}
-\event{}
+\event{Tim \cite{evaluative-ai} - Conference FAccT}
 \date{}
 \author{\tiny Charles Vin}
 \institute{\tiny Sorbonne Université - 21216136}
@@ -73,7 +73,7 @@
       \frametitle{Over/Under-reliance}
       \framesubtitle{Causes}
       \begin{itemize}
-            \item Over-reliance:  ;
+            \item Over-reliance: lack of cognitive engagement ;
             \item Under-reliance: Algorithmic aversion.
       \end{itemize}
       When adding current XAI tools for more explaination \\
@@ -101,7 +101,7 @@
             \item Compare options
             \item Choose an option
       \end{itemize}
-      In a less simple way: the 10 "cardinal decision issue" outlined by Yates and Potworowski \begin{itemize}
+      In a less simple way: the 10 "cardinal decision issue" outlined by \cite{evidence-based-decision-management} \begin{itemize}
             \item Needs, mode, Investment, Options, Possibilities, Judgements, Value, Trade-offs, Acceptability, Implementation
       \end{itemize}
 \end{frame}
@@ -111,8 +111,7 @@
       \framesubtitle{Summed up}
       \begin{itemize}
             \item Options: Help to identify options, well as help to narrow down the list of feasible or realistic options
-            \item Possibilities: Help to to identify possible outcomes 
-            \item Judgement: Help to judge which outcomes are most likely and what will be the positive and negative impacts
+            \item Judgement \& Possibilities: Help to judge which outcomes are most likely and what will be the positive and negative impacts
             \item Trade-offs: Help to make trade-offs on the above criteria for each options
             \item Understandable: Help to understand how and why the tools works as it does, and when it fails
       \end{itemize}
@@ -133,16 +132,19 @@
                   \begin{figure}[htbp]
                         \centering
                         \includegraphics[width=.9\textwidth]{fig3.pdf}
+                        \caption{ A model of giving recommendations for decision support.}
                   \end{figure}
-                  A model of giving recommendations for decision support. 
-                  
-                  This assumes that decision makers will carefully consider recommendations. However, empirical evidence suggests this is not the case.
+                  \begin{itemize}
+                        \item [] Decision makers can carefully consider recommendations ;
+                        \item [$\rightarrow$] Leading to better decisions ; 
+                        \item [\xmark] empirical evidence suggests this is not the case.
+                  \end{itemize}
             \end{column}%
             \hfill%
             \begin{column}{.295\textwidth}
                   \begin{itemize}
                         \item[\xmark] Options
-                        \item[$ \nicefrac{1}{n} $ ] Possibilities \& Judgement
+                        \item[$\nicefrac{1}{n}$] Possibilities \& Judgement
                         \item[\xmark] Trade-offs
                         \item[\xmark] Understandable
                   \end{itemize}
@@ -157,19 +159,22 @@
                   \begin{figure}[htbp]
                         \centering
                         \includegraphics[width=.9\textwidth]{fig4.pdf}
+                        \caption{A model of XAI for decision support.}
                   \end{figure}
-                  A model of explainable AI for decision support. 
-                  
-                  This assumes that the problem of distrust can be mitigates by giving reasons or explanations for decisions. However, empirical evidence suggests people do not pay careful attention to the
-                  reasons/explanations.
+                  \begin{itemize}
+                        \item [] Giving reasons or explanations for decisions 
+                        \item [$\rightarrow$] Mitigates the problem of distrust ;
+                        \item [$\rightarrow$] Leading to better decisions ;
+                        \item [\xmark] Empirical evidence suggests people do not pay careful attention to the reasons/explanations.
+                  \end{itemize}
             \end{column}%
             \hfill%
             \begin{column}{.295\textwidth}
                   \begin{itemize}
                         \item[\xmark] Options
-                        \item[\xmark] Possibilities \& Judgement
-                        \item[\xmark] Trade-offs
-                        \item[\xmark] Understandable
+                        \item[$\nicefrac{1}{n}$] Possibilities \& Judgement
+                        \item[\cmark/\xmark] Trade-offs
+                        \item[\cmark] Understandable
                   \end{itemize}
             \end{column}%
       \end{columns}
@@ -185,19 +190,21 @@
                         \caption{A model of cognitive forcing.}
                   \end{figure}
                   \begin{itemize}
-                        \item [] Withholding recommendations \& giving an ''explanation''
-                        \item [$\rightarrow$] forces people to engage
-                        \item [$\rightarrow$] limit over-reliance.
+                        \item [] Withholding recommendations \& giving an explanation ;
+                        \item [$\rightarrow$] forces people to engage ;
+                        \item [$\rightarrow$] limit over-reliance ;
+                        \item [$\rightarrow$] Better decisions ;
                         \item [\xmark] still a ''recommend and defend'' approach.
+                        \item [\xmark] Least prefered method by participants
                   \end{itemize}
             \end{column}%
             \hfill%
             \begin{column}{.295\textwidth}
                   \begin{itemize}
-                        \item[\xmark] Options
-                        \item[\xmark] Possibilities \& Judgement
-                        \item[\xmark] Trade-offs
-                        \item[\xmark] Understandable
+                        \item[\cmark/\xmark] Options
+                        \item[$\nicefrac{1}{n}$] Possibilities \& Judgement
+                        \item[\cmark/\xmark] Trade-offs
+                        \item[\cmark] Understandable
                   \end{itemize}
             \end{column}%
       \end{columns}
@@ -226,6 +233,7 @@
 \end{frame}
 \begin{frame}
       \frametitle{The evaluative AI framework}
+      \framesubtitle{Properties}
       \begin{columns}[T] % align columns
             \begin{column}{.705\textwidth}
                   \begin{figure}[htbp]
@@ -303,55 +311,23 @@
       \end{itemize}
 \end{frame}
 
+\begin{frame}
+      \frametitle{Limitation}
+      \begin{itemize}
+            \item More introduction around automation bias needed ;
+            \item 
+      \end{itemize}
+\end{frame}
 
 
 
 \End
 \begin{frame}
       \frametitle{Bibliography}
-      Template from \href{https://github.com/piazzai/arguelles}{here \faGithub} \\
+      \footnotesize{
+            \bibliographystyle{plainnat}
+            \bibliography{bib}
+            \href{https://github.com/piazzai/arguelles}{Beamer template from here \faGithub} \\
+      }
 \end{frame}
-
-
-\section{Template}
-
-\begin{frame}[plain]
-      \frametitle{A plain frame has no headline}
-      \begin{table}
-            \small
-            \begin{tabular}{rl}
-                  \ttfamily\textbackslash Alegreya              & \Alegreya Lorem ipsum dolor sit amet              \\
-                  \ttfamily\textbackslash AlegreyaMedium        & \AlegreyaMedium Lorem ipsum dolor sit amet        \\
-                  \ttfamily\textbackslash AlegreyaExtraBold     & \AlegreyaExtraBold Lorem ipsum dolor sit amet     \\
-                  \ttfamily\textbackslash AlegreyaBlack         & \AlegreyaBlack Lorem ipsum dolor sit amet         \\
-                  \ttfamily\textbackslash AlegreyaSansThin      & \AlegreyaSansThin Lorem ipsum dolor sit amet      \\
-                  \ttfamily\textbackslash AlegreyaSansLight     & \AlegreyaSansLight Lorem ipsum dolor sit amet     \\
-                  \ttfamily\textbackslash AlegreyaSans          & \AlegreyaSans Lorem ipsum dolor sit amet          \\
-                  \ttfamily\textbackslash AlegreyaSansMedium    & \AlegreyaSansMedium Lorem ipsum dolor sit amet    \\
-                  \ttfamily\textbackslash AlegreyaSansExtraBold & \AlegreyaSansExtraBold Lorem ipsum dolor sit amet \\
-                  \ttfamily\textbackslash AlegreyaSansBlack     & \AlegreyaSansBlack Lorem ipsum dolor sit amet
-            \end{tabular}
-      \end{table}
-      \vfill
-      \begin{alert}{Alert!}
-            A \textit{plain} frame does not show the progress bar but still appears in it unless the frame comes after \texttt{\textbackslash End}
-      \end{alert}
-\end{frame}
-
-\begin{frame}[standout]
-      \centering\large
-      A \textbf{\itshape\scshape standout} frame can be used to focus attention
-\end{frame}
-
-\End
-\begin{frame}[plain,standout]
-      \centering
-      In combination with \textit{plain}, \\
-      it makes a nice thank-you slide!
-      \vfill
-      \scalebox{4}{\faGithub} \par\bigskip
-      \url{https://github.com/piazzai/arguelles} \\
-      \url{https://ctan.org/pkg/beamertheme-arguelles}
-\end{frame}
-
 \end{document}
