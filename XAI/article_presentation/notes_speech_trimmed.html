@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>notes_speech_trimmed.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="title-page">Title page</h1>
+<ul>
+<li>Explainable AI is Dead, Long Live Explainable AI!
+<ul>
+<li>Titre aguicheur, aime pas, deuxième mieux</li>
+<li>Hypothesis-driven Decision Support using Evaluative AI</li>
+</ul>
+</li>
+<li>Papier pour aide à la décision</li>
+<li>Tim miller, chercheur australien, il publie sur des sujets assez varié en XAI
+<ul>
+<li>XAI 4 Multi agent, XAI 4 RL</li>
+<li>Humain-AI interaction</li>
+<li>AI assisted décision support</li>
+</ul>
+</li>
+</ul>
+<h1 id="introduction">Introduction</h1>
+<h2 id="quick-summary">Quick summary</h2>
+<ul>
+<li>Argumente Changement paradigme XAI aide décision</li>
+</ul>
+<p>Framework evaluative AI :</p>
+<ul>
+<li>Centrée sur l'humain</li>
+<li>Au dela des recommandation</li>
+<li>En evaluant les hypothèse du décideur</li>
+<li><strong>Mitiger Excès de confiance</strong></li>
+</ul>
+<h2 id="overunder-reliance">Over/Under reliance</h2>
+<h3 id="d%C3%A9finition">Définition</h3>
+<ul>
+<li>Aide à la décision, retrouve deux phénomènes</li>
+<li>Expliquer les défininions :
+<ul>
+<li>Excès de confiance : accepter les recommandations, même si faux</li>
+<li>Manque de confiance : inverse : rejeter les recommendation, même si vrais</li>
+</ul>
+</li>
+<li>== Automation bias :  <!-- * Biais assez important, dès que l'humain a un rôle d'observateur sur les décisions des machine et qu'il reste le décideur -->
+<ul>
+<li><strong>Pourquoi j'ai choisi ce papier</strong></li>
+<li>La confiance excessive → Problématique
+<ul>
+<li>Au quotidient
+<ul>
+<li>correcteur d'orthographe</li>
+<li>Recrutement ; Prêt banquaire ect</li>
+<li>Enjeux plus sérieux : Unité de soin intensif, aviation, centrale nucléaire</li>
+<li>Algo mesure du risque de violence conjugale → Excès de confiance  → erreur d'estimation du danger</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Echo domaine sciences cognitives licence -&gt; manque un peu</li>
+</ul>
+</li>
+</ul>
+<!-- 3:05 ; . ;  -->
+<h3 id="causes">Causes</h3>
+<ul>
+<li>Manque engagement cognitif, l'esprit humain minimiser effort</li>
+<li>Ajout XAI qui explique
+<ul>
+<li>~Biais de confirmation sur les explications : accepter ou rejeter</li>
+</ul>
+</li>
+</ul>
+<h3 id="solutions">Solutions</h3>
+<ul>
+<li>Solution 1 : forcer l'engagement cognitif
+<ul>
+<li>Généralement : forcer les gens donner décision avant machine</li>
+<li>Pas giga efficace</li>
+<li>Pas trop apprécié</li>
+</ul>
+</li>
+<li>Solution 2 : Un paradigme shift en XAI 🤔😏💡
+<ul>
+<li>== papier</li>
+<li>=&gt; Avant parler cela -&gt; définir des critères plus claire</li>
+</ul>
+</li>
+</ul>
+<h2 id="how-we-make-decisions">How we make decisions?</h2>
+<ul>
+<li>naturellement : identifier option, comparer option, choisir option</li>
+<li>Des gens plus réflechis:
+<ul>
+<li><strong>dans notre cadre</strong>, pour les system d'aide à la décision, résumé tout 4 points... DIAPO</li>
+</ul>
+</li>
+</ul>
+<h2 id="10-cardinal-decision-issue">10 cardinal decision issue</h2>
+<p>Bon system d'aide à la décision, besoin de</p>
+<ul>
+<li>Option:  identifier, lister, réaliste/fesable</li>
+<li>Opinion &amp; Possibilité : Proba et impact positif / negatif possible pour chaque options</li>
+<li>Compromis: comparer ce qu'on tout ce qu'on a dit au dessus</li>
+<li>Understand: comprendre le systeme d'aide à la décision</li>
+</ul>
+<h1 id="does-current-decision-support-align-with-those-criteria">Does current decision support align with those criteria?</h1>
+<ul>
+<li>System actuel ?? respectent ces critères</li>
+</ul>
+<!-- 5:30 ; . ;  -->
+<h2 id="no-explanotory-information">No explanotory information</h2>
+<ul>
+<li>Cas classique d'automatisation des décisions : <em>décrire un peu</em></li>
+<li>gens -&gt; ignorer le system  // soit accepter des mauvaise décisions</li>
+<li>Le décideur : Calibration de la confiance uniquement sur :
+<ul>
+<li>l'accuracy du model</li>
+<li>Son expértise</li>
+</ul>
+</li>
+<li>=&gt; Novice : se repose sur le systems // expert : utilise leur propre expertise</li>
+<li>Mais ne coche aucune des cases
+<ul>
+<li>X identifier les autres options probable</li>
+<li>Opinion <strong>uniquement</strong> autour de la recommandation</li>
+<li>X faire des compromis</li>
+<li>X expliquabilité</li>
+</ul>
+</li>
+<li>Mais est-ce que c'est quand même utile ?? OUI
+<ul>
+<li>D'accord -tout roule</li>
+<li>Pas d'accord -&gt; reconsidérer le choix</li>
+<li>-&gt; meilleurs décision</li>
+<li>En pratique : non</li>
+</ul>
+</li>
+</ul>
+<h2 id="with-explanatory-information">With explanatory information</h2>
+<ul>
+<li>Outil de XAI en plus</li>
+<li>Coche plus de case
+<ul>
+<li>-&gt; Comprendre le modèle</li>
+<li>-&gt; faire des compromis : SHAP, counterfactual</li>
+<li>X identifier les autres options probables</li>
+<li>Jugement et possibilité uniquement autour de la recommandation</li>
+</ul>
+</li>
+<li>=&gt; Toujours pour défendre la recommandation</li>
+<li>Est-ce que c'est quand même utile ?? OUI
+<ul>
+<li>Même raison que précédement :
+<ul>
+<li>Si pas d'accords -&gt; regarder -&gt; meilleurs décision</li>
+</ul>
+</li>
+<li>En pratique == pas le cas</li>
+</ul>
+</li>
+<li>Un model interprétable coche uniquement la dernière case</li>
+</ul>
+<h2 id="cognitive-for%C3%A7ing">Cognitive forçing</h2>
+<ul>
+<li>Cognitive forcing : décideur donne décision avant machine</li>
+<li>Coche le plus de case paradigme actuel // toujours des problèmes
+<ul>
+<li>décideur voie plus d'option : forcé de les chercher</li>
+<li>Toujours avec les outils XAI, on peut comprendre le modèle</li>
+<li>et faire des compromis par exemple avec SHAP ou les counterfactual</li>
+</ul>
+</li>
+<li>-&gt; System toujours centré sur sa recommandation</li>
+<li>dès que centré autour de la recommandation == case partiellement coché</li>
+<li>=&gt; Sortir de ce paradigme de recommandation unique =&gt; evaluative AI</li>
+</ul>
+<!-- II: 8:27 -->
+<h1 id="the-evaluative-ai-framework">The evaluative AI framework</h1>
+<ul>
+<li>Décrire : boucle, décideur -&gt; HP -&gt; feedback</li>
+<li>Le paradigme est inversé :
+<ul>
+<li>c'est la machine qui donne son avis sur la décision du <em>decision-maker</em></li>
+<li>Et non le décision maker qui donne son avis sur la décision de la machine</li>
+</ul>
+</li>
+</ul>
+<!-- II: 9:09 -->
+<h2 id="properties">Properties</h2>
+<ul>
+<li>Exemple d'interface
+<ul>
+<li>Potentiel mélanome ?</li>
+<li>Vu sur toutes les options possible</li>
+<li>intéraction avec l'utilisateur</li>
+<li>hypothèse pour, hypothèse contre</li>
+</ul>
+</li>
+</ul>
+<h2 id="zoom-on-properties">Zoom on properties</h2>
+<ul>
+<li>Naturellement leur modèle coche toutes les cases</li>
+<li>Option  <!-- * Donne plusieurs option, sans forcément dire la plus probable / leur probabilité 
+  * Overview des possibilité, réduit un peu l'information -->
+</li>
+</ul>
+<!-- * Jugement et posibilité 
+    * Ici c'est bien on support l'opinion du décideur, 
+    * Le system ne donne pas son opinion 
+    * Feedback -->
+<ul>
+<li>Trade-off
+<ul>
+<li>Réussi le mieux</li>
+<li>Pour ou contre  clair -&gt; décideur bonne overview</li>
+<li>Papier :&quot;bon décideur&quot; = personnes qui regarde les arguments qui vont contre leurs conclusions initiales</li>
+</ul>
+</li>
+<li>=&gt; extrapolation sur de l'IRL
+<ul>
+<li>Décision complexe, type choix de stage, orientation
+<ul>
+<li>Regarde tous les pours et contre == bourbier</li>
+<li>// fier a l'instincs et indentifier les contre serait plus efficace</li>
+</ul>
+</li>
+<li>les discutions IRL ?
+<ul>
+<li>Clé = être à l'écoute, tourner autour de l'opinion de l'autre sans forcément directement relate sur des pov personel</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="limits">Limits</h2>
+<ul>
+<li>Pourquoi les gens s'engagerai avec ce system et pas les autres méthode
+<ul>
+<li>Plus de controle</li>
+<li>Proche de la manière dont on fait des décisions (identifier, comparer, choisir)</li>
+<li>X : pas de preuve de ça dans le papier (en psychologie ça serait pas passé, jsp pour Humain-AI interaction)</li>
+</ul>
+</li>
+<li>Méthode qui charge mentalement le décideur
+<ul>
+<li>X: toujours la moins aimé surement</li>
+<li>Auteur se défend :  quand même moins d'info</li>
+</ul>
+</li>
+</ul>
+<h2 id="mes-critiques">Mes critiques</h2>
+<ul>
+<li>Les critères sont dur à différencier
+<ul>
+<li>Y'en a 10 de base, il en garde 6, 1 n'est jamais remplis, et 2 fusionne en 1 car proche (opinion et possibilité)</li>
+<li>Des fois c'est dur de s'y retrouver, le tableau résumé est pas forcément accords avec que qui est dit dans le texte,</li>
+</ul>
+</li>
+<li>Quand j'ai été voir la page wikipedia de l'automation bias, elle est assez remplis et l'autheur en parle pas du tout. Y'as pas mal d'autre facteur décrit et j'arrive pas à voir pourquoi y'a pas un mot dessus dans le papier
+<ul>
+<li>A la place l'intro parle du résonnement abductif pour appuyer son modèle comme un modèle proche de la manière naturel de la décision</li>
+<li>Alors qu'il aurait eu la place car beaucoup de répétition dans son papier</li>
+</ul>
+</li>
+</ul>
+<h2 id="mes-points-forts-du-papier">Mes points forts du papier</h2>
+<ul>
+<li>S'attaque à un vrais problème</li>
+<li>Avec une proposition forte, position pas facile à tenir</li>
+<li>Pas d'expérience pour appuyer l'évaluative AI
+<ul>
+<li>mais donne une liste exhaustive de piste de recherche dans la direction de l'évaluative AI</li>
+</ul>
+</li>
+</ul>
+<h1 id="conclusion">CONCLUSION</h1>
+<ul>
+<li>auteur propose de changer de voix pour le XAI appliqué l'aide à la décision</li>
+<li>Qu'il faut arreter d'expliquer les recommendation et se focus sur l'utilisateur et ces hypothèses</li>
+<li>En se rapprochant de la manière dont on prends naturellement des décisions</li>
+</ul>
+<!-- II: 14:42 ; 12:47 -->
+<hr>
+<hr>
+<hr>
+<p>--- Je garde pour les questions au cas où ---</p>
+<h2 id="differences-with-cognitive-forcing">Differences with cognitive forcing</h2>
+<ul>
+<li>Apparament ça ressemblerai pas mal au technique de cognitive forçing</li>
+<li>Les auteurs essaye plusieurs fois de se différencier à travers le papier</li>
+<li>Ici la clé c'est que le décideur est en position de contrôle face à la machine, &quot;machine in the loop&quot;</li>
+<li>également que ça suit un chemin de décision plus naturelle</li>
+</ul>
+<h2 id="long-live-xai">Long live XAI</h2>
+<ul>
+<li>Le titre est pas vraiment clair au première abord mais il se défend</li>
+<li>L'auteur ne veut pas se séparer de l'XAI ou faire une refonte</li>
+<li>Il veut améliorer une petite branche de l'XAI
+<ul>
+<li>Evaluative AI $ \subset $ XAI</li>
+</ul>
+</li>
+<li>XAI + approche basé sur la recommendation sont bien et adapté dans certains cas
+<ul>
+<li>Making decision at scale</li>
+</ul>
+</li>
+<li>Il faudra toujours un model recommendation based pour n'importe quelle XAI technique</li>
+<li>Outil de XAI existant -&gt; déjà adapté à l'evaluative AI
+<ul>
+<li>Counterfactuals</li>
+<li>Feature importance (SHAP)</li>
+<li>Wieghts of Evidence, case-based reasoning techniques</li>
+</ul>
+</li>
+</ul>
+<!-- II: 12:06 -->
+</body>
+</html>
