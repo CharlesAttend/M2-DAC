@@ -10,13 +10,13 @@
 
 # Introduction
 ## Quick summary
-* Changement paradigme XAI aide décision
+* Argumente Changement paradigme XAI aide décision
 
 Framework evaluative AI :
 * Centrée sur l'humain
 * Au dela des recommandation
 * En evaluant les hypothèse du décideur
-* **Mitiger l'Excès de confiance dans ces systems de recommandation**
+* **Mitiger Excès de confiance**
 
 ## Over/Under reliance
 ### Définition
@@ -26,38 +26,34 @@ Framework evaluative AI :
     * Manque de confiance : inverse : rejeter les recommendation, même si vrais
 * == Automation bias : 
     <!-- * Biais assez important, dès que l'humain a un rôle d'observateur sur les décisions des machine et qu'il reste le décideur -->
-    * Qui a généralement des gros impacts
     * **Pourquoi j'ai choisi ce papier**
     * La confiance excessive → Problématique
         * Au quotidient 
             * correcteur d'orthographe
             * Recrutement ; Prêt banquaire ect
             * Enjeux plus sérieux : Unité de soin intensif, aviation, centrale nucléaire
-            * Plus généralement : craches boursier instantané
             * Algo mesure du risque de violence conjugale → Excès de confiance  → erreur d'estimation du danger
-
-    * Echo domain sciences cognitives licence, manque un peu
+    * Echo domaine sciences cognitives licence -> manque un peu
 <!-- 3:05 ; . ;  -->
 
 ### Causes
-* Manque d'engagement cognitif, l'esprit humain cherche à minimiser l'effort
-* Algorithmic aversion : OSEF 
+* Manque engagement cognitif, l'esprit humain minimiser effort
 * Ajout XAI qui explique
-    * Une sorte de biais de confirmation sur les explications qu'on vas accepter ou rejeter
+    * ~Biais de confirmation sur les explications : accepter ou rejeter
 
 ### Solutions
 * Solution 1 : forcer l'engagement cognitif
-    * par exemple, forcer les gens à donenr leur décision avant celle de la machine
-    * pas giga efficace
-    * pas trop apprécié
+    * Généralement : forcer les gens donner décision avant machine
+    * Pas giga efficace
+    * Pas trop apprécié
 * Solution 2 : Un paradigme shift en XAI 🤔😏💡
-    * C'est ce que propose ce papier
-    * => Avant de parler de cela on vas définir des critères plus claire
+    * == papier
+    * => Avant parler cela -> définir des critères plus claire
 
 ## How we make decisions?
-* Ce qu'on fait naturellement c'est identifier, comparer, choisir
-* Des gens ont plus réflechis à la chose 
-    * **dans notre cadre**, pour les system d'aide à la décision, on peut résumé tout ça par ... DIAPO
+* naturellement : identifier option, comparer option, choisir option
+* Des gens plus réflechis:
+    * **dans notre cadre**, pour les system d'aide à la décision, résumé tout 4 points... DIAPO
 
 ## 10 cardinal decision issue
 Bon system d'aide à la décision, besoin de 
@@ -67,47 +63,48 @@ Bon system d'aide à la décision, besoin de
 * Understand: comprendre le systeme d'aide à la décision
 
 # Does current decision support align with those criteria?
-* On vas comparer plusieurs system d'aide à la décision et voir si ils respectent ces critères
+* System actuel ?? respectent ces critères
 <!-- 5:30 ; . ;  -->
 ## No explanotory information
 * Cas classique d'automatisation des décisions : *décrire un peu*
-* Comme dit précédement, les gens tendent à soit ignorer le system soit accepter des mauvaise décisions
+* gens -> ignorer le system  // soit accepter des mauvaise décisions
 * Le décideur : Calibration de la confiance uniquement sur :
     * l'accuracy du model 
     * Son expértise
 * => Novice : se repose sur le systems // expert : utilise leur propre expertise 
 * Mais ne coche aucune des cases
-    * N'aide pas à identifier les autres options probable 
-    * Opinion uniquement autour de la recommandation
-    * N'aide pas à faire des compromis
-    * Pas de expliquabilité
+    * X identifier les autres options probable 
+    * Opinion **uniquement** autour de la recommandation
+    * X faire des compromis
+    * X expliquabilité
 * Mais est-ce que c'est quand même utile ?? OUI 
-    * Si on est d'accord avec le system tout roule 
-    * Si on est pas d'accord, on peut reconsidérer le choix
-    * Et toujours faire de meilleurs décision
+    * D'accord -tout roule 
+    * Pas d'accord -> reconsidérer le choix
+    * -> meilleurs décision
+    * En pratique : non 
 
 ## With explanatory information
-* Cette fois ci avec un outil de XAI 
+* Outil de XAI en plus
 * Coche plus de case 
-    * Avec les outils XAI, on peut comprendre le modèle 
-    * et faire des compromis par exemple avec SHAP ou les counterfactual
-    * N'aide pas à identifier les autres options probables
+    * -> Comprendre le modèle 
+    * -> faire des compromis : SHAP, counterfactual
+    * X identifier les autres options probables
     * Jugement et possibilité uniquement autour de la recommandation
-* => Mais c'est toujours pour défendre la recommandation
+* => Toujours pour défendre la recommandation
 * Est-ce que c'est quand même utile ?? OUI
-    * Pour les même raison que précédement :
-        * Si on est pas d'accords on peut regarder et ça donne potentiellement de meilleurs décision
-    * Mais en pratique c'est pas souvent le cas
+    * Même raison que précédement :
+        * Si pas d'accords -> regarder -> meilleurs décision
+    * En pratique == pas le cas
 * Un model interprétable coche uniquement la dernière case 
 
 ## Cognitive forçing
 * Cognitive forcing : décideur donne décision avant machine
-* C'est le cas qui coche le plus de case dans le paradigme actuel mais y'a toujours des problèmes
+* Coche le plus de case paradigme actuel // toujours des problèmes
     * décideur voie plus d'option : forcé de les chercher 
-    * Toujours Avec les outils XAI, on peut comprendre le modèle 
+    * Toujours avec les outils XAI, on peut comprendre le modèle 
     * et faire des compromis par exemple avec SHAP ou les counterfactual
-* Mais le system est toujours centré sur sa recommandation 
-* dès que centré autour de la recommandation, on ne fait que partiellement cocher les cases
+* -> System toujours centré sur sa recommandation 
+* dès que centré autour de la recommandation == case partiellement coché
 * => Sortir de ce paradigme de recommandation unique => evaluative AI
 
 <!-- II: 8:27 -->
@@ -135,15 +132,15 @@ Bon system d'aide à la décision, besoin de
     * Le system ne donne pas son opinion 
     * Feedback -->
 * Trade-off
-    * Je trouve que c'est ici que ça réussi le mieux 
-    * Pour ou contre assez clair pour permettre au décideur un bonne overview
-    * Et en faite les "bon décideur" sont les personnes qui regarde toujours les arguments qui vont contre leurs conclusions initiales 
+    * Réussi le mieux 
+    * Pour ou contre  clair -> décideur bonne overview
+    * Papier :"bon décideur" = personnes qui regarde les arguments qui vont contre leurs conclusions initiales 
 * => extrapolation sur de l'IRL 
-    * Quand décision complexe, type choix de stage, orientation
-        * Si on reste regarde tous les pours et contre, j'trouve ça devient vite bourbier 
-        * Alors que maybe se fier a l'instincs et indentifier les contre serait plus efficace
+    * Décision complexe, type choix de stage, orientation
+        * Regarde tous les pours et contre == bourbier 
+        * // fier a l'instincs et indentifier les contre serait plus efficace
     * les discutions IRL ? 
-        * la clé ça reste d'être à l'écoute et tourner autour de l'opinion de l'autre sans forcément directement relate sur des pov personel
+        * Clé = être à l'écoute, tourner autour de l'opinion de l'autre sans forcément directement relate sur des pov personel
 
 ## Limits
 * Pourquoi les gens s'engagerai avec ce system et pas les autres méthode 
@@ -152,7 +149,7 @@ Bon system d'aide à la décision, besoin de
     * X : pas de preuve de ça dans le papier (en psychologie ça serait pas passé, jsp pour Humain-AI interaction)
 * Méthode qui charge mentalement le décideur 
     * X: toujours la moins aimé surement 
-    * Mais auteur se défend en disant qu'il y a quand même moins d'info à considérer
+    * Auteur se défend :  quand même moins d'info
 
 ## Mes critiques  
 * Les critères sont dur à différencier 
