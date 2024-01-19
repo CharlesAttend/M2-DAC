@@ -1,8 +1,8 @@
 \graphicspath{{figs/3b}}
 
-\section{Approximate Inference in Classification}
-\subsection{Bayesian Logistic Regression}
-\subsubsection{Maximum-A-Posteriori Estimate}
+\chapter{Approximate Inference in Classification}
+\section{Bayesian Logistic Regression}
+\subsection{Maximum-A-Posteriori Estimate}
 \paragraph{1.1. Analyze the results provided by previous plot. Looking at $p(\mathbf{y}=1 | \pmb{x}, \pmb{w}_{\textrm{MAP}})$, what can you say about points far from train distribution?}
 In Figure \ref{fig:bayes_MAP}, which illustrates Bayesian Logistic Regression applied to a binary classification dataset, we can see two clusters of data points, one represented in blue and the other in red, corresponding to different classes. The shaded regions, in blue and red, depict the predictive uncertainty associated with each class. The lighter shade indicates lower confidence in the model's predictions.
 
@@ -17,12 +17,12 @@ As depicted in Figure \ref{fig:bayes_MAP}, the model's uncertainty doesn't signi
     \label{fig:bayes_MAP}
 \end{figure}
 
-\subsubsection{Laplace Approximation}
+\subsection{Laplace Approximation}
 \paragraph{1.2. Analyze the results provided by previous plot. Compared to previous MAP estimate, how does the predictive distribution behave?}
 
 \paragraph{1.3. Comment the effect of the regularisation hyper-parameter WEIGHT\_DECAY.}
 
-\subsubsection{Variational Inference}
+\subsection{Variational Inference}
 \paragraph{1.4. Comment the code of the VariationalLogisticRegression and LinearVariational classes.}
 = answer to see if we understand what the code does
 
