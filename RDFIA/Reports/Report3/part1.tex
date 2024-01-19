@@ -27,14 +27,14 @@ In this formula, we start with our initial beliefs (priors) and then update thes
 Furthermore, we selected a centered Gaussian prior with a variance of $ \alpha^{-1}I $ where $\alpha$ governs the prior distribution over the weights $\mathbf{w}$:
 \[ p(w | \alpha) \sim \mathcal{N}(0, \alpha^{-1}I) \]
 
-In this specific case, we can demonstrate that the posterior distribution $ p(\mathbf{w}|\mathbf{X}, \mathbf{Y}) $ follows a Gaussian distribution as follows:
-\[ p(\mathbf{w}|\mathbf{X}, \mathbf{Y}) \sim \mathcal{N}(\boldsymbol{\mu}, \boldsymbol{\Sigma}) \]
+In this specific case, we can demonstrate that the posterior distribution $ p(w | X, Y) $ follows a Gaussian distribution as follows:
+\[ p(w | X, Y) \sim \mathcal{N}(\boldsymbol{\mu}, \boldsymbol{\Sigma}) \]
 
-The precision matrix $ \Sigma $, which is the inverse of the covariance matrix of the distribution parameters, is defined as:
+The precision matrix $ \boldsymbol{\Sigma} $, which is the inverse of the covariance matrix of the distribution parameters, is defined as:
 \[ \boldsymbol{\Sigma}^{-1} = \alpha I + \beta \Phi^T \Phi \]
 
 The mean of the distribution parameters is given by:
-\[ \boldsymbol{\mu} = \beta \boldsymbol{\Sigma} \Phi^T \mathbf{Y} \]
+\[ \boldsymbol{\mu} = \beta \boldsymbol{\Sigma} \Phi^T Y \]
 
 Parameters $\alpha$ and $\beta$ serve analogous roles, with $\alpha$ governing the prior distribution and $\beta$ regulating the likelihood.
 
@@ -80,9 +80,9 @@ Looking at the right panel of \Cref{fig:phi_linear}, we notice that the variance
 
 As we move away from the training area on either side, the predictive variance increases significantly, which is consistent with the expanding confidence intervals in the left panel. This sharp increase in variance indicates a significant decrease in the model's confidence in its predictions outside the range of the training data. This is a common pattern in regression analysis, as the model has less data to rely on for predictions in these regions. Thus, the Bayesian Linear Regression model offers more reliable predictions within the training data range, with confidence diminishing as predictions move away from this range.\newline
 
-\noindent Let's prove it analytically. With $\alpha = 0$ and $\beta = 1$, the computation of $\Sigma^{-1}$ simplifies as follows:
+\noindent Let's prove it analytically. With $\alpha = 0$ and $\beta = 1$, the computation of $\boldsymbol{\Sigma}^{-1}$ simplifies as follows:
 \begin{align*}
-    \mathbf{\Sigma}^{-1} 
+    \boldsymbol{\Sigma}^{-1} 
         &= 0 \cdot I_3 + 1 \cdot \Phi^T \Phi \\
         &= \Phi^T \Phi \\ 
         &= \begin{pmatrix}
@@ -99,16 +99,16 @@ As we move away from the training area on either side, the predictive variance i
             \sum x_i & \sum x_i^2
         \end{pmatrix}
 \end{align*}
-To invert $\Sigma$, we use the classic formula for a $2 \times 2$ matrix:
+To invert $\boldsymbol{\Sigma}$, we use the classic formula for a $2 \times 2$ matrix:
 \[
-    \mathbf{\Sigma} = \frac{1}{\det \mathbf{\Sigma}^{-1}} \begin{pmatrix}
+    \boldsymbol{\Sigma} = \frac{1}{\det \boldsymbol{\Sigma}^{-1}} \begin{pmatrix}
         \sum x_i^2 & - \sum x_i \\
         - \sum x_i & N
     \end{pmatrix}
 \]
-Returning to our expression for $ \sigma^2_{pred} = \Phi (x^\star ) ^T \mathbf{\Sigma} \Phi (x^\star )$, we have:
+Returning to our expression for $ \sigma^2_{pred} = \Phi (x^\star ) ^T \boldsymbol{\Sigma} \Phi (x^\star )$, we have:
 \begin{align*}
-    \sigma^2_{pred} = \Phi (x^\star ) ^T \mathbf{\Sigma} \Phi (x^\star ) &= \frac{1}{\det \mathbf{\Sigma}^{-1}} \begin{pmatrix}
+    \sigma^2_{pred} = \Phi (x^\star ) ^T \boldsymbol{\Sigma} \Phi (x^\star ) &= \frac{1}{\det \boldsymbol{\Sigma}^{-1}} \begin{pmatrix}
         1 \\
         x^\star 
     \end{pmatrix} \begin{pmatrix}
@@ -117,16 +117,16 @@ Returning to our expression for $ \sigma^2_{pred} = \Phi (x^\star ) ^T \mathbf{\
     \end{pmatrix}\begin{pmatrix}
         1 & x^\star 
     \end{pmatrix} \\
-    &= \frac{1}{\det \mathbf{\Sigma}^{-1}} \begin{pmatrix}1 \\ x^\star \end{pmatrix} \begin{pmatrix}\sum_i x_i^2 - x^\star \sum_i x_i & x^\star N - \sum_i x_i\end{pmatrix} \\
-    &= \frac{1}{\det \mathbf{\Sigma}^{-1}}\left(\sum_i x_i^2 - x^\star \sum_i x_i + {x^\star }^2 N - x^\star \sum_i x_i\right) \\
-    &= \frac{1}{\det \mathbf{\Sigma}^{-1}}\left(\sum_i x_i^2 - 2 x^\star \sum_i x_i + {x^\star }^2 N\right) \\
-    &= \frac{1}{\det \mathbf{\Sigma}^{-1}}\sum_i \left(x_i - x^\star \right)^2
+    &= \frac{1}{\det \boldsymbol{\Sigma}^{-1}} \begin{pmatrix}1 \\ x^\star \end{pmatrix} \begin{pmatrix}\sum_i x_i^2 - x^\star \sum_i x_i & x^\star N - \sum_i x_i\end{pmatrix} \\
+    &= \frac{1}{\det \boldsymbol{\Sigma}^{-1}}\left(\sum_i x_i^2 - x^\star \sum_i x_i + {x^\star }^2 N - x^\star \sum_i x_i\right) \\
+    &= \frac{1}{\det \boldsymbol{\Sigma}^{-1}}\left(\sum_i x_i^2 - 2 x^\star \sum_i x_i + {x^\star }^2 N\right) \\
+    &= \frac{1}{\det \boldsymbol{\Sigma}^{-1}}\sum_i \left(x_i - x^\star \right)^2
 \end{align*}
 This formula reveals that the predictive variance is directly proportional to the squared differences between each training data point $x_i$ and the prediction point $x^\star$. As $x^\star$ moves away from the region where the training data is concentrated, these squared differences increase, consequently leading to an increase in the predictive variance.
 
 \paragraph*{Bonus: What happens when applying Bayesian Linear Regression on the following dataset?}
 
-Even though we miss data points at the barycentre of our training data, the predictive variance is still minimized. 
+Looking at the right panel in \Cref{fig:phi_linear_hole}, we observe that the variance is surprisingly minized at the barycentre, i.e. the ''hole'' where there are not training data points. Typically, one would expect the variance to increase in regions with no data. This behavior suggests that the model is overconfident about its predictions in the gap, and we affirm this by observing low variance at the extremities.
 
 \begin{figure}[H]
     \centering
