@@ -62,13 +62,13 @@ We can see that the variance in the predictive distribution $ \sigma ^2_{pred} $
 It's worth noting that as the number of data points $N$ approaches infinity ($ \lim_{N \to \infty} \boldsymbol{\Phi}(x^\star)^T \boldsymbol{\Sigma} \boldsymbol{\Phi}(x^\star) = 0 $), our understanding of the model parameters becomes nearly perfect. In this scenario, the only remaining source of uncertainty is the aleatoric uncertainty, stemming from the noise in the data.
 
 \paragraph*{1.4. Based on previously defined \texttt{f\_pred()}, predict on the test dataset. Then visualize results using \texttt{plot\_results()} defined at the beginning of the notebook.}
-\Cref{fig:phi_linear} illustrates a comparison between the predictions made by a Bayesian Linear Regression (BLR) model and the actual ground truth. In the left panel, you can see the model's linear fit to the training data, shown as blue points, alongside the true ground truth represented by the green line. To visualize the model's predictive uncertainty, shaded areas are used, ranging from dark to light, which correspond to one, two, and three standard deviation intervals, respectively.
+\Cref{fig:phi_linear} illustrates a comparison between the predictions made by a Bayesian Linear Regression model and the actual ground truth. In the left panel, you can see the model's linear fit to the training data, shown as blue points, alongside the true ground truth represented by the green line. To visualize the model's predictive uncertainty, shaded areas are used, ranging from dark to light, which correspond to one, two, and three standard deviation intervals, respectively.
 
-The right panel of the figure focuses on the predictive variance \( \sigma ^2_{pred}  \) along the x-axis. This variance is depicted by a curve that widens as it moves away from the center of the training data, marked by the vertical dashed line. These visual elements together provide a comprehensive view of the model's confidence in its predictions across the entire domain.
+The right panel of the figure focuses on the predictive variance \( \sigma^2_{\text{pred}}  \) along the x-axis. This variance is depicted by a curve that widens as it moves away from the center of the training data, marked by the vertical dashed line. These visual elements together provide a comprehensive view of the model's confidence in its predictions across the entire domain.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.95\textwidth]{phi_linear.pdf}
-    \caption{The left panel illustrates the Bayesian Linear Regression (BLR) linear fit to the training data (blue points) against the ground truth (green line). The shaded areas represent the predictive uncertainty, with one, two, and three standard deviation intervals shown in progressively lighter shades. The right panel displays the predictive variance $\sigma ^2_{pred} $ across the x-axis. The vertical dashed line indicates the center of the training data.}
+    \caption{Visualization of predictive distribution of a linear dataset: The left panel illustrates the Bayesian Linear Regression fit to the training data (blue points) against the ground truth (green line). The shaded areas represent the predictive uncertainty, with one, two, and three standard deviation intervals shown in progressively lighter shades. The right panel displays the predictive variance $\sigma^2_{\text{pred}} $ across the x-axis. The vertical dashed line indicates the center of the training data.}
     \label{fig:phi_linear}
 \end{figure}
 
@@ -106,9 +106,9 @@ To invert $\boldsymbol{\Sigma}$, we use the classic formula for a $2 \times 2$ m
         - \sum x_i & N
     \end{pmatrix}
 \]
-Returning to our expression for $ \sigma^2_{pred} = \Phi (x^\star ) ^T \boldsymbol{\Sigma} \Phi (x^\star )$, we have:
+Returning to our expression for $ \sigma^2_{\text{pred}} = \Phi (x^\star ) ^T \boldsymbol{\Sigma} \Phi (x^\star )$, we have:
 \begin{align*}
-    \sigma^2_{pred} = \Phi (x^\star ) ^T \boldsymbol{\Sigma} \Phi (x^\star ) &= \frac{1}{\det \boldsymbol{\Sigma}^{-1}} \begin{pmatrix}
+    \sigma^2_{\text{pred}} = \Phi (x^\star ) ^T \boldsymbol{\Sigma} \Phi (x^\star ) &= \frac{1}{\det \boldsymbol{\Sigma}^{-1}} \begin{pmatrix}
         1 \\
         x^\star 
     \end{pmatrix} \begin{pmatrix}
@@ -126,12 +126,12 @@ This formula reveals that the predictive variance is directly proportional to th
 
 \paragraph*{Bonus: What happens when applying Bayesian Linear Regression on the following dataset?}
 
-Looking at the right panel in \Cref{fig:phi_linear_hole}, we observe that the variance is surprisingly minized at the barycentre, i.e. the ''hole'' where there are not training data points. Typically, one would expect the variance to increase in regions with no data. This behavior suggests that the model is overconfident about its predictions in the gap, and we affirm this by observing low variance at the extremities.
+Examining the right panel in \Cref{fig:phi_linear_hole}, an intriguing observation is made: the variance is unexpectedly minimized at the barycenter, i.e. the "hole" where there are no training data points. Normally, one would anticipate an increase in variance in data-scarce regions. This behavior indicates that the model exhibits overconfidence in its predictions, a notion supported by the lower variance at the endpoints when compared to our earlier model depicted in \Cref{fig:phi_linear}. This overconfidence stems from our strong prior belief in the linearity of the data.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.95\textwidth]{phi_linear_hole.pdf}
-    \caption{Visualization of predictive distribution of a linear dataset featuring a ''hole'': The left panel illustrates the Bayesian Linear Regression (BLR) linear fit to the training data (blue points) against the ground truth (green line). The shaded areas represent the predictive uncertainty, with one, two, and three standard deviation intervals shown in progressively lighter shades. The right panel displays the predictive variance $\sigma^2$ across the x-axis. The vertical dashed line indicates the center of the training data.    }
+    \caption{Visualization of predictive distribution of a linear dataset featuring a ''hole''.}
     \label{fig:phi_linear_hole}
 \end{figure}
 
@@ -141,25 +141,37 @@ Looking at the right panel in \Cref{fig:phi_linear_hole}, we observe that the va
 
 \paragraph*{2.2. Code and visualize results on sinusoidal dataset using polynomial basis functions. What can you say about the predictive variance?}
 
-...
+\Cref{fig:phi_polynomial} and \Cref{fig:phi_polynomial_hole} illustrate a comparison between the predictions made by a Bayesian Polynomial Regression model and the actual ground truth. Similar to the linear case, we can draw the same conclusions: as we move further away from our training data, uncertainty increases. However, in this case, our model demonstrates the ability to capture more intricate patterns, such as those resembling a sinusoidal function. It's worth noting that beyond the training data points, the model struggles to generalize, as it lacks the necessary data points to accurately capture the periodic nature of the sinusoidal ground truth.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.95\textwidth]{phi_polynomial.pdf}
-    \caption{<caption>}
+    \caption{Visualization of predictive distribution of a sinusoidal dataset: The left panel illustrates the Bayesian Polynomial Regression fit to the training data (blue points) against the ground truth (green line). The shaded areas represent the predictive uncertainty, with one, two, and three standard deviation intervals shown in progressively lighter shades. The right panel displays the predictive variance $\sigma^2_{\text{pred}}$ across the x-axis. The vertical dashed line indicates the center of the training data.}
     \label{fig:phi_polynomial}
+\end{figure}
+
+Furthermore, we decided to explore the effects of providing data points that are more dispersed and less abundant, as shown in \Cref{fig:phi_polynomial_hole}. Unsurprisingly, we observe that the variance around these small clusters is minimal, and as we move away from these regions, the variance increases. This phenomenon highlights the strength of these models: when given data, they become increasingly confident in specific areas. Therefore, in the context of uncertainty, we can gradually narrow down our desired outcomes by continuously adding more data points over time.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{phi_polynomial_hole.pdf}
+    \caption{Visualization of predictive distribution of a sinusoidal dataset featuring ''holes'' and sparse data points.}
+    \label{fig:phi_polynomial_hole}
 \end{figure}
 
 \subsection{Gaussian basis functions}
 
 \paragraph*{2.4. Code and visualize results on sinusoidal dataset using Gaussian basis functions. What can you say this time about the predictive variance?}
 
-...
+\Cref{fig:phi_gaussian} illustrate a comparison between the predictions made by a RBF Gaussian Regression model and the actual ground truth. 
+
+% ptit shift dans la moyenne a un endorit et ça modifie la tête de la sinusoide, donc très fitted sur les données
+% variance et prediction constante quand on est éloigné des points de train
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.95\textwidth]{phi_gaussian.pdf}
-    \caption{<caption>}
+    \caption{Visualization of predictive distribution of a sinusoidal dataset: The left panel illustrates the RBF Gaussian Regression fit to the training data (blue points) against the ground truth (green line). The shaded areas represent the predictive uncertainty, with one, two, and three standard deviation intervals shown in progressively lighter shades. The right panel displays the predictive variance $\sigma^2_{\text{pred}}$ across the x-axis. The vertical dashed line indicates the center of the training data.}
     \label{fig:phi_gaussian}
 \end{figure}
 
