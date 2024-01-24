@@ -163,9 +163,9 @@ Furthermore, we decided to explore the effects of providing data points that are
 
 \paragraph*{2.4. Code and visualize results on sinusoidal dataset using Gaussian basis functions. What can you say this time about the predictive variance?}
 
-\Cref{fig:phi_gaussian} illustrate a comparison between the predictions made by a RBF Gaussian Regression model and the actual ground truth. 
+\Cref{fig:phi_gaussian} and \Cref{fig:phi_gaussian_hole} illustrate a comparison between the predictions made by a RBF Gaussian Regression model and the actual ground truth. Contrary to the last two models, we conclude different conclusions. Notably, the predictive variance isn't highest far from the training barycenter but at points where there is information. It fluctuates, with peaks and troughs corresponding to the areas where the density of training points varies. Thus, the model is closely aligned to the mean of the training data and for instance, we can see how it can impacts the sinusoidal learned curves, with a small shift .
 
-% ptit shift dans la moyenne a un endorit et ça modifie la tête de la sinusoide, donc très fitted sur les données
+% ptit shift dans la moyenne a un endroit et ça modifie la tête de la sinusoide, donc très fitted sur les données
 % variance et prediction constante quand on est éloigné des points de train
 
 \begin{figure}[H]
@@ -173,6 +173,13 @@ Furthermore, we decided to explore the effects of providing data points that are
     \includegraphics[width=0.95\textwidth]{phi_gaussian.pdf}
     \caption{Visualization of predictive distribution of a sinusoidal dataset: The left panel illustrates the RBF Gaussian Regression fit to the training data (blue points) against the ground truth (green line). The shaded areas represent the predictive uncertainty, with one, two, and three standard deviation intervals shown in progressively lighter shades. The right panel displays the predictive variance $\sigma^2_{\text{pred}}$ across the x-axis. The vertical dashed line indicates the center of the training data.}
     \label{fig:phi_gaussian}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{phi_gaussian_hole.pdf}
+    \caption{Visualization of predictive distribution of a sinusoidal dataset featuring ''holes'' and sparse data points.}
+    \label{fig:phi_gaussian_hole}
 \end{figure}
 
 \paragraph*{2.5. Explain why in regions far from training distribution, the predictive variance converges to this value when using localized basis functions such as Gaussians.}
