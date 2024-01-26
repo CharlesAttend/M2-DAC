@@ -51,7 +51,6 @@ The weight decay hyper-parameter controls the complexity of the model. It adds a
     \label{fig:weight_decay}
 \end{figure}
 
-
 \subsection{Variational Inference}
 \paragraph{1.4. Comment the code of the \texttt{VariationalLogisticRegression} and \texttt{LinearVariational} classes.}
 
@@ -60,23 +59,23 @@ The weight decay hyper-parameter controls the complexity of the model. It adds a
     \item The class is initialized with the variational parameters for the weights (\texttt{w\_mu}, \texttt{w\_rho}) and biases (\texttt{b\_mu}) of the layer, i.e. the parameters we want to learn. \texttt{prio\_var} represents the variance of the prior distribution ($\sigma^2_p$), which specify our prior belief about the distribution of the weights. 
     \item The \texttt{sampling} method uses the reparametrization trick to sample from the variational posterior distribution for the weights $\boldsymbol{w}_{i} \sim \mathcal{N}(\mu_{i}, \sigma_{i}^2)$. To do so, we sample from a centered isotropic multivariate Gaussian where $ \sigma^2 = \log(1 + e^{\rho}) $ to avoid numerical issues. Thus, $ \boldsymbol{w}_{i} = \mu_{i}+ \sigma_{i} \odot \boldsymbol{\varepsilon}_s $, where $\boldsymbol{\varepsilon}_s \sim \mathcal{N}(0, 1)$ is a Gaussian noise. The reparametrization trick allows the gradient of the loss function to backpropagate through the randomness of the sampling process. 
     \item The \texttt{kl\_divergence} method calculates the Kullback-Leibler divergence between the variational posterior and the prior distribution for the weights: \[
-    \textrm{KL}\left[q_{\theta}(w) \Vert p(w) \right]= \log\left(\frac{\sigma_{p}}{\sigma_{i}}\right) + \frac{\sigma_i^2+\mu_i^2}{2\sigma_{p}^2} - \frac{1}{2} \]
-    where $\sigma^2_p$ is the variance of our prior distribution $p(w)$ and $(\mu_i, \sigma^2_i)$ the mean and variance of the variational distribution $q_{\theta}(w)$.
+    \textrm{KL}\left[q_{\theta}(\boldsymbol{w}) \Vert p(\boldsymbol{w}) \right]= \log\left(\frac{\sigma_{p}}{\sigma_{i}}\right) + \frac{\sigma_i^2+\mu_i^2}{2\sigma_{p}^2} - \frac{1}{2} \]
+    where $\sigma^2_p$ is the variance of our prior distribution $p(\boldsymbol{w})$ and $(\mu_i, \sigma^2_i)$ the mean and variance of the variational distribution $q_{\theta}(\boldsymbol{w})$.
     \item The \texttt{forward} method defines the forward pass by performing a linear transformation, i.e. $w^T x + b$. We sample the weights then compute the output of the layer using the sampled weights and the mean of the biases.
 \end{itemize}
 
 \noindent\texttt{VariationalLogisticRegression} represents a logistic regression model using variational inference:
 \begin{itemize}
     \item The class is initialized with one linear variational layer used to perform the linear transformation in logistic regression.
-    \item The \texttt{forward} method defines the forward pass for the logistic regression model by returning $f(x) = \sigma(w^T x + b)$. 
+    \item The \texttt{forward} method defines the forward pass for the logistic regression model by returning $f(x) = \sigma(w^T x + b)$ where $\sigma$ is the sigmoid function. 
     \item The \texttt{kl\_divergence} method simply calls the same method of the \texttt{LinearVariational} layer to obtain the KL divergence term for the loss computation.
 \end{itemize}
 
 \paragraph{1.5. Comment the code of the training loop, especially the loss computation. Analyze the results provided by \Cref{fig:logreg_variational}. Compared to previous MAP estimate, how does the predictive distribution behave? What is the main difference between the Variational approximation and the Laplace approximation?}
 
-The loss function calculates the Evidence Lower Bound (ELBO), which we want to maximize. In theory, we aim to maximize the likelihood of the data directly, but this is often intractable due to the integral over the weights. Therefore, we compute the Kullback-Leibler divergence $\textrm{KL}(q_{\boldsymbol{\theta}}(\boldsymbol{w}) \Vert p(\boldsymbol{w}))$ between the variational distribution $q_{\theta}(w)$ and the prior distribution $p(w)$. This acts as a regularization term, encouraging the variational distribution to be similar to the prior distribution. It represents the information lost when using $q_{\theta}(w)$ to approximate $p(w)$, which we want to minimize. 
+The training loop uses a standard PyTorch format. The loss function calculates the Evidence Lower Bound (ELBO), which we want to maximize. In theory, we aim to maximize the likelihood of the data directly, but this is often intractable due to the integral over the weights. Therefore, we compute the Kullback-Leibler divergence $\textrm{KL}(q_{\boldsymbol{\theta}}(\boldsymbol{w}) \Vert p(\boldsymbol{w}))$ between the variational distribution $q_{\theta}(\boldsymbol{w})$ and the prior distribution $p(\boldsymbol{w})$. This acts as a regularization term, encouraging the variational distribution to be similar to the prior distribution. It represents the information lost when using $q_{\theta}(\boldsymbol{w})$ to approximate $p(\boldsymbol{w})$, which we want to minimize. 
 
-To ensure the model fits the data effectively, we compute the negative log-likelihood $NLL(\boldsymbol{\theta}; \mathcal{D})$ of the data under the model parameterized by the weights sampled from $q_{\theta}(w)$. This is done using a binary cross-entropy loss. Subsequently, as maximizing ELBO is equivalent to minimizing\[ \mathcal{L}_{\textrm{VI}}(\boldsymbol{\theta}; \mathcal{D}) = NLL(\boldsymbol{\theta}; \mathcal{D}) + \textrm{KL}(q_{\boldsymbol{\theta}}(\boldsymbol{w})\vert\vert p(\boldsymbol{w})),\] we employ gradient descent to update the parameters of the variational distribution to better approximate the true posterior.
+To ensure the model fits the data effectively, we compute the negative log-likelihood $NLL(\boldsymbol{\theta}; \mathcal{D})$ of the data under the model parameterized by the weights sampled from $q_{\theta}(w)$. This is done using a binary cross-entropy loss. Subsequently, as maximizing ELBO is equivalent to minimizing: \[ \mathcal{L}_{\textrm{VI}}(\boldsymbol{\theta}; \mathcal{D}) = NLL(\boldsymbol{\theta}; \mathcal{D}) + \textrm{KL}(q_{\boldsymbol{\theta}}(\boldsymbol{w})\vert\vert p(\boldsymbol{w})),\] we employ gradient descent to update the parameters of the variational distribution to better approximate the true posterior.
 
 Compared to a MAP estimate, the variational approach does not just find the most probable weights (as MAP does) but instead approximates the entire posterior distribution over the weights. In the variational approach, the predictive distribution captures the model's uncertainty about its predictions. This approach results in boundary decisions between the MAP and Laplace approximation. The outcome of using the variational approach is a decision boundary that lies between what is obtained using MAP and the Laplace approximation. This results in a decision frontier that is distinct in the central area, yet it also effectively encompasses the aleatoric uncertainty. This approach provides a more comprehensive understanding of the model's predictions and uncertainties. % je sais pas si j'analyse assez la figure ?
 
@@ -91,7 +90,7 @@ Compared to a MAP estimate, the variational approach does not just find the most
 \subsection{Variational Inference with Bayesian Neural Networks}
 \paragraph{2.1. Analyze the results showed on \Cref{fig:mlp_variational}.}
 
-By applying Bayesian principles to a neural network with two hidden layers, we create a model capable of capturing intricate patterns within the data. In this context, each neuron's weight is treated as a random variable, representing our uncertainty about its true value. Consequently, we obtain a complex and non-linear decision boundary. Notably, the shaded regions, indicating the model's predictive uncertainty, reveal that the model demonstrates high confidence near the training data points and experiences increased uncertainty as it moves further away. Interestingly, this behavior leads to the emergence of ''clusters'' resembling the moon-shaped patterns found in the dataset. Moreover, this approach offers excellent explainability, as it provides outputs that are not just binary (0 or 1) but instead resemble the level of confidence one might have when predicting the locations of new data points.
+By applying Bayesian principles to a neural network with two hidden layers, we create a model capable of capturing intricate patterns within the data. In this context, each neuron's weight is treated as a random variable, representing our uncertainty about its true value. Consequently, we obtain a complex and non-linear decision boundary. Notably, the shaded regions, indicating the model's predictive uncertainty, reveal that the model demonstrates high confidence near the training data points and experiences increased uncertainty as it moves further away. Interestingly, this behavior leads to the emergence of ''clusters'' resembling the moon-shaped patterns found in the dataset. Moreover, this approach offers explainability, as it provides outputs that are not just binary but instead resemble the level of confidence one might have when predicting the locations of new data points.
 
 \begin{figure}[H]
     \centering
@@ -103,15 +102,7 @@ By applying Bayesian principles to a neural network with two hidden layers, we c
 \subsection{Monte Carlo Dropout}
 \paragraph{2.2. Again, analyze the results showed on \Cref{fig:dropout}. What is the benefit of MC Dropout variational inference over Bayesian Logistic Regression with variational inference?}
 
-Monte Carlo dropout is a technique that aligns with variational inference in Bayesian neural networks, where the dropout mechanism acts as a variational distribution for the network weights. Essentially, dropout introduces Bernoulli random variables, leading to a posterior predictive distribution that accounts for weight uncertainty. The formula for the predictive distribution of an output $ y^* $ for a new input $ \mathbf{x}^* $ and dataset $ \mathcal{D} $ is:
-
-\[ p(y^* | \mathbf{x}^*, \mathcal{D}) \approx \frac{1}{S} \sum_{s=1}^S p(y^* | \mathbf{x}^*, \mathbf{w}_s) \]
-
-where $ \mathbf{w}_s $ represents the network weights after dropout, and $ S $ is the number of MC samples or dropout iterations.
-
-The results, shown in \Cref{subfig:mcdropout}, include a decision boundary with adjacent bands indicating the model's confidence levels. These bands are formed by applying dropout during inference and averaging results from multiple stochastic passes. This approach illustrates the model's uncertainty in predictions, which contrast to the smooth gradients of deterministic neural networks (shown in \Cref{subfig:dropout}). The speckled appearance of uncertainty regions in the plot reflects how confidence varies across different input regions, due to the randomness introduced by MC Dropout.
-
-Incorporating MC Dropout in a standard neural network effectively turns it into Bayesian-like model, capable of expressing uncertainty in predictions. This approach not only allows the network to learn complex decision boundaries but also provides estimates of uncertainty, something often missing in regular neural networks. This probabilistic interpretation can lead to more informed decisions, as it shows how reliable the network's predictions are across different input areas.
+Monte Carlo dropout is a technique that aligns with variational inference in Bayesian neural networks, where the dropout mechanism acts as a variational distribution for the network weights. Essentially, dropout introduces Bernoulli random variables, leading to a posterior predictive distribution that accounts for weight uncertainty. The formula for the predictive distribution of an output $ y $ for a new input $ x^* $ is: \[ p(y | x^*, \mathbf{X}, \mathbf{Y}) \approx \frac{1}{S} \sum_{s \in S} p(y^* | x^*, \mathbf{w}_s), \] where $ \mathbf{w}_s $ represents the network weights after dropout, and $ S $ is the number of MC samples or dropout iterations.
 
 \begin{figure}[H]
     \centering
@@ -128,3 +119,7 @@ Incorporating MC Dropout in a standard neural network effectively turns it into 
     \caption{Illustration of a Bayesian Neural Network model applied to a binary classification task using (a) dropout and (b) Monte-Carlo dropout.}
     \label{fig:dropout}
 \end{figure}
+
+The results, shown in \Cref{subfig:mcdropout}, include a decision boundary with adjacent bands indicating the model's confidence levels. These bands are formed by applying dropout during inference and averaging results from multiple stochastic passes. This approach illustrates the model's uncertainty in predictions, which contrast to the smooth gradients of deterministic neural networks (shown in \Cref{subfig:dropout}). The speckled appearance of uncertainty regions in the plot reflects how confidence varies across different input regions, due to the randomness introduced by MC Dropout. Incorporating MC Dropout in a standard neural network effectively turns it into Bayesian-like model, capable of expressing uncertainty in predictions. This approach not only allows the network to learn complex decision boundaries but also provides estimates of uncertainty, something often missing in regular neural networks. This probabilistic interpretation can lead to more informed decisions, as it shows how reliable the network's predictions are across different input areas.
+
+
