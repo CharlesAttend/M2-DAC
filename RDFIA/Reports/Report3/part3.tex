@@ -1,6 +1,9 @@
 \graphicspath{{figs/3c}}
 
 \chapter{Uncertainty Applications}
+% résumé du chapitre
+
+
 \section{Monte-Carlo Dropout on MNIST}
 In this section, we focus on training a model using Monte Carlo Dropout (MC Dropout) on the MNIST dataset. Our primary aim was to identify the most uncertain samples. To do this, we used the variation ratio metric, which effectively measures epistemic uncertainty and is straightforward to calculate. For a given image, denoted as $ \mathbf{x} $, we perform $ T $ stochastic forward passes through the model and record the predicted labels. We then determine the frequency $ f^{c^\star }_\mathbf{x} $ of the most common label ($ c^\star $) across the $ T $ passes. The variation ratio for image $ \mathbf{x} $ is calculated using the formula:
 \[
@@ -11,14 +14,24 @@ This formula provides a quantitative measure of uncertainty for an image.
 
 \paragraph*{1.1. What can you say about the images themselfs? How do the histograms along them helps to explain failure cases? Finally, how do probabilities distribution of random images compare to the previous top uncertain images?}
 
-In this experiment, we used a LeNet-5 styled model with Monte-Carlo dropout variational inference. The model was train on MNIST for 20 epoch using cross-entropy in a clasical way. Then we use the model to compute the variation ratios for each test image. This permit to retrieve images by them uncertainty. That what have been done in \Cref{fig:varratio_certain,fig:varratio_certain}, they denote five measurement over the models probabilities outputs for two certain and uncertain images. To sum up the behaviour of the logit over the $ T=100 $ stochastic forward pass, we used histograms that display three distribution : the distribution of the mean of the outputs probabilities, the distribution of the max probability and the distribution of the probability of a particular class (the most predicted class for the first column, the ground truth class in the second column, a another different class the the third column).
+In this experiment, we used a LeNet-5 styled model with Monte-Carlo dropout variational inference. The model was train on MNIST for 20 epoch using cross-entropy in a clasical way. Then we use the model to compute the variation ratios for each test image. This permit to retrieve images by them uncertainty. That what have been done in \Cref{fig:varratio_certain,fig:varratio_certain}, they denote five measurement over the models probabilities outputs for two certain and uncertain images. To sum up the behaviour of the outputed probabilities over the $ T=100 $ stochastic forward pass, we used histograms that display four distribution.
+The first columns represent the distribution of the mean of the outputed probability per class.
+The second is the distribution of predicted class over the $ T $ forward passes.
+Then the 3 last columns represent the distribution of the outputed probability of a particular class (the most predicted class for the 3th column, the ground truth class in the 4th column, a another different class the the 5th column).
 
-Those histogram represent how the output probabilities vary other $ T=100 $ draw. If the model is not confident in its prediction, this will be reflected by high variation in probabilities between each draw and so, histograms will be more sparce.
+Those histogram represent how the output probabilities vary other $ T=100 $ draw. If the model is not confident in its prediction, this will be reflected by high variation in outputed probabilities between each draw and so, histograms will be more sparce and the predicted choosen class will vary.
 
-\Cref{fig:varratio_certain} present images caracterized as certain by the model. With our humain eye, they seem to clearly represent their denoted class. About the presented distributions, they are composed of a single peaked, this mean that we approximatly draw the same value every time, meaning that the model is pretty confident about it's output. 
+\Cref{fig:varratio_certain} present images caracterized as certain by the model. With our humain eye, they seem to clearly represent their denoted class. About the presented distributions, they are composed of a single peak, this mean that we approximatly draw the same value every time. The mean probabilities for the predicted class is equal to one and all other class always have a probabilitiy of zero, meaning that the model is pretty confident about it's output. 
 
-In the other hand \Cref{fig:varratio_uncertain} present the same thing for images caracterized as uncertain by the model. With our humain eye, numbers seem much more ambiguous. We can see much more spreaded distribution. The distribution of the mean probabilities can sometime be pretty low, meaning that the model is unconfident, or sometime really high, meaning the model is over-confident on a uncertain image. We observe the same behaviour for the distribution of the maximum probability. For the distribution of the probabilities for the ground thruth class and the predicted class, we can see that the distribution is really spreaded (large std), translating a unconfident prediction for those classes. Samples for another class have less variance but it still more than in \Cref{fig:varratio_certain}.
+In the other hand \Cref{fig:varratio_uncertain} present the same thing for images caracterized as uncertain by the model. Diplayed numbers seem much more ambiguous, and event with our humain eye we have diffuculties to find out which number they represent. 
+Distributions are much more spreaded. What does it mean for each columns?Does it mean the same for each columns? In the following part, we will try to explain this behaviour.
 
+For the first two columns, this only mean that many different output class neurons can be activated. To explore more this behaviour we can look at the distribution of the predicted class. As we can see, both histograms are really similar. Cela interroge sur la valeur de la probabilité lorsque la classe est prédite.
+
+The first interpretation that come in mind is that when a class neuron is activated, around his displayed mean value, it is almost the maximum and so the choosen class. 
+% j'arrive pas a expliquer, j'ai besoin d'aide en l'expliquant à quelqu'un. Je passe à la question suivante
+
+For the third and fourth column, this mean that they can furthermore take a wide range of values (large std). Those high variation in the output probabilities and in the choosen class translate an unconfident prediction. 
 
 \begin{figure}[H]
     \centering
@@ -36,23 +49,34 @@ In the other hand \Cref{fig:varratio_uncertain} present the same thing for image
 As we said when looking distribution of the mean of the probabilities of unconfident images, 
 
 \section{Failure prediction}
+In this section, we have conducted a comparison of various methods aimed at obtaining a reliable confidence measure for model predictions. Such a measure permit to distinguish correct and incorrect prediction. An intelligent decision system equipped with such metrics can make informed choices, including adhering to the model's prediction or, conversely, involving a human operator, activating a backup system equipped with additional sensors, or triggering an alarm. This field of application is commonly referred to as failure prediction.
+
+During the lecture, we found that Maximum Confidence Probability (MCP) is not a great metric for failure prediction. It assigns high confidence values to both correct and erroneous predictions because modern models tend to be overconfident, resulting in overlapping distributions between successes and errors. This issue persists even when using temperature scaling calibration.
+
+Alternatively, when the model makes a misclassification, the probability associated with the true class $y$ tends to be lower than the maximum probability, often falling to a low value. This observation leads us to consider the True Class Probability (TCP) as a suitable measure of uncertainty. However, the true class labels $y$ are not available when estimating confidence for test inputs. This motivates the development of ConfidNet, whose primary objective is to directly regress the TCP value from the input image, allowing us to obtain a reliable measure of uncertainty without access to ground truth labels.
+
+In this practical, we implemented ConfidNet to address failure predictions and compared it to two other methods that rely solely on the model's output probabilities. The first method is MCP, and the second is the entropy of the output probabilities. For these two methods, we used the previously trained MC Dropout model to compute the output probabilities. ConfidNet was trained for 30 epochs with the previous MC Dropout model as a teacher with frozen parameters and Mean Squared Error as the loss function.
 
 \paragraph*{2.1. Compare the precision-recall curves of each method along with their AUPR values. Why did we use AUPR metric instead of standard AUROC?}
+To assess and compare these methods, we require a suitable metric. Our objective is to identify classification errors, which we consider as the positive detection class, while correct predictions serve as the negative detection class. Since our models excel at making accurate predictions, we anticipate a low occurrence of classification errors, resulting in an imbalanced setting with a significant number of true negatives.
+
+We have opted to employ the AUPR (Area Under the Precision-Recall Curve) instead of the AUROC (Area Under the Receiver Operating Characteristic Curve) due to the latter's unsuitability for imbalanced datasets. AUROC treats both classes equally and can yield misleading results, particularly under the influence of a large number of true negatives. This may overstate the model's performance, particularly in distinguishing the minority class, which in this context comprises classification errors. Conversely, AUPR is a more suitable choice, as it prioritizes precision and recall for the minority class. Precision measures the fraction of actual positives among the positive predictions, while recall measures the proportion of correctly identified actual positives. Consequently, AUPR proves to be a more reliable metric in our situation, where the positive class (classification errors) is significantly smaller than the negative class (correct predictions).
+
+\Cref{fig:failure_aupr} illustrates the precision-recall curves for each method, accompanied by their respective AUPR values. The results demonstrate that ConfidNet surpasses the other two methods. This superiority can be attributed to ConfidNet's training, which directly estimates the TCP value—a more dependable uncertainty measure compared to MCP and entropy, as elaborated upon in the preceding section. Notably, ConfidNet exhibits a slower decline in precision as recall increases, indicating a more balanced performance in terms of identifying true positives without a substantial rise in false positives.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.95\textwidth]{}
+    \includegraphics[width=0.95\textwidth]{failure_aupr.pdf}
     \caption{}
-    \label{fig:varratio_certain}
+    \label{fig:failure_aupr}
 \end{figure}
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.95\textwidth]{}
-    \caption{}
-    \label{fig:varratio_uncertain}
-\end{figure}
-
 
 \section{Out-of-distribution detection}
 
 \paragraph*{3.1. Compare the precision-recall curves of each OOD method along with their AUPR values. Which method perform best and why?}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{OOD_aupr.pdf}
+    \caption{}
+    \label{fig:OOD_aupr}
+\end{figure}
