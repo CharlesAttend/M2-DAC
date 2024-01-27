@@ -64,19 +64,56 @@ We have opted to employ the AUPR (Area Under the Precision-Recall Curve) instead
 
 \Cref{fig:failure_aupr} illustrates the precision-recall curves for each method, accompanied by their respective AUPR values. The results demonstrate that ConfidNet surpasses the other two methods. This superiority can be attributed to ConfidNet's training, which directly estimates the TCP value—a more dependable uncertainty measure compared to MCP and entropy, as elaborated upon in the preceding section. Notably, ConfidNet exhibits a slower decline in precision as recall increases, indicating a more balanced performance in terms of identifying true positives without a substantial rise in false positives.
 
+For a better understanding of the lecture's confidence metrics, we aimed to compare the performance of predictive entropy and mutual information in the context of failure detection. The results are presented in \Cref{fig:failure_aupr_entropy_vs_mut_inf}. It seems that entropy outperforms mutual information as a metric for failure detection. This distinction arises from the fact that predictive entropy measures aleatoric uncertainty, while mutual information assesses epistemic uncertainty. In the specific experiment of failure detection on MNIST, it proves more advantageous to rely on and measure aleatoric uncertainty, which originates from the natural variability or randomness of the numbers in the images. This explanation underscores why entropy is a superior metric to mutual information in this particular context.
+
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.95\textwidth]{failure_aupr.pdf}
+    \includegraphics[width=0.45\textwidth]{failure_aupr.pdf}
     \caption{}
     \label{fig:failure_aupr}
 \end{figure}
 
-\section{Out-of-distribution detection}
-
-\paragraph*{3.1. Compare the precision-recall curves of each OOD method along with their AUPR values. Which method perform best and why?}
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.95\textwidth]{OOD_aupr.pdf}
+    % \includegraphics[width=0.45\textwidth]{failure_aupr_entropy_vs_mut_inf.pdf}
+    \caption{}
+    \label{fig:failure_aupr_entropy_vs_mut_inf}
+\end{figure}
+
+\section{Out-of-distribution detection}
+Nowadays, models are trained on million of image (like imagenet), making epistemic uncertainty tend to zero. However, critical real word application like autonomous driving, medical imaging, etc. require to detect out-of-distribution (OOD) inputs because of the stochasticness of real life data. In this section, we will use Kuzushiji-MNIST (KMNIST) dataset as out of distribution data for our MC dropout MNIST predictor. This dataset is composed of 70,000 28x28 grayscale number images. We will keep precision, recall and AUPR as metrics to compare the different methods. 
+
+In particular in this section, we implemented the ODIN method \citep{ODIN} that enhance maximum softmax probabilities with temperature scaling and inverse adversarial perturbation. Those two technics are used to increase the difference between in and out of distribution.\\
+The temperature scaling is a simple scaling of the logit by a temperature parameter $ \nicefrac{1}{T} $ before the softmax : $ S_i(\boldsymbol{x}, T) = \frac{\exp (f_i(\boldsymbol{x}) / T)}{\sum_{j=1}^{N} \exp (f_j(\boldsymbol{x} / T))} $ with $ S_i $ being the outputed probabilities, $ \boldsymbol{x} $ the input image, $ T $ the temperature parameter and $ f_i $ the logit of the $ i $th class.\\
+Inverse adversarial perturbation is to preprocess the input $ \boldsymbol{x} $ before feeding it to the neural network. The preprocessing is done by adding a small perturbation $ \epsilon $ to the input image $ \boldsymbol{x} $ such that $ \boldsymbol{x}^\prime = \boldsymbol{x} - \epsilon \cdot \text{sign}(-\nabla_{\boldsymbol{x}} \mathcal{L}(\boldsymbol{x}, y)) $ with $ \mathcal{L} $ the cross entropy loss function, $ y $ the ground truth label, $ \epsilon $ the perturbation magnitude and $ \boldsymbol{x}^\prime $ the perturbed image. The perturbation magnitude $ \epsilon $ is chosen such that the perturbed image is still classified correctly by the neural network.
+
+\paragraph*{3.1. Compare the precision-recall curves of each OOD method along with their AUPR values. Which method perform best and why?}
+\Cref{fig:OOD_aupr} illustrates the precision-recall curves for six uncertainty metrics (MCP, ODIN with a single stochastic passe, CondifNet TCP, ODIN averaged on 100 stochastic forward passes, mutual information and predictive entropy), accompanied by their respective AUPR values. All precision-recall curves are smooth so we can mainly focus on AUPR values for our analysis. As the practical is not clear if we have to disable dropout when computings odin (which is equivalent to use a classical deterministic network), we also tried to compute odin with the mean output over $ T=100 $ forward pass.
+
+A single pass ODIN with his two correction on output probabilities perform slightly better than MCP as expected but not that much. When comparing to the other methods, the single pass ODIN is suprisingly outperformed by all of them. This was intended for CondifNet because of its use of TCP but not for mutual information and predictive entropy that rely on the raw outputed probabilities as ODIN do. In fact, those two last method performed really well with both 98\% of AUPR, standing as the best metrics for OOD detection. 
+Even with the leveraging of TCP, ConfidNet is behind with 96\% of AUPR. Mutual information and predictive entropy with their simplicity seem to be the best metrics for OOD detection in our experiments. 
+Finally, we can see that ODIN with averaged probability over $ T=100 $ stochastic forward passes give much better result, that are this time near the one of mutual information and predictive entropy. Sugesting that the poor performance of the single pass ODIN is due to the stochasticness of the forward pass. However, ODIN still theoricaly better and should give better result than mutual information and predictive entropy, because of his advanced technics to enhance the difference between in and out of distribution. That still not the case in our experiments.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.45\textwidth]{OOD_aupr.pdf}
     \caption{}
     \label{fig:OOD_aupr}
+\end{figure}
+
+For further inversigation to observe the effect of ODIN technics, we tried to combine it with predictive entropy and mutual information. The results are presented in \Cref{fig:OOD_aupr_combo}. We can see that the combination of ODIN with predictive entropy and mutual information is not better than the metrics alone with a less than 0.10\% augmentation of AUPR. 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.45\textwidth]{OOD_aupr_combo.pdf}
+    \caption{}
+    \label{fig:OOD_aupr_combo}
+\end{figure}
+
+Seeing ODIN still failing, we thought it was because of wrong hyperparameter, in fact, the provided code used $ \epsilon \in {0.006, 0.0006} $ but sugested to use $ \epsilon = 0.0014 $ and the original paper sometime use high value of $ T $, up to $10000$. So we decided to conduct a grid search, AUPR value in fonction of $ \epsilon  $ and $ T $ are presented in \Cref{fig:odin_grid_search} when averaging $ T=100 $ stochastic forward passes. 
+
+The overall effect of those parameters is mild with a difference between the minimum and the maximum score of $ 0.6\% $. Setting the temperature to $ 1 $ is equivalent to diable temperature scaling, this settings allow to find the effect of temperature scaling alone. Thus, the first cell represent a baseline for other cells. We can see by looking at the first line that temperature scaling allow to increase the AUPR by $ 0.6\% $, this is not that much but still a conscient change as we are talking of a effect visible computed over $ 500 $ stochastic forward pass. We can apply the same logic for the effect of perturbation when $ \epsilon = 0 $. This time by looking at the first column, we cannot find any true effect of the perturbation with any value of $ \epsilon $. Thus, combining both parameter lead to the same score as if there was only temperature scaling.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.45\textwidth]{odin_grid_search.pdf}
+    \caption{}
+    \label{fig:odin_grid_search}
 \end{figure}
