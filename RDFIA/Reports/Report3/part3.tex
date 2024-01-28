@@ -12,7 +12,6 @@ In this section, we focus on training a model using Monte Carlo Dropout (MC Drop
 .\]
 This formula provides a quantitative measure of uncertainty for an image.
 
-
 \paragraph*{1.1. What can you say about the images themselfs? How do the histograms along them helps to explain failure cases? Finally, how do probabilities distribution of random images compare to the previous top uncertain images?}
 
 In this experiment, we used a LeNet-5 styled model with Monte-Carlo dropout variational inference. The model was train on MNIST for 20 epoch using cross-entropy in a clasical way. Then we use the model to compute the variation ratios for each test image. This permit to retrieve images by them uncertainty. That what have been done in \Cref{fig:varratio_certain,fig:varratio_certain}, they denote five measurement over the models probabilities outputs for two certain and uncertain images. To sum up the behaviour of the outputed probabilities over the $ T=100 $ stochastic forward pass, we used histograms that display four distribution.
@@ -37,17 +36,30 @@ For the third and fourth column, this mean that they can furthermore take a wide
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.95\textwidth]{var-ratio_certain_images.pdf}
-    \caption{}
+    \caption{\textbf{Certain Images with Output Probability Distributions.} Images that the model classified with high certainty, featuring clear, identifiable digits. Histograms show highly concentrated distributions, with mean probabilities for the predicted class at one and other classes at zero, indicating strong model confidence in its predictions.}
     \label{fig:varratio_certain}
 \end{figure}
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.95\textwidth]{var-ratio_uncertain_images.pdf}
-    \caption{}
+    \caption{\textbf{Uncertain Images with Output Probability Distributions.} Ambiguous images that the model classified with uncertainty. Distributions are spread out, suggesting fluctuating confidence across different classes. The similarity between histograms of the predicted class and mean probabilities indicates that the model sometimes chooses a class with a relatively low average probability.}
     \label{fig:varratio_uncertain}
 \end{figure}
-
-As we said when looking distribution of the mean of the probabilities of unconfident images, 
+\begin{figure}[hp]
+    \centering
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=\textwidth]{MCP_barplot.pdf}
+        \caption{}
+        \label{fig:MCP:barplot}
+    \end{subfigure}%
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=\textwidth]{MCP_kdeplot.pdf}
+        \caption{}
+        \label{fig:MCP:kdeplot}
+    \end{subfigure}%
+    \caption{\textbf{(a) Maximum Class Probability (MCP) Bar Plot.} Bar plot showcasing the Maximum Class Probability (MCP) for uncertain images. It reveals that most predictions are based on high probability, pointing to model overconfidence. However, some decisions are made at lower probabilities, suggesting inconsistency in the model's confidence level.\\\textbf{(b) Density plot of MCP in function of the class.} KDE plot illustrating the distribution of MCP for different preditected classes, indicating the model's tendency to predict certain classes with high MCP (e.g., class 8) and others with consistently low MCP (e.g., class 7), reflecting the model's varying confidence across different classes.}
+    \label{fig:MCP}
+\end{figure}
 
 \section{Failure prediction}
 In this section, we have conducted a comparison of various methods aimed at obtaining a reliable confidence measure for model predictions. Such a measure permit to distinguish correct and incorrect prediction. An intelligent decision system equipped with such metrics can make informed choices, including adhering to the model's prediction or, conversely, involving a human operator, activating a backup system equipped with additional sensors, or triggering an alarm. This field of application is commonly referred to as failure prediction.
@@ -69,16 +81,17 @@ For a better understanding of the lecture's confidence metrics, we aimed to comp
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.45\textwidth]{failure_aupr.pdf}
-    \caption{}
-    \label{fig:failure_aupr}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    % \includegraphics[width=0.45\textwidth]{failure_aupr_entropy_vs_mut_inf.pdf}
-    \caption{}
-    \label{fig:failure_aupr_entropy_vs_mut_inf}
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=\textwidth]{failure_aupr.pdf}
+        \caption{}
+        \label{fig:failure_aupr}
+    \end{subfigure}%
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=\textwidth]{failure_aupr_entropy_vs_mut_inf.pdf}
+        \caption{}
+        \label{fig:failure_aupr_entropy_vs_mut_inf}
+    \end{subfigure}%
+    \caption{\textbf{(a) Precision-Recall Curves for Each Tested Method with AUPR Values.} The graph demonstrates ConfidNet's balanced performance in identifying true positives with fewer false positives, indicating its effectiveness in making accurate predictions with a low occurrence of classification errors.\\\textbf{(b) Performance Comparison of Predictive Entropy and Mutual Information for Failure Detection.} The graph illustrates that predictive entropy, measuring aleatoric uncertainty, outperforms mutual information, which measures epistemic uncertainty. This suggests that in scenarios with aleatoric uncertainty, like natural variability in MNIST images, entropy is a more effective metric for failure detection.}
 \end{figure}
 
 \section{Out-of-distribution detection}
@@ -95,16 +108,24 @@ ODIN, with its two modifications to output probabilities, performs slightly bett
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.45\textwidth]{OOD_aupr.pdf}
-    \caption{}
+    \caption{\textbf{Precision-Recall Curves and AUPR Values for Six Uncertainty Metrics.} Precision-recall curves for six uncertainty metrics (MCP, ODIN, ConfidNet TCP, MC Dropout (MCD) mutual information, and MCD predictive entropy) with their corresponding Area Under the Precision-Recall curve (AUPR) values. MCD mutual information and predictive entropy lead with AUPR scores of $98\%$. ODIN performs slightly better than MCP but is outperformed by MCD methods, which take advantage of Bayesian networks. However, note that the performance of MCD methods comes at a computational cost.}
     \label{fig:OOD_aupr}
 \end{figure}
 
 To further investigate ODIN's techniques, we attempted to combine them with MC Dropout (averaging over 100 stochastic forward passes), predictive entropy, and mutual information. The outcomes are presented in \Cref{fig:OOD_aupr_combo}. This combination actually resulted in a slight performance decline for Entropy and Mutual Information, with a decrease of $0.3\%$ in their scores. Integrating MCD with ODIN appears to have no significant impact. 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.45\textwidth]{OOD_aupr_combo.pdf}
-    \caption{}
-    \label{fig:OOD_aupr_combo}
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=\textwidth]{OOD_aupr_combo.pdf}
+        \caption{}
+        \label{fig:OOD_aupr_combo}
+    \end{subfigure}%
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=\textwidth]{odin_grid_search.pdf}
+        \caption{}
+        \label{fig:odin_grid_search}
+    \end{subfigure}%
+    \caption{\textbf{(a) AUPR Values for Combined ODIN and MC Dropout Techniques.} Analysis of the combined impact of ODIN techniques with MC Dropout (averaging over 100 stochastic forward passes), predictive entropy, and mutual information on AUPR values. The combination slightly reduces the performance of Entropy and Mutual Information by about $0.3\%$, with no significant impact on ODIN's performance.\\\textbf{(b) Grid Search Results of ODIN's AUPR Values Relative to Hyperparameters $\epsilon$ and Temperature.} Grid search results showing the influence of ODIN's hyperparameters $\epsilon$ and temperature on its AUPR values. The best result is achieved with a temperature of 10, yielding a $98.42\%$ AUPR, surpassing MCD with entropy. Temperature scaling alone enhances AUPR by $1\%$, while perturbation has a negligible impact, suggesting temperature scaling as the more effective parameter.}
 \end{figure}
 
 Considering ODIN's persistent underperformance, we hypothesized it might be due to suboptimal hyperparameters. The code we used suggested values for $ \epsilon $ of $0.006$ and $0.0006$, but also recommended trying $ \epsilon = 0.0014 $ at the same time. Moreover, the original paper sometimes employed high temperature values, up to $10000$. This led us to conduct a grid search, the results of which, showing AUPR values in relation to $ \epsilon $ and temperature, are depicted in \Cref{fig:odin_grid_search}.
