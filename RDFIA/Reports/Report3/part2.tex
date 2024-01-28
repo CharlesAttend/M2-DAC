@@ -1,13 +1,17 @@
 \graphicspath{{figs/3b}}
 
 \chapter{Approximate Inference in Classification}
+
+This chapter extends the exploration of Bayesian Deep Learning. Building upon the previous chapter, it delves into the complexities of classification tasks. The focus here is on the challenges associated with these tasks, particularly the lack of a closed-form solution for the posterior distribution in Logistic Regression. The chapter conducts a comparative analysis of different approximate inference techniques, including Laplacian approximation and variational inference, applied to binary classification problems. This exploration is crucial for gaining insights into the application of Bayesian methods in more complex machine learning scenarios, representing a substantial advancement from the linear regression models discussed earlier.
+
 \section{Bayesian Logistic Regression}
+
+In this section, our initial focus is on Bayesian Logistic Regression. We begin by highlighting he difference between the continuous predictions found in linear regression models and the discrete class label predictions characteristic of classification models. Specifically, we introduce binary classification through logistic regression and explore several methods for approximating the posterior distribution, as the posterior distribution is no longer tractable due to the absence of conjugacy between the likelihood and the prior. 
+
 \subsection{Maximum-A-Posteriori Estimate}
 \paragraph{1.1. Analyze the results provided by \Cref{fig:logreg_map}. Looking at $p(y=1 | x, \mathbf{w}_{\textrm{MAP}})$, what can you say about points far from train distribution?}
 
 Approximating $p(\mathbf{w} | \mathbf{X}, \mathbf{Y})$ with a Dirac delta function is essentially akin to approximating the predictive distribution using $\mathbf{w}_{\textrm{MAP}}$, meaning $p(y=1 | x, \mathbf{w}_{\textrm{MAP}}) \approx p(y=1 | x, \mathbf{Y})$. This approximation is quite straightforward. 
-
-As depicted in \Cref{fig:logreg_map}, the boundary decision remains linear and the model's uncertainty doesn't significantly increase far from the training data. Essentially, it provides a confidence measure for the linear boundary. This indicates that the point-wise estimate of the parameters can only confidently assign points to their respective classes but lacks the capacity to provide nuanced uncertainty measures for points that deviate far from the training data distribution. Thus, this approach is not effective in assessing the uncertainty of outliers or points not well-represented in the training set.
 
 \begin{figure}[H]
     \centering
@@ -15,6 +19,8 @@ As depicted in \Cref{fig:logreg_map}, the boundary decision remains linear and t
     \caption{Illustration of a Bayesian Logistic Regression model applied to a binary classification task with uncertainty display, with a weight decay of $5 \times 10^{-2}$. Two distinct data point clusters — blue and red — represent separate classes, while the surrounding shaded areas reflect the model's predictive uncertainty, with lighter shades indicating lower confidence.}
     \label{fig:logreg_map}
 \end{figure}
+
+As depicted in \Cref{fig:logreg_map}, the boundary decision remains linear and the model's uncertainty doesn't significantly increase far from the training data. Essentially, it provides a confidence measure for the linear boundary. This indicates that the point-wise estimate of the parameters can only confidently assign points to their respective classes but lacks the capacity to provide nuanced uncertainty measures for points that deviate far from the training data distribution. Thus, this approach is not effective in assessing the uncertainty of outliers or points not well-represented in the training set.
 
 \subsection{Laplace Approximation}
 \paragraph{1.2. Analyze the results provided by \Cref{fig:laplace_approx}. Compared to previous MAP estimate, how does the predictive distribution behave?}
@@ -91,6 +97,9 @@ Compared to a Maximum a Poseteriori estimate, the variational approach does not 
 Compared to the Laplace approximation, the variational approximation actively optimizes a parameterized distribution to closely resemble the true posterior, with resemblance quantified by the KL divergence. This optimization typically involves a more complex objective function. On the other hand, Laplace approximation passively fits a Gaussian distribution around the MAP estimate, relying on the curvature of the log-posterior at that point. It assumes that the posterior is locally Gaussian and primarily focuses on finding the MAP estimate and computing the Hessian at that location.
 
 \section{Bayesian Neural Networks}
+
+In this section, we illustrate the extension of Bayesian methods to neural network architecture, with a specific focus on applying variational inference to a Multi-Layer Perceptron. Here, we practically apply the concepts introduced in the previous section to showcase their effectiveness in dealing with complex, non-linear datasets.
+
 \subsection{Variational Inference with Bayesian Neural Networks}
 \paragraph{2.1. Analyze the results showed on \Cref{fig:mlp_variational}.}
 

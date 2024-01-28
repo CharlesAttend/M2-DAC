@@ -1,13 +1,12 @@
 \graphicspath{{figs/3a}}
 \chapter{Bayesian Linear Regression}
 
-
-%   ┌──────────────────────────────────────────────────────────────────────────┐
-%   │ Summary                                                                  │
-%   └──────────────────────────────────────────────────────────────────────────┘
-
+In this chapter, we delve into Bayesian Linear Regression, a fundamental concept in Bayesian Deep Learning. After discussing the general landscape of deep learning technologies and acknowledging the associated challenges, including problems related to interpretability and uncertainty in predictions, we turn our attention to Bayesian models. Bayesian Linear Regression serves as an ideal starting point for understanding Bayesian methods due to its relative simplicity and the availability of a closed-form solution for its posterior distribution. The variance present in these distributions captures epistemic uncertainty, setting it apart from the deterministic single-point predictions provided by traditional neural networks. Throughout this chapter, we not only introduce the concept of Bayesian Linear Regression but also contextualize its importance within the broader framework of Bayesian Deep Learning, providing a solid foundation for comprehending Bayesian approaches in machine learning.
 
 \section{Linear Basis function model}
+
+In this section, we introduce the fundamental concepts of Bayesian Linear Regression. We focus on laying a strong theoretical foundation, explaining the underlying mathematics, and outlining why a Bayesian approach is chosen for linear regression tasks.
+
 \subsection{Gaussian basis functions}
 \paragraph*{1.2. Recall closed form of the posterior distribution in linear case. Then, code and visualize posterior sampling. What can you observe?}
 
@@ -135,6 +134,8 @@ Examining the right panel in \Cref{fig:phi_linear_hole}, an intriguing observati
 \end{figure}
 
 \section{Non Linear models}
+
+In this section, we apply the theoretical concepts learned in the previous section to more intricate datasets. The goal is to gain insights into the significance of the selected basis function and its impact on the behavior of predictive variance.
 
 \subsection{Polynomial basis functions}
 
