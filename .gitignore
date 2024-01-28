@@ -3,26 +3,6 @@
 __pycache__
 runs
 *.tfevents.*
-# TeX
-_minted-report
-*.aux
-*.dvi
-*.fdb*
-*.fls
-*.log
-*.out
-*.synctex.gz
-*.toc
-
-# JupyterNotebooks
-.ipynb_checkpoints  
-*/.ipynb_checkpoints/*
-
-# IPython
-profile_default/
-ipython_config.py
-.datamaestro/
-
 archive 
 datasets
 MNIST
@@ -43,7 +23,36 @@ RDFIA/TME/Section2/2c/BSR_bsds500.tgz
 RDFIA/TME/Section2/2c/mnistm_data.pkl
 RDFIA/TME/Section2/2de/logs
 RDFIA/Reports/Report2/gifs
+KMNIST/
+
+# TeX
+_minted-report
+*.aux
+*.dvi
+*.fdb*
+*.fls
+*.log
+*.out
+*.synctex.gz
+*.toc
+
+## Bibliography auxiliary files (bibtex/biblatex/biber):
 *.bbl
+*.bcf
+*.blg
+*-blx.aux
+*-blx.bib
+*.run.xml
+
+## Beamer
 *.nav
 *.snm
-KMNIST/
+
+# JupyterNotebooks
+.ipynb_checkpoints  
+*/.ipynb_checkpoints/*
+
+# IPython
+profile_default/
+ipython_config.py
+.datamaestro/
