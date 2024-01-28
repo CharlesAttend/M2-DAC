@@ -5,7 +5,7 @@
 
 
 \section{Monte-Carlo Dropout on MNIST}
-In this section, we focus on training a model using Monte Carlo Dropout (MC Dropout) on the MNIST dataset. Our primary aim was to identify the most uncertain samples. To do this, we used the variation ratio metric, which effectively measures epistemic uncertainty and is straightforward to calculate. For a given image, denoted as $ \mathbf{x} $, we perform $ T $ stochastic forward passes through the model and record the predicted labels. We then determine the frequency $ f^{c^\star }_\mathbf{x} $ of the most common label ($ c^\star $) across the $ T $ passes. The variation ratio for image $ \mathbf{x} $ is calculated using the formula:
+In this section, we focus on training a model using Monte Carlo Dropout (MC Dropout) on the MNIST dataset and analysing the behaviour of the outputed probabilities for certain and uncertain samples. To find out the most uncertain images, we used the variation ratio metric, which effectively measures epistemic uncertainty and is straightforward to calculate. For a given image, denoted as $ \mathbf{x} $, we perform $ T $ stochastic forward passes through the model and record the predicted labels. We then determine the frequency $ f^{c^\star }_\mathbf{x} $ of the most common label ($ c^\star $) across the $ T $ passes. The variation ratio for image $ \mathbf{x} $ is calculated using the formula:
 \[
     \text{var-ratio}[\mathbf{x}] = 1 - \frac{f^{c^\star }_\mathbf{x}}{T}
 .\]
@@ -14,83 +14,99 @@ This formula provides a quantitative measure of uncertainty for an image.
 
 \paragraph*{1.1. What can you say about the images themselfs? How do the histograms along them helps to explain failure cases? Finally, how do probabilities distribution of random images compare to the previous top uncertain images?}
 
-In this experiment, we used a LeNet-5 styled model with Monte-Carlo dropout variational inference. The model was train on MNIST for 20 epoch using cross-entropy in a clasical way. Then we use the model to compute the variation ratios for each test image. This permit to retrieve images by them uncertainty. That what have been done in \Cref{fig:varratio_certain,fig:varratio_certain}, they denote five measurement over the models probabilities outputs for two certain and uncertain images. To sum up the behaviour of the outputed probabilities over the $ T=100 $ stochastic forward pass, we used histograms that display four distribution.
+In this experiment, we used a LeNet-5 styled model with Monte-Carlo dropout variational inference. The model was train on MNIST for 20 epoch using cross-entropy in a clasical way. Then we use the model to compute the variation ratios for each test image. This permit to retrieve images by them uncertainty and to show them in \Cref{fig:varratio_certain,fig:varratio_certain} along with five measurement over the models probabilities outputs. To sum up the behaviour of the outputed probabilities over the $ T=100 $ stochastic forward pass, we used histograms that display 3 differents distributions.
 The first columns represent the distribution of the mean of the outputed probability per class.
 The second is the distribution of predicted class over the $ T $ forward passes.
 Then the 3 last columns represent the distribution of the outputed probability of a particular class (the most predicted class for the 3th column, the ground truth class in the 4th column, a another different class the the 5th column).
 
 Those histogram represent how the output probabilities vary other $ T=100 $ draw. If the model is not confident in its prediction, this will be reflected by high variation in outputed probabilities between each draw and so, histograms will be more sparce and the predicted choosen class will vary.
 
-\Cref{fig:varratio_certain} present images caracterized as certain by the model. With our humain eye, they seem to clearly represent their denoted class. About the presented distributions, they are composed of a single peak, this mean that we approximatly draw the same value every time. The mean probabilities for the predicted class is equal to one and all other class always have a probabilitiy of zero, meaning that the model is pretty confident about it's output. 
+\Cref{fig:varratio_certain} present images caracterized as certain by the model. With our humain eye, they seem to clearly represent their denoted class. About the presented distributions, they are composed of a single peak, this mean that we draw the same value every time. The mean probabilities for the predicted class is equal to one and all other class always have a probabilitiy of zero, meaning that the model is pretty confident about it's output as it is always predicting the same class. 
 
 In the other hand \Cref{fig:varratio_uncertain} present the same thing for images caracterized as uncertain by the model. Diplayed numbers seem much more ambiguous, and event with our humain eye we have diffuculties to find out which number they represent. 
-Distributions are much more spreaded. What does it mean for each columns?Does it mean the same for each columns? In the following part, we will try to explain this behaviour.
+Distributions are much more spreaded. This can have many interpretation for each columns. In the following part, we will try to explain this behaviour.
 
-For the first two columns, this only mean that many different output class neurons can be activated. To explore more this behaviour we can look at the distribution of the predicted class. As we can see, both histograms are really similar. Cela interroge sur la valeur de la probabilité lorsque la classe est prédite.
+For the first two columns, this only mean that many different output class neurons can be activated. But this histogram does not informs us if those neurons are all activated at the same time, or only independatly at each run. To explore more this behaviour we can look at the distribution of the predicted class. As we can see, both histograms are really similar. Sugesting that a class can be choosen, event if it has a small mean. For example, the class 8 is sometime choosen, but its mean is only of $ 0.5 $.
 
-The first interpretation that come in mind is that when a class neuron is activated, around his displayed mean value, it is almost the maximum and so the choosen class. 
-% j'arrive pas a expliquer, j'ai besoin d'aide en l'expliquant à quelqu'un. Je passe à la question suivante
+We explored the two possibles reasons of this
+\begin{itemize}
+    \item the mean does not tell the full story, a small mean doesn't mean the class neuron nether take high values. In fact, a good way to get the full story is to check the last column. As we can see, sometime, by the power of stochasticity, those "small mean" classes can take high values around $0.8$ and so have an high chance of being predicted. 
+    \item The class neurons sometime take low values but this low value is the max along the other class neurons. 
+\end{itemize}
+To check whether those hypothesis was true, we ploted the maximum class probability (MCP) in \Cref{fig:MCP}. MCP reprensent the maximum probability at each runs, it is the probability at which the prediction is choosen. This can be defined as $ MCP(\boldsymbol{x}) = \max _{k \in \mathcal{Y}} p(Y=k | \boldsymbol{w}, \boldsymbol{x}) $. It's also the simplest baseline for confidence. By looking at \Cref{fig:MCP:barplot}, we can see that most of our prediction for this image were based on an high probability even if it is missclassified most of the time and it is behing one of the most uncertain image of the dataset. This illustrate the overconfidence of our model. But, sometime, a decision is taken at a low probability (for example below $ 0.4 $). The next plot in \Cref{fig:MCP:kdeplot} allow to check which class the model tends to predict when the MCP is low or high. For example, class 8 is always predicted with an high MCP, contary to the class 7 that is predicted everytime with an low MCP.
 
-For the third and fourth column, this mean that they can furthermore take a wide range of values (large std). Those high variation in the output probabilities and in the choosen class translate an unconfident prediction. 
-
-\begin{figure}[H]
+\begin{figure}[hp]
     \centering
     \includegraphics[width=0.95\textwidth]{var-ratio_certain_images.pdf}
     \caption{}
     \label{fig:varratio_certain}
 \end{figure}
-\begin{figure}[H]
+\begin{figure}[hp]
     \centering
     \includegraphics[width=0.95\textwidth]{var-ratio_uncertain_images.pdf}
     \caption{}
     \label{fig:varratio_uncertain}
 \end{figure}
-
-As we said when looking distribution of the mean of the probabilities of unconfident images, 
+\begin{figure}[hp]
+    \centering
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=\textwidth]{MCP_barplot.pdf}
+        \caption{}
+        \label{fig:MCP:barplot}
+    \end{subfigure}%
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=\textwidth]{MCP_kdeplot.pdf}
+        \caption{}
+        \label{fig:MCP:kdeplot}
+    \end{subfigure}%
+    \caption{}
+    \label{fig:MCP}
+\end{figure}
 
 \section{Failure prediction}
-In this section, we have conducted a comparison of various methods aimed at obtaining a reliable confidence measure for model predictions. Such a measure permit to distinguish correct and incorrect prediction. An intelligent decision system equipped with such metrics can make informed choices, including adhering to the model's prediction or, conversely, involving a human operator, activating a backup system equipped with additional sensors, or triggering an alarm. This field of application is commonly referred to as failure prediction.
+In this section, we have conducted a comparison of various methods aimed at obtaining a reliable confidence measure for model predictions. Such a measure permit to distinguish correct and incorrect prediction and so identify instances where a machine learning model does not perform as expected or fails to make accurate predictions. Failure in a machine learning context can occur due to various reasons, such as poor model training, noisy or out of distribution data, inadequate feature representation, overfitting or underfitting. An intelligent decision system equipped with such metrics in operational settings can make informed choices, including adhering to the model's prediction or, conversely, involving a human operator, activating a backup system equipped with additional sensors, or triggering an alarm. This field of application is commonly referred to as failure prediction.
 
-During the lecture, we found that Maximum Confidence Probability (MCP) is not a great metric for failure prediction. It assigns high confidence values to both correct and erroneous predictions because modern models tend to be overconfident, resulting in overlapping distributions between successes and errors. This issue persists even when using temperature scaling calibration.
+During the lecture and in the previous section, we found that Maximum Class Probability (MCP) is not a great metric for failure prediction. It assigns high confidence values to both correct and erroneous predictions because modern models tend to be overconfident, resulting in overlapping distributions between successes and errors. This issue persists even when using temperature scaling calibration.
 
 Alternatively, when the model makes a misclassification, the probability associated with the true class $y$ tends to be lower than the maximum probability, often falling to a low value. This observation leads us to consider the True Class Probability (TCP) as a suitable measure of uncertainty. However, the true class labels $y$ are not available when estimating confidence for test inputs. This motivates the development of ConfidNet, whose primary objective is to directly regress the TCP value from the input image, allowing us to obtain a reliable measure of uncertainty without access to ground truth labels.
 
-In this practical, we implemented ConfidNet to address failure predictions and compared it to two other methods that rely solely on the model's output probabilities. The first method is MCP, and the second is the entropy of the output probabilities. For these two methods, we used the previously trained MC Dropout model to compute the output probabilities. ConfidNet was trained for 30 epochs with the previous MC Dropout model as a teacher with frozen parameters and Mean Squared Error as the loss function.
+In this practical section, we implemented ConfidNet to address failure predictions and compared it to two other methods that rely solely on the model's output probabilities. The first method is MCP, and the second is the entropy of the output probabilities. For these two methods, we used the previously trained MC Dropout model to compute the output probabilities. ConfidNet was trained for 30 epochs with the previous MC Dropout model as a teacher with frozen parameters and Mean Squared Error as the loss function.
 
 \paragraph*{2.1. Compare the precision-recall curves of each method along with their AUPR values. Why did we use AUPR metric instead of standard AUROC?}
 To assess and compare these methods, we require a suitable metric. Our objective is to identify classification errors, which we consider as the positive detection class, while correct predictions serve as the negative detection class. Since our models excel at making accurate predictions, we anticipate a low occurrence of classification errors, resulting in an imbalanced setting with a significant number of true negatives.
 
 We have opted to employ the AUPR (Area Under the Precision-Recall Curve) instead of the AUROC (Area Under the Receiver Operating Characteristic Curve) due to the latter's unsuitability for imbalanced datasets. AUROC treats both classes equally and can yield misleading results, particularly under the influence of a large number of true negatives. This may overstate the model's performance, particularly in distinguishing the minority class, which in this context comprises classification errors. Conversely, AUPR is a more suitable choice, as it prioritizes precision and recall for the minority class. Precision measures the fraction of actual positives among the positive predictions, while recall measures the proportion of correctly identified actual positives. Consequently, AUPR proves to be a more reliable metric in our situation, where the positive class (classification errors) is significantly smaller than the negative class (correct predictions).
 
-\Cref{fig:failure_aupr} illustrates the precision-recall curves for each method, accompanied by their respective AUPR values. The results demonstrate that ConfidNet surpasses the other two methods. This superiority can be attributed to ConfidNet's training, which directly estimates the TCP value—a more dependable uncertainty measure compared to MCP and entropy, as elaborated upon in the preceding section. Notably, ConfidNet exhibits a slower decline in precision as recall increases, indicating a more balanced performance in terms of identifying true positives without a substantial rise in false positives.
+\Cref{fig:failure_aupr} illustrates the precision-recall curves for each method, accompanied by their respective AUPR values. The results demonstrate that ConfidNet surpasses the other two methods. This superiority can be attributed to ConfidNet's training, which directly estimates the TCP value—a more dependable uncertainty measure compared to MCP and entropy, as elaborated upon in the section introduction. Notably, ConfidNet exhibits a slower decline in precision as recall increases, indicating a more balanced performance in terms of identifying true positives without a substantial rise in false positives.
 
 For a better understanding of the lecture's confidence metrics, we aimed to compare the performance of predictive entropy and mutual information in the context of failure detection. The results are presented in \Cref{fig:failure_aupr_entropy_vs_mut_inf}. It seems that entropy outperforms mutual information as a metric for failure detection. This distinction arises from the fact that predictive entropy measures aleatoric uncertainty, while mutual information assesses epistemic uncertainty. In the specific experiment of failure detection on MNIST, it proves more advantageous to rely on and measure aleatoric uncertainty, which originates from the natural variability or randomness of the numbers in the images. This explanation underscores why entropy is a superior metric to mutual information in this particular context.
-
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.45\textwidth]{failure_aupr.pdf}
-    \caption{}
-    \label{fig:failure_aupr}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    % \includegraphics[width=0.45\textwidth]{failure_aupr_entropy_vs_mut_inf.pdf}
-    \caption{}
-    \label{fig:failure_aupr_entropy_vs_mut_inf}
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=\textwidth]{failure_aupr.pdf}
+        \caption{}
+        \label{fig:failure_aupr}
+    \end{subfigure}%
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=\textwidth]{failure_aupr_entropy_vs_mut_inf.pdf}
+        \caption{}
+        \label{fig:failure_aupr_entropy_vs_mut_inf}
+    \end{subfigure}%
 \end{figure}
 
 \section{Out-of-distribution detection}
-In today's landscape, models are trained on millions of images, such as ImageNet, which can lead to a decrease in epistemic uncertainty. However, critical real-world applications like autonomous driving and medical imaging require the ability to detect out-of-distribution (OOD) inputs due to the stochastic nature of real-life data. In this section, we will find out what's the best methods for OOD detection. We will use the Kuzushiji-MNIST (KMNIST) dataset as out-of-distribution data for our MC dropout MNIST predictor. This dataset consists of 70,000 28x28 grayscale number images. We will evaluate the performance using precision, recall, and AUPR as metrics to compare different methods.
+In today's machine learning landscape, models are often trained on vast datasets, such as ImageNet, which can reduce epistemic uncertainty. However, in critical real-world applications like autonomous driving, the need to identify out-of-distribution (OOD) inputs remains essential due to the infinite variability of real-life data. OOD detection plays a crucial role because machine learning models typically assume that the data they encounter during real-world predictions will resemble the data they were trained on. When a model confronts data that significantly deviates from its training data, it can result in unpredictable and unreliable predictions. OOD detection aims to identify such situations, allowing for cautious handling or even disregarding of the model's predictions on such atypical data. It's important to note that while OOD data can lead to model failure, not all model failures are solely attributed to OOD data. Model failures can occur for various reasons, including overfitting, underfitting, or architectural issues, even when the data falls within the expected distribution. Therefore, while OOD detection is a critical component of ensuring a model's robustness, it represents just one facet of the broader spectrum of failure detection within machine learning systems.
+
+In this section, we will find out what's the best methods for OOD detection. We will use the Kuzushiji-MNIST (KMNIST) dataset as out-of-distribution data for our MC dropout MNIST predictor. This dataset consists of 70,000 28x28 grayscale number images. We will evaluate the performance using precision, recall, and AUPR as metrics to compare different methods.
 
 Specifically, in this section, we have implemented the ODIN method \citep{ODIN}, which enhances maximum softmax probabilities with temperature scaling and inverse adversarial perturbation. These techniques are employed to increase the distinction between in-distribution and out-of-distribution data.\\
 Temperature scaling involves applying a simple scaling of the logit by a temperature parameter $ \nicefrac{1}{T} $ before the softmax: $ S_i(\boldsymbol{x}, T) = \frac{\exp (f_i(\boldsymbol{x}) / T)}{\sum_{j=1}^{N} \exp (f_j(\boldsymbol{x} / T))} $, where $ S_i $ represents the output probabilities, $ \boldsymbol{x} $ is the input image, $ T $ is the temperature parameter, and $ f_i $ is the logit of the $ i $-th class.\\
-Inverse adversarial perturbation is used to preprocess the input $ \boldsymbol{x} $ before feeding it to the neural network. This preprocessing involves adding a small perturbation $ \epsilon $ to the input image $ \boldsymbol{x} $ such that $ \boldsymbol{x}^\prime = \boldsymbol{x} - \epsilon \cdot \text{sign}(-\nabla_{\boldsymbol{x}} \mathcal{L}(\boldsymbol{x}, y)) $, where $ \mathcal{L} $ is the cross-entropy loss function, $ y $ is the ground truth label, $ \epsilon $ is the perturbation magnitude, and $ \boldsymbol{x}^\prime $ is the perturbed image. The perturbation magnitude $ \epsilon $ is chosen to ensure the perturbed image remains correctly classified by the neural network.
+Inverse adversarial perturbation is used to preprocess the input $ \boldsymbol{x} $ before feeding it to the neural network. This preprocessing involves adding a small perturbation to the input image $ \boldsymbol{x} $ such that $ \boldsymbol{x}^\prime = \boldsymbol{x} - \epsilon \cdot \text{sign}(-\nabla_{\boldsymbol{x}} \mathcal{L}(\boldsymbol{x}, y)) $, where $ \mathcal{L} $ is the cross-entropy loss function, $ y $ is the ground truth label, $ \epsilon $ is the perturbation magnitude, and $ \boldsymbol{x}^\prime $ is the perturbed image. The perturbation magnitude $ \epsilon $ is chosen to ensure the perturbed image remains correctly classified by the neural network.
 
 \paragraph*{3.1. Compare the precision-recall curves of each OOD method along with their AUPR values. Which method perform best and why?}
 \Cref{fig:OOD_aupr} displays the precision-recall curves for six uncertainty metrics (MCP, ODIN, CondifNet TCP, MC Dropout (MCD) mutual information, and MCD predictive entropy), along with their corresponding AUPR values. Given the smoothness of these curves, our analysis will primarily focus on the AUPR values.
 
-ODIN, with its two modifications to output probabilities, performs slightly better than MCP, which aligns with expectations since ODIN builds upon MCP. However, ODIN is surprisingly surpassed by the other two methods. This outcome was not anticipated for mutual information and predictive entropy since they, like ODIN, depend on the raw output probabilities. These methods appear to benefit from the stochastic nature of MC Dropout. In fact, both methods achieved impressive AUPR scores of $98\%$, ranking as the most effective metrics for OOD detection. Despite leveraging TCP, ConfidNet trails slightly with $96\%$ AUPR. Mutual information and predictive entropy, despite their simplicity, emerge as leading metrics for OOD detection in our experiments, but at the expense of a more complex (Bayesian) network. For instance, computing the entropy score takes 18 seconds, whereas ODIN requires only 4.1 seconds.
+ODIN, with its two modifications to output probabilities, performs slightly better than MCP, which aligns with expectations since ODIN builds upon MCP. However, ODIN is surprisingly surpassed by the other two MCD methods. This outcome was not anticipated for mutual information and predictive entropy since they, like ODIN, depend on the raw output probabilities. These methods appear to benefit from the stochastic nature of MC Dropout. In fact, both methods achieved impressive AUPR scores of $98\%$, ranking as the most effective metrics for OOD detection. In our previous experiment, although ConfidNet emerged as the top method for detecting failures, it showed a marginal lag, achieving an AUPR of $96\%$. This can be readily understood when considering that there is no TCP available for out-of-distribution data. Consequently, ConfidNet lacks specific data to predict or train on in these scenarios. Mutual information and predictive entropy, despite their simplicity, emerge as leading metrics for OOD detection in our experiments, but at the expense of a more complex (Bayesian) network. For instance, computing the entropy score takes 18 seconds, whereas ODIN requires only 4.1 seconds.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.45\textwidth]{OOD_aupr.pdf}
@@ -98,20 +114,22 @@ ODIN, with its two modifications to output probabilities, performs slightly bett
     \label{fig:OOD_aupr}
 \end{figure}
 
-To further investigate ODIN's techniques, we attempted to combine them with MC Dropout (averaging over 100 stochastic forward passes), predictive entropy, and mutual information. The outcomes are presented in \Cref{fig:OOD_aupr_combo}. This combination actually resulted in a slight performance decline for Entropy and Mutual Information, with a decrease of $0.3\%$ in their scores. Integrating MCD with ODIN appears to have no significant impact. 
+To further investigate ODIN's techniques, we attempted to combine them with MC Dropout (averaging over 100 stochastic forward passes), predictive entropy, and mutual information. The outcomes are presented in \Cref{fig:OOD_aupr_combo}. This combination actually resulted in a slight performance decline for Entropy and Mutual Information, with a decrease of approximatly $0.3\%$ in their scores. Integrating MCD with ODIN appears to have no significant impact.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.45\textwidth]{OOD_aupr_combo.pdf}
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=\textwidth]{OOD_aupr_combo.pdf}
+        \caption{}
+        \label{fig:OOD_aupr_combo}
+    \end{subfigure}%
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=\textwidth]{odin_grid_search.pdf}
+        \caption{}
+        \label{fig:odin_grid_search}
+    \end{subfigure}%
     \caption{}
-    \label{fig:OOD_aupr_combo}
 \end{figure}
 
 Considering ODIN's persistent underperformance, we hypothesized it might be due to suboptimal hyperparameters. The code we used suggested values for $ \epsilon $ of $0.006$ and $0.0006$, but also recommended trying $ \epsilon = 0.0014 $ at the same time. Moreover, the original paper sometimes employed high temperature values, up to $10000$. This led us to conduct a grid search, the results of which, showing AUPR values in relation to $ \epsilon $ and temperature, are depicted in \Cref{fig:odin_grid_search}.
 
-The overall influence of these parameters is noticeable, with a maximum variation of $1\%$ between the highest and lowest scores. Setting the temperature to $ 10 $ yielded the best result, achieving a $98.42\%$ AUPR, surpassing MCD with entropy which scored $98.25\%$. Setting the temperature to $ 1 $ essentially disables temperature scaling, allowing us to isolate the effect of perturbation, and vice versa for $ \epsilon = 0 $. Hence, the first cell serves as a baseline for comparison with other cells. The first line indicates that temperature scaling alone can enhance AUPR by $1.1\%$, a modest but significant improvement given the close scores. However, examining the first column reveals no discernible impact of perturbation at any $ \epsilon $ value, suggesting that combining both parameters achieves similar results to using temperature scaling alone. As the provided code uses a smaller epsilon for OOD data, we also replicated the grid search with this adjustment, which led to analogous findings.
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.45\textwidth]{odin_grid_search.pdf}
-    \caption{}
-    \label{fig:odin_grid_search}
-\end{figure}
+The overall influence of these parameters can be noticeable, with a maximum variation of $1\%$ between the highest and lowest scores. Setting the temperature to $ 10 $ yielded the best result, achieving a $98.42\%$ AUPR, surpassing MCD with entropy which scored $98.25\%$. Setting the temperature to $ 1 $ essentially disables temperature scaling, allowing us to isolate the effect of perturbation, and vice versa for $ \epsilon = 0 $. Hence, the first cell serves as a baseline for comparison with other cells. The first line indicates that temperature scaling alone can enhance AUPR by $1\%$, a modest but significant improvement given the close scores. However, examining the first column reveals no discernible impact ($<0.08\%$) of perturbation at any $ \epsilon $ value, suggesting that combining both parameters achieves similar results to using temperature scaling alone. As the provided code uses a smaller epsilon for OOD data, we also replicated the grid search with this adjustment, which led to analogous findings.
