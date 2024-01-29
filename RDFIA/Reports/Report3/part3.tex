@@ -10,7 +10,6 @@ In this section, we focus on training a model using Monte Carlo Dropout (MC Drop
 .\]
 This formula provides a quantitative measure of uncertainty for an image.
 
-
 \paragraph*{1.1. What can you say about the images themselfs? How do the histograms along them helps to explain failure cases? Finally, how do probabilities distribution of random images compare to the previous top uncertain images?}
 In this experiment, we utilized a LeNet-5 style model with Monte-Carlo dropout for variational inference, training it on the MNIST dataset for 20 epochs using standard cross-entropy. We then applied the model to calculate variation ratios for each test image, enabling us to sort images based on their uncertainty. These images are displayed in \Cref{fig:varratio_certain,fig:varratio_certain}, accompanied by five types of measurements derived from the model's probability outputs. To summarize how the output probabilities fluctuate across $ T=100 $ stochastic forward passes, we used histograms depicting three different distributions:
 \begin{enumerate}
@@ -26,7 +25,7 @@ Conversely, \Cref{fig:varratio_uncertain} shows images classified as uncertain b
 
 We explored two possible explanations for this:
 \begin{itemize}
-    \item A small mean doesn't necessarily imply the class neuron never reaches high values. Indeed, the last column shows that "small mean" classes can occasionally reach values around $0.8$, increasing their likelihood of being predicted.
+    \item The mean don't tell the full story. A small mean for a class doesn't necessarily imply the class neuron never reaches high values. Indeed, the last column shows that "small mean" classes (eg. class 8) can occasionally reach values around $0.8$, increasing their likelihood of being predicted. This can also easily be observed on \Cref{fig:proba_barplot}, where a lot of high value outliers are present. 
     \item The class neuron may sometimes record low values, but it is still the highest compared to other class neurons.
 \end{itemize}
 To verify these hypotheses, we plotted the Maximum Class Probability (MCP) in \Cref{fig:MCP}. MCP, which is the probability used for making the prediction, is defined as $ MCP(\boldsymbol{x}) = \max _{k \in \mathcal{Y}} p(Y=k | \boldsymbol{w}, \boldsymbol{x}) $ and serves as a basic confidence baseline. \Cref{fig:MCP:barplot} reveals that most predictions for the image were based on high probability, even though it's often misclassified and considered one of the most uncertain images in the dataset. This highlights the model's overconfidence. However, sometimes a decision is made at a lower probability, such as below $ 0.4 $. The subsequent plot in \Cref{fig:MCP:kdeplot} helps identify which class the model tends to predict when the MCP is either low or high. For instance, class 8 is consistently predicted with a high MCP, whereas class 7 is always associated with a low MCP.
@@ -43,7 +42,14 @@ To verify these hypotheses, we plotted the Maximum Class Probability (MCP) in \C
     \caption{\textbf{Uncertain Images with Output Probability Distributions.} Ambiguous images that the model classified with uncertainty. Distributions are spread out, suggesting fluctuating confidence across different classes. The similarity between histograms of the predicted class and mean probabilities indicates that the model sometimes chooses a class with a relatively low average probability.}
     \label{fig:varratio_uncertain}
 \end{figure}
-\begin{figure}[hp]
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.45\textwidth]{proba_barplot.png}
+    \caption{\textbf{Box plot visualization of the probability distribution of each class for $ T=100 $ draw.}}
+    \label{fig:proba_barplot}
+\end{figure}
+
+\begin{figure}[H]
     \centering
     \begin{subfigure}{0.45\textwidth}
         \includegraphics[width=\textwidth]{MCP_barplot.pdf}

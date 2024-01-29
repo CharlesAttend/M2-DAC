@@ -6,7 +6,7 @@ This chapter extends the exploration of Bayesian Deep Learning. Building upon th
 
 \section{Bayesian Logistic Regression}
 
-In this section, our initial focus is on Bayesian Logistic Regression. We begin by highlighting he difference between the continuous predictions found in linear regression models and the discrete class label predictions characteristic of classification models. Specifically, we introduce binary classification through logistic regression and explore several methods for approximating the posterior distribution, as the posterior distribution is no longer tractable due to the absence of conjugacy between the likelihood and the prior. 
+In this section, our initial focus is on Bayesian Logistic Regression. We begin by highlighting the difference between the continuous predictions found in linear regression models and the discrete class label predictions characteristic of classification models. Specifically, we introduce binary classification through logistic regression and explore several methods for approximating the posterior distribution, as it is no longer tractable due to the absence of conjugacy between the likelihood and the prior. 
 
 \subsection{Maximum-A-Posteriori Estimate}
 \paragraph{1.1. Analyze the results provided by \Cref{fig:logreg_map}. Looking at $p(y=1 | x, \mathbf{w}_{\textrm{MAP}})$, what can you say about points far from train distribution?}
@@ -16,7 +16,7 @@ Approximating $p(\mathbf{w} | \mathbf{X}, \mathbf{Y})$ with a Dirac delta functi
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.45\textwidth]{logreg_map.pdf}
-    \caption{Illustration of a Bayesian Logistic Regression model applied to a binary classification task with uncertainty display, with a weight decay of $5 \times 10^{-2}$. Two distinct data point clusters — blue and red — represent separate classes, while the surrounding shaded areas reflect the model's predictive uncertainty, with lighter shades indicating lower confidence.}
+    \caption{\textbf{Illustration of a Bayesian Logistic Regression model applied to a binary classification task with uncertainty display, with a weight decay of $5 \times 10^{-2}$.} Two distinct data point clusters — blue and red — represent separate classes, while the surrounding shaded areas reflect the model's predictive uncertainty, with lighter shades indicating lower confidence.}
     \label{fig:logreg_map}
 \end{figure}
 
