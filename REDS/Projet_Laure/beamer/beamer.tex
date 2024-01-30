@@ -1,0 +1,198 @@
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND THEMES
+%----------------------------------------------------------------------------------------
+\documentclass[aspectratio=169,xcolor=dvipsnames]{beamer}
+\usetheme{SimplePlus}
+
+\usepackage{hyperref}
+\usepackage{graphicx} % Allows including images
+\usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
+\graphicspath{{figs/}}
+\usepackage{tikz}
+\newcommand{\xmark}{%
+\tikz[scale=0.15] {
+      \draw[line width=0.7,line cap=round] (0,0) to [bend left=6] (1,1);
+      \draw[line width=0.7,line cap=round] (0.2,0.95) to [bend right=3] (0.8,0.05);
+}}
+\newcommand{\cmark}{%
+\tikz[scale=0.15] {
+      \draw[line width=0.7,line cap=round] (0.25,0) to [bend left=10] (1,1);
+      \draw[line width=0.8,line cap=round] (0,0.35) to [bend right=1] (0.23,0);
+}}
+
+
+
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\title[NAS]{Neural Architecture Search} % The short title appears at the bottom of every slide, the full title is only on the title page
+\subtitle{REDS}
+
+\author[Charles, Mathis] {Charkes VIN, Mathis KOROGLU}
+
+\institute[SU] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
+{
+    Sorbonne Université % Your institution for the title page
+}
+\date{\today} % Date, can be changed to a custom date
+
+
+%----------------------------------------------------------------------------------------
+%	PRESENTATION SLIDES
+%----------------------------------------------------------------------------------------
+
+\begin{document}
+
+\begin{frame}
+    % Print the title page as the first slide
+    \titlepage
+\end{frame}
+
+\begin{frame}{Overview}
+    % Throughout your presentation, if you choose to use \section{} and \subsection{} commands, these will automatically be printed on this slide as an overview of your presentation
+    \tableofcontents
+\end{frame}
+
+%------------------------------------------------
+\section{Neural architecture search}
+%------------------------------------------------
+
+\begin{frame}{}
+    \begin{figure}[htbp]
+        \centering
+        \includegraphics[width=\linewidth]{overview_NAS.pdf}
+        \caption{Overview of NAS.
+
+            A search strategy iteratively selects architectures (typically by using an architecture encoding method) from a predened search space $ \mathcal{A} $ .
+
+            The architectures are passed to a performance estimation strategy, which returns the performance estimate to the search strategy.
+
+            For one-shot methods, the search strategy and performance estimation strategy are inherently coupled.}
+        % citer le papier 1000
+    \end{figure}
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Search space}.
+    \begin{block}{Definition}
+        The set of all archtectures that the NAS algorithm is allowed to select.
+    \end{block}
+    \begin{itemize}
+        \item Size: from a few thousand to over $ 10^20 $.
+        \item Reduction: adding domain knowledge.
+        \item [$\rightarrow$] Introduce humain bias $\rightarrow \xmark $ reduce the chance of finding truly nover architecture.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Search strategy}
+    \begin{block}{Definition}
+        The optimization technique used to find a high-performing architecture in the search space.
+    \end{block}
+    \begin{itemize}
+        \item Black-box optimization techniques : RL, Bayesian optimization, evolutionary search.
+        \item One-shot techniques: supernet-hypernet based methods.
+    \end{itemize}
+    % Naturellement, certaine technique ne rentre dans aucunes des cases 
+\end{frame}
+
+\begin{frame}{Performance estimation strategy}
+    \begin{block}{Definition}
+        Any method used to quickly predict the performance of neural architectures in order to avoid fully training the architecture.
+    \end{block}
+    \begin{itemize}
+        \item Full training \& evaluation.
+        \item Performance estimation strategy.
+    \end{itemize}
+    \begin{figure}[htbp]
+        \centering
+        \includegraphics[width=.7\linewidth]{perf_estim_strat.pdf}
+        % citer le papier 1000
+    \end{figure}
+    % parler du meta learning (dernier paragraphe page 26), j'pense c'est proche de difusionNAG 
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Multiple Columns}
+    \begin{columns}[c] % The "c" option specifies centered vertical alignment while the "t" option is used for top vertical alignment
+
+        \column{.45\textwidth} % Left column and width
+        \textbf{Heading}
+        \begin{enumerate}
+            \item Statement
+            \item Explanation
+            \item Example
+        \end{enumerate}
+
+        \column{.5\textwidth} % Right column and width
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer lectus nisl, ultricies in feugiat rutrum, porttitor sit amet augue. Aliquam ut tortor mauris. Sed volutpat ante purus, quis accumsan dolor.
+
+    \end{columns}
+\end{frame}
+
+%------------------------------------------------
+\section{Our contribution}
+%------------------------------------------------
+
+\begin{frame}{}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{References}
+    % Beamer does not support BibTeX so references must be inserted manually as below
+    \footnotesize{
+        \begin{thebibliography}{99}
+            \bibitem[Smith, 2012]{p1} John Smith (2012)
+            \newblock Title of the publication
+            \newblock \emph{Journal Name} 12(3), 45 -- 678.
+        \end{thebibliography}
+    }
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+    \Huge{\centerline{\textbf{Thank you}}}
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+
+\end{document}
+
+% \begin{frame}[fragile] % Need to use the fragile option when verbatim is used in the slide
+%     \frametitle{frame documnetation}
+%     An example of the \verb|\cite| command to cite within the presentation:\\~
+
+%     This statement requires citation \cite{p1}.
+
+%     In this slide, some important text will be \alert{highlighted} because it's important. Please, don't abuse it.
+
+%     \begin{block}{Block}
+%         Sample text
+%     \end{block}
+
+%     \begin{alertblock}{Alertblock}
+%         Sample text in red box
+%     \end{alertblock}
+
+%     \begin{examples}
+%         Sample text in green box. The title of the block is ``Examples".
+%     \end{examples}
+% \end{frame}

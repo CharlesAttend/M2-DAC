@@ -47,6 +47,7 @@ _minted-report
 ## Beamer
 *.nav
 *.snm
+*.vrb
 
 # JupyterNotebooks
 .ipynb_checkpoints  
