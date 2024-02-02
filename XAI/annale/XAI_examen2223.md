@@ -77,4 +77,4 @@ L'approche est dans les grande lignes proche de LIME,
 * La consommation se trouvera entre $1050$ et $1200$ kilo de CO2 par personne
 
 ### Question 4
-Comming soon
+En utilisant uniquement de la logique classique, il faut fallut modéliser par une fonction mathématique le lien entre le nombre personnes et la quantité de jus de tomate. En logique flou exprimant cela avec de la logique flou, le résultat est serte moins précis mais suffisant pour être interprétable. Dans notre exemple, le vol aura besoin "d'un peu plus de 8 litre de soupe". La logique flou apporte des explications plus proche de la manière dont on (l'humain) raisonne, mais au coût d'une perte de précision.
