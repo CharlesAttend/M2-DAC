@@ -51,11 +51,11 @@ L'approche est dans les grande lignes proche de LIME,
 
 ### Question 3
 * Branche associé à la classe $g(x_1)$ : Bleu -> 3+ -> non diesel -> 1
-* Exemple contrefactuel non associé à la classe oposé dans l'arbre (-1) : 
+* Exemple contrefactuel non associé à la classe opposé dans l'arbre (-1) : 
     * Rouge
     * Vert, age $\leq 8$
     * Bleu, 3+, Diesel
-* Explication : il faut trouver la règle $r_{best}$ qui minimise le nombre de test invalisé par $x_0$ == le contre exemple le plus proche de $x_0$
+* Explication : il faut trouver la règle $r_{best}$ qui minimise le nombre de test invalidé par $x_0$ == le contre exemple le plus proche de $x_0$
     * Bleu, 3+, Diesel
 
 ## Exercice 4
@@ -73,8 +73,17 @@ L'approche est dans les grande lignes proche de LIME,
 * => $v_1, v_2$
 
 ### Question 3
+* $c$ = carbone, $p$ = personne
 * $e(130) = 1200, e(160) = 1050, e(170) = 1200$
-* La consommation se trouvera entre $1050$ et $1200$ kilo de CO2 par personne
+* $e^{-1} = \sqrt{2(c-1000)} + 150$ donc par instinct, j'vais prendre $c=1000$, idk si y'au un truc plus efficace pour trouver directement le bon point
+* Formule diapo 28 cours 4, pour 3 points : 1000, 1050, 1200
+* $f_b(1200) = sup_{p \in {130, 170}} f_A(p) = 0$
+* $f_b(1050) = sup_{p \in {140, 160}} f_A(p) = f_A(160) = 1$
+* $f_b(1000) = sup_{p = 150} f_A(p) = f_A(150) = 2/3$ (faut trouver l'équation affine et tout)
+* Maintenant on a une partie de notre triangle, on peut trouver les équations des droites affines, trouver $c=900$ comme le dernier point racine
+* La consommation se trouvera entre $900$ et $1200$ kilo de CO2 par personne avec un pic de certitude à $1050$.
+![](https://media.discordapp.net/attachments/622453387954487346/1203308148799311892/image.png)
+* Si quelqu'un a une méthode plus efficace j'suis chaud
 
 ### Question 4
 En utilisant uniquement de la logique classique, il faut fallut modéliser par une fonction mathématique le lien entre le nombre personnes et la quantité de jus de tomate. En logique flou exprimant cela avec de la logique flou, le résultat est serte moins précis mais suffisant pour être interprétable. Dans notre exemple, le vol aura besoin "d'un peu plus de 8 litre de soupe". La logique flou apporte des explications plus proche de la manière dont on (l'humain) raisonne, mais au coût d'une perte de précision.
