@@ -30,7 +30,7 @@
 \title[NAS]{Neural Architecture Search} % The short title appears at the bottom of every slide, the full title is only on the title page
 \subtitle{REDS}
 
-\author[Charles, Mathis] {Charkes VIN, Mathis KOROGLU}
+\author[Charles, Mathis] {Charles VIN, Mathis KOROGLU}
 
 \institute[SU] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
 {
@@ -75,18 +75,29 @@
 \end{frame}
 
 %------------------------------------------------
-
-\begin{frame}{Search space}.
-    \begin{block}{Definition}
-        The set of all archtectures that the NAS algorithm is allowed to select.
-    \end{block}
-    \begin{itemize}
-        \item Size: from a few thousand to over $ 10^20 $.
-        \item Reduction: adding domain knowledge.
-        \item [$\rightarrow$] Introduce humain bias $\rightarrow \xmark $ reduce the chance of finding truly nover architecture.
-    \end{itemize}
+\subsection{Search space}
+\begin{frame}{Search space}
+    \begin{columns}[c] % The "c" option specifies centered vertical alignment while the "t" option is used for top vertical alignment
+        \column{.6\textwidth}
+        \begin{block}{Definition}
+            The set of all architectures that the NAS algorithm is allowed to select.
+        \end{block}
+        \begin{itemize}
+            \item Size: from a few thousand to over $ 10^{20} $.
+            \item Reduction: adding domain knowledge.
+            \item [$\rightarrow$] Introduce humain bias $\rightarrow \xmark $ reduce the chance of finding truly nover architecture.
+        \end{itemize}
+        % Plein de type de search space, voir papier, nous on veut surtout des DAG pour présenter diffusionNAG
+        \column{.4\textwidth}
+        \begin{figure}[H]
+            \centering
+            \includegraphics[width=\textwidth]{architecture.jpg} % Mettre la figure 3 page 8 à la place
+            \caption{Architecture directed acyclic graph (DAG) with operation on nodes}
+        \end{figure}
+    \end{columns}
 \end{frame}
 
+\subsection{Search strategy}
 \begin{frame}{Search strategy}
     \begin{block}{Definition}
         The optimization technique used to find a high-performing architecture in the search space.
@@ -98,6 +109,7 @@
     % Naturellement, certaine technique ne rentre dans aucunes des cases 
 \end{frame}
 
+\subsection{Performance estimation strategy}
 \begin{frame}{Performance estimation strategy}
     \begin{block}{Definition}
         Any method used to quickly predict the performance of neural architectures in order to avoid fully training the architecture.
@@ -115,6 +127,131 @@
 \end{frame}
 
 %------------------------------------------------
+\subsection{Evaluation}
+\begin{frame}{Benchmarks}
+    %For example, it became standard to train the final architecture for 600 epochs, even though the test accuracy only increases 
+    % by a fraction of a percent past 200 epochs. Recently, queryable NAS benchmarks have
+    % helped the field reduce computation when developing NAS techniques and to achieve fair,
+    % statistically significant comparisons between methods.
+    \begin{block}{Definition}
+        A NAS benchmark is defined as a dataset with a fixed train-test split, a search space, and a fixed evaluation pipeline for training the architectures.
+    \end{block}
+    \begin{itemize}
+        \item Tabular benchmarks: precomputed evaluations for all possible architecture in the search space.
+        \item [$\rightarrow$] Allow to \textbf{simulate} hundreds of trials !\begin{itemize}
+            \item No more training.
+            \item Statistically significant comparisons (simulation with multiple seeds).
+        \end{itemize}
+        \item Specialization: precomputed evaluation for NLP tasks, protein folding, astronomy imaging, for vision dataset (CIFAR-10(0), ImageNet, ...)
+        \item Most popular NAS benchmarks \begin{itemize}
+            \item NAS-Bench-101/202
+            \item Surr-NAS-Bench-DARTS
+            \item TransNAS-Bench-101
+            \item NAS-Bench-Suite
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+%------------------------------------------------
+\begin{frame}
+    \frametitle{Evalutation}
+    \begin{figure}[htbp]
+        \centering
+        \includegraphics[height=.7\textheight]{table_diffusionNAG.pdf}
+        \caption{Result table example}
+    \end{figure}
+\end{frame}
+%------------------------------------------------
+\begin{frame}
+    \frametitle{Evalutation}
+    \begin{figure}[htbp]
+        \centering
+        \includegraphics[height=.7\textheight]{table_random.pdf}
+        \caption{Result table example}
+    \end{figure}
+\end{frame}
+
+%------------------------------------------------
+\section{Contribution}
+%------------------------------------------------
+
+\begin{frame}
+    \frametitle{Contribution}
+    \framesubtitle{diffusionNAG}
+    \begin{itemize}
+        \item Problem: Classical NAS need to train thousand of architecture.
+        \item [$\rightarrow$] Switch from searching architecture to directly generate architecture using a graph diffusion model.
+        \item [$\rightarrow$] diffusionNAG
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Contribution}
+    \framesubtitle{diffusionNAG}
+    \begin{figure}[htbp]
+        \centering
+        % \includegraphics[height=\textheight]{diffusionNAG_part1.pdf}
+    \end{figure}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Contribution}
+    \framesubtitle{diffusionNAG}
+    \begin{figure}[htbp]
+        \centering
+        % \includegraphics[height=\textheight]{diffusionNAG_part2.pdf}
+    \end{figure}
+\end{frame}
+\begin{frame}
+    \frametitle{Contribution}
+    \framesubtitle{diffusionNAG}
+    Limits
+    \begin{itemize}
+        \item Need to retrain $ f_\Phi $ for every metrics
+        \begin{itemize}
+            \item Accuracy
+            \item Inference time
+            \item Memory usage
+            \item Adversarial attack resistance
+            \item ...
+        \end{itemize}
+        \item Only one metric is optimized: no compromise possible
+        \item Linear combination of metrics: not ideal to find a good compromise
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Our contrib title}
+    \begin{itemize}
+        \item Train a multi-objective predictor using the same task aware dataset, but enhanced with metrics of interest
+        \item Guide the diffusion with the multi-objective predictor:
+            \begin{itemize}
+                \item Generate a bigger super-network with disableable blocks
+                \item ie: equal to an encoding of points near the pareto front (best possible compromise between metrics)
+                % TODO: add an example of pareto front and points on it
+            \end{itemize}
+       \item Constraints encoding within the same score network
+       \begin{itemize}
+        \item Layer compatibility in a disableable block
+        \item Compatibility between blocks inputs and outputs
+       \end{itemize}
+    \end{itemize}
+    How to use it :
+    \begin{itemize}
+        \item Train the obtained super-network after diffusion inference
+        \item disable the blocks depending on the metrics of interest
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Advantages and limits of this approach}
+    \begin{itemize}
+        \item Flexibility for the user : fix the metrics threshold only after performing the NAS
+        \item Dynamic architecture depending on external parameters
+        % energy consumption for a robot in a difficult situation is no longer pertinent
+        \item But predictor needs to be retrained if a new metric is added, and diffusion inference more costly
+        \item No guarantees if the pareto optimality is well covered by the disableable blocks
+    \end{itemize}
+\end{frame}
 
 \begin{frame}{Multiple Columns}
     \begin{columns}[c] % The "c" option specifies centered vertical alignment while the "t" option is used for top vertical alignment
@@ -131,26 +268,6 @@
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer lectus nisl, ultricies in feugiat rutrum, porttitor sit amet augue. Aliquam ut tortor mauris. Sed volutpat ante purus, quis accumsan dolor.
 
     \end{columns}
-\end{frame}
-
-%------------------------------------------------
-\section{Our contribution}
-%------------------------------------------------
-
-\begin{frame}{}
-
-\end{frame}
-
-%------------------------------------------------
-
-\begin{frame}{}
-
-\end{frame}
-
-%------------------------------------------------
-
-\begin{frame}{}
-
 \end{frame}
 
 %------------------------------------------------
