@@ -219,28 +219,42 @@
     \end{itemize}
 \end{frame}
 
+\begin{frame}{Our contrib title}
+    \begin{columns}[c]
+        \column{.6\textwidth} % Left column and width
+        \textbf{Heading}
+        \begin{itemize}
+            \item Train a multi-objective predictor using the same task aware dataset, but enhanced with metrics of interest
+            \item Guide the diffusion with the multi-objective predictor:
+                \begin{itemize}
+                    \item Generate a bigger super-network with disableable blocks
+                    \item ie: equal to an encoding of points near the pareto front (best possible compromise between metrics)
+                \end{itemize}
+            \item Constraints encoding within the same score network
+                \begin{itemize}
+                    \item Layer compatibility in a block
+                    \item Compatibility between blocks inputs and outputs
+                \end{itemize}
+        \end{itemize}
+
+        \column{.4\textwidth} % Right column and width
+        \begin{figure}[htbp]
+            \centering
+            \includegraphics[width=.7\textwidth]{base_diagram.drawio.png}
+            \caption{Example of disableable architecture}
+        \end{figure}
+    \end{columns}
+\end{frame}
+
 \begin{frame}
-    \frametitle{Our contrib title}
-    \begin{itemize}
-        \item Train a multi-objective predictor using the same task aware dataset, but enhanced with metrics of interest
-        \item Guide the diffusion with the multi-objective predictor:
-            \begin{itemize}
-                \item Generate a bigger super-network with disableable blocks
-                \item ie: equal to an encoding of points near the pareto front (best possible compromise between metrics)
-                % TODO: add an example of pareto front and points on it
-            \end{itemize}
-       \item Constraints encoding within the same score network
-       \begin{itemize}
-        \item Layer compatibility in a disableable block
-        \item Compatibility between blocks inputs and outputs
-       \end{itemize}
-    \end{itemize}
-    How to use it :
     \begin{itemize}
         \item Train the obtained super-network after diffusion inference
-        \item disable the blocks depending on the metrics of interest
+        \item Disable the blocks depending on the metrics of interest
     \end{itemize}
+    % TODO: add archi with transparent / blurred blocks and pareto frontiers
 \end{frame}
+
+% TODO : add image of our diffusion with pareto frontier
 
 \begin{frame}
     \frametitle{Advantages and limits of this approach}
@@ -248,27 +262,47 @@
         \item Flexibility for the user : fix the metrics threshold only after performing the NAS
         \item Dynamic architecture depending on external parameters
         % energy consumption for a robot in a difficult situation is no longer pertinent
-        \item But predictor needs to be retrained if a new metric is added, and diffusion inference more costly
-        \item No guarantees if the pareto optimality is well covered by the disableable blocks
+        \item But :
+        \begin{itemize}
+            \item Predictor needs to be retrained if a new metric is added
+            \item Diffusion inference more costly
+            \item No guarantees if the pareto optimality is well covered by the disableable blocks
+        \end{itemize}
     \end{itemize}
 \end{frame}
 
-\begin{frame}{Multiple Columns}
-    \begin{columns}[c] % The "c" option specifies centered vertical alignment while the "t" option is used for top vertical alignment
+\begin{frame}{Multi-achitecture search}
+        
+    \frametitle{Evaluation and results}
+    % \begin{columns}[c] 
+        % \column{.45\textwidth} % Left column and width
+        \textbf{Two evaluations}
+        \begin{itemize}
+            \item Achitecture search 
+            \item generated architecture performances
+        \end{itemize}
+        
+        \begin{itemize}
+            \item generation cheaper than previous full space search
+            \item multi-objective benchmarks for the obtained architectures
+        \end{itemize}
 
-        \column{.45\textwidth} % Left column and width
-        \textbf{Heading}
-        \begin{enumerate}
-            \item Statement
-            \item Explanation
-            \item Example
-        \end{enumerate}
+        % \column{.5\textwidth} % Right column and width
 
-        \column{.5\textwidth} % Right column and width
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer lectus nisl, ultricies in feugiat rutrum, porttitor sit amet augue. Aliquam ut tortor mauris. Sed volutpat ante purus, quis accumsan dolor.
+        \begin{tabular}{ |p{3cm}||p{3cm}|p{3cm}|p{3cm}|  }
+            \hline
+            \multicolumn{4}{|c|}{Results for a classifier model on CIFAr-10} \\
+            \hline
+            Model& Ours & DiffusionNAG & (egrg) best RL methods\\
+            \hline
+            architecture search time (min) & 23.6 & 544 & > 2000 \\
+            Inference costs of the generated architecture (MFLOPs) & 250 & 434 & 670\\
+            \hline
+        \end{tabular}
 
-    \end{columns}
+    % \end{columns}
 \end{frame}
+
 
 %------------------------------------------------
 
