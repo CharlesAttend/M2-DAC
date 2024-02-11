@@ -11,13 +11,13 @@
 \usepackage{tikz}
 \newcommand{\xmark}{%
 \tikz[scale=0.15] {
-      \draw[line width=0.7,line cap=round] (0,0) to [bend left=6] (1,1);
-      \draw[line width=0.7,line cap=round] (0.2,0.95) to [bend right=3] (0.8,0.05);
+    \draw[line width=0.7,line cap=round] (0,0) to [bend left=6] (1,1);
+    \draw[line width=0.7,line cap=round] (0.2,0.95) to [bend right=3] (0.8,0.05);
 }}
 \newcommand{\cmark}{%
 \tikz[scale=0.15] {
-      \draw[line width=0.7,line cap=round] (0.25,0) to [bend left=10] (1,1);
-      \draw[line width=0.8,line cap=round] (0,0.35) to [bend right=1] (0.23,0);
+    \draw[line width=0.7,line cap=round] (0.25,0) to [bend left=10] (1,1);
+    \draw[line width=0.8,line cap=round] (0,0.35) to [bend right=1] (0.23,0);
 }}
 
 
@@ -139,16 +139,16 @@
     \begin{itemize}
         \item Tabular benchmarks: precomputed evaluations for all possible architecture in the search space.
         \item [$\rightarrow$] Allow to \textbf{simulate} hundreds of trials !\begin{itemize}
-            \item No more training.
-            \item Statistically significant comparisons (simulation with multiple seeds).
-        \end{itemize}
+                  \item No more training.
+                  \item Statistically significant comparisons (simulation with multiple seeds).
+              \end{itemize}
         \item Specialization: precomputed evaluation for NLP tasks, protein folding, astronomy imaging, for vision dataset (CIFAR-10(0), ImageNet, ...)
         \item Most popular NAS benchmarks \begin{itemize}
-            \item NAS-Bench-101/202
-            \item Surr-NAS-Bench-DARTS
-            \item TransNAS-Bench-101
-            \item NAS-Bench-Suite
-        \end{itemize}
+                  \item NAS-Bench-101/202
+                  \item Surr-NAS-Bench-DARTS
+                  \item TransNAS-Bench-101
+                  \item NAS-Bench-Suite
+              \end{itemize}
     \end{itemize}
 \end{frame}
 %------------------------------------------------
@@ -189,7 +189,7 @@
     \framesubtitle{diffusionNAG}
     \begin{figure}[htbp]
         \centering
-        % \includegraphics[height=\textheight]{diffusionNAG_part1.pdf}
+        \includegraphics[height=.80\textheight]{diffusionNAG_part1.pdf}
     \end{figure}
 \end{frame}
 
@@ -198,7 +198,7 @@
     \framesubtitle{diffusionNAG}
     \begin{figure}[htbp]
         \centering
-        % \includegraphics[height=\textheight]{diffusionNAG_part2.pdf}
+        \includegraphics[height=.80\textheight]{diffusionNAG_part2.pdf}
     \end{figure}
 \end{frame}
 \begin{frame}
@@ -207,13 +207,13 @@
     Limits
     \begin{itemize}
         \item Need to retrain $ f_\Phi $ for every metrics
-        \begin{itemize}
-            \item Accuracy
-            \item Inference time
-            \item Memory usage
-            \item Adversarial attack resistance
-            \item ...
-        \end{itemize}
+            \begin{itemize}
+                \item Accuracy
+                \item Inference time
+                \item Memory usage
+                \item Adversarial attack resistance
+                \item ...
+            \end{itemize}
         \item Only one metric is optimized: no compromise possible
         \item Linear combination of metrics: not ideal to find a good compromise
     \end{itemize}
@@ -222,7 +222,6 @@
 \begin{frame}{Our contrib title}
     \begin{columns}[c]
         \column{.6\textwidth} % Left column and width
-        \textbf{Heading}
         \begin{itemize}
             \item Train a multi-objective predictor using the same task aware dataset, but enhanced with metrics of interest
             \item Guide the diffusion with the multi-objective predictor:
@@ -240,7 +239,7 @@
         \column{.4\textwidth} % Right column and width
         \begin{figure}[htbp]
             \centering
-            \includegraphics[width=.7\textwidth]{base_diagram.drawio.png}
+            \includegraphics[width=.7\textwidth]{diagram.drawio.png}
             \caption{Example of disableable architecture}
         \end{figure}
     \end{columns}
@@ -252,6 +251,56 @@
         \item Disable the blocks depending on the metrics of interest
     \end{itemize}
     % TODO: add archi with transparent / blurred blocks and pareto frontiers
+    \begin{columns}[c]
+        \column{.45\textwidth} % Left column and width
+        \begin{figure}[htbp]
+            \centering
+            \includegraphics[width=.8\textwidth]{diagram.drawio.png}
+        \end{figure}
+        \column{.45\textwidth} % Right column and width
+        \begin{figure}[htbp]
+            \centering
+            \includegraphics[width=.8\textwidth]{pareto_front.pdf}
+        \end{figure}
+    \end{columns}
+\end{frame}
+\begin{frame}
+    \begin{itemize}
+        \item Train the obtained super-network after diffusion inference
+        \item Disable the blocks depending on the metrics of interest
+    \end{itemize}
+    % TODO: add archi with transparent / blurred blocks and pareto frontiers
+    \begin{columns}[c]
+        \column{.45\textwidth} % Left column and width
+        \begin{figure}[htbp]
+            \centering
+            \includegraphics[width=.8\textwidth]{diagram_disabled1.drawio.png}
+        \end{figure}
+        \column{.45\textwidth} % Right column and width
+        \begin{figure}[htbp]
+            \centering
+            \includegraphics[width=.8\textwidth]{pareto_front_disabled1.pdf}
+        \end{figure}
+    \end{columns}
+\end{frame}
+\begin{frame}
+    \begin{itemize}
+        \item Train the obtained super-network after diffusion inference
+        \item Disable the blocks depending on the metrics of interest
+    \end{itemize}
+    % TODO: add archi with transparent / blurred blocks and pareto frontiers
+    \begin{columns}[c]
+        \column{.45\textwidth} % Left column and width
+        \begin{figure}[htbp]
+            \centering
+            \includegraphics[width=.8\textwidth]{diagram_disabled2.drawio.png}
+        \end{figure}
+        \column{.45\textwidth} % Right column and width
+        \begin{figure}[htbp]
+            \centering
+            \includegraphics[width=.8\textwidth]{pareto_front_disabled2.pdf}
+        \end{figure}
+    \end{columns}
 \end{frame}
 
 % TODO : add image of our diffusion with pareto frontier
@@ -261,44 +310,44 @@
     \begin{itemize}
         \item Flexibility for the user : fix the metrics threshold only after performing the NAS
         \item Dynamic architecture depending on external parameters
-        % energy consumption for a robot in a difficult situation is no longer pertinent
-        \item But :
-        \begin{itemize}
-            \item Predictor needs to be retrained if a new metric is added
-            \item Diffusion inference more costly
-            \item No guarantees if the pareto optimality is well covered by the disableable blocks
-        \end{itemize}
+            % energy consumption for a robot in a difficult situation is no longer pertinent
+    \item But :
+            \begin{itemize}
+                \item Predictor needs to be retrained if a new metric is added
+                \item Diffusion inference more costly
+                \item No guarantees if the pareto optimality is well covered by the disableable blocks
+            \end{itemize}
     \end{itemize}
 \end{frame}
 
 \begin{frame}{Multi-achitecture search}
-        
+
     \frametitle{Evaluation and results}
     % \begin{columns}[c] 
-        % \column{.45\textwidth} % Left column and width
-        \textbf{Two evaluations}
-        \begin{itemize}
-            \item Achitecture search 
-            \item generated architecture performances
-        \end{itemize}
-        
-        \begin{itemize}
-            \item generation cheaper than previous full space search
-            \item multi-objective benchmarks for the obtained architectures
-        \end{itemize}
+    % \column{.45\textwidth} % Left column and width
+    \textbf{Two evaluations}
+    \begin{itemize}
+        \item Achitecture search
+        \item generated architecture performances
+    \end{itemize}
 
-        % \column{.5\textwidth} % Right column and width
+    \begin{itemize}
+        \item generation cheaper than previous full space search
+        \item multi-objective benchmarks for the obtained architectures
+    \end{itemize}
 
-        \begin{tabular}{ |p{3cm}||p{3cm}|p{3cm}|p{3cm}|  }
-            \hline
-            \multicolumn{4}{|c|}{Results for a classifier model on CIFAr-10} \\
-            \hline
-            Model& Ours & DiffusionNAG & (egrg) best RL methods\\
-            \hline
-            architecture search time (min) & 23.6 & 544 & > 2000 \\
-            Inference costs of the generated architecture (MFLOPs) & 250 & 434 & 670\\
-            \hline
-        \end{tabular}
+    % \column{.5\textwidth} % Right column and width
+
+    \begin{tabular}{ |p{3cm}||p{3cm}|p{3cm}|p{3cm}|  }
+        \hline
+        \multicolumn{4}{|c|}{Results for a classifier model on CIFAr-10}                                      \\
+        \hline
+        Model                                                  & Ours & DiffusionNAG & (egrg) best RL methods \\
+        \hline
+        architecture search time (min)                         & 23.6 & 544          & > 2000                 \\
+        Inference costs of the generated architecture (MFLOPs) & 250  & 434          & 670                    \\
+        \hline
+    \end{tabular}
 
     % \end{columns}
 \end{frame}

@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="250" height="250" viewBox="0 0 250 250">
+  <defs>
+    <clipPath id="clip-SPRK_default_preset_name_custom_1">
+      <rect width="250" height="250"/>
+    </clipPath>
+  </defs>
+  <g id="SPRK_default_preset_name_custom_1" data-name="SPRK_default_preset_name_custom – 1" clip-path="url(#clip-SPRK_default_preset_name_custom_1)">
+    <rect width="250" height="250" fill="#fff"/>
+    <g id="Group_2" data-name="Group 2" transform="translate(9)">
+      <line id="Line_2" data-name="Line 2" x2="215.5" transform="translate(17.5 228.5)" fill="none" stroke="#707070" stroke-linecap="square" stroke-width="1"/>
+      <g id="Polygon_1" data-name="Polygon 1" transform="translate(241 221) rotate(90)" fill="#fff">
+        <path d="M 14.09787559509277 11.5 L 0.9021254777908325 11.5 L 7.500000476837158 0.9434000253677368 L 14.09787559509277 11.5 Z" stroke="none"/>
+        <path d="M 7.500000476837158 1.886799812316895 L 1.804250717163086 11 L 13.19575023651123 11 L 7.500000476837158 1.886799812316895 M 7.500000476837158 0 L 15 12 L 9.5367431640625e-07 12 L 7.500000476837158 0 Z" stroke="none" fill="#707070"/>
+      </g>
+    </g>
+    <g id="Group_1" data-name="Group 1" transform="translate(9 5.417)">
+      <line id="Line_1" data-name="Line 1" y2="209.583" transform="translate(17.5 13.5)" fill="none" stroke="#707070" stroke-width="1"/>
+      <g id="Polygon_2" data-name="Polygon 2" transform="translate(10 1.5)" fill="#fff">
+        <path d="M 14.09787559509277 11.5 L 0.9021254777908325 11.5 L 7.500000476837158 0.9434000253677368 L 14.09787559509277 11.5 Z" stroke="none"/>
+        <path d="M 7.500000476837158 1.886799812316895 L 1.804250717163086 11 L 13.19575023651123 11 L 7.500000476837158 1.886799812316895 M 7.500000476837158 0 L 15 12 L 9.5367431640625e-07 12 L 7.500000476837158 0 Z" stroke="none" fill="#707070"/>
+      </g>
+    </g>
+    <text id="ACC" transform="translate(0 24)" fill="#707070" font-size="12" font-family="SegoeUI, Segoe UI"><tspan x="0" y="13">ACC</tspan></text>
+    <text id="Inference_time" data-name="Inference time" transform="translate(159 242)" fill="#707070" font-size="12" font-family="SegoeUI, Segoe UI"><tspan x="0" y="0">Inference time</tspan></text>
+    <path id="Path_1" data-name="Path 1" d="M26.5,161.266S38.587,44.776,233.345,23.3" fill="none" stroke="#707070" stroke-width="1"/>
+    <g id="Rectangle_1" data-name="Rectangle 1" transform="translate(54 97)" fill="#fff" stroke="#707070" stroke-width="1">
+      <rect width="8" height="8" stroke="none"/>
+      <rect x="0.5" y="0.5" width="7" height="7" fill="none"/>
+    </g>
+    <g id="Rectangle_2" data-name="Rectangle 2" transform="translate(99 60)" fill="red" stroke="#707070" stroke-width="1">
+      <rect width="7" height="7" stroke="none"/>
+      <rect x="0.5" y="0.5" width="6" height="6" fill="none"/>
+    </g>
+    <g id="Rectangle_3" data-name="Rectangle 3" transform="translate(154 36)" fill="#fff" stroke="#707070" stroke-width="1">
+      <rect width="7" height="7" stroke="none"/>
+      <rect x="0.5" y="0.5" width="6" height="6" fill="none"/>
+    </g>
+  </g>
+</svg>
