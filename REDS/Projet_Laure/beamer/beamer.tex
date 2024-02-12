@@ -64,10 +64,10 @@
 \section{Neural architecture search}
 %------------------------------------------------
 
-\begin{frame}{}
+\begin{frame}{Overview of NAS}
     \begin{figure}[htbp]
         \centering
-        \includegraphics[width=\linewidth]{overview_NAS.pdf}
+        \includegraphics[width=.95\linewidth]{overview_NAS.pdf}
         \caption{Overview of NAS.
 
             A search strategy iteratively selects architectures (typically by using an architecture encoding method) from a predened search space $ \mathcal{A} $ .
@@ -75,7 +75,6 @@
             The architectures are passed to a performance estimation strategy, which returns the performance estimate to the search strategy.
 
             For one-shot methods, the search strategy and performance estimation strategy are inherently coupled.}
-        % citer le papier 1000
     \end{figure}
 \end{frame}
 
@@ -101,6 +100,24 @@
         \end{figure}
     \end{columns}
 \end{frame}
+\begin{frame}{Type of Search Space}
+    \small
+    \begin{table}[ht]
+        \centering
+        \begin{tabular}{@{}lll@{}}
+            \toprule
+            Search Spaces                 & Structure        & Searchable hyperparameters             \\ \midrule
+            Macro search space            & DAG              & Operation types, DAG topology          \\
+                                          &                  & macro hyperparameters                  \\ \hline
+            Chain-structured search space & Chain            & Operation types, macro hyperparameters \\ \hline
+            Cell-based search space       & Duplicated cells & Operation type, cell topology          \\ \hline
+            Hierarchical search space     & Varied           & Operation type, cell/DAG topology      \\
+                                          &                  & macro hyperparameters                  \\ \hline
+        \end{tabular}
+        \caption{Type of Search Space}
+        \label{tab:my_label}
+    \end{table}
+\end{frame}
 
 \subsection{Search strategy}
 \begin{frame}{Search strategy}
@@ -111,7 +128,19 @@
         \item Black-box optimization techniques : RL, Bayesian optimization, evolutionary search.
         \item One-shot techniques: supernet-hypernet based methods.
     \end{itemize}
-    % Naturellement, certaine technique ne rentre dans aucunes des cases 
+\end{frame}
+
+\begin{frame}{Taxonomy and One shot methods}
+    \begin{figure}[htbp]
+        \centering
+        \includegraphics[height=.3\textheight]{taxonomy.pdf}
+        \caption{Taxonomy of one shot methods.}
+    \end{figure}
+    \begin{figure}[htbp]
+        \centering
+        \includegraphics[height=.3\textheight]{supernetwork.pdf}
+        \caption{Supernetwork}
+    \end{figure}
 \end{frame}
 
 \subsection{Performance estimation strategy}
@@ -126,18 +155,12 @@
     \begin{figure}[htbp]
         \centering
         \includegraphics[width=.7\linewidth]{perf_estim_strat.pdf}
-        % citer le papier 1000
     \end{figure}
-    % parler du meta learning (dernier paragraphe page 26), j'pense c'est proche de difusionNAG 
 \end{frame}
 
 %------------------------------------------------
 \subsection{Evaluation}
-\begin{frame}{Benchmarks}
-    %For example, it became standard to train the final architecture for 600 epochs, even though the test accuracy only increases 
-    % by a fraction of a percent past 200 epochs. Recently, queryable NAS benchmarks have
-    % helped the field reduce computation when developing NAS techniques and to achieve fair,
-    % statistically significant comparisons between methods.
+\begin{frame}{Evaluation: Benchmarks}
     \begin{block}{Definition}
         A NAS benchmark is defined as a dataset with a fixed train-test split, a search space, and a fixed evaluation pipeline for training the architectures.
     \end{block}
