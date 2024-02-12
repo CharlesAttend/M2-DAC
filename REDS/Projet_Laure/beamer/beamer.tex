@@ -25,6 +25,9 @@
     \draw[line width=0.8,line cap=round] (0,0.35) to [bend right=1] (0.23,0);
 }}
 
+\usepackage[backend=biber,style=authortitle-comp]{biblatex}
+\bibliography{../biblio}
+
 
 
 
@@ -212,6 +215,7 @@
     \end{itemize}
 \end{frame}
 
+\subsection{DiffusionNAG}
 \begin{frame}
     \frametitle{Contribution: diffusionNAG}
     \begin{figure}[htbp]
@@ -227,6 +231,7 @@
         \includegraphics[height=.80\textheight]{diffusionNAG_part2.pdf}
     \end{figure}
 \end{frame}
+
 \begin{frame}
     \frametitle{Contribution: diffusionNAG}
     Limits
@@ -244,6 +249,7 @@
     \end{itemize}
 \end{frame}
 
+\subsection{Our work: MOD-NAG}
 \begin{frame}{Contribution: MOD-NAG}
     \begin{columns}[c]
         \column{.6\textwidth} % Left column and width
@@ -422,25 +428,20 @@
             ProxylessNAS {[}29{]}           & 2.08                    & 5.7                  & 4                               & Gradient               \\
             P-DARTS (C-10) {[}18{]}         & 2.5                     & 16.55                & 0.3                             & Gradient               \\
             P-DARTS (C-100) {[}18{]}        & 2.62                    & 15.92                & 0.3                             & Gradient               \\
-            DiffusionNAG (C-10)             & 2.47 $\pm$ 0.03         & 2.04                 & 1.3*                            & RL                     \\
-            DiffusionNAG (C-100)            & 2.58 $\pm$ 0.05         & 3.43                 & 1.3*                            & RL                     \\
-            MOD-NAG (C-10)                  & 2.47 $\pm$ 0.03         & 2.04                 & 1.3*                            & RL                     \\
-            MOD-NAG (C-100)                 & 2.58 $\pm$ 0.05         & 3.43                 & 1.3*                            & RL                     \\
+            DiffusionNAG (C-10)             & 2.47 $\pm$ 0.03         & 2.04                 & 1.3*                            & Diffusion                     \\
+            DiffusionNAG (C-100)            & 2.58 $\pm$ 0.05         & 3.43                 & 1.3*                            & Diffusion                     \\
+            MOD-NAG (C-10)                  & 2.47 $\pm$ 0.03         & 2.04                 & 1.3*                            & Diffusion                     \\
+            MOD-NAG (C-100)                 & 2.58 $\pm$ 0.05         & 3.43                 & 1.3*                            & Diffusion                     \\
         \end{tabular}
     \end{table}
-
+    \nocite{2023arXiv230516943A}
+    \nocite{DBLP:journals/corr/abs-1807-11626}
+    \nocite{DBLP:journals/corr/abs-1812-00332}
 \end{frame}
 %------------------------------------------------
 
 \begin{frame}{References}
-    % Beamer does not support BibTeX so references must be inserted manually as below
-    \footnotesize{
-        \begin{thebibliography}{99}
-            \bibitem[Smith, 2012]{p1} John Smith (2012)
-            \newblock Title of the publication
-            \newblock \emph{Journal Name} 12(3), 45 -- 678.
-        \end{thebibliography}
-    }
+    \printbibliography[heading=none]
 \end{frame}
 
 %------------------------------------------------
