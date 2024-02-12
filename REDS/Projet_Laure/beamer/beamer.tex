@@ -3,7 +3,12 @@
 %----------------------------------------------------------------------------------------
 \documentclass[aspectratio=169,xcolor=dvipsnames]{beamer}
 \usetheme{SimplePlus}
-
+\usepackage{booktabs} % For better looking tables
+\usepackage{siunitx} % Required for alignment
+\sisetup{
+    round-mode          = places, % Rounds numbers
+    round-precision     = 2, % to 2 places
+}
 \usepackage{hyperref}
 \usepackage{graphicx} % Allows including images
 \usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
@@ -175,7 +180,7 @@
 %------------------------------------------------
 
 \begin{frame}
-    \frametitle{Contribution}
+    \frametitle{Contribution: base}
     \framesubtitle{diffusionNAG}
     \begin{itemize}
         \item Problem: Classical NAS need to train thousand of architecture.
@@ -185,8 +190,7 @@
 \end{frame}
 
 \begin{frame}
-    \frametitle{Contribution}
-    \framesubtitle{diffusionNAG}
+    \frametitle{Contribution: diffusionNAG}
     \begin{figure}[htbp]
         \centering
         \includegraphics[height=.80\textheight]{diffusionNAG_part1.pdf}
@@ -194,46 +198,45 @@
 \end{frame}
 
 \begin{frame}
-    \frametitle{Contribution}
-    \framesubtitle{diffusionNAG}
+    \frametitle{Contribution: diffusionNAG}
     \begin{figure}[htbp]
         \centering
         \includegraphics[height=.80\textheight]{diffusionNAG_part2.pdf}
     \end{figure}
 \end{frame}
 \begin{frame}
-    \frametitle{Contribution}
-    \framesubtitle{diffusionNAG}
+    \frametitle{Contribution: diffusionNAG}
     Limits
     \begin{itemize}
         \item Need to retrain $ f_\Phi $ for every metrics
-            \begin{itemize}
-                \item Accuracy
-                \item Inference time
-                \item Memory usage
-                \item Adversarial attack resistance
-                \item ...
-            \end{itemize}
+              \begin{itemize}
+                  \item Accuracy
+                  \item Inference time
+                  \item Memory usage
+                  \item Adversarial attack resistance
+                  \item ...
+              \end{itemize}
         \item Only one metric is optimized: no compromise possible
         \item Linear combination of metrics: not ideal to find a good compromise
     \end{itemize}
 \end{frame}
 
-\begin{frame}{Our contrib title}
+\begin{frame}{Contribution: MOD-NAG}
     \begin{columns}[c]
         \column{.6\textwidth} % Left column and width
+        Multi-Objective Diffusion Neural Architecture Search
         \begin{itemize}
             \item Train a multi-objective predictor using the same task aware dataset, but enhanced with metrics of interest
             \item Guide the diffusion with the multi-objective predictor:
-                \begin{itemize}
-                    \item Generate a bigger super-network with disableable blocks
-                    \item ie: equal to an encoding of points near the pareto front (best possible compromise between metrics)
-                \end{itemize}
+                  \begin{itemize}
+                      \item Generate a bigger super-network with disableable blocks
+                      \item ie: equal to an encoding of points near the pareto front (best possible compromise between metrics)
+                  \end{itemize}
             \item Constraints encoding within the same score network
-                \begin{itemize}
-                    \item Layer compatibility in a block
-                    \item Compatibility between blocks inputs and outputs
-                \end{itemize}
+                  \begin{itemize}
+                      \item Layer compatibility in a block
+                      \item Compatibility between blocks inputs and outputs
+                  \end{itemize}
         \end{itemize}
 
         \column{.4\textwidth} % Right column and width
@@ -245,7 +248,7 @@
     \end{columns}
 \end{frame}
 
-\begin{frame}
+\begin{frame}{Contribution: MOD-NAG}
     \begin{itemize}
         \item Train the obtained super-network after diffusion inference
         \item Disable the blocks depending on the metrics of interest
@@ -255,16 +258,16 @@
         \column{.45\textwidth} % Left column and width
         \begin{figure}[htbp]
             \centering
-            \includegraphics[width=.8\textwidth]{diagram.drawio.png}
+            \includegraphics[width=.6\textwidth]{diagram.drawio.png}
         \end{figure}
         \column{.45\textwidth} % Right column and width
         \begin{figure}[htbp]
             \centering
-            \includegraphics[width=.8\textwidth]{pareto_front.pdf}
+            \includegraphics[width=.6\textwidth]{pareto_front.pdf}
         \end{figure}
     \end{columns}
 \end{frame}
-\begin{frame}
+\begin{frame}{Contribution}
     \begin{itemize}
         \item Train the obtained super-network after diffusion inference
         \item Disable the blocks depending on the metrics of interest
@@ -274,16 +277,16 @@
         \column{.45\textwidth} % Left column and width
         \begin{figure}[htbp]
             \centering
-            \includegraphics[width=.8\textwidth]{diagram_disabled1.drawio.png}
+            \includegraphics[width=.6\textwidth]{diagram_disabled1.drawio.png}
         \end{figure}
         \column{.45\textwidth} % Right column and width
         \begin{figure}[htbp]
             \centering
-            \includegraphics[width=.8\textwidth]{pareto_front_disabled1.pdf}
+            \includegraphics[width=.6\textwidth]{pareto_front_disabled1.pdf}
         \end{figure}
     \end{columns}
 \end{frame}
-\begin{frame}
+\begin{frame}{Contribution}
     \begin{itemize}
         \item Train the obtained super-network after diffusion inference
         \item Disable the blocks depending on the metrics of interest
@@ -293,12 +296,12 @@
         \column{.45\textwidth} % Left column and width
         \begin{figure}[htbp]
             \centering
-            \includegraphics[width=.8\textwidth]{diagram_disabled2.drawio.png}
+            \includegraphics[width=.6\textwidth]{diagram_disabled2.drawio.png}
         \end{figure}
         \column{.45\textwidth} % Right column and width
         \begin{figure}[htbp]
             \centering
-            \includegraphics[width=.8\textwidth]{pareto_front_disabled2.pdf}
+            \includegraphics[width=.6\textwidth]{pareto_front_disabled2.pdf}
         \end{figure}
     \end{columns}
 \end{frame}
@@ -310,49 +313,100 @@
     \begin{itemize}
         \item Flexibility for the user : fix the metrics threshold only after performing the NAS
         \item Dynamic architecture depending on external parameters
-            % energy consumption for a robot in a difficult situation is no longer pertinent
-    \item But :
-            \begin{itemize}
-                \item Predictor needs to be retrained if a new metric is added
-                \item Diffusion inference more costly
-                \item No guarantees if the pareto optimality is well covered by the disableable blocks
-            \end{itemize}
+              % energy consumption for a robot in a difficult situation is no longer pertinent
+        \item But :
+              \begin{itemize}
+                  \item Predictor needs to be retrained if a new metric is added
+                  \item Diffusion inference more costly
+                  \item No guarantees if the pareto optimality is well covered by the disableable blocks
+              \end{itemize}
     \end{itemize}
 \end{frame}
 
-\begin{frame}{Multi-achitecture search}
-
-    \frametitle{Evaluation and results}
-    % \begin{columns}[c] 
-    % \column{.45\textwidth} % Left column and width
+\begin{frame}{Evaluation and results}
     \textbf{Two evaluations}
     \begin{itemize}
-        \item Achitecture search
-        \item generated architecture performances
+        \item Architecture search
+        \item Generated architecture performances
     \end{itemize}
 
     \begin{itemize}
-        \item generation cheaper than previous full space search
-        \item multi-objective benchmarks for the obtained architectures
+        \item Generation cheaper than previous full space search
+        \item Multi-objective benchmarks for the obtained architectures
     \end{itemize}
-
-    % \column{.5\textwidth} % Right column and width
-
-    \begin{tabular}{ |p{3cm}||p{3cm}|p{3cm}|p{3cm}|  }
-        \hline
-        \multicolumn{4}{|c|}{Results for a classifier model on CIFAr-10}                                      \\
-        \hline
-        Model                                                  & Ours & DiffusionNAG & (egrg) best RL methods \\
-        \hline
-        architecture search time (min)                         & 23.6 & 544          & > 2000                 \\
-        Inference costs of the generated architecture (MFLOPs) & 250  & 434          & 670                    \\
-        \hline
-    \end{tabular}
-
-    % \end{columns}
 \end{frame}
 
+\begin{frame}
 
+    \begin{table}[h!]
+        \centering
+        \caption{Comparison with Transferable NAS on NB201 Search Space. We present the accuracy achieved on four unseen datasets. Additionally, we provide the number of neural architectures (Trained Archs) that are actually trained to achieve accuracy. The accuracies are reported with 95\% confidence intervals over 3 runs.}
+        \label{tab:table1}
+        \begin{tabular}{lS[table-format=2.2]cS[table-format=2.2]cS[table-format=2.2]c}
+            \toprule
+            \textbf{Type}      & {\textbf{Method}} & {\textbf{CIFAR-10}}      & {\textbf{Trained Archs}} & {\textbf{CIFAR-100}}     & {\textbf{Aircraft}}      & {\textbf{Oxford-IIIT Pets}} \\
+            \textbf{}          & {}                & {\textbf{Accuracy (\%)}} & {}                       & {\textbf{Accuracy (\%)}} & {\textbf{Accuracy (\%)}} & {\textbf{Accuracy (\%)}}    \\
+            \midrule
+            {Baseline NAS}     & {ResNet}          & 93.97                    & N/A                      & 70.86                    & 47.01                    & 25.58                       \\
+                               & {RS}              & 93.70                    & >500                     & 71.04                    & {N/A}                    & 25.38                       \\
+                               & {REA}             & 93.70                    & >500                     & 71.04                    & {N/A}                    & 25.38                       \\
+            % ... More rows here
+            \midrule
+            {One-shot NAS}     & {RSPS}            & 84.07                    & N/A                      & 73.51                    & 46.08                    & 25.31                       \\
+                               & {SETN}            & 87.64                    & N/A                      & 73.51                    & 46.08                    & 25.31                       \\
+                               & {SETN}            & 87.64                    & N/A                      & 73.51                    & 46.08                    & 25.31                       \\
+            % ... More rows here
+            \midrule
+            {BO-based NAS}     & {BOHB}            & 93.61                    & >500                     & 73.85                    & 41.72                    & 40.60                       \\
+                               & {BOHB}            & 93.61                    & >500                     & 73.85                    & 41.72                    & 40.60                       \\
+                               & {BOHB}            & 93.61                    & >500                     & 73.85                    & 41.72                    & 40.60                       \\
+            % ... More rows here
+            \midrule
+            {Transferable NAS} & {TNAS}            & 94.37                    & 29                       & 73.51                    & 59.15                    & 40.00                       \\
+                               & {MetaD2A}         & 94.37                    & 100                      & 73.51                    & 57.71                    & 39.00                       \\
+                               & {DiffusionNAG}    & 94.37                    & 5                        & 73.51                    & 59.63                    & 41.32                       \\
+                               & {MOD-NAG (Ours)}  & 94.37                    & 5                        & 73.51                    & 59.63                    & 41.32                       \\
+            \bottomrule
+        \end{tabular}
+    \end{table}
+\end{frame}
+
+\begin{frame}{Results}
+    % \begin{tabular}{ |p{3cm}||p{3cm}|p{3cm}|p{3cm}|  }
+    %     \hline
+    %     \multicolumn{4}{|c|}{Results for a classifier model on CIFAR-10}                                      \\
+    %     \hline
+    %     Model                                                  & Ours & DiffusionNAG & (egrg) best RL methods \\
+    %     \hline
+    %     Architecture search time (min)                         & 23.6 & 544          & > 2000                 \\
+    %     Inference costs of the generated architecture (MFLOPs) & 250  & 434          & 670                    \\
+    %     \hline
+    % \end{tabular}
+    \scriptsize
+    \begin{table}[h]
+        \centering
+        \caption{Comparison of the evaluation results on CIFAR-10 and CIFAR-100.}
+        \label{my-label}
+        \begin{tabular}{lcccc}
+            \hline
+            \textbf{Architecture}           & \textbf{Test Err. (\%)} & \textbf{Params (.M)} & \textbf{Search Cost (GPU-days)} & \textbf{Search Method} \\ \hline
+            NASNet-A {[}8{]}                & 2.65                    & 3.3                  & 1800                            & RL                     \\
+            AmoebaNet-A {[}20{]}            & 3.34                    & -                    & 3150                            & Evolution              \\
+            PNAS {[}40{]}                   & 3.41                    & 3.2                  & 225                             & SMBO                   \\
+            RelativeNAS {[}41{]}            & 2.34                    & 15.86                & 0.4                             & Evolution              \\
+            DARTS (first order) {[}10{]}    & 3                       & 3.3                  & 1.5                             & Gradient               \\
+            SNAS + mild constraint {[}42{]} & 2.98                    & 2.9                  & 1.5                             & Gradient               \\
+            ProxylessNAS {[}29{]}           & 2.08                    & 5.7                  & 4                               & Gradient               \\
+            P-DARTS (C-10) {[}18{]}         & 2.5                     & 16.55                & 0.3                             & Gradient               \\
+            P-DARTS (C-100) {[}18{]}        & 2.62                    & 15.92                & 0.3                             & Gradient               \\
+            DiffusionNAG (C-10)             & 2.47 $\pm$ 0.03         & 2.04                 & 1.3*                            & RL                     \\
+            DiffusionNAG (C-100)            & 2.58 $\pm$ 0.05         & 3.43                 & 1.3*                            & RL                     \\
+            MOD-NAG (C-10)                  & 2.47 $\pm$ 0.03         & 2.04                 & 1.3*                            & RL                     \\
+            MOD-NAG (C-100)                 & 2.58 $\pm$ 0.05         & 3.43                 & 1.3*                            & RL                     \\
+        \end{tabular}
+    \end{table}
+
+\end{frame}
 %------------------------------------------------
 
 \begin{frame}{References}
