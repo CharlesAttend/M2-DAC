@@ -10,6 +10,7 @@
 
 ## Search space
 * Très grand : 10^20
+    * Car combinaison de nombre de couche, opération possible, hyparamètre
 * on peut restriction avec connaissance préalable
 * Contrepartie :  réduit les chance de trouver une architecture vraiment innovante
 * Classiquement un graph d'opération
@@ -18,7 +19,7 @@
 * Plusieurs type de search space
 * Graph
 * Cells based : Assemblage de bloc = resnet/vgg
-* Naturellement, certaine technique ne rentre dans aucunes des cases 
+* Naturellement, cedxrtaine technique ne rentre dans aucunes des cases 
 
 ## Search strategy
 * Stratégie de recherche 
