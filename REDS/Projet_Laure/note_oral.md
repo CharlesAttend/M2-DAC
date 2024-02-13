@@ -65,5 +65,3 @@
 ## Evaluation tableau 2 
 * Autre tableau 
 * Cette fois on voit aussi le nombre de paramètre et le coût GPU 
-
-# Contribution
