@@ -13,12 +13,12 @@
 * on peut restriction avec connaissance préalable
 * Contrepartie :  réduit les chance de trouver une architecture vraiment innovante
 * Classiquement un graph d'opération
-* Naturellement, certaine technique ne rentre dans aucunes des cases 
 
 ## Type de Search Space
 * Plusieurs type de search space
 * Graph
 * Cells based : Assemblage de bloc = resnet/vgg
+* Naturellement, certaine technique ne rentre dans aucunes des cases 
 
 ## Search strategy
 * Stratégie de recherche 
