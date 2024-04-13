@@ -60,6 +60,8 @@
 * Accuracy de la meilleurs architecture trouvé
 * Par exemple ici c'est sur 3 run de recherche d'architecture
 * On remarque le nombre d'architecture entraîné plus où moins grand
+* Notre contribution se base sur le dernier algo de ce tableau
+    * on voit qu'il est efficace train peut d'architecture
 
 ## Evaluation tableau 2 
 * Autre tableau 
