@@ -10,15 +10,16 @@
 
 ## Search space
 * Très grand : 10^20
+    * Car combinaison de nombre de couche, opération possible, hyparamètre
 * on peut restriction avec connaissance préalable
 * Contrepartie :  réduit les chance de trouver une architecture vraiment innovante
 * Classiquement un graph d'opération
-* Naturellement, certaine technique ne rentre dans aucunes des cases 
 
 ## Type de Search Space
 * Plusieurs type de search space
 * Graph
 * Cells based : Assemblage de bloc = resnet/vgg
+* Naturellement, cedxrtaine technique ne rentre dans aucunes des cases 
 
 ## Search strategy
 * Stratégie de recherche 
@@ -66,5 +67,3 @@
 ## Evaluation tableau 2 
 * Autre tableau 
 * Cette fois on voit aussi le nombre de paramètre et le coût GPU 
-
-# Contribution

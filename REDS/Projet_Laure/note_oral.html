@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>Neural architecture search</title>
+            <style>
+/* From extension vscode.github */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.vscode-dark img[src$=\#gh-light-mode-only],
+.vscode-light img[src$=\#gh-dark-mode-only] {
+	display: none;
+}
+
+</style>
+            
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item {
+    list-style-type: none;
+}
+
+.task-list-item-checkbox {
+    margin-left: -20px;
+    vertical-align: middle;
+    pointer-events: none;
+}
+</style>
+<style>
+:root {
+  --color-note: #0969da;
+  --color-tip: #1a7f37;
+  --color-warning: #9a6700;
+  --color-severe: #bc4c00;
+  --color-caution: #d1242f;
+  --color-important: #8250df;
+}
+
+</style>
+<style>
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-note: #2f81f7;
+    --color-tip: #3fb950;
+    --color-warning: #d29922;
+    --color-severe: #db6d28;
+    --color-caution: #f85149;
+    --color-important: #a371f7;
+  }
+}
+
+</style>
+<style>
+.markdown-alert {
+  padding: 0.5rem 1rem;
+  margin-bottom: 16px;
+  color: inherit;
+  border-left: .25em solid #888;
+}
+
+.markdown-alert>:first-child {
+  margin-top: 0
+}
+
+.markdown-alert>:last-child {
+  margin-bottom: 0
+}
+
+.markdown-alert .markdown-alert-title {
+  display: flex;
+  font-weight: 500;
+  align-items: center;
+  line-height: 1
+}
+
+.markdown-alert .markdown-alert-title .octicon {
+  margin-right: 0.5rem;
+  display: inline-block;
+  overflow: visible !important;
+  vertical-align: text-bottom;
+  fill: currentColor;
+}
+
+.markdown-alert.markdown-alert-note {
+  border-left-color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-note .markdown-alert-title {
+  color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-important {
+  border-left-color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-important .markdown-alert-title {
+  color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-warning {
+  border-left-color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-warning .markdown-alert-title {
+  color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-tip {
+  border-left-color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-tip .markdown-alert-title {
+  color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-caution {
+  border-left-color: var(--color-caution);
+}
+
+.markdown-alert.markdown-alert-caution .markdown-alert-title {
+  color: var(--color-caution);
+}
+
+</style>
+        
+        </head>
+        <body class="vscode-body vscode-light">
+            <h1 id="neural-architecture-search">Neural architecture search</h1>
+<h2 id="overview-of-nas">Overview of NAS</h2>
+<ul>
+<li>NAS = automatiser le design des architecture neuronale pour une tache donnée</li>
+<li>Certaine archis trouvé surpasse celle designé par l'humain</li>
+<li>On cherche dans quoi et comment ?
+<ul>
+<li>On cherche dans un espace de recheche prédéfinir qui encode les architectures = espace compréhensible par machine</li>
+<li>Avec une certaine stratégie de recherche</li>
+<li>Et en estimant les performances pour éviter l’entraînement de chaque archi</li>
+</ul>
+</li>
+<li>Zoom sur ces 3 boites</li>
+</ul>
+<h2 id="search-space">Search space</h2>
+<ul>
+<li>Très grand : 10^20
+<ul>
+<li>Car combinaison de nombre de couche, opération possible, hyparamètre</li>
+</ul>
+</li>
+<li>on peut restriction avec connaissance préalable</li>
+<li>Contrepartie :  réduit les chance de trouver une architecture vraiment innovante</li>
+<li>Classiquement un graph d'opération</li>
+</ul>
+<h2 id="type-de-search-space">Type de Search Space</h2>
+<ul>
+<li>Plusieurs type de search space</li>
+<li>Graph</li>
+<li>Cells based : Assemblage de bloc = resnet/vgg</li>
+<li>Naturellement, cedxrtaine technique ne rentre dans aucunes des cases</li>
+</ul>
+<h2 id="search-strategy">Search strategy</h2>
+<ul>
+<li>Stratégie de recherche</li>
+<li>Deux grandes categories
+<ul>
+<li>Black box :  algo qu'on connaît, technique classique : RL, algo génétique ect</li>
+<li>One shot:
+<ul>
+<li>HyperNetwork : réseau qui génère les poids pour d'autre modèle</li>
+<li>Supernetwork : Archi avec toutes les opération possible qu'on vient découper
+<ul>
+<li>Une opération entre deux noeuds -&gt; beaucoup de combinaison d'archi possible</li>
+</ul>
+</li>
+<li>Parfois ça marche, parfois non</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="taxonomy-one-shot">Taxonomy One shot</h2>
+<ul>
+<li>Naturellement, taxonomy</li>
+<li>Inclus la figure d'un supernetwork parce que c'est assez fou</li>
+</ul>
+<h2 id="performance-estimation-strategy">Performance estimation strategy</h2>
+<ul>
+<li>Plein technique éviter entraînement complet avec un prédicteur</li>
+<li></li>
+<li>Learning curve extrapolation
+<ul>
+<li>L'image parle d'elle même,</li>
+</ul>
+</li>
+<li>Zero cost proxy : une forward / backward + croise les doigts corrélation
+<ul>
+<li>Fonctionne dans certain cas</li>
+<li>Souvent combiné avec une autre technique d'estimation et/ou de recherche</li>
+</ul>
+</li>
+<li>Subset selection :
+<ul>
+<li>Sub set de donnée, généré artificiellement ou non</li>
+</ul>
+</li>
+<li>Meta Learning
+<ul>
+<li>Prédicteur de performance, surrogate model</li>
+<li>Prends archi et dataset encodé pour prédire la performance</li>
+</ul>
+</li>
+</ul>
+<h2 id="benchmark">Benchmark</h2>
+<ul>
+<li>Benchmark : un search space où chaque archi est étiqueté avec son accuracy à plusieurs époch</li>
+<li>Fort car évite l’entraînement à chaque fois</li>
+<li>A une epoch les gens entraîné l'archi final sur 600 epoch, qu'importe si les 200 dernière epoch faisait rien</li>
+<li>Permet test les algo de recherche de manière standardisé, reproductive et avec des test statistiques</li>
+<li>Plein de benchmark différent et spécialisé par tache ou non</li>
+</ul>
+<h2 id="evaluation-tableau-1">Evaluation tableau 1</h2>
+<ul>
+<li>Liste de méthode d'NAS</li>
+<li>Accuracy de la meilleurs architecture trouvé</li>
+<li>Par exemple ici c'est sur 3 run de recherche d'architecture</li>
+<li>On remarque le nombre d'architecture entraîné plus où moins grand</li>
+</ul>
+<h2 id="evaluation-tableau-2">Evaluation tableau 2</h2>
+<ul>
+<li>Autre tableau</li>
+<li>Cette fois on voit aussi le nombre de paramètre et le coût GPU</li>
+</ul>
+
+            
+            
+        </body>
+        </html>
