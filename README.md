@@ -19,7 +19,7 @@ Ce dépôt regroupe des **ressources précieuses pour notre Master**. Je vous **
 
 
 
-# Mes cours de M2 du Master DAC Sorbonne Université 2022-2023
+# Mes cours de M2 du Master DAC / MIND Sorbonne Université 2022-2023
 
 ## Liste des cours suivis :
 [M2-DAC](https://dac.lip6.fr/master/enseignement/master-2/)
